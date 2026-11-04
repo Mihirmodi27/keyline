@@ -10,8 +10,9 @@
  *
  * It reads DESIGN.md at the root for the preset and the motion and z-index
  * ladders, so a verdict follows the project's own decisions. Silence one line
- * with a `keyline-ignore` comment on it or the line above (optionally naming
- * rules: `keyline-ignore type/uppercase`), or a whole file with
+ * with a `keyline-ignore` comment on it or up to two lines above (optionally
+ * naming rules, then a reason: `keyline-ignore type/uppercase: a logo`), or a
+ * whole file with
  * `keyline-ignore-file`.
  *
  * Exit codes: 0 clean (or only warnings and info), 1 findings that fail the
@@ -86,6 +87,10 @@ export function gather(root, files) {
         const imp = m.text.match(MOTION_IMPORT);
         noteAnimation({ file: f.rel, line: at(imp.index) });
         for (const d of m.text.matchAll(/\bduration\s*:\s*(\d*\.?\d+)\b/g)) {
+          // A spring's duration is a settling time set by its character, not a tier.
+          const open = m.text.lastIndexOf("{", d.index);
+          const close = m.text.indexOf("}", d.index);
+          if (/type\s*:\s*["']spring|\bbounce\s*:|\bstiffness\s*:/.test(m.text.slice(open, close))) continue;
           const v = parseFloat(d[1]);
           facts.jsDurations.push({ file: f.rel, line: at(d.index), ms: Math.round(v < 20 ? v * 1000 : v) });
         }
@@ -133,14 +138,16 @@ export function gather(root, files) {
   return facts;
 }
 
-/** Whether a finding is silenced by a keyline-ignore comment on its line or the one above. */
+/** Whether a finding is silenced by a keyline-ignore comment on its line or up to two above. */
 function suppressed(facts, f) {
   const lines = facts.sources.get(f.file);
   if (!lines || !f.line) return false;
-  for (const l of [lines[f.line - 1], lines[f.line - 2]]) {
-    const m = l?.match(/keyline-ignore(?!-file)(?:\s+([\w\/,\s-]+?))?\s*(?:\*\/|-->|\}|$)/);
+  for (const l of [lines[f.line - 1], lines[f.line - 2], lines[f.line - 3]]) {
+    const m = l?.match(/keyline-ignore(?!-file)((?:[\s,]+[a-z]+(?:\/[a-z-]+)?)*)/);
     if (!m) continue;
-    if (!m[1] || m[1].split(/[\s,]+/).filter(Boolean).some((r) => r === f.rule || r === f.rule.split("/")[0])) return true;
+    // Rule ids or domains may follow; anything after them (": because…") is the reason.
+    const named = m[1].split(/[\s,]+/).filter((r) => r.includes("/") || DOMAINS.includes(r));
+    if (named.length === 0 || named.some((r) => r === f.rule || r === f.domain)) return true;
   }
   return false;
 }

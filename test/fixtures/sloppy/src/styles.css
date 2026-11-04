@@ -12,3 +12,4 @@
 .c { font-weight: 500; transition-duration: 225ms; }
 .d { font-weight: 700; transition-duration: 600ms; }
 .e { font-weight: 900; transition-duration: 800ms; }
+.glow { box-shadow: 0 0 24px rgba(120, 165, 250, 0.9); }

@@ -29,10 +29,11 @@ export function readDesign(root) {
     for (const m of row.matchAll(/(?<![\w.])(\d+(?:\.\d+)?)(ms|s)\b/g)) durations.add(m[2] === "s" ? Math.round(parseFloat(m[1]) * 1000) : Math.round(parseFloat(m[1])));
   }
 
-  // z-index: rows whose role is z.* — their values are the ladder.
+  // z-index: rows whose role is z.*, or a project role whose name is a z utility
+  // or mentions one — their values are the ladder.
   const layout = section(md, "Layout");
   const zLadder = new Set();
-  for (const row of layout.split("\n").filter((l) => /^\|\s*`?z\./.test(l))) {
+  for (const row of layout.split("\n").filter((l) => /^\|\s*`?z\./.test(l) || (l.startsWith("|") && /`-?z-\[?-?\d|`z\./.test(l)))) {
     const cells = row.split("|").slice(1, -1).map((c) => c.trim());
     for (const c of cells.slice(1)) for (const m of c.matchAll(/(?<![\w.#-])(-?\d+)(?![\w.%])/g)) zLadder.add(Number(m[1]));
   }

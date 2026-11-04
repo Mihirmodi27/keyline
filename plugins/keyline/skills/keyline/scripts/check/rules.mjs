@@ -33,6 +33,34 @@ function literalColor(value) {
   return null;
 }
 
+/** Every colour in a value is black or white, at any alpha. */
+function neutralOnly(value) {
+  const v = stripUrls(value);
+  const colours = [...v.matchAll(/#[0-9a-f]{3,8}\b|\b(?:rgba?|hsla?)\([^)]*\)/gi)].map((m) => m[0].toLowerCase());
+  return colours.length > 0 && colours.every((c) => /^#(0{3,4}|0{6}|0{8}|f{3,4}|f{6}|f{6}[0-9a-f]{2}|0{6}[0-9a-f]{2})$/.test(c) || /^rgba?\(\s*(0\s*[, ]\s*0\s*[, ]\s*0|255\s*[, ]\s*255\s*[, ]\s*255)\b/.test(c));
+}
+
+/**
+ * The duration in each part of a transition or animation shorthand — the first
+ * time in each comma-separated part. The second is a delay, which is choreography,
+ * not a tier on the ladder.
+ */
+function shorthandDurations(value) {
+  const parts = [];
+  let depth = 0;
+  let start = 0;
+  for (let i = 0; i < value.length; i++) {
+    if (value[i] === "(") depth++;
+    else if (value[i] === ")") depth--;
+    else if (value[i] === "," && depth === 0) {
+      parts.push(value.slice(start, i));
+      start = i + 1;
+    }
+  }
+  parts.push(value.slice(start));
+  return parts.map((p) => durationsIn(p.replace(/(?:var|calc)\((?:[^()]|\([^()]*\))*\)/g, ""))[0]).filter((n) => n !== undefined);
+}
+
 function durationsIn(value) {
   const out = [];
   for (const m of value.matchAll(/(?<![\w.-])(\d*\.?\d+)(ms|s)\b/g)) {
@@ -192,6 +220,12 @@ const colorRules = [
       const out = [];
       for (const d of facts.decls) {
         if (isDefinition(d) || inFontFace(d) || /^(src|content|mask|mask-image|-webkit-mask-image|filter|font-family)$/.test(d.prop)) continue;
+        // Print is ink on paper: black on white is the point, not a stray.
+        if (d.atRules.some((a) => /^@media\b[^{]*\bprint\b/i.test(a))) continue;
+        // Light and shade in a shadow recipe — white or black at some alpha — is the
+        // recipe, not a palette colour; the recipe itself is what depth law 4 wants
+        // kept in one definition. A tinted shadow (a blue glow) still counts.
+        if (/^(box-shadow|text-shadow)$/.test(d.prop) && neutralOnly(d.value)) continue;
         const c = literalColor(d.value);
         if (c) out.push({ ...where(d), severity: "warning", message: `\`${c}\` typed into \`${d.prop}\`${d.inline ? " in an inline style" : ""}. Give it a token named for its job (a text tier, a border, a status), so a theme or a contrast fix changes it once.` });
       }
@@ -398,7 +432,8 @@ const motionRules = [
       const uses = [];
       for (const d of facts.decls) {
         if (isDefinition(d)) continue;
-        if (/^(transition|transition-duration|animation|animation-duration)$/.test(d.prop)) for (const ms of durationsIn(d.value)) uses.push({ ...where(d), ms });
+        if (/^(transition|animation)$/.test(d.prop)) for (const ms of shorthandDurations(d.value)) uses.push({ ...where(d), ms });
+        if (/^(transition|animation)-duration$/.test(d.prop)) for (const ms of durationsIn(d.value)) uses.push({ ...where(d), ms });
       }
       for (const c of tw(facts, (b) => /^duration-(\d+|\[[\d.]+m?s\])$/.test(b))) {
         const v = c.base.slice(9);
