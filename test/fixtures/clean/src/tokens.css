@@ -1,0 +1,21 @@
+:root {
+  --color-text: #16161a;
+  --color-muted: #4b4b52;
+  --color-focus: #0a6cff;
+  --surface-glass: rgba(242, 242, 242, 0.72);
+  --dur-state: 150ms;
+  --dur-overlay: 200ms;
+  --z-nav: 40;
+}
+body { color: var(--color-text); font-synthesis: none; }
+.card { transition: color 150ms, background-color 150ms; }
+.panel { min-height: 100dvh; }
+.label { letter-spacing: 0.02em; }
+:focus-visible { outline: 2px solid var(--color-focus); }
+.nav { z-index: var(--z-nav); background: var(--color-text); }
+.glass { background: var(--color-muted); }
+@supports (backdrop-filter: blur(1px)) {
+  .glass { background: var(--surface-glass); backdrop-filter: blur(20px); }
+}
+@media (prefers-reduced-motion: reduce) { .card { transition: none; } }
+@media (prefers-reduced-transparency: reduce) { .glass { background: var(--color-muted); backdrop-filter: none; } }

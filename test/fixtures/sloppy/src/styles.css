@@ -1,0 +1,14 @@
+@font-face { font-family: "Brand"; src: url("/brand.woff2") format("woff2"); font-weight: 400; font-style: italic; }
+.card { transition: all 200ms ease; color: #333; }
+.btn:focus { outline: none; }
+.modal { z-index: 9999; }
+.hero { height: 100vh; font-size: 5vw; }
+.eyebrow { text-transform: uppercase; letter-spacing: 2px; font-size: 13.5px; }
+.glass { backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); }
+@keyframes grow { from { width: 0; } to { width: 100px; } }
+.bar { animation: grow 450ms; transition: width 300ms; }
+.a { font-weight: 100; transition-duration: 120ms; }
+.b { font-weight: 300; transition-duration: 175ms; }
+.c { font-weight: 500; transition-duration: 225ms; }
+.d { font-weight: 700; transition-duration: 600ms; }
+.e { font-weight: 900; transition-duration: 800ms; }

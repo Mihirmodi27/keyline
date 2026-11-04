@@ -82,6 +82,8 @@ const USAGE = `Keyline ${version} — interface design laws for coding agents.
 
   npx keyline install [options]   install the skill
   npx keyline update  [options]   refresh every copy already installed
+  npx keyline check  [paths…]     the laws that can be checked without a model
+                                  (--json, --strict; see npx keyline check --help)
   npx keyline tools               list the agents it installs for
 
 Options:
@@ -110,6 +112,12 @@ function toolId(name) {
 /* ── Arguments ──────────────────────────────────────────────────────────── */
 
 const argv = process.argv.slice(2);
+
+// `check` is the detector, which lives in the skill so an agent can run it without this CLI.
+if (argv[0] === "check") {
+  const { run } = await import(new URL("../plugins/keyline/skills/keyline/scripts/check.mjs", import.meta.url));
+  process.exit(run(argv.slice(1)));
+}
 const command = argv[0] && !argv[0].startsWith("-") ? argv.shift() : null;
 let dir = null;
 let user = false;

@@ -1,0 +1,1 @@
+{ "name": "clean", "private": true, "devDependencies": { "tailwindcss": "^4.0.0" } }

@@ -39,7 +39,7 @@ Paths in these files are relative to this skill's folder. In shell commands it i
 ## What every command holds to
 
 - **The project's names, always.** Reason in roles (`text.secondary`, `duration.small`), write code in whatever the project calls them. Never rename a project's tokens; never add a second token system beside the first.
-- **Measure, don't estimate.** Contrast comes from `<keyline>/scripts/contrast.mjs`; inventories from `<keyline>/scripts/scan.mjs`; counts from the code. A finding carries its evidence: a ratio, a count, a `file:line`.
+- **Measure, don't estimate.** Mechanical laws are checked by `<keyline>/scripts/check.mjs`; contrast comes from `<keyline>/scripts/contrast.mjs`; inventories from `<keyline>/scripts/scan.mjs`; counts from the code. A finding carries its evidence: a ratio, a count, a `file:line`.
 - **Laws hold under every preset; dials move between them.** A change that would break a law, or move a dial off the preset, is said out loud and asked about first. When the user agrees, it goes under `## Decisions` with its date and reason.
 - **Findings are not fixes.** `init`, `sync`, `critique` and `audit` change no code. The refining commands change only what their domain owns, and name the owning domain for anything else they notice.
 - **Write back.** A decision that changes the system — a new role, a moved dial, a law knowingly broken — goes into `DESIGN.md`, so the next session starts from it. Fixed issues come off `## Open issues`.
@@ -53,4 +53,4 @@ Paths in these files are relative to this skill's folder. In shell commands it i
 | `system/` | Setup: the canonical `roles.md`, the four `presets.md`, the `design-md.md` format, `detection.md` for each stack |
 | `domains/<domain>/` | Each domain's `guide.md` — laws, dials per preset, building, auditing, checklist — and its deeper references |
 | `glass/<domain>/` | The `glass` preset: modimihir.com's exact values, with drop-in tokens and components in `assets/` |
-| `scripts/` | `scan.mjs` (token and value inventory) and `contrast.mjs` (measured contrast, translucency composited). Node 18+, no dependencies |
+| `scripts/` | `check.mjs` (the detector: 22 mechanical laws, `--json`, exit codes for CI), `scan.mjs` (token and value inventory) and `contrast.mjs` (measured contrast, translucency composited). Node 18+, no dependencies |
