@@ -126,19 +126,15 @@
   var scrim = document.getElementById("scrim");
   var menuBtn = document.getElementById("menuBtn");
 
-  // The sheet is modal: closing it, however it closes, hands focus back to the button that opened it.
   function setNav(open) {
-    var wasOpen = sidebar.classList.contains("is-open");
     sidebar.classList.toggle("is-open", open);
     scrim.hidden = !open;
     menuBtn.setAttribute("aria-expanded", String(open));
-    if (open) { var first = sidebar.querySelector("a, button"); if (first) first.focus(); }
-    else if (wasOpen) { menuBtn.focus(); }
   }
 
   menuBtn.addEventListener("click", function () { setNav(!sidebar.classList.contains("is-open")); });
   scrim.addEventListener("click", function () { setNav(false); });
   document.addEventListener("keydown", function (e) {
-    if (e.key === "Escape" && sidebar.classList.contains("is-open")) setNav(false);
+    if (e.key === "Escape" && sidebar.classList.contains("is-open")) { setNav(false); menuBtn.focus(); }
   });
 })();

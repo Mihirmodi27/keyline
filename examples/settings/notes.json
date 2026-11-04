@@ -3,85 +3,82 @@
   "steps": [
     {
       "domain": "type",
-      "summary": "Nine font sizes and four weights became a five-step ladder with two weights, so headings are found by size and nothing on the page shouts.",
+      "summary": "Ten loose font sizes and four weights became one five-step ladder, with sentence-case labels and figures that line up.",
       "changes": [
-        { "what": "Page title is smaller and lighter, a label for where you are rather than a banner", "law": "type law 1 · product ceiling dial", "before": "28px / 650", "after": "20px / 500 (title ÷ body 1.43)", "selector": ".page-head h1" },
-        { "what": "Font weights in use", "law": "type law 5", "before": "4 weights (400, 500, 600, 650)", "after": "2 weights (400, 500)", "selector": ".btn" },
-        { "what": "Distinct font sizes on the page", "law": "type law 1", "before": "9 sizes (12, 13, 14, 15, 16, 18, 20, 24, 28px)", "after": "5 sizes (12, 13, 14, 16, 20px)", "selector": ".section__head h2" },
-        { "what": "Uppercase, tracked group labels set in sentence case", "law": "type dials: uppercase labels", "before": "ACTIVITY · 12px / 600 / +0.05em caps", "after": "Activity · 12px / 400 / 0", "selector": ".prefs thead th" },
-        { "what": "The dialog title no longer outranks the section headings beside it", "law": "type law 3", "before": "18px / 600", "after": "16px / 500, same as section headings", "selector": ".modal h2" },
-        { "what": "Field labels step down to a label size and tier so the values lead", "law": "type law 4", "before": "14px / 500 / text.primary", "after": "12px / 400 / text.secondary", "selector": ".field label" },
-        { "what": "Button text set as control text", "law": "type dial: type.ui 13px", "before": "14px / 600", "after": "13px / 500, line-height 1", "selector": ".btn" },
-        { "what": "Numbers set in tabular figures, and a metric-matched fallback so the font swap doesn't reflow", "law": "type laws 10 and 12", "before": "proportional figures; no fallback metrics; 4 Inter weights downloaded", "after": "tabular-nums on body; Arial fallback at size-adjust 107.12%; 2 weights downloaded", "selector": "body" }
+        { "what": "The page title comes down to the product ceiling, set in the heading weight", "law": "type dials: ceiling", "before": "28px / 650", "after": "20px / 600", "selector": ".page-head h1" },
+        { "what": "Distinct text sizes on the page", "law": "type law 1", "before": "10 sizes (11–28px)", "after": "5 sizes (12, 13, 14, 16, 20px)", "selector": ":root --type-*" },
+        { "what": "Font weights in use", "law": "type law 5", "before": "4 (400, 500, 600, 650)", "after": "3 (400, 500, and 600 for headings only)", "selector": "body" },
+        { "what": "Uppercase, letter-spaced eyebrows become sentence-case labels", "law": "type dials: uppercase labels", "before": "SETTINGS · ACTIVITY · EMAIL · PUSH, 12px/600, +0.05–0.06em", "after": "Settings · Activity · Email · Push, 12px, 0 tracking", "selector": ".sidenav__title, .prefs thead th" },
+        { "what": "The dialog title no longer outranks the page's section headings", "law": "type law 3", "before": "18px", "after": "16px, the same as every section heading", "selector": ".modal h2" },
+        { "what": "Buttons set as interface text, not body text", "law": "type law 8", "before": "14px / 600", "after": "13px / 500", "selector": ".btn" },
+        { "what": "Field labels lead by weight and tier instead of size", "law": "type law 4", "before": "14px / 500 in primary ink", "after": "12px / 500 in secondary ink", "selector": ".field label" },
+        { "what": "Numbers that align or identify use tabular figures", "law": "type law 10", "before": "0 elements", "after": "3 (seat count, time-zone offsets, workspace ID with slashed zero)", "selector": ".num, .id" }
       ]
     },
     {
       "domain": "color",
-      "summary": "Every control edge and text tier now clears its contrast floor in both themes, and colour is spent only on what needs a person, not on what is merely connected or done.",
+      "summary": "Every edge and label now clears its contrast floor in both themes, and colour is kept for things that need a person rather than things that are done.",
       "changes": [
-        { "what": "Input, search and switch-off edges are visible enough to read as controls", "law": "color law 2 · border.control 3:1", "before": "#d0d5dd, 1.47:1 on white", "after": "#888c94, 3.37:1 on white (3.04:1 on hover rows)", "selector": ".field input" },
-        { "what": "Primary button text in dark mode is readable", "law": "color law 8", "before": "white on #6b85f0, 3.37:1", "after": "#0d0f13 on #839ffc, 7.61:1", "selector": ".btn--primary" },
-        { "what": "\"Unsaved changes\" is no longer low-contrast amber text: the words stay in ink and an amber dot carries the state", "law": "color laws 3 and 7", "before": "#dc6803 text, 3.34:1", "after": "#4e535b text 7.74:1 + amber dot #9d580c (5.24:1)", "selector": ".status.is-dirty" },
-        { "what": "\"Connected\" badges drop the green: being connected needs nobody, so the dot's shape (filled vs ring) says it", "law": "color law 7", "before": "green #067647 on #ecfdf3", "after": "ink #4e535b on #f9fafb, 7.41:1; filled dot vs ring", "selector": ".badge--ok" },
-        { "what": "Field errors keep their sentence in ink; a red alert glyph carries the error", "law": "color laws 6 and 7", "before": "red text #b42318, 6.57:1, no glyph", "after": "ink text 7.74:1 + red alert glyph", "selector": ".msg" },
-        { "what": "Met password rules show an ink tick on a neutral circle instead of a green disc", "law": "color law 7 · done in a sequence passed through", "before": "filled green #067647 circle, white tick", "after": "ink tick on a 3.37:1 neutral ring", "selector": ".rules li.is-met" },
-        { "what": "Greys lose their blue cast", "law": "color dial: neutral chroma ≤ 0.015", "before": "text tiers at OKLCH chroma 0.035", "after": "chroma 0.015; tertiary 4.89:1 on its worst surface (was 4.64:1)", "selector": ".hint" },
-        { "what": "The avatar takes one flat person colour instead of the accent blue gradient", "law": "color law 7 · exception.person", "before": "3-stop gradient of the action blue", "after": "flat #7d45a2, white initials 6.47:1 (dark: #bc8fdd, 7.41:1)", "selector": ".avatar" }
+        { "what": "Input and select edges you can actually see", "law": "color roles: border.control (3:1)", "before": "#d0d5dd, 1.47:1 on white", "after": "#8f929a, 3.11:1 on white (3.20:1 in dark)", "selector": ".field input, .field select" },
+        { "what": "Text on dark-mode primary buttons", "law": "color law 8", "before": "white on #6b85f0, 3.37:1", "after": "#0e1115 on #6b85f0, 5.62:1", "selector": ".btn--primary" },
+        { "what": "Keyboard focus on fields is a real ring, not a faint halo", "law": "color law 5", "before": "accent border + 3px halo at 1.51:1", "after": "2px accent outline, 2px offset, 5.69:1", "selector": ".field input:focus-visible" },
+        { "what": "\"Unsaved changes\" is readable", "law": "color law 3", "before": "orange text #dc6803, 3.34:1", "after": "ink text 8.17:1 with an amber dot (#915c08, 5.38:1)", "selector": ".status.is-dirty" },
+        { "what": "The quietest text tier gains margin", "law": "color dials: tertiary target", "before": "#667085, 4.64:1 on the page", "after": "#62666f, 5.37:1 on the page", "selector": "--text-3" },
+        { "what": "Connected services and met password rules stop shouting green", "law": "color law 7", "before": "green badge on a green tint; green filled ticks", "after": "neutral badge with a filled dot vs a ring; ink tick on a neutral circle", "selector": ".badge--ok, .rules li.is-met::before" },
+        { "what": "Error messages keep their words in ink; only the icon is red", "law": "color law 7", "before": "whole sentence in red #b42318", "after": "sentence in ink, 8.17:1, with a red icon beside it", "selector": ".msg" },
+        { "what": "The avatar's three-stop blue gradient becomes one person colour", "law": "color law 7", "before": "3 raw hues (#7b8ff5 → #3e5bd8 → #2a3fa3)", "after": "flat teal #227a7e, initials 5.06:1 (7.35:1 in dark)", "selector": ".avatar" }
       ]
     },
     {
       "domain": "layout",
-      "summary": "The page becomes a product shell — one sidebar for all navigation — with its sections stacked on the page instead of in five boxes.",
+      "summary": "Five boxed cards became sections stacked under their headings, with spacing that groups and one table style for the notification grid.",
       "changes": [
-        { "what": "Navigation lives in one sidebar instead of a top bar plus a second settings sidebar", "law": "layout dial: app shell, no top bar", "before": "2 navigation regions (60px top bar + 240px settings rail)", "after": "1 sidebar, 240px, with a 44px header bar over the page", "selector": ".shell-nav" },
-        { "what": "Sections sit on the page, opened by their heading, not boxed", "law": "layout law 3", "before": "5 bordered, shadowed cards", "after": "0 boxes; sections parted by 40px of space", "selector": ".section" },
-        { "what": "Tinted footer strips behind the save buttons are gone", "law": "layout law 3", "before": "4 grey #f9fafb strips with a top border", "after": "buttons sit 16px under their form", "selector": ".section__foot" },
-        { "what": "Headings group with what they introduce", "law": "layout law 2", "before": "24px between cards, 22px card padding above each heading", "after": "40px above : 16px below, 2.5:1", "selector": ".content" },
-        { "what": "Descriptions and help text wrap at a reading measure", "law": "layout law 1", "before": "up to 712px wide", "after": "30rem (480px ≈ 65 characters)", "selector": ".section__head p" },
-        { "what": "Radii on one ladder", "law": "layout law 5 · product radius dial", "before": "6 values (4, 6, 8, 10, 12, 16px)", "after": "4 steps (4, 6, 8, 12px) plus pill", "selector": ".prefs" },
-        { "what": "Hairlines thinned to half a pixel", "law": "layout law 6 · product hairline dial", "before": "1px dividers and edges", "after": "0.5px dividers and edges; 1px only on control edges", "selector": ".connection" },
-        { "what": "Stacking order from a named ladder", "law": "layout law 7", "before": "literals 10, 20, 50, 100", "after": "--z-raised 10, --z-dismiss 40, --z-nav 50, --z-toast 70, --z-skip-link 100", "selector": ".toast" }
+        { "what": "Settings sections no longer sit in boxes", "law": "layout law 3", "before": "5 bordered, shadowed cards", "after": "0 boxes; each section opened by its heading", "selector": ".card" },
+        { "what": "Space groups a heading with its section", "law": "layout law 2", "before": "24px between cards, ~20px heading to fields (≈1.2 : 1)", "after": "32px between sections, 12px heading to content (2.7 : 1)", "selector": ".content, .card__head" },
+        { "what": "The notifications grid gets its own table frame", "law": "layout law 3 (product table)", "before": "rows running to a card's edges", "after": "one 0.5px frame at 8px radius, tinted header row", "selector": ".prefs" },
+        { "what": "Corner radii step down to the product ladder", "law": "layout dials: radius", "before": "8 / 12 / 16px", "after": "6 / 8 / 12px (controls / cards / dialog)", "selector": "--radius-sm, --radius, --radius-lg" },
+        { "what": "Dividers drawn as hairlines", "law": "layout law 6", "before": "1px", "after": "0.5px (controls keep 1px)", "selector": ".prefs td, .connection" },
+        { "what": "The rule under the profile photo is replaced by space", "law": "layout law 2", "before": "1px rule with 24px above and below", "after": "24px of space, no rule", "selector": ".photo" },
+        { "what": "Stacking order comes from a named ladder", "law": "layout law 7", "before": "4 bare numbers (10, 20, 50, 100)", "after": "--z-raised 10 · --z-nav 50 · --z-toast 70 · --z-skip-link 100", "selector": ":root --z-*" },
+        { "what": "The field grid folds by the width of its column, not the window", "law": "layout law 8", "before": "@media (max-width: 760px)", "after": "@container (max-width: 560px)", "selector": ".grid" }
       ]
     },
     {
       "domain": "depth",
-      "summary": "Shadows now belong only to things that float or block — the toast, the nav sheet, the dialog — each with one shadow recipe and an edge.",
+      "summary": "Shadows went from decoration on everything to three named levels, and the frosted top bar became solid.",
       "changes": [
-        { "what": "Shadows on in-page things removed", "law": "depth law 2", "before": "shadows on 5 cards, every input, every button and 3 logo tiles", "after": "no shadow on anything that scrolls with the page", "selector": ".btn--secondary" },
-        { "what": "Logos stand on their own instead of in shadowed tiles", "law": "depth law 2", "before": "44px tile, 1px border, 10px radius, shadow", "after": "24px logo, no tile", "selector": ".connection__logo" },
-        { "what": "Shadow recipes: one per level, each led by its edge", "law": "depth laws 1, 3 and 4", "before": "3 unrelated recipes, no edge on the toast", "after": "3 levels (raised, floating, overlay), each a 0.5px edge ring + contact + ambient", "selector": ".toast" },
-        { "what": "Dark-mode dialog is lighter than the page under it", "law": "depth law 5", "before": "#14171c, the same as the cards", "after": "#282b32 (OKLCH L 0.29, page 0.17)", "selector": ".modal" },
-        { "what": "The delete dialog is the system's dialog: no one-off red icon circle", "law": "depth law 1", "before": "44px red icon circle above the title", "after": "removed; red only on the Delete account button", "selector": ".modal" },
-        { "what": "Scrim lighter and unblurred", "law": "depth law 12 · product scrim dial", "before": "50% + blur(4px)", "after": "40% light / 60% dark, no blur", "selector": ".modal::backdrop" },
-        { "what": "Translucent surfaces", "law": "depth law 6 · product dial: none", "before": "2 (blurred top bar, blurred scrim), no fallbacks", "after": "0 — every surface opaque", "selector": ".pagebar" },
-        { "what": "The current nav row is a flat fill with a hairline edge, not a lifted pill", "law": "depth law 2", "before": "white fill + 1px ring + shadow", "after": "white fill + 0.5px ring, no shadow", "selector": ".sidenav a.is-active" }
+        { "what": "Things that sit in the page stop casting shadows", "law": "depth law 2", "before": "shadows on 5 cards, every input and button, 3 logo tiles and the active nav item", "after": "none; only the top bar, toast and dialog lift", "selector": ".card, .btn, .field input" },
+        { "what": "The top bar is opaque", "law": "depth law 6", "before": "85% surface + blur(12px) saturate(180%), no fallback", "after": "solid surface, 0.5px edge, raised shadow", "selector": ".topbar" },
+        { "what": "Provider logos lose their tiles", "law": "depth law 2", "before": "44px bordered, shadowed tile per logo", "after": "bare 24px marks", "selector": ".connection__logo" },
+        { "what": "The delete dialog is the system's dialog", "law": "depth law 1", "before": "44px red warning-icon circle above the title", "after": "no icon; the danger sits on the Delete account button", "selector": ".modal__icon" },
+        { "what": "The dialog's scrim", "law": "depth law 12", "before": "50% + blur(4px)", "after": "40% light / 60% dark, no blur", "selector": ".modal::backdrop" },
+        { "what": "In dark mode the dialog lifts by getting lighter", "law": "depth law 5", "before": "#14171c, the same as the cards", "after": "#21242a (OKLCH L 0.26 over a 0.175 page)", "selector": ".modal" },
+        { "what": "Shadow recipes", "law": "depth law 4", "before": "3 tokens plus inline stacks on the avatar, knob, nav item and primary button; dark md identical to sm", "after": "3 levels (raised, floating, overlay) per theme, one light", "selector": "--shadow-sm, --shadow-md, --shadow-lg" }
       ]
     },
     {
       "domain": "motion",
-      "summary": "Every transition runs on one short ladder and one curve, exits are quicker than entrances, and reduced motion gets a real alternative instead of a kill switch.",
+      "summary": "Ad-hoc timings became a four-step ladder with one curve, the dialog now closes as deliberately as it opens, and reduced motion keeps its signals.",
       "changes": [
-        { "what": "The dialog now closes with a short fade instead of vanishing", "law": "motion law 7", "before": "0ms close", "after": "100ms ease-in fade, 4px travel", "selector": ".modal" },
-        { "what": "Dialog opening on the standard curve and the overlay tier", "law": "motion laws 2 and 5", "before": "180ms, custom cubic-bezier(.2,.8,.3,1)", "after": "200ms, cubic-bezier(0.2, 0, 0, 1)", "selector": ".modal[open]" },
-        { "what": "Colour changes on controls share one duration", "law": "motion law 2 · product dial", "before": "150ms and 200ms, mixed", "after": "100ms on ease-out", "selector": ".btn" },
-        { "what": "The toast arrives in 150ms and leaves in 100ms, travelling half as far", "law": "motion law 7", "before": "200ms in and out, 16px", "after": "150ms in / 100ms out, 8px", "selector": ".toast" },
-        { "what": "Pressing a button changes its surface instead of nudging it down", "law": "motion dial: product press feedback", "before": "translateY(1px) over 50ms", "after": "pressed surface step at 0ms, no travel", "selector": ".btn:active" },
-        { "what": "Reduced motion swaps each animation for a substitute instead of zeroing everything", "law": "motion law 10", "before": "global 0.01ms on every transition and animation", "after": "dialog and toast fade in place, nav sheet fades, spinner stops", "selector": ".btn.is-loading" },
-        { "what": "Easing curves in use", "law": "motion law 5", "before": "3 (browser ease + 2 custom beziers)", "after": "1 standard curve, plus ease-out for colour and ease-in for exits", "selector": ".toggle__track" }
+        { "what": "Durations on a ladder set by how much changes", "law": "motion law 2", "before": "50 / 150 / 180 / 200ms, no tokens", "after": "80 / 100 / 150 / 200ms, exits 100 / 130ms", "selector": ":root --duration-*" },
+        { "what": "One easing curve", "law": "motion law 5", "before": "3 (browser ease + 2 hand-typed béziers)", "after": "1 standard cubic-bezier(0.2, 0, 0, 1); ease-out for colour; ease-in for exits", "selector": "--ease" },
+        { "what": "The dialog animates out, faster than in", "law": "motion law 7", "before": "opens 180ms, vanishes instantly", "after": "opens 200ms, closes 130ms ease-in", "selector": ".modal" },
+        { "what": "The current section is one marker that travels", "law": "motion law 8", "before": "two 150ms fades (old link out, new link in)", "after": "one marker sliding 150ms down the rail", "selector": ".sidenav__marker" },
+        { "what": "Switches snap at the product tempo", "law": "motion law 2", "before": "200ms knob on its own curve", "after": "100ms on the standard curve", "selector": ".toggle__track::after" },
+        { "what": "Pressing a button", "law": "motion dials: press feedback", "before": "1px nudge over 50ms", "after": "pressed surface at once (0ms), no travel", "selector": ".btn:active" },
+        { "what": "Reduced motion keeps a substitute instead of switching everything off", "law": "motion law 10", "before": "every transition cut to 0.01ms", "after": "dialog and toast fade without travel; marker keeps a 100ms tween", "selector": "@media (prefers-reduced-motion: reduce)" }
       ]
     },
     {
       "domain": "patterns",
-      "summary": "The words and behaviours now match what each action costs: saves report in place, a reversible disconnect offers Undo, and deleting the account says what is lost and waits until it's done.",
+      "summary": "Toasts now appear only when they add something, disconnecting can be undone, and deleting the account behaves like the serious action it is.",
       "changes": [
-        { "what": "Saving no longer also pops a toast; the status line beside the button already says \"Saved just now\"", "law": "patterns dial: toasts for failures, Undo and off-screen results", "before": "3 save toasts", "after": "0 save toasts", "selector": ".status" },
-        { "what": "Disconnecting an account offers Undo", "law": "patterns law 4 · reversible", "before": "\"Google disconnected\", 2.6s, no action", "after": "\"Google disconnected · Undo\", 6s", "selector": ".toast__action" },
-        { "what": "The delete dialog says what will be lost", "law": "patterns law 4", "before": "\"This permanently deletes Priya Anand and signs you out of every device.\"", "after": "Lists profile, personal tasks and comments, sign-out everywhere, projects moving to an admin, and \"This can't be undone.\"", "selector": ".modal p" },
-        { "what": "The phrase to type has a visible label", "law": "patterns law 13", "before": "visually hidden label, phrase in a placeholder", "after": "visible label \"Type delete my account to confirm\"", "selector": ".modal .field label" },
-        { "what": "Deleting shows progress and holds the dialog open until it finishes", "law": "patterns law 4", "before": "dialog closes the instant you click", "after": "\"Deleting…\", Cancel and Escape held off for the duration, focus back on the opener", "selector": "#delete-confirm-btn" },
-        { "what": "Error messages say what to do", "law": "patterns copy: errors", "before": "\"Email is required.\" · \"Check the fields above.\"", "after": "\"Enter your email address.\" · \"Fix the highlighted fields to change your password.\"", "selector": ".msg" },
-        { "what": "Connect is a secondary button, leaving one primary action per section", "law": "patterns law 13 · color law 7", "before": "blue primary button among two Disconnects", "after": "secondary button, \"Connecting…\" while it runs", "selector": ".js-connect" },
-        { "what": "The ⌘K hint in search now works", "law": "patterns law 7", "before": "shown but did nothing", "after": "⌘K / Ctrl+K focuses search", "selector": ".search kbd" }
+        { "what": "Saves stop doubling up with a toast", "law": "patterns dials: toasts", "before": "3 toasts repeating the inline \"Saved\" line", "after": "0; the status line beside the button says it", "selector": "#toast" },
+        { "what": "Disconnect acts at once and can be undone", "law": "patterns law 4", "before": "700ms spinner, then a toast with no way back", "after": "immediate, with an Undo toast for 6s", "selector": ".js-connect" },
+        { "what": "The delete dialog stays open while it works", "law": "patterns law 4", "before": "closes the instant you confirm", "after": "\"Deleting…\", buttons disabled, Escape blocked until done", "selector": "#delete-confirm-btn" },
+        { "what": "The confirmation says exactly what is lost", "law": "patterns law 4", "before": "\"permanently deletes Priya Anand\"", "after": "profile, personal tasks and comments deleted; owned projects move to an admin; can't be undone", "selector": ".modal p" },
+        { "what": "An email error clears as you fix it", "law": "patterns law 13", "before": "stays red on every keystroke until the address is valid", "after": "clears on typing, re-checked on blur and save", "selector": "#email" },
+        { "what": "The ⌘K hint in the search field works", "law": "patterns law 14", "before": "shown, does nothing", "after": "⌘K / Ctrl+K focuses search", "selector": ".search kbd" }
       ]
     }
   ]

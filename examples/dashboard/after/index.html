@@ -11,7 +11,6 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <a class="skip-link" href="#main">Skip to content</a>
   <svg width="0" height="0" style="position:absolute" aria-hidden="true">
     <defs>
       <symbol id="i-overview" viewBox="0 0 20 20"><rect x="3" y="3" width="6" height="6" rx="1.5"/><rect x="11" y="3" width="6" height="6" rx="1.5"/><rect x="3" y="11" width="6" height="6" rx="1.5"/><rect x="11" y="11" width="6" height="6" rx="1.5"/></symbol>
@@ -36,18 +35,19 @@
     </defs>
   </svg>
 
+  <a class="skip-link" href="#main">Skip to content</a>
+
   <div class="app">
     <div class="scrim" id="scrim" hidden></div>
     <aside class="sidebar" id="sidebar" aria-label="Primary">
       <div class="brand">
         <span class="brand-mark" aria-hidden="true">
-          <svg viewBox="0 0 28 28"><defs><linearGradient id="brandFill" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7b7bff"/><stop offset="1" stop-color="#4a48d8"/></linearGradient></defs><rect width="28" height="28" rx="8" fill="url(#brandFill)"/><g transform="translate(5 5) scale(0.75)" stroke="#ffffff" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="5" fill="#ffffff" stroke="none"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1 7 17M17 7l2.1-2.1"/></g></svg>
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5" fill="currentColor"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1 7 17M17 7l2.1-2.1" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
         </span>
         <span class="brand-name">Lumen</span>
       </div>
 
-      <button class="workspace" type="button">
-        <span class="sr-only">Switch workspace: </span>
+      <button class="workspace" type="button" aria-label="Switch workspace">
         <span class="ws-avatar" aria-hidden="true">F</span>
         <span class="ws-text">
           <span class="ws-name">Fieldnote</span>
@@ -56,7 +56,7 @@
         <svg class="icon ws-chevron" aria-hidden="true"><use href="#i-chevrons"/></svg>
       </button>
 
-      <nav class="nav" aria-label="Sections">
+      <nav class="nav" aria-label="Main">
         <p class="nav-label">Analytics</p>
         <ul>
           <li><a href="#" class="nav-link is-active" aria-current="page"><svg class="icon" aria-hidden="true"><use href="#i-overview"/></svg>Overview</a></li>
@@ -78,7 +78,7 @@
           <a href="#" class="usage-link">Upgrade plan</a>
         </div>
         <div class="me">
-          <span class="avatar av-1" aria-hidden="true">PR</span>
+          <span class="avatar av-violet" aria-hidden="true">PR</span>
           <span class="me-text"><span class="me-name">Priya Raman</span><span class="me-mail">priya@fieldnote.io</span></span>
         </div>
       </div>
@@ -90,9 +90,8 @@
           <button class="icon-btn menu-btn" id="menuBtn" type="button" aria-label="Open navigation" aria-controls="sidebar" aria-expanded="false">
             <svg class="icon" aria-hidden="true"><use href="#i-menu"/></svg>
           </button>
-          <div>
-            <p class="crumb">Fieldnote <span aria-hidden="true">/</span> app.fieldnote.io <span aria-hidden="true">/</span></p>
-            <h1>Overview</h1>
+          <div class="crumb">
+            <span>Fieldnote</span><span class="sep" aria-hidden="true">/</span><span>app.fieldnote.io</span><span class="sep" aria-hidden="true">/</span><h1>Overview</h1>
           </div>
         </div>
 
@@ -121,44 +120,51 @@
             </ul>
           </div>
 
-          <button class="icon-btn" type="button" aria-label="Notifications, some unread" title="Notifications">
+          <button class="icon-btn" type="button" aria-label="Notifications, unread">
             <svg class="icon" aria-hidden="true"><use href="#i-bell"/></svg>
             <span class="dot" aria-hidden="true"></span>
           </button>
         </div>
       </header>
 
-      <main class="content" id="main">
-        <dl class="metrics" aria-label="Headline metrics">
+      <main class="content" id="main" tabindex="-1">
+        <section class="metrics" aria-label="Headline metrics">
           <div class="metric">
-            <dt class="metric-label">Visitors</dt>
-            <dd class="metric-value num">43,264</dd>
-            <dd class="metric-foot"><span class="delta up"><svg aria-hidden="true"><use href="#i-up"/></svg>17.5%</span>
-              <span class="muted">vs 36,818 previous period</span></dd>
+            <p class="metric-label">Visitors</p>
+            <p class="metric-value num">43,264</p>
+            <p class="metric-foot">
+              <span class="delta up"><svg aria-hidden="true"><use href="#i-up"/></svg><span class="sr-only">Up </span>17.5%</span>
+              <span class="muted">vs 36,818 prior 30 days</span>
+            </p>
           </div>
           <div class="metric">
-            <dt class="metric-label">Sign-ups</dt>
-            <dd class="metric-value num">1,152</dd>
-            <dd class="metric-foot"><span class="delta up"><svg aria-hidden="true"><use href="#i-up"/></svg>11.7%</span>
-              <span class="muted">vs 1,031 previous period</span></dd>
+            <p class="metric-label">Sign-ups</p>
+            <p class="metric-value num">1,152</p>
+            <p class="metric-foot">
+              <span class="delta up"><svg aria-hidden="true"><use href="#i-up"/></svg><span class="sr-only">Up </span>11.7%</span>
+              <span class="muted">vs 1,031 prior 30 days</span>
+            </p>
           </div>
           <div class="metric">
-            <dt class="metric-label">Conversion rate</dt>
-            <dd class="metric-value num">2.66%</dd>
-            <dd class="metric-foot"><span class="delta down"><svg aria-hidden="true"><use href="#i-down"/></svg>0.14 pts</span>
-              <span class="muted">vs 2.80% previous period</span></dd>
+            <p class="metric-label">Conversion rate</p>
+            <p class="metric-value num">2.66%</p>
+            <p class="metric-foot">
+              <span class="delta down"><svg aria-hidden="true"><use href="#i-down"/></svg><span class="sr-only">Down </span>0.14 pts</span>
+              <span class="muted">vs 2.80% prior 30 days</span>
+            </p>
           </div>
           <div class="metric">
-            <dt class="metric-label">Revenue</dt>
-            <dd class="metric-value num">$18,940</dd>
-            <dd class="metric-foot"><span class="delta up"><svg aria-hidden="true"><use href="#i-up"/></svg>16.8%</span>
-              <span class="muted">vs $16,210 previous period</span></dd>
+            <p class="metric-label">Revenue</p>
+            <p class="metric-value num">$18,940</p>
+            <p class="metric-foot">
+              <span class="delta up"><svg aria-hidden="true"><use href="#i-up"/></svg><span class="sr-only">Up </span>16.8%</span>
+              <span class="muted">vs $16,210 prior 30 days</span>
+            </p>
           </div>
-        </dl>
+        </section>
 
-        <div class="columns">
-          <div class="column">
-          <section class="chart-card" aria-labelledby="chartTitle">
+        <div class="grid">
+          <section class="card chart-card" aria-labelledby="chartTitle">
             <div class="card-head">
               <div>
                 <h2 id="chartTitle" class="card-title">Daily visitors</h2>
@@ -184,8 +190,8 @@
                 <svg class="lines" viewBox="0 0 1000 250" preserveAspectRatio="none" role="img" aria-label="Line chart of daily visitors from October 6 to November 4, 2026, rising from about 1,300 to 1,821 a day, with a peak of 2,011 on October 23. Weekends dip to around 1,000.">
                   <defs>
                     <linearGradient id="fill" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0" stop-color="var(--text)" stop-opacity=".08"/>
-                      <stop offset="1" stop-color="var(--text)" stop-opacity="0"/>
+                      <stop offset="0" stop-color="var(--accent)" stop-opacity=".22"/>
+                      <stop offset="1" stop-color="var(--accent)" stop-opacity="0"/>
                     </linearGradient>
                   </defs>
                   <path class="area" fill="url(#fill)" d="M0 118.4C17.24 118.4 17.24 110.8 34.48 110.8C51.72 110.8 51.72 111.6 68.97 111.6C86.21 111.6 86.21 119.5 103.45 119.5C120.69 119.5 120.69 155.4 137.93 155.4C155.17 155.4 155.17 154 172.41 154C189.66 154 189.66 108.2 206.9 108.2C224.14 108.2 224.14 112.9 241.38 112.9C258.62 112.9 258.62 101.2 275.86 101.2C293.1 101.2 293.1 100.9 310.34 100.9C327.58 100.9 327.58 91.1 344.83 91.1C362.07 91.1 362.07 136.3 379.31 136.3C396.55 136.3 396.55 146.2 413.79 146.2C431.03 146.2 431.03 101 448.28 101C465.52 101 465.52 102.4 482.76 102.4C500 102.4 500 91 517.24 91C534.48 91 534.48 91.6 551.72 91.6C568.97 91.6 568.97 48.9 586.21 48.9C603.45 48.9 603.45 131.8 620.69 131.8C637.93 131.8 637.93 136.7 655.17 136.7C672.41 136.7 672.41 88.1 689.66 88.1C706.9 88.1 706.9 78.9 724.14 78.9C741.38 78.9 741.38 90.2 758.62 90.2C775.86 90.2 775.86 82.3 793.1 82.3C810.35 82.3 810.35 76 827.59 76C844.83 76 844.83 119.4 862.07 119.4C879.31 119.4 879.31 128.1 896.55 128.1C913.79 128.1 913.79 85.7 931.03 85.7C948.27 85.7 948.27 87.1 965.52 87.1C982.76 87.1 982.76 67.9 1000 67.9L1000 250L0 250Z"/>
@@ -218,9 +224,68 @@
             </dl>
           </section>
 
+          <section class="card activity-card" aria-labelledby="activityTitle">
+            <div class="card-head">
+              <div>
+                <h2 id="activityTitle" class="card-title">Recent activity</h2>
+                <p class="card-sub">Your team and your tracking</p>
+              </div>
+              <a href="#" class="link">All activity</a>
+            </div>
+            <ol class="feed">
+              <li class="feed-item">
+                <span class="avatar av-violet" aria-hidden="true">PR</span>
+                <div class="feed-body">
+                  <p><strong>Priya Raman</strong> created the funnel <a href="#">Trial → Paid (Q4)</a></p>
+                  <time datetime="2026-11-04T10:48">12 min ago</time>
+                </div>
+              </li>
+              <li class="feed-item">
+                <span class="feed-icon fi-grey" aria-hidden="true"><svg class="icon"><use href="#i-bolt"/></svg></span>
+                <div class="feed-body">
+                  <p><strong>Spike detected</strong> · 64 sign-ups in the last hour, 3.1× the usual rate</p>
+                  <time datetime="2026-11-04T10:02">58 min ago</time>
+                </div>
+              </li>
+              <li class="feed-item">
+                <span class="avatar av-amber" aria-hidden="true">MB</span>
+                <div class="feed-body">
+                  <p><strong>Marco Bellini</strong> invited <strong>jonas@fieldnote.io</strong> as a viewer</p>
+                  <time datetime="2026-11-04T08:31">2 h ago</time>
+                </div>
+              </li>
+              <li class="feed-item">
+                <span class="feed-icon fi-grey" aria-hidden="true"><svg class="icon"><use href="#i-mail"/></svg></span>
+                <div class="feed-body">
+                  <p><strong>Weekly digest</strong> sent to 6 teammates</p>
+                  <time datetime="2026-11-02T09:00">Mon, 9:00</time>
+                </div>
+              </li>
+              <li class="feed-item">
+                <span class="feed-icon fi-red" aria-hidden="true"><svg class="icon"><use href="#i-alert"/></svg></span>
+                <div class="feed-body">
+                  <p><strong>Alert</strong> · Bounce rate on <span class="path">/blog/event-tracking-without-cookies</span> passed 60%</p>
+                  <time datetime="2026-11-01T17:14">Sun, 17:14</time>
+                </div>
+              </li>
+              <li class="feed-item">
+                <span class="avatar av-teal" aria-hidden="true">DO</span>
+                <div class="feed-body">
+                  <p><strong>Dana Okafor</strong> saved the cohort <a href="#">October trials</a> to Retention</p>
+                  <time datetime="2026-10-31T14:20">Oct 31</time>
+                </div>
+              </li>
+              <li class="feed-item">
+                <span class="feed-icon fi-grey" aria-hidden="true"><svg class="icon"><use href="#i-code"/></svg></span>
+                <div class="feed-body">
+                  <p><strong>Tracking snippet v2.4</strong> detected on <span class="path">docs.fieldnote.io</span></p>
+                  <time datetime="2026-10-30T11:05">Oct 30</time>
+                </div>
+              </li>
+            </ol>
+          </section>
 
-
-          <section class="table-card" aria-labelledby="pagesTitle">
+          <section class="card table-card" aria-labelledby="pagesTitle">
             <div class="card-head">
               <div>
                 <h2 id="pagesTitle" class="card-title">Top pages</h2>
@@ -258,7 +323,7 @@
                   <tr>
                     <td><span class="path">/blog/event-tracking-without-cookies</span><span class="bar" style="--w:28.3%"></span></td>
                     <td class="r num">5,214</td><td class="r num">4,870</td><td class="r num">4:05</td>
-                    <td class="r num"><span class="flag"><svg aria-hidden="true"><use href="#i-alert"/></svg>61.3%<span class="sr-only"> — above the 60% alert threshold</span></span></td>
+                    <td class="r num"><span class="flag"><svg class="icon" aria-hidden="true"><use href="#i-alert"/></svg>61.3%<span class="sr-only"> (above the 60% alert)</span></span></td>
                   </tr>
                   <tr>
                     <td><span class="path">/features/funnels</span><span class="bar" style="--w:21.5%"></span></td>
@@ -278,68 +343,6 @@
                 </tbody>
               </table>
             </div>
-          </section>
-          </div>
-
-          <section class="rail activity-card" aria-labelledby="activityTitle">
-            <div class="card-head">
-              <div>
-                <h2 id="activityTitle" class="card-title">Recent activity</h2>
-                <p class="card-sub">Your team and your tracking</p>
-              </div>
-              <a href="#" class="link">All activity</a>
-            </div>
-            <ol class="feed">
-              <li class="feed-item">
-                <span class="avatar av-1" aria-hidden="true">PR</span>
-                <div class="feed-body">
-                  <p><strong>Priya Raman</strong> created the funnel <a href="#">Trial → Paid (Q4)</a></p>
-                  <time datetime="2026-11-04T10:48">12 min ago</time>
-                </div>
-              </li>
-              <li class="feed-item">
-                <span class="feed-icon fi-grey" aria-hidden="true"><svg class="icon"><use href="#i-bolt"/></svg></span>
-                <div class="feed-body">
-                  <p><strong>Spike detected</strong> · 64 sign-ups in the last hour, 3.1× the usual rate</p>
-                  <time datetime="2026-11-04T10:02">58 min ago</time>
-                </div>
-              </li>
-              <li class="feed-item">
-                <span class="avatar av-2" aria-hidden="true">MB</span>
-                <div class="feed-body">
-                  <p><strong>Marco Bellini</strong> invited <strong>jonas@fieldnote.io</strong> as a viewer</p>
-                  <time datetime="2026-11-04T08:31">2 h ago</time>
-                </div>
-              </li>
-              <li class="feed-item">
-                <span class="feed-icon fi-grey" aria-hidden="true"><svg class="icon"><use href="#i-mail"/></svg></span>
-                <div class="feed-body">
-                  <p><strong>Weekly digest</strong> sent to 6 teammates</p>
-                  <time datetime="2026-11-02T09:00">Mon, 9:00</time>
-                </div>
-              </li>
-              <li class="feed-item">
-                <span class="feed-icon fi-red" aria-hidden="true"><svg class="icon"><use href="#i-alert"/></svg></span>
-                <div class="feed-body">
-                  <p><strong>Alert</strong> · Bounce rate on <code>/blog/event-tracking-without-cookies</code> passed 60%</p>
-                  <time datetime="2026-11-01T17:14">Sun, 17:14</time>
-                </div>
-              </li>
-              <li class="feed-item">
-                <span class="avatar av-3" aria-hidden="true">DO</span>
-                <div class="feed-body">
-                  <p><strong>Dana Okafor</strong> saved the cohort <a href="#">October trials</a> to Retention</p>
-                  <time datetime="2026-10-31T14:20">Oct 31</time>
-                </div>
-              </li>
-              <li class="feed-item">
-                <span class="feed-icon fi-grey" aria-hidden="true"><svg class="icon"><use href="#i-code"/></svg></span>
-                <div class="feed-body">
-                  <p><strong>Tracking snippet v2.4</strong> detected on <code>docs.fieldnote.io</code></p>
-                  <time datetime="2026-10-30T11:05">Oct 30</time>
-                </div>
-              </li>
-            </ol>
           </section>
         </div>
       </main>

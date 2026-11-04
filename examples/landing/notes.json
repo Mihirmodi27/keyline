@@ -3,290 +3,75 @@
   "steps": [
     {
       "domain": "type",
-      "summary": "Every size now belongs to one job on a nine-step ladder, the headline is sized from the column it fills, and four weights became three.",
+      "summary": "Every size now belongs to a job: one headline sized to fit its column, one heading size for every section, larger body copy, and three font weights instead of four.",
       "changes": [
-        {
-          "what": "The hero headline is sized from its column (18 characters a line) instead of the window, so it holds three even lines at every width and scales with zoom",
-          "law": "type law 1; display tier derivation",
-          "before": "clamp(42px, 5.2vw, 68px), leading 1.02, max-width 11ch (4 lines at 1440px)",
-          "after": "clamp(3.25rem, 2.144rem + 5.29cqi, 3.8125rem) = 52–61px, leading 1, max-width 9em (3 lines)",
-          "selector": ".hero h1"
-        },
-        {
-          "what": "Section headings came down to one fixed size so the hero stays the one loud moment, and the closing banner no longer competes with it",
-          "law": "type law 3",
-          "before": "clamp(30px, 3.4vw, 44px) at 700; closing heading clamp(32px, 4vw, 52px) at 700",
-          "after": "32px at 600 for both",
-          "selector": ".section-head h2, .final-card h2"
-        },
-        {
-          "what": "Body copy grew to the expressive range and card text joined it, so descriptions read as reading copy, not captions",
-          "law": "type dials: type.body 17–20px",
-          "before": "16px body, 15px card and FAQ copy",
-          "after": "17px for both, card copy separated by its grey tier and 1.5 leading",
-          "selector": "body, .feature p, .step p, .faq details p"
-        },
-        {
-          "what": "Fourteen font sizes collapsed to nine, one per role",
-          "law": "type law 1",
-          "before": "14 sizes: 9.5, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 48px and 3 clamps",
-          "after": "9: display, 32, 21, 17, 16, 14, 13, 12px, plus the 19px wordmarks",
-          "selector": ":root --text-*"
-        },
-        {
-          "what": "Nothing anyone reads sits below 12px any more, including the product mock's hour numbers on phones",
-          "law": "type dials: readable floor 12px",
-          "before": "11px labels and hour cells, 9.5px on phones",
-          "after": "12px",
-          "selector": ".cells i, .hours-scale span, .who small"
-        },
-        {
-          "what": "Four font weights became three, each with one job, and two unused font files stopped downloading",
-          "law": "type law 5",
-          "before": "400, 500, 600, 700 in use; Inter 500 and Inter Tight 500 requested",
-          "after": "400 reading, 600 headings and controls, 700 the headline and wordmarks only",
-          "selector": ":root --weight-*"
-        },
-        {
-          "what": "Prices line up as columns and no longer outshout the section heading",
-          "law": "type laws 3 and 10",
-          "before": "48px at 700, proportional figures",
-          "after": "32px at 600, tabular figures",
-          "selector": ".amount"
-        },
-        {
-          "what": "The text no longer jumps when the web font arrives: each family falls back to a metric-matched local Arial",
-          "law": "type law 12",
-          "before": "fallback system-ui, unmatched",
-          "after": "Inter Fallback size-adjust 106.95%, Inter Tight Fallback 96%, with matched ascent and descent",
-          "selector": "@font-face"
-        }
+        { "what": "Hero headline sized to its column: two balanced lines instead of three cramped ones", "law": "type display tier", "before": "clamp(42px, 5.2vw, 68px), capped at 11ch, 3 lines", "after": "clamp(3.25rem, 2.39rem + 4.12cqi, 3.75rem): 60px, 2 lines, derived from Inter Tight's 0.459em advance", "selector": ".hero h1" },
+        { "what": "Section headings smaller and lighter, so the hero headline stays the one loudest line", "law": "type law 3", "before": "44px / 700 / −0.03em / leading 1.1", "after": "36px / 600 / −0.02em / leading 1.2", "selector": ".section-head h2" },
+        { "what": "The closing headline uses the same heading size as every other section", "law": "type law 2", "before": "52px / 700", "after": "36px / 600", "selector": ".final-card h2" },
+        { "what": "Feature, step and FAQ text is larger and easier to read", "law": "type dials: body size", "before": "15px", "after": "17px", "selector": ".feature p" },
+        { "what": "Feature, step and plan titles share one size", "law": "type law 2", "before": "19px and 20px", "after": "21px / leading 1.3", "selector": ".feature h3, .step h3, .plan h3" },
+        { "what": "Fewer font weights, each with one job", "law": "type law 5", "before": "4 weights (400, 500, 600, 700)", "after": "3 weights (400 text, 600 headings and buttons, 700 hero headline only)", "selector": "body" },
+        { "what": "Prices use tabular figures and a lighter weight", "law": "type law 10", "before": "proportional, 700", "after": "tabular-nums, 600", "selector": ".amount" },
+        { "what": "Icons in buttons sized to the label beside them (settling pass)", "law": "type law 13", "before": "18px icon beside 15px text", "after": "16px icon", "selector": ".btn svg" }
       ]
     },
     {
       "domain": "color",
-      "summary": "Every colour became a named token, the four places that failed contrast now pass, and colour is no longer the only thing saying a state.",
+      "summary": "Orange text, the focus ring and quiet grey text now pass contrast everywhere they appear, and colour is spent on fewer, named jobs.",
       "changes": [
-        {
-          "what": "The keyboard focus ring is visible on every surface it can land on",
-          "law": "color law 5",
-          "before": "#ff6a3d, 2.85:1 on white",
-          "after": "#e2512a, 3.86:1 on white, 3.60:1 on the grey bands, 4.91:1 on dark; white (8.67:1) inside the closing banner",
-          "selector": ":focus-visible"
-        },
-        {
-          "what": "Text on the orange accent switched from white to ink, so \"Most popular\", \"Send invite\" and the best-hour cells are readable",
-          "law": "color law 3",
-          "before": "white on #ff6a3d, 2.85:1",
-          "after": "#0d1424 on #ff6a3d, 6.46:1",
-          "selector": ".plan-tag, .suggest-btn, .cells .best"
-        },
-        {
-          "what": "Orange section labels and icon strokes darkened until they pass as text",
-          "law": "color law 3",
-          "before": "#e2512a, 3.86:1 on white, 3.47:1 on the peach tile",
-          "after": "#c2410c, 5.18:1 on white, 4.66:1 on the peach tile",
-          "selector": ".eyebrow, .icon, .chip.accent"
-        },
-        {
-          "what": "The quietest grey now passes on the tinted bands too, and the customer logos use it",
-          "law": "color law 3",
-          "before": "#6a7386, 4.45:1 on #f6f7fb; logos #7c8496, 3.75:1",
-          "after": "#636c7f, 4.93:1 on #f6f7fb, 5.27:1 on white",
-          "selector": "--ink-3, .logo-row li"
-        },
-        {
-          "what": "\"Off\" hours in the planner are readable and marked by a dashed outline, not by a faint grey alone",
-          "law": "color laws 3 and 6",
-          "before": "#9aa1b0 on #eef0f5, 2.27:1, colour the only signal",
-          "after": "#636c7f, 5.27:1, with a dashed #8b92a2 edge at 3.12:1",
-          "selector": ".cells .n"
-        },
-        {
-          "what": "Green is kept for outcomes: the passed \"Connected\" step and the pricing ticks went neutral, and every done chip gained a check glyph",
-          "law": "color law 7",
-          "before": "14 green ticks and 2 green chips; tick #12a26a on #e3f6ee, 2.92:1",
-          "after": "1 green chip (\"Invite sent\"); ink ticks on grey discs, 17.17:1",
-          "selector": ".checks li::before, .chip.done, .chip.ok"
-        },
-        {
-          "what": "Teammate avatars moved off the hues that already mean something (the brand orange, the working-hours blue, success green)",
-          "law": "color law 7",
-          "before": "orange, blue, green, purple",
-          "after": "rose, violet, teal, slate — 4 named person colours",
-          "selector": ".a1, .a2, .a3, .a4"
-        },
-        {
-          "what": "Colour literals typed into rules became tokens named for their job",
-          "law": "color law 1",
-          "before": "64 raw colours flagged by the detector",
-          "after": "0",
-          "selector": "styles.css"
-        }
+        { "what": "Orange section labels are readable", "law": "color law 3", "before": "#e2512a, 3.86:1 on white, 3.60:1 on the tinted sections", "after": "#bf4318, 5.21:1 on white, 4.87:1 on the tinted sections", "selector": ".eyebrow" },
+        { "what": "Text on orange badges switched from white to ink", "law": "color law 3", "before": "white on #ff6a3d, 2.85:1", "after": "#0d1424 on #ff6a3d, 6.46:1", "selector": ".plan-tag" },
+        { "what": "The keyboard focus ring can be seen on every surface", "law": "color law 5", "before": "#ff6a3d, 2.85:1 on white, 2.66:1 on tint", "after": "#bf4318, 5.21:1 on white, 4.87:1 on tint; #ff6a3d inside the dark bands, 6.65:1", "selector": ":focus-visible" },
+        { "what": "The quietest grey text passes on tinted sections too", "law": "color law 3", "before": "#6a7386, 4.45:1 on #f6f7fb", "after": "#646d80, 4.85:1 on #f6f7fb", "selector": ".plans-note" },
+        { "what": "Customer logos are a readable grey", "law": "color law 3", "before": "#7c8496, 3.75:1", "after": "#646d80, 5.20:1", "selector": ".logo-row li" },
+        { "what": "Pricing ticks are ink instead of green, so the featured plan stands out", "law": "color law 7", "before": "14 green ticks (#12a26a)", "after": "14 ink ticks on a grey circle", "selector": ".checks li::before" },
+        { "what": "Off-hours in the product preview are readable", "law": "color law 1", "before": "#9aa1b0 on #eef0f5, 2.27:1", "after": "#646d80 on #eef0f5, 4.56:1", "selector": ".cells .n" },
+        { "what": "Colours typed inline replaced by named tokens", "law": "color law 1", "before": "64 raw colour values", "after": "0 (two third-party calendar dots marked as exempt)", "selector": ":root" }
       ]
     },
     {
       "domain": "layout",
-      "summary": "Spacing now runs on four named steps that group headings with their content, paragraphs share one reading width, and radii follow one ladder.",
+      "summary": "The page stops being a wall of boxes: features, steps, quotes and questions sit on the page, grouped by space, with headings closer to what they introduce.",
       "changes": [
-        {
-          "what": "Section rhythm opened up and each heading sits closer to its content than to the section before",
-          "law": "layout law 2",
-          "before": "112px sections, 56px heading-to-content (2 : 1)",
-          "after": "128px sections, 40px heading-to-content (3.2 : 1)",
-          "selector": ".section, .section-head"
-        },
-        {
-          "what": "Every intro and closing paragraph shares one reading width",
-          "law": "layout law 1",
-          "before": "680px, 34em at 18–19px and full column",
-          "after": "33rem (528px, about 62 characters)",
-          "selector": ".lead, .section-sub, .final-card p, .faq details p"
-        },
-        {
-          "what": "Twelve corner radii became a four-step ladder",
-          "law": "layout law 5",
-          "before": "3, 4, 6, 8, 10, 12, 14, 22, 28px plus pills",
-          "after": "8, 12, 20, 28px plus pills and circles",
-          "selector": ":root --radius-*"
-        },
-        {
-          "what": "Chips and tags share one shape",
-          "law": "layout law 3",
-          "before": "4 chip paddings (6/14/6/10, 6/12, 4/10, 5/12)",
-          "after": "one: 6px × 12px, 14px text, pill",
-          "selector": ".pill, .chip, .plan-tag"
-        },
-        {
-          "what": "On tablets and phones the section links move to a second header row instead of disappearing",
-          "law": "layout law 8",
-          "before": "nav hidden below 900px, no replacement",
-          "after": "4 links in a scrollable second row",
-          "selector": ".nav"
-        },
-        {
-          "what": "Jumping to a section no longer hides its heading under the sticky header",
-          "law": "layout law 12",
-          "before": "no scroll offset",
-          "after": "scroll-margin-top 92px on every anchor",
-          "selector": "[id]"
-        },
-        {
-          "what": "The focus ring got the expressive emphasis weight and the featured plan a firmer edge",
-          "law": "layout law 6",
-          "before": "2px ring, 1.5px plan border",
-          "after": "3px ring, 2px plan border",
-          "selector": ":focus-visible, .plan-featured"
-        }
+        { "what": "Feature cards removed; features sit on the page in two columns, icon beside the text", "law": "layout law 3", "before": "6 bordered cards in 3 columns, about 38 characters a line", "after": "no boxes, 2 columns, about 51 characters a line", "selector": ".feature" },
+        { "what": "The three steps become one sequence on a shared line", "law": "layout law 3", "before": "3 shadowed cards", "after": "3 columns on a 1px rule, each number sitting on it", "selector": ".step" },
+        { "what": "Testimonials marked by a quote bar instead of a card", "law": "layout law 3", "before": "3 translucent cards with 32px padding", "after": "3 quotes, each with a 3px orange bar", "selector": ".quote" },
+        { "what": "FAQ becomes one list parted by hairlines", "law": "layout law 3", "before": "6 bordered boxes, 12px apart", "after": "one list, 1px rules between questions", "selector": ".faq details" },
+        { "what": "Headings sit closer to their content than to the section before", "law": "layout law 2", "before": "112px above, 56px below (2 : 1)", "after": "128px above, 40px below (3.2 : 1)", "selector": ".section-head" },
+        { "what": "Far fewer boxes on the page", "law": "depth law 2", "before": "32 boxed regions", "after": "7 (three plans, the final card, the product preview's two windows, the hero pill)", "selector": "main" },
+        { "what": "Corner radii on one ladder", "law": "layout law 5", "before": "10 radii: 3, 4, 6, 8, 10, 12, 14, 22, 28, 999px", "after": "8 / 12 / 20 / 28px plus pill", "selector": ":root" },
+        { "what": "One reading width shared by every paragraph block", "law": "layout law 1", "before": "680px, 34em, 24em and 560px, set per element", "after": "one 36rem (576px) measure", "selector": ".section-head, .lead, .faq details p" }
       ]
     },
     {
       "domain": "depth",
-      "summary": "Boxes are kept for things you choose — the plans and the closing banner — while features, steps, quotes and FAQs sit on the page.",
+      "summary": "Shadows now mean something: one raised button, one floating product preview, and a frosted header that falls back cleanly.",
       "changes": [
-        {
-          "what": "Bordered boxes below the hero dropped from 22 to 4",
-          "law": "depth law 2",
-          "before": "22 cards (6 features, 3 steps, 3 quotes, 3 plans, 6 FAQs, 1 banner)",
-          "after": "4 (3 plans, 1 banner); features parted by space, steps and quotes by a top hairline, FAQs by row rules",
-          "selector": ".feature, .step, .quote, .faq details"
-        },
-        {
-          "what": "Flat things lost their shadows: buttons, the announcement pill and the steps",
-          "law": "depth law 3",
-          "before": "5 shadowed flat elements, primary button shadow at 50% opacity",
-          "after": "0",
-          "selector": ".btn-primary, .btn-ghost, .pill"
-        },
-        {
-          "what": "Three shadow recipes became one per level, from one light, and the strongest is gentler",
-          "law": "depth law 4",
-          "before": "3 shared + 2 one-off shadows, peak 28% opacity",
-          "after": "2: raised (peak 10%) and floating (contact + 2 ambient + highlight, peak 16%)",
-          "selector": "--shadow, --shadow-lg"
-        },
-        {
-          "what": "The translucent header starts opaque and only turns to glass where the browser supports it, with paths for reduced transparency, high contrast and forced colours",
-          "law": "depth law 15",
-          "before": "no @supports guard, no preference fallbacks; blur 14px",
-          "after": "opaque baseline + @supports; blur 20px, saturate 1.8; 3 preference blocks",
-          "selector": ".site-header"
-        },
-        {
-          "what": "The best-hour cell's orange drop glow is gone; fill and weight mark it",
-          "law": "depth law 14",
-          "before": "0 4px 12px -4px rgba(255,106,61,.7)",
-          "after": "none",
-          "selector": ".cells .best"
-        }
+        { "what": "Only the hero's main button is raised; other buttons sit flat", "law": "depth dials: buttons", "before": "6 buttons with shadows", "after": "1 (the hero's Start free)", "selector": ".hero .btn-primary" },
+        { "what": "The featured plan is marked by its edge, not a floating shadow", "law": "depth law 1", "before": "1.5px ink border + large floating shadow", "after": "2px ink border, no shadow", "selector": ".plan-featured" },
+        { "what": "Product preview shadow rebuilt as one light in layers", "law": "depth law 4", "before": "2 layers, one 60px blur at 28%", "after": "inset highlight + contact + 2 ambient layers, peak 16%", "selector": ".window" },
+        { "what": "Shadow definitions consolidated", "law": "depth law 4", "before": "3 shadow tokens + 2 inline shadows + a coloured glow", "after": "2 tokens (raised, floating)", "selector": ":root" },
+        { "what": "Frosted header tuned and given fallbacks", "law": "depth law 15", "before": "blur 14px, no @supports guard, no reduced-transparency branch", "after": "blur 20px + saturate 1.8 inside @supports; opaque under reduced transparency; ink edge under more contrast", "selector": ".site-header" },
+        { "what": "Decorative shadow and glow removed from the hero pill and best-hour cell", "law": "depth law 14", "before": "pill shadow; orange glow under the 15:00 cell", "after": "none", "selector": ".pill, .cells .best" }
       ]
     },
     {
       "domain": "motion",
-      "summary": "Motion now explains a change or doesn't happen: one looping animation and one hover lift went, and every timing comes from a short ladder.",
+      "summary": "Motion only marks real changes: the floating card settles instead of bobbing forever, nothing non-clickable reacts to hover, and reduced motion keeps the useful changes.",
       "changes": [
-        {
-          "what": "The suggestion card stopped bobbing up and down forever",
-          "law": "motion law 1",
-          "before": "6s infinite float",
-          "after": "still",
-          "selector": ".suggest"
-        },
-        {
-          "what": "Timings come from a ladder sized by how much changes",
-          "law": "motion law 2",
-          "before": "0.15s and 0.2s typed inline, one curve (ease)",
-          "after": "120ms colour, 200ms button fill, 280ms FAQ marker opening, 180ms closing",
-          "selector": ":root --dur-*"
-        },
-        {
-          "what": "Buttons answer the press at once with a scale instead of a 1px nudge",
-          "law": "motion law 3; press dial",
-          "before": "translateY(1px) over 150ms",
-          "after": "scale(0.95) at 0ms",
-          "selector": ".btn:active"
-        },
-        {
-          "what": "The FAQ plus closes faster and flatter than it opens",
-          "law": "motion law 7",
-          "before": "200ms ease both ways",
-          "after": "opens 280ms with slight overshoot, closes 180ms ease-in",
-          "selector": ".faq summary::after"
-        },
-        {
-          "what": "Reduced motion keeps each signal instead of switching everything off",
-          "law": "motion law 10",
-          "before": "global animation: none and transition: none on every element",
-          "after": "per component: instant scrolling, a flat 200ms FAQ turn, colour fades kept",
-          "selector": "@media (prefers-reduced-motion: reduce)"
-        }
+        { "what": "The suggestion card drifts twice and rests instead of bobbing forever", "law": "motion law 4", "before": "6s float, infinite", "after": "6s float, 2 iterations, then still", "selector": ".suggest" },
+        { "what": "Feature cards no longer lift on hover (they aren't links)", "law": "motion law 1", "before": "2px lift + shadow + border change, 200ms", "after": "no hover", "selector": ".feature" },
+        { "what": "Customer logos no longer change colour on hover (they aren't links)", "law": "motion law 1", "before": "colour change, 200ms", "after": "no hover", "selector": ".logo-row li" },
+        { "what": "Durations on a ladder by how much changes", "law": "motion law 2", "before": "150ms and 200ms, all `ease`, including transform and box-shadow", "after": "120ms links, 200ms buttons, 280ms FAQ icon; colour on `ease`, movement on one curve", "selector": ".btn" },
+        { "what": "Reduced motion keeps the signals instead of switching everything off", "law": "motion law 10", "before": "every animation and transition removed with !important", "after": "drift off, smooth scroll off, FAQ icon turns instantly; colour changes kept", "selector": "@media (prefers-reduced-motion)" }
       ]
     },
     {
       "domain": "patterns",
-      "summary": "Buttons and links now do what they say: the hero's play icon promised a video that doesn't exist, and the email address now opens an email.",
+      "summary": "Every element now does what it looks like it does.",
       "changes": [
-        {
-          "what": "The secondary hero button lost a play icon that promised a video; it scrolls to the steps",
-          "law": "patterns law 1",
-          "before": "play-circle icon + \"See how it works\"",
-          "after": "\"See how it works\"",
-          "selector": ".hero .btn-ghost"
-        },
-        {
-          "what": "The support email in the FAQ opens an email instead of going nowhere",
-          "law": "patterns law 1",
-          "before": "href=\"#\"",
-          "after": "href=\"mailto:hello@tandem.app\"",
-          "selector": ".section-sub a"
-        },
-        {
-          "what": "Customer logos no longer darken on hover, since they aren't links",
-          "law": "patterns law 1",
-          "before": "colour change on hover, 0.2s",
-          "after": "no hover response",
-          "selector": ".logo-row li"
-        }
+        { "what": "\"See how it works\" shows a down arrow, not a play icon, because it scrolls to the steps and there is no video", "law": "patterns law 14", "before": "play icon", "after": "down-arrow icon", "selector": ".btn-ghost svg" },
+        { "what": "The support email is a real email link", "law": "patterns law 14", "before": "href=\"#\"", "after": "href=\"mailto:hello@tandem.app\"", "selector": ".section-sub a" }
       ]
     }
   ]

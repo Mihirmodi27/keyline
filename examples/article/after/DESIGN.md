@@ -6,167 +6,213 @@
 
 | | |
 |---|---|
-| Product | Field Notes, the engineering blog of Halden (logistics). This page: one long-form article with its site chrome |
-| Reader | Reading — a ~1,200-word technical essay, read top to bottom |
+| Product | Field Notes, the engineering blog of Halden (logistics): one long-form article page with site chrome, related posts and a subscribe footer |
+| Reader | Reading — engineers reading a ~1,200-word technical essay end to end |
 | Preset | `editorial` |
-| Areas | None — one page |
-| Stack | Static HTML + one stylesheet (`styles.css`), no framework, no JS |
-| Tokens live in | `styles.css` `:root` (29 custom properties) |
-| Themes | `light`, `dark` — `prefers-color-scheme` media query re-tints the same tokens; `color-scheme: light dark` declared. No toggle |
-| Motion | CSS transitions only; one scroll-driven progress bar |
+| Areas | none |
+| Stack | Static HTML + one hand-written stylesheet (`styles.css`); no framework, no build |
+| Tokens live in | `styles.css` `:root` (custom properties) |
+| Themes | `light`, `dark` — `@media (prefers-color-scheme: dark)` re-declares `:root`; `<meta name="color-scheme" content="light dark">`; no toggle |
+| Motion | CSS transitions, one scroll-driven animation (`.progress`), SMIL `animateMotion` in the cover SVG |
 
-Evidence for `editorial`: the page is one article — body copy set in a reading serif at a 680px measure with a table of contents rail; nothing on it is a tool or a pitch. The code currently *looks* more expressive than that (60px title, four weights, a second hue), which is listed below as open issues, not a reason to change the preset.
+Evidence for the preset: the page is one article; running text is set in a serif reading face (`--font-read`, Source Serif 4) at a 680px measure (`--measure`) with a table of contents and share rail beside it — the reader is reading. User confirmed `editorial`.
 
 ## Type
 
-**Families** — one text family: Source Serif 4 (`--font-read`; `--font-ui` now points at it), Google Fonts, weights 400 and 600, `opsz` axis, `display=swap`. Ships tabular figures (probed in Chrome: `1111` and `0000` equal width with `tabular-nums`). `family.mono`: system stack (`--font-mono`: `ui-monospace, "SF Mono", Menlo, Consolas, monospace`) — one code block and a few inline spans don't earn a download. `font-synthesis: none`.
+**Families** — `family.text` (reading — title, headings, body, dek, quote, notes, bio, card titles): `--font-read` Source Serif 4 (Google Fonts, opsz axis, true italic; 400, 600, 400 italic requested). `family.ui` (navigation, buttons, byline, labels, table, forms, footer): `--font-ui` Inter (Google Fonts; 400, 600 requested). `family.mono`: `--font-mono`, a system stack (`ui-monospace, "SF Mono", Menlo, Consolas`) — one code block and two inline spans don't earn a download.
 
-Ladder tokens (proposed, in `:root`): `--text-title` 1.625rem (26px), `--text-heading` 1.3125rem (21px), `--text-body` 1.125rem (18px), `--text-ui` 1rem (16px), `--text-meta` 0.875rem (14px); `--weight-regular` 400, `--weight-strong` 600. Five sizes above the floor; ceiling 26 ÷ 18 = 1.44. No responsive steps.
+All sizes are `rem` tokens in `styles.css` `:root` (`--text-*`, proposed 2026-11-04 in the project's `--name` style).
 
 | Role | Name here | Size | Leading | Tracking | Weight | Tier |
 |---|---|---|---|---|---|---|
-| `type.title` | `.article-title` | `--text-title` 26px | 1.25 | −0.02em | 600 | `--ink` |
-| `type.heading` | `.prose h2`, `.related__head h2` | `--text-heading` 21px | 1.3 | −0.015em | 600 | `--ink` |
-| `type.subheading` | `.post-card h3`, `.author-card__name`, `.callout__title` | `--text-body` 18px | 1.4 | 0 | 600 | `--ink` — weight, tight leading |
-| `type.lead` | `.prose .lead` | 18px | 1.85 | 0 | 400 | `--ink` — leading alone |
-| `type.body` | `.prose` (container) | 18px | 1.7 | 0 | 400 | the baseline |
-| `type.supporting` | `.article-dek` | 18px | 1.5 | 0 | 400 | `--ink-2` — tier, tighter leading |
-| ↳ `pull-quote` (project role) | `.pullquote p` | 18px | 1.7 | 0 | 400, roman | `--ink` — a bar and an indent |
-| `type.ui` | `.btn` (600), `.site-nav a`, `.toc a`, `.link-arrow`, `.author-card__links a`, `.footer-col a`, `.subscribe input` | `--text-ui` 16px | 1 single-line / 1.4 wrapping | 0 | 400; 600 on buttons and the current nav item | `--muted` / `--ink` |
-| `type.data` | `table` | 16px, `tabular-nums`, units in row headers | 1.5 | 0 | 400 | `--ink-2` |
-| `type.label` | `.kicker`, `.share__label`, `.toc__title`, `thead th`, `.author-card__eyebrow`, `.footer-col__title`, `.tags a`, `.code__lang`, `.delta`, `.pill` | `--text-meta` 14px, sentence case | 1.3 | 0 | 400 | `--muted` |
-| `type.meta` | `.byline__meta`, `.post-card__meta`, `figcaption`, `caption`, `.author-card__role`, `.footer-brand p`, `.site-footer__base` | 14px, tabular in meta lines | 1.5 | 0 | 400 | `--muted` |
-| `type.code` | `.code pre`, `.code__bar`; inline `code` 0.875em | 14px | 1.7 | 0 | 400 mono | `--code-ink` |
-| ↳ lettermark (project role) | `.avatar--sm/md/lg` | 10 / 16 / 21px | — | +0.02em | 600 | recognised, not read |
+| `type.title` | `--text-title` (`.article-title`) | 2.5rem (40px); 2rem (32px) under 640px | 1.2 | −0.02em | 600 serif | `--ink` |
+| `type.heading` | `--text-heading` (`.prose > h2`, `.related__head h2`) | 1.5rem (24px) | 1.3 | −0.015em | 600 serif | `--ink` |
+| ↳ pull quote (project role) | `.pullquote p` | 1.5rem (24px) | 1.35 | 0 | 400 italic serif | `--ink` — separated from the heading by regular weight, italic voice and the bar |
+| `type.lead` | `--text-lead` (`.prose .lead`) | 1.25rem (20px) | 1.75 | 0 | 400 serif | `--ink` |
+| ↳ drop cap (project role, ornament) | `.lead::first-letter` | 4.1em | 0.82 | 0 | 600 serif | spans three lines of the lead |
+| `type.supporting` | `.article-dek` | 1.25rem (20px) | 1.5 | 0 | 400 serif | `--ink-2` — separated from the lead by tier and tighter leading |
+| ↳ card and author titles (project role under `type.subheading`) | `.post-card h3`, `.author-card__name` | 1.25rem (20px) | 1.3 | 0 | 600 serif | `--ink` |
+| `type.body` | `--text-body` (`.prose > p`, lists) | 1.125rem (18px) | 1.7 | 0 | 400 serif | `--ink-2` |
+| `type.ui` | `--text-ui` (nav, `.btn`, byline name, footer links, `.link-arrow`) | 1rem (16px) | 1 single line / 1.5 | 0 | 400; 600 for buttons, names and the current nav item | `--ink-2`; `--ink` when current (the header is translucent, so nothing in it goes below `--ink-2`) |
+| ↳ note (project role) | `.callout p`, `.author-card__bio` | 1rem (16px) | 1.6 | 0 | 400 serif | `--ink-2` |
+| `type.meta` | `--text-meta` (byline meta, captions, figcaptions, card meta, TOC rows, footer base) | 0.875rem (14px) | 1.4–1.5 | 0 | 400 | `--muted` |
+| `type.data` | `table` | 0.875rem (14px), tabular | 1.5 | 0 | 400 | `--ink` / `--ink-2` |
+| `type.label` | `--text-label` (TOC title, share label, table head, tags, kicker, eyebrow, footer column titles, code bar) | 0.8125rem (13px), sentence case | 1.3 | 0 | 400; 600 for group titles | `--muted` |
+| `type.code` | `--text-code` (`.code pre`; inline `0.875em`) | 0.9375rem (15px) | 1.6 | 0 | 400 mono | `--code-ink` |
+| ↳ lettermark (project role) | `.avatar--sm` | 0.625rem (10px) | — | +0.02em | 600 | decorative initials, `aria-hidden`, below the floor on purpose |
 
-**Weights** — 400 reads; 600 marks structure (title, headings, subheadings, `<strong>`) and state (current nav item, primary action labels, the byline name). **Icons** — 20px, stroke 1.75, beside 16–18px text.
+Seven sizes above the 12px floor (40, 24, 20, 18, 16, 14, 13) plus code; ceiling 40 ÷ 18 = 2.22.
+
+**Weights** — `weight.regular` 400 (`--weight-regular`): all running text, labels, data. `weight.strong` 600 (`--weight-strong`): title and headings, `<strong>`, names and buttons, the current nav item, group titles. `font-synthesis: none` on `html`.
+
+**Icons** — 20px box (≈ 16.7px drawn on the 24 grid), stroke 1.75, beside `type.ui`.
+
+**Numerals** — tabular in the table and the byline meta; proportional (the serif's oldstyle) in prose.
 
 ## Colour
 
-Neutrals re-tinted to one warm hue (OKLCH h 85, chroma ≤ 0.008), keeping each token's lightness; dark `--bg` at L 0.173. `color-scheme: light dark` on `:root`. The accent is spent on focus (and the logo's dot, which is artwork); nothing else on the page is orange except the artwork.
+Neutrals share one warm hue (OKLCH h 85) at chroma ≤ 0.01, written as `oklch()` in `styles.css`. `color-scheme` is declared in both theme blocks, and `dark` on the footer and code islands.
 
-**Text** — measured with `scripts/contrast.mjs` on `--bg` and on the worst surface, `--surface-2`.
+**Text** — checked against the worst surface each tier lands on (`--surface-2`: the related band, table caption, callout).
 
-| Role | Name here | Light | on `--bg` / `--surface-2` | Dark | on `--bg` / `--surface-2` |
+| Role | Name here | Light | Ratio | Dark | Ratio |
 |---|---|---|---|---|---|
-| `text.primary` | `--ink` | `#191713` | 17.15 / 15.87:1 | `#efeeeb` | 16.40 / 14.20:1 |
-| `text.secondary` | `--ink-2` | `#44423d` | 9.62 / 8.90:1 | `#cac8c4` | 11.39 / 9.87:1 |
-| `text.tertiary` | `--muted` | `#6b6964` | 5.25 / 4.86:1 | `#96938e` | 6.22 / 5.38:1 |
-| `text.inverse` | `--bg` on `--ink` | | 17.15:1 (12.99:1 on hover) | | 16.40:1 (13.24:1 on hover) |
+| `text.primary` | `--ink` | `oklch(0.21 0.006 85)` | 15.68:1 | `oklch(0.94 0.004 85)` | 13.80:1 |
+| `text.secondary` | `--ink-2` | `oklch(0.4 0.008 85)` | 8.15:1 | `oklch(0.82 0.006 85)` | 9.42:1 |
+| `text.tertiary` | `--muted` | `oklch(0.52 0.008 85)` | 4.88:1 | `oklch(0.66 0.008 85)` | 5.29:1 |
+| `text.inverse` | `--bg` on `--ink` | | 16.97:1 | | 16.04:1 |
 | `text.link` | — | links are `--ink`, underlined | | | |
-| ↳ footer primary | `--footer-ink` on `--footer-bg` | `#e9e8e5` on `#171613` | 14.77:1 | on `#0c0b08` | 16.06:1 |
-| ↳ footer tertiary | `--footer-muted` | `#a09e9a` | 6.77:1 (6.15:1 on `--footer-field`) | | 7.36:1 |
+| ↳ footer text (dark island in both themes) | `--footer-ink` · `--footer-muted` | `oklch(0.94 0.004 85)` · `oklch(0.74 0.008 85)` on `--footer-bg` `oklch(0.2 0.005 85)` | 15.18 · 7.85:1 | same on `oklch(0.13 0.004 85)` | 16.87 · 8.72:1 |
+| ↳ code text (dark island in both themes) | `--code-ink` · `--code-string` · `--code-muted` | on `--code-bg` `oklch(0.22 0.005 85)` | 14.09 · 9.27 · 6.48:1 | on `oklch(0.21 0.005 85)` | 14.42 · 9.48 · 6.63:1 |
 
-Steps between tiers (worst surface, light): 1.78×, 1.83× — dial 1.15×.
+Steps between adjacent tiers: light 1.92× and 1.67×, dark 1.47× and 1.78× — all above the editorial 1.15× minimum.
 
-**Surfaces** — `surface.page` `--bg` `#fbfaf7` / `#11100d`; `surface.raised` `--surface` `#ffffff` / `#1a1916`; `surface.subtle` · `surface.hover` `--surface-2` `#f3f1ed` / `#201f1c`; `surface.inverse` `--footer-bg`, `--code-bg` `#171613` / `#0c0b08`; footer field `--footer-field` `#211f1c` (proposed).
+**Surfaces**
+
+| Role | Name here | Light | Dark |
+|---|---|---|---|
+| `surface.page` | `--bg` | `oklch(0.985 0.004 85)` | `oklch(0.17 0.005 85)` |
+| `surface.raised` | `--surface` | `oklch(1 0 0)` | `oklch(0.21 0.006 85)` |
+| `surface.subtle` · `surface.hover` | `--surface-2` | `oklch(0.958 0.007 85)` | `oklch(0.24 0.006 85)` |
+| `surface.inverse` · `fill.strong` | `--ink` (skip link, avatars) | | |
+| ↳ code surface | `--code-bg` | `oklch(0.22 0.005 85)` | `oklch(0.21 0.005 85)` |
+| ↳ footer band | `--footer-bg` · `--footer-field` | `oklch(0.2 0.005 85)` · `oklch(0.25 0.005 85)` | `oklch(0.13 0.004 85)` · same field |
 
 **Lines and fills**
 
-| Role | Name here | Light | Dark | Note |
-|---|---|---|---|---|
-| `border.default` · `border.divider` | `--line` | `#e5e2dd` | `#2c2b27` | decorative edges |
-| `border.hover` | `--line-strong` | `#d4d1cc` | `#3c3a36` | |
-| `border.control` (footer) | `--footer-control` (proposed) | `#73716e` | same | 3.38:1 on `--footer-field`, 3.72:1 on `--footer-bg` |
-| `border.layered` (code, footer) | `--code-line`, `--footer-line` (proposed) | `rgba(255,255,255,.08)`, `#282623` | | |
-| `fill.strong` · `fill.strong-hover` | `--ink`, `--ink-hover` (proposed) | `#191713`, `#302e29` | `#efeeeb`, `#d9d7d3` | footer: `--footer-ink`, `--footer-ink-hover` |
-| `mark` | `--mark` (proposed) | `#a19e99` | `#575552` | bullets, pull-quote bar; 2.56:1, not held to text contrast |
+| Role | Name here | Light | Dark |
+|---|---|---|---|
+| `border.default` · `border.divider` | `--line` | `oklch(0.9 0.008 85)` | `oklch(0.3 0.006 85)` |
+| `border.hover` · `mark` | `--line-strong` | `oklch(0.82 0.01 85)` | `oklch(0.4 0.008 85)` |
+| `border.control` (footer email field) | `--footer-field-line` | `oklch(0.56 0.008 85)` — 3.44:1 on the field, 3.89:1 on the band | same |
+| `border.layered` (islands) | `--code-line` · `--footer-line` | `oklch(1 0 0 / 0.08)` · `/ 0.1` | same |
+| ↳ list bullets (`mark`) | `--muted` | | |
 
-**Signal** — `focus` = `--accent` `#e8590c` / `#ff7a2f`: worst 3.17:1 (light, `--surface-2`), 6.34:1 (dark, `--surface-2`), 5.05:1 / 7.57:1 on the footer. No status palette: nothing on the page reports state.
+**Signal**
+
+| Role | Name here | Light | Dark |
+|---|---|---|---|
+| `focus` · `accent` | `--accent` | `#e8590c` — 3.17:1 on `--surface-2` (worst), 5.06:1 on the footer band | `#ff7a2f` — 6.33:1 on `--surface-2`, 7.74:1 on the footer band |
+
+No status palette: nothing on the page reports state. Table deltas are figures in ink.
 
 **Exceptions**
-- `exception.syntax` — `--syntax-keyword`, `-function`, `-string`, `-number`, `-operator` (proposed), only inside `.code pre`: the reader parses token kinds in literal code; the reason can't spread because nothing else on the page is code. All ≥ 8.9:1 on `--code-bg`; comments use `--code-muted` (6.77:1).
-- Artwork, not interface: the cover SVG and the three `.post-card__art` panels (`--art-*`, proposed). The two light panels are re-picked for dark.
+
+- `exception.subscribe` — `--offer` `#b8430a`, `--offer-hover`, `--on-offer` white (5.46:1). The Subscribe button, in the header and the footer form: the only offer on the page, the interface speaking about the content rather than content. It cannot spread — there is no second offer — and nothing else takes it. Same value in both themes, measured in both.
+
+**Allowed literals** — the cover SVG (`role="img"`), the post-card illustrations (`--art-*`, re-picked for dark), and the logo's dot (`--brand-mark`).
 
 ## Layout
 
-One column: the head, body, captions, contents disclosure and related list all sit at `--measure`. The cover diagram and the related row sit at `--wide`; header, footer and the rails' grid at `--page`.
+| Role | Name here | Value |
+|---|---|---|
+| `measure.reading` | `--measure` | 36rem (576px) ≈ 70 characters of 18px Source Serif 4 (measured: 680px held 83) |
+| `measure.wide` | `--wide` | 54rem (864px), 1.5 × the measure — article head, cover, related grid |
+| `measure.rail` | `--rail` (proposed) | 240px — share and contents rails |
+| `measure.frame` | `--page` | 78rem (1248px) = 576 + 2 × (240 + 56) + 2 × 40 — header, article grid, footer |
+| `gutter` | `--gutter` | `clamp(24px, 4vw, 40px)` |
+| `space.tight` | `--space-tight` (proposed) | 8px — list items, kicker → title, chips |
+| `space.group` | `--space-group` (proposed) | 24px — paragraphs, dek → byline, card padding, grid gaps |
+| ↳ figure space (project role) | `--space-block` (proposed) | 40px — around code, table, callout, pull quote, author card; head → cover |
+| `space.section` | `--space-section` (proposed) | 64px — head → body, before the tags rule, related band padding |
+| `space.heading-above` · `space.heading-below` | `--space-heading-above` · `--space-heading-below` (proposed) | 48px · 14px — 3.4 : 1 |
+| Page top | `.article-head` | 80px; 48px under 640px |
+
+**Radius ladder**
 
 | Role | Name here | Value |
 |---|---|---|
-| `measure.reading` | `--measure` | 588px — 70 characters of Source Serif 4 at 18px (8.38px average, measured in Chrome) |
-| `measure.wide` | `--wide` | 880px (1.5 × measure) — cover, related |
-| `measure.frame` | `--page` | 1280px |
-| `measure.rail` | `--rail` (proposed) | 200px, gap `--rail-gap` 48px |
-| `gutter` | `--gutter` | clamp(24px, 4vw, 40px) |
-| `space.tight` / `space.group` / `space.section` | `--space-tight` / `--space-group` / `--space-section` (proposed) | 8 / 24 / 64px |
-| `space.heading-above` · `space.heading-below` | `--space-heading-above` · `--space-heading-below` (proposed) | 48px · 12px — 4:1 |
-| page top | `--page-top` (proposed) | 96px; 56px below `bp.column` |
+| `radius.small` | `--radius-small` (proposed) | 4px — inline code |
+| `radius.control` | `--radius-control` (proposed) | 8px — skip link |
+| `radius.card` | `--radius` | 12px — code block, callout, author card, post cards (art flush, clipped) |
+| `radius.container` | `--radius-container` (proposed) | 16px — the cover |
+| `radius.pill` | `--radius-pill` (proposed) | 999px — buttons, icon buttons, nav items, chips, the email field |
 
-**Radii** — `--radius-small` 4px (inline code), `--radius-control` 8px (skip link), `--radius` 12px (`radius.card`: code, callout, author card, post cards), `--radius-container` 16px (cover), 999px pills on buttons, nav, inputs and chips (single-line only). Nesting: post-card art and code bar are flush (gap 0, clipped by the parent).
-
-**Lines** — `--hairline-chrome` 0.5px (table rows, contents rail, code bar divider), `--hairline-object` 1px (edges, table head, tags rule), `--rule-emphasis` 2px (pull-quote bar, contents hover marker).
-
-| Role | Name here | Value |
-|---|---|---|
-| `z.nav` | `--z-nav` (proposed) | 50 — sticky header |
-| ↳ progress (project role) | `--z-progress` (proposed) | 60 — reading bar over the header |
-| `z.skip-link` | `--z-skip-link` (proposed) | 100 |
-
-**Breakpoints** — `bp.rail` 1200px: rails no longer fit beside the measure; share rail moves in-flow below the article, contents become a `<details>` above the lead, related turns to one column. `bp.column` 700px: padding-limited; header splits into two rows with the nav scrolling sideways, cover and code go full-bleed.
-
-**Hover** — every `:hover` rule sits in one `@media (hover: hover) and (pointer: fine)` block; each is decoration on a link or button that works by tap.
-
-**Forks** — contents: a sticky rail (`nav.toc`) at ≥ 1200px, an in-flow `<details class="toc-inline">` below; same six links. **Tables** — one style, unframed: 1px head rule, 0.5px row dividers, first column flush with the text. **Chips** — one shape (`.tags a`, `.pill`): 4px 10px, pill radius, 14px label; fill varies. The kicker is a text label, not a chip.
-
-## Surfaces
-
-Two levels in use; the page has nothing that floats or blocks.
-
-| Level | Surface | Edge | Shadow | Layer |
-|---|---|---|---|---|
-| `elevation.flat` | `--bg`; post cards `--surface`; code `--code-bg` | `--line` 1px (cards), `--code-line` (code) — or none: sections, the table, the author block and the cover sit unboxed | none | — |
-| `elevation.raised` (sticky chrome only) | `.site-header`: `--bg` opaque baseline, `--chrome-tint` in `@supports` | `--line` 1px bottom | none | `--z-nav` |
-
-**Cards** — only the three related posts (one object each, the reader acts on it). The author block, the table and the callout are unboxed; the callout is a note with a 1px `--line-strong` rule on its leading edge.
-
-**Material** — `material.translucent.defensive`, header only: `blur(24px) saturate(1.7)`, tint 95% (`--chrome-tint` `rgba(251,250,247,.95)` / `rgba(26,25,22,.95)`, the dark one at `--surface` for the lift). At 95% the worst backdrop (the navy cover in light, `--ink` text in dark) leaves `--muted` at 4.76:1 / 5.63:1; at the old 82% it fell to 3.44:1 / 3.60:1. Fallbacks in order after every theme block: opaque `--bg` baseline, `@supports`, `prefers-reduced-transparency` (tint → `--bg`, filter none), `prefers-contrast: more` (edge → `--ink`), `forced-colors` (edge → `CanvasText`). Both `backdrop-filter` spellings hand-written (no build step).
-
-## Motion
+**Lines**
 
 | Role | Name here | Value | Used for |
 |---|---|---|---|
-| `duration.instant` | — | 0ms | button press, `scale(0.96)` on `:active` |
-| `duration.micro` | `--duration-micro` (proposed) | 100ms | table-row wash, footer link opacity |
-| `duration.state` | `--duration-state` (proposed) | 150ms | button, icon button, nav, contents and tag colour/background |
-| `duration.popover` | `--duration-popover` (proposed) | 200ms | post-card wash in |
-| ↳ wash out (project role) | `--duration-wash-out` (proposed) | 250ms | post-card wash out — a leave behind a pointer that has moved on |
-| `ease.colour` | `--ease-colour` (proposed) | `ease` | every transition on the page (all colour, background, opacity) |
+| `hairline.chrome` | `--hairline-chrome` (proposed) | 0.5px (1px under `prefers-contrast: more`) | table row dividers, code bar, footer base rule |
+| `hairline.object` | `--hairline-object` (proposed) | 1px | object edges, header edge, table head rule, section rules, chips |
+| `rule.emphasis` | `--rule-emphasis` (proposed) | 2px | pull-quote bar, contents marker, focus ring |
 
-No `ease.standard`, springs or overlay tier: nothing on the page moves position. Every transition names its properties; every hover sits in the `(hover: hover) and (pointer: fine)` block.
+**One table style** (editorial): no frame, a rule under the head, hairlines between rows, first and last columns flush with the text edge, caption below. **One chip shape**: pill, 1px edge, 6 × 12 padding (2 × 8 at the small size, `.pill`). The kicker is a text link, not a chip.
 
-**Off-ladder** — the reading-progress bar is scroll-linked (`animation-timeline: scroll(root)`), a state still in progress; it runs only where supported and isn't time-based.
+**z-index ladder**
 
-**Reduced motion** — smooth scrolling goes to `auto`; the press scale stays (too small and short to matter); nothing else moves. The cover's packets are drawn static, so there is no loop to branch.
+| Role | Name here | Value |
+|---|---|---|
+| `z.nav` | `--z-nav` (`.site-header`, `.progress` — after the header in the DOM) | 50 |
+| `z.skip-link` | `--z-skip-link` | 100 |
+
+**Breakpoints**
+
+| Role | Name here | Value | What changes |
+|---|---|---|---|
+| `bp.rail` | `max-width: 77.99rem` | 1248px | Contents becomes a closed disclosure above the text; share becomes a row beside it |
+| `bp.nav` | `max-width: 960px` | 960px | Header links stop fitting and hide (the footer's Topics list repeats them); related cards stack |
+| `bp.phone` | `max-width: 640px` | 640px | Head left-aligned, title one step down; cover and code full-bleed |
+
+**Forks** — the contents is one `<details>`: forced open beside the text (summary inert), a closed disclosure below `bp.rail`; a seven-line script keeps it in step with the width. Every hover style sits under `(hover: hover) and (pointer: fine)`.
+
+## Surfaces
+
+Two levels in use; editorial allows flat, floating, overlay, with raised only for sticky chrome. No floating or overlay surfaces exist on this page, so no shadow tokens are defined (the old `--shadow` was removed with its last use).
+
+| Level | Surface | Edge | Shadow | Layer |
+|---|---|---|---|---|
+| `elevation.flat` | `--bg`; `--surface-2` for the related band; `--surface` for post cards; `--code-bg` for the code island | `--line` at `--hairline-object` (cards), `--code-line` (code) — or none: the cover, table, note and author block sit on the page | none | — |
+| `elevation.raised` | `.site-header`: `--chrome-tint` (`--bg` at 80%) | `--line-layered` at `--hairline-object` | none | `--z-nav` |
+
+**Material**
+
+| Tier | Blur | Saturate | Tint | Fallback | Used on |
+|---|---|---|---|---|---|
+| `material.translucent.chrome` | 20px | 1.8 | `--bg` at 80% (`--chrome-tint`) | opaque `--bg` baseline, enhanced inside `@supports`; `prefers-reduced-transparency` drops tint and filter; `prefers-contrast: more` and `forced-colors` strengthen the edge | `.site-header` only |
+
+Header text over the worst backdrop (the cover's navy `#0D1828` scrolling under, light theme): `--ink` 11.09:1, `--ink-2` 5.77:1, `--muted` 3.45:1 — so header links and "by Halden" use `--ink-2`, never `--muted`. Dark theme over the cover's orange: `--ink-2` 8.08:1.
+
+**Boxes** — post cards (one post each) and the code island. The callout is a note (a 1px `--line-strong` rule on its leading edge, quieter than the 2px ink pull-quote bar); the table and the author block are unboxed.
+
+## Motion
+
+CSS transitions only; tokens in `styles.css` `:root` (proposed 2026-11-04). Only the rungs this page uses are defined.
+
+| Role | Name here | Value | Used for |
+|---|---|---|---|
+| `duration.instant` | `transition-duration: 0s` on `:active` | 0ms | press: `.btn` and `.icon-btn` scale to 0.96 on pointer-down |
+| `duration.state` | `--duration-state` | 150ms | colour and background on buttons, nav, contents, chips; the press releasing |
+| `duration.popover` | `--duration-popover` | 200ms | a post card's wash arriving (border colour) |
+| `ease.standard` | `--ease-standard` | `cubic-bezier(0.22, 1, 0.36, 1)` | transforms (the press) |
+| `ease.colour` | `--ease-colour` | `ease` | every colour, background and border transition |
+
+**Named exemptions**
+
+| Exemption | Values | Why |
+|---|---|---|
+| Card wash leave | 250ms (`--duration-wash-out`) | Hover leave runs a little longer than its 200ms arrival (motion law 7; editorial dial 200 in · 250 out) |
+| Cover packets | 1.4s–3.6s per pass, 2–4 passes, then rest | Subject (motion law 4): the motion is the diagram's content, the dual write. Plays on load and stops, never loops; hidden under reduced motion |
+| Reading progress | scroll-linked | `animation-timeline: scroll(root)` — follows the reader's own scroll, not time |
+
+No springs (nothing is dragged or re-targets). Reduced motion: the cover rests without packets and anchor jumps are instant; colour fades and the 0.96 press stay. No hover travel anywhere: the "All posts" arrow underlines instead of nudging, post cards wash instead of lifting.
 
 ## Patterns
 
-**Nouns** — post (cards, "All posts"), article (skip link). **Labels** — verbs or the thing itself, 1–3 words, sentence case: "Subscribe", "Skip to article", "All posts", "More from Priya", "On this page". Team and job names ("Data Platform", "Staff Engineer") are proper nouns and stay as written. **Keyboard** — Tab order, the skip link, native `<details>` for the narrow-width contents; no layers to Escape from. **Forms** — one field: label above (`.subscribe__label`), control, hint below (`.subscribe__hint`, `aria-describedby`); the field is `required` and `type="email"`, so the browser validates it. **Table units** — in the row header ("Read latency, p50 (ms)"), so cells hold bare tabular figures.
+**Nouns** — post (cards, "All posts"), topics (nav and footer), tags. **The one call to action** — Subscribe, worded the same in the header (a link to the footer form) and on the form's button. **Sign-up** — a visible "Email" label above the field; the line above it says what arrives and how often ("One email a fortnight, no tracking pixels"). **Share** — Copy link is a `<button>` that copies the address and says "Copied" in the share label (`aria-live`) for two seconds; email share is a `mailto:` link. **Keyboard** — editorial floor: Tab order, skip link; the contents disclosure is a native `<details>`. **Toasts** — none.
 
 ## Decisions
 
-- 2026-11-04 — Page top space 56px below 700px, not the dial's 80–112px: on a phone 96px pushes the title and dek below the first screen. (Polish, layout pass; the dial gives no narrow-width value.)
-
-- 2026-11-04 — The cover's five packets no longer loop (SMIL `repeatCount="indefinite"`, 1.4–3.6s): editorial allows no ambient loop and the motion reported no change. They are drawn static, mid-route. Hover travel removed from post cards (3px lift) and the "All posts" arrow (3px nudge). (Polish, motion pass.)
-
-- 2026-11-04 — `--shadow` removed: nothing on an editorial article floats, and the five uses (cover, code, table, author card, card hover) made flat things look liftable. (Polish, depth pass.)
-
-- 2026-11-04 — Removed `--accent-ink`, `--accent-soft`, `--accent-line`, `--good`, `--good-soft`: the accent now does focus only, and the table's green deltas reported no state. (Polish, colour pass.)
-
-- 2026-11-04 — One text family (Source Serif 4) for reading and UI; Inter and JetBrains Mono dropped. The editorial dial is one family plus a system mono, and the UI/reading split is carried by size, leading and tier. (Polish, type pass; on the user's standing instruction to take Keyline's recommendations.)
-- 2026-11-04 — The drop cap is gone: at 4.1em (74px) it outranked the title (type law 3). (Polish, type pass.)
-
-- 2026-11-04 — Theming stays as it is: light and dark through `prefers-color-scheme`, no toggle. (User decision.)
+- 2026-11-04 — Cover packets play a few passes then rest; no hover travel (arrow nudge and card lift removed). (Law; motion laws 1 and 4, editorial "nothing loops" — don't restore the loop.)
+- 2026-11-04 — Callout built as a ruled note, author block and table unboxed, no shadows on the cover, code or cards, no hover lift on post cards. (Law; depth law 2 and the editorial levels dial — `raised` is only for the sticky header.)
+- 2026-11-04 — Reading measure 36rem (≈ 70 characters), not 680px (≈ 83); cover and article head narrowed to 1.5 × the measure; table unframed. (Law; layout laws 1 and 3 — don't widen them back.)
+- 2026-11-04 — The orange spends once: focus, plus `exception.subscribe`. Drop cap, kicker, bullets, pull-quote bar, progress bar, avatars, card meta, links, hovers, callout and table deltas are neutral, and code highlighting is carried by weight and tier, not hues. (Law; colour law 7 and the editorial accent dial — don't re-colour them.)
+- 2026-11-04 — Body copy in `--ink`, not `--ink-2`. (Law; `type.body` is `text.primary`.)
+- 2026-11-04 — Light and dark both follow the device through `prefers-color-scheme`; no toggle. (User decision: keep the page's existing theming.)
 - 2026-11-04 — Preset `editorial`. (User decision.)
 
 ## Open issues
 
-Type
-- Fonts load from Google Fonts with no metric-matched fallback (type law 12). Self-hosting needs the font files in the repo; a fallback needs their metrics. Not done in this pass.
-
-Colour
-- Theme control is the media query only, no toggle (the editorial dial wants a two-state control) — kept by decision.
-
-Patterns
-- The footer form and the share buttons are stubs (`onsubmit="return false"`, `href="#"`): no success line, no error in the hint's place beyond the browser's own bubble, and "Copy link" is a link rather than a `<button>`. Each needs a backend or a script the brief doesn't include.
-- On a 500px screen the metrics table scrolls sideways inside its own box; the "Change" column starts off screen.
+- Type law 12: fonts still come from `fonts.googleapis.com` with no metric-matched fallback. Self-hosting needs the font files added to the project, and the fallback's `size-adjust`/`ascent-override` must be computed from their metrics (`fontaine`/Capsize), not guessed. Left open.
+- Layout law 8: below 960px the header's topic links are hidden with no menu; the footer's Topics list repeats them, so they come back, but not at the top. A menu would be a new feature — left for the owner.
+- Layout law 1 cost: at the 70-character measure the code block's two longest lines (the SELECT string, the comment) scroll inside the block; at 680px they fit.
+- Patterns law 14: the subscribe form's submit does nothing (`onsubmit="return false"`), and the search, LinkedIn, nav, tag and footer links point at `#` — placeholders until the site exists; each should go somewhere real.

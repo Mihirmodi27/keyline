@@ -8,11 +8,10 @@
   <meta name="color-scheme" content="light dark">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <div class="progress" aria-hidden="true"></div>
   <a class="skip" href="#main">Skip to article</a>
 
   <header class="site-header">
@@ -21,7 +20,7 @@
         <svg class="brand__mark" viewBox="0 0 32 32" aria-hidden="true">
           <rect width="32" height="32" rx="8" fill="currentColor"/>
           <path d="M9 21.5V10.5h8.5M9 16h6.5" fill="none" stroke="var(--bg)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
-          <circle cx="22.5" cy="20.5" r="2.6" fill="var(--accent)"/>
+          <circle cx="22.5" cy="20.5" r="2.6" fill="var(--brand-mark)"/>
         </svg>
         <span class="brand__text">Field Notes <span class="brand__by">by Halden</span></span>
       </a>
@@ -40,6 +39,7 @@
       </div>
     </div>
   </header>
+  <div class="progress" aria-hidden="true"></div>
 
   <main id="main">
     <article class="article">
@@ -126,12 +126,13 @@
           <text x="272" y="408" text-anchor="middle" class="cv-label">MySQL · 16 shards</text>
           <text x="920" y="432" text-anchor="middle" class="cv-label">PostgreSQL · monthly partitions</text>
 
+          <!-- Subject motion: the packets run the dual-write path a few times on load, then rest (no loop) -->
           <g class="cv-packets" fill="#FFB27F">
-            <circle r="4" cx="463" cy="204.5"/>
-            <circle r="4" cx="440.6" cy="277.7"/>
-            <circle r="4" cx="479.3" cy="290.2"/>
-            <circle r="4" cx="488.6" cy="253.4"/>
-            <circle r="5" cx="720" cy="262" fill="#FF7A2F"/>
+            <circle r="4"><animateMotion dur="3.2s" repeatCount="2" fill="freeze"><mpath href="#r1"/></animateMotion></circle>
+            <circle r="4"><animateMotion dur="2.6s" begin="-1s" repeatCount="2" fill="freeze"><mpath href="#r3"/></animateMotion></circle>
+            <circle r="4"><animateMotion dur="3.6s" begin="-2s" repeatCount="2" fill="freeze"><mpath href="#r4"/></animateMotion></circle>
+            <circle r="4"><animateMotion dur="2.9s" begin="-.4s" repeatCount="2" fill="freeze"><mpath href="#r2"/></animateMotion></circle>
+            <circle r="5" fill="#FF7A2F"><animateMotion dur="1.4s" repeatCount="4" fill="freeze"><mpath href="#r5"/></animateMotion></circle>
           </g>
         </svg>
         <figcaption>Before and after: customer-keyed shards (hot ones in orange) became one database partitioned by month.</figcaption>
@@ -139,30 +140,19 @@
 
       <div class="article-layout">
         <aside class="share" aria-label="Share this article">
-          <span class="share__label">Share</span>
-          <a class="icon-btn" href="#" aria-label="Copy link">
+          <span class="share__label" aria-live="polite">Share</span>
+          <button class="icon-btn" type="button" aria-label="Copy link" data-copy-link>
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 14a4 4 0 0 0 5.66 0l3-3a4 4 0 0 0-5.66-5.66l-1.2 1.2"/><path d="M14 10a4 4 0 0 0-5.66 0l-3 3a4 4 0 0 0 5.66 5.66l1.2-1.2"/></svg>
-          </a>
+          </button>
           <a class="icon-btn" href="#" aria-label="Share on LinkedIn">
             <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="3"/><path d="M8 10.5V16M8 7.9v.1M11.5 16v-5.5M11.5 13c0-1.6 1-2.6 2.4-2.6 1.4 0 2.1.9 2.1 2.6V16"/></svg>
           </a>
-          <a class="icon-btn" href="#" aria-label="Share by email">
+          <a class="icon-btn" href="mailto:?subject=What%20we%20learned%20moving%2040%20million%20shipments%20to%20a%20new%20database" aria-label="Share by email">
             <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5.5" width="17" height="13" rx="2.5"/><path d="m4.5 7 7.5 6 7.5-6"/></svg>
           </a>
         </aside>
 
         <div class="prose">
-          <details class="toc-inline">
-            <summary>On this page</summary>
-            <ol>
-              <li><a href="#why">Why we left a database that mostly worked</a></li>
-              <li><a href="#plan">Dual writes first, reads later</a></li>
-              <li><a href="#backfill">Backfilling without waking anyone up</a></li>
-              <li><a href="#numbers">What the numbers said</a></li>
-              <li><a href="#cutover">The cutover</a></li>
-              <li><a href="#differently">What we’d do differently</a></li>
-            </ol>
-          </details>
           <p class="lead">Every parcel that moves through Halden’s network leaves a trail: a label printed in a depot in Leeds, a scan on a conveyor in Rotterdam, a signature on a doorstep in Lyon. For nine years that trail lived in a sharded MySQL cluster we called Manifest. In March we switched its last shard off. Forty million shipments, 1.3 billion scan events and every customs document we have ever generated now live in PostgreSQL.</p>
           <p>Nobody outside the platform team noticed the switch, which was the point. This post covers how we got there, what the numbers looked like afterwards, and the mistakes we’d rather you didn’t repeat.</p>
 
@@ -236,10 +226,10 @@
                 </tr>
               </thead>
               <tbody>
-                <tr><th scope="row">Read latency, p50 (ms)</th><td class="num">18</td><td class="num">6</td><td class="num"><span class="delta">−67%</span></td></tr>
-                <tr><th scope="row">Read latency, p99 (ms)</th><td class="num">240</td><td class="num">41</td><td class="num"><span class="delta">−83%</span></td></tr>
-                <tr><th scope="row">Storage on disk (TB)</th><td class="num">6.1</td><td class="num">3.4</td><td class="num"><span class="delta">−44%</span></td></tr>
-                <tr><th scope="row">Nightly report runtime (min)</th><td class="num">250</td><td class="num">38</td><td class="num"><span class="delta">−85%</span></td></tr>
+                <tr><th scope="row">Read latency, p50</th><td class="num">18 ms</td><td class="num">6 ms</td><td class="num"><span class="delta">−67%</span></td></tr>
+                <tr><th scope="row">Read latency, p99</th><td class="num">240 ms</td><td class="num">41 ms</td><td class="num"><span class="delta">−83%</span></td></tr>
+                <tr><th scope="row">Storage on disk</th><td class="num">6.1 TB</td><td class="num">3.4 TB</td><td class="num"><span class="delta">−44%</span></td></tr>
+                <tr><th scope="row">Nightly report runtime</th><td class="num">4 h 10 m</td><td class="num">38 m</td><td class="num"><span class="delta">−85%</span></td></tr>
                 <tr><th scope="row">On-call pages per month</th><td class="num">23</td><td class="num">4</td><td class="num"><span class="delta">−83%</span></td></tr>
               </tbody>
             </table>
@@ -293,7 +283,8 @@
         </div>
 
         <nav class="toc" aria-label="On this page">
-          <p class="toc__title">On this page</p>
+          <details open>
+          <summary class="toc__title">On this page</summary>
           <ol>
             <li><a href="#why">Why we left a database that mostly worked</a></li>
             <li><a href="#plan">Dual writes first, reads later</a></li>
@@ -302,6 +293,7 @@
             <li><a href="#cutover">The cutover</a></li>
             <li><a href="#differently">What we’d do differently</a></li>
           </ol>
+          </details>
         </nav>
       </div>
     </article>
@@ -372,18 +364,15 @@
           <svg class="brand__mark" viewBox="0 0 32 32" aria-hidden="true">
             <rect width="32" height="32" rx="8" fill="currentColor"/>
             <path d="M9 21.5V10.5h8.5M9 16h6.5" fill="none" stroke="var(--footer-bg)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
-            <circle cx="22.5" cy="20.5" r="2.6" fill="var(--accent)"/>
+            <circle cx="22.5" cy="20.5" r="2.6" fill="var(--brand-mark)"/>
           </svg>
           <span class="brand__text">Field Notes</span>
         </a>
-        <p>Stories from the people who build Halden’s logistics platform.</p>
+        <p>Stories from the people who build Halden’s logistics platform. One email a fortnight, no tracking pixels.</p>
         <form class="subscribe" action="#" onsubmit="return false">
-          <label class="subscribe__label" for="email">Email address</label>
-          <div class="subscribe__row">
-            <input id="email" type="email" autocomplete="email" required aria-describedby="email-hint">
-            <button class="btn btn--primary" type="submit">Subscribe</button>
-          </div>
-          <p class="subscribe__hint" id="email-hint">One email a fortnight, no tracking pixels.</p>
+          <label class="subscribe__label" for="email">Email</label>
+          <input id="email" type="email" placeholder="you@company.com" autocomplete="email">
+          <button class="btn btn--primary" type="submit">Subscribe</button>
         </form>
       </div>
       <nav class="footer-col" aria-label="Topics">
@@ -404,5 +393,28 @@
       <p><a href="#">Privacy</a> · <a href="#">Imprint</a></p>
     </div>
   </footer>
+  <script>
+    // Contents: always open beside the text; a closed disclosure above it below the rail breakpoint.
+    (function () {
+      var d = document.querySelector(".toc details");
+      var wide = matchMedia("(min-width: 78rem)");
+      function sync() { d.open = wide.matches; }
+      sync();
+      wide.addEventListener("change", sync);
+      d.addEventListener("toggle", function () { if (wide.matches && !d.open) d.open = true; });
+    })();
+    // Copy link: copies the page address and says so where the reader is looking.
+    (function () {
+      var button = document.querySelector("[data-copy-link]");
+      var label = document.querySelector(".share__label");
+      button.addEventListener("click", function () {
+        if (!navigator.clipboard) return;
+        navigator.clipboard.writeText(location.href).then(function () {
+          label.textContent = "Copied";
+          setTimeout(function () { label.textContent = "Share"; }, 2000);
+        });
+      });
+    })();
+  </script>
 </body>
 </html>

@@ -3,79 +3,76 @@
   "steps": [
     {
       "domain": "type",
-      "summary": "Fourteen ad-hoc font sizes and four weights became a five-step ladder with two weights, so headings are found by size and tier instead of by boldness.",
+      "summary": "Twelve rendered font sizes and four weights became a five-size ladder with two weights, so the page reads as one system and headings are found by size, not boldness.",
       "changes": [
-        { "what": "Font sizes on the page, collapsed onto a ladder of roles", "law": "type law 1", "before": "14 sizes, 8 fractional (11, 11.5, 12, 12.5, 13, 13.5, 14, 15, 16, 20, 22, 24, 30px…)", "after": "5 sizes as tokens: 20 / 16 / 14 / 13 / 12px", "selector": ":root" },
-        { "what": "Font weights in use", "law": "type law 5", "before": "4 weights (400, 500, 600, 700)", "after": "2 weights (400, 500)", "selector": "body" },
-        { "what": "Headline figures no longer shout over their labels", "law": "type law 3", "before": "30px / 600 / −0.025em", "after": "20px / 400 / 0", "selector": ".metric-value" },
+        { "what": "Font sizes on the page, collapsed onto a ladder of named roles", "law": "type law 1", "before": "12 sizes rendered, 4 of them fractional (11, 11.5, 12, 12.5, 13, 13.5, 14, 15, 16, 22, 30px…)", "after": "5 sizes as tokens: 24 / 16 / 14 / 13 / 12px", "selector": ":root" },
+        { "what": "Font weights in use", "law": "type law 5", "before": "4 weights (400, 500, 600, 700)", "after": "2 weights (400, 500); webfont request cut from 4 weights to 2", "selector": "body" },
+        { "what": "Headline figures stop shouting over their labels", "law": "type law 3", "before": "30px / 600 / −0.025em", "after": "24px / 400 / −0.04em, label 12px / 500", "selector": ".metric-value" },
+        { "what": "The page title becomes the last step of the breadcrumb in the header bar", "law": "type ladders (product header bar)", "before": "22px / 600 h1 under a 12.5px breadcrumb, two lines", "after": "13px / 500, one line: Fieldnote / app.fieldnote.io / Overview", "selector": "h1" },
         { "what": "Section headings one rank up, carried by size and tracking rather than weight", "law": "type law 4", "before": "15px / 600 / −0.01em", "after": "16px / 500 / −0.02em", "selector": ".card-title" },
-        { "what": "Sidebar group labels in sentence case", "law": "type dials: uppercase labels", "before": "ANALYTICS — 11px / 600 / uppercase / +0.06em", "after": "Analytics — 12px / 400 / sentence case / 0", "selector": ".nav-label" },
-        { "what": "Page paths set in the text face instead of a monospace", "law": "type law 5", "before": "monospace 12.5px / 500", "after": "Inter 13px / 500, slashed zero", "selector": ".path" },
-        { "what": "Section descriptions read as supporting copy, not captions", "law": "type law 4", "before": "12.5px, tertiary grey", "after": "14px, secondary grey", "selector": ".card-sub" },
-        { "what": "Webfont request trimmed, with a metric-matched fallback so the swap doesn't move text", "law": "type law 12", "before": "4 weights requested, no fallback metrics", "after": "2 weights requested; \"Inter Fallback\" at size-adjust 107.12%", "selector": "@font-face" }
+        { "what": "Sidebar group labels in sentence case over a hairline", "law": "type dials: uppercase labels", "before": "ANALYTICS — 11px / 600 / uppercase / +0.06em", "after": "Analytics — 12px / 400 / sentence case / 0, hairline rule beneath", "selector": ".nav-label" },
+        { "what": "Page paths set in the text face instead of a monospace", "law": "type law 5", "before": "monospace 12.5px / 500", "after": "Inter 13px / 400, slashed zero", "selector": ".path" },
+        { "what": "A metric-matched fallback so the font swap doesn't move text", "law": "type law 12", "before": "no fallback metrics", "after": "\"Inter Fallback\": Arial at size-adjust 107.12%, ascent 90.44%, descent 22.52%", "selector": "@font-face" }
       ]
     },
     {
       "domain": "color",
-      "summary": "The greys were re-derived for measured contrast, and colour now marks only what needs a person: one indigo for links and focus, red for the two real problems.",
+      "summary": "The greys were re-derived from measured contrast, and colour now marks only what needs a person: red for the three real problems, indigo for links, focus and the chart.",
       "changes": [
-        { "what": "Timestamps, captions and axis labels became readable", "law": "color law 3", "before": "#7a8396 — 3.55:1 on the page", "after": "#60636a — 6.02:1 on the page, 5.36:1 on its worst surface", "selector": "--text-3" },
-        { "what": "The search field's edge can be seen", "law": "color law 2", "before": "#e6e8ec — 1.14:1 against the page", "after": "#83868c — 3.65:1", "selector": ".search" },
-        { "what": "The current nav item is marked by position and weight, not the brand colour", "law": "color law 7", "before": "indigo text on an indigo tint", "after": "ink text at 500 on a neutral pill, with aria-current", "selector": ".nav-link.is-active" },
-        { "what": "Rising figures stop being coloured; only the conversion drop stays red", "law": "color law 7", "before": "3 green chips at 3.93:1, 1 red chip at 4.54:1", "after": "3 ink chips at 15.38:1, 1 red chip at 5.13:1", "selector": ".delta" },
-        { "what": "The chart's current period drawn in ink, freeing indigo for actions", "law": "color law 7", "before": "indigo line and indigo area fill", "after": "ink line; previous period dashed grey raised from 1.85:1 to 3.12:1", "selector": ".line" },
-        { "what": "Routine feed events lose their colour; only the alert keeps red", "law": "color law 7", "before": "4 coloured icons (green, indigo, red, plus grey)", "after": "1 coloured icon (the alert), 6 neutral", "selector": ".feed-icon" },
+        { "what": "Timestamps, captions, axis labels and placeholders became readable", "law": "color law 3", "before": "#7a8396 — 3.55:1 on the page", "after": "#656970 — 5.51:1 on the page, 4.83:1 on its worst surface", "selector": "--text-3" },
+        { "what": "The search field and toolbar buttons get an edge you can see", "law": "color law 2", "before": "#e6e8ec — 1.14:1 against the page", "after": "#83868c — 3.65:1", "selector": ".search" },
+        { "what": "The current nav item is marked by a neutral pill and weight, not the brand colour", "law": "color law 7", "before": "indigo text on an indigo tint (5.70:1)", "after": "ink at 500 on a grey pill (14.29:1), with aria-current", "selector": ".nav-link.is-active" },
+        { "what": "Rising figures stop being green; only the conversion drop stays red", "law": "color law 7", "before": "3 green chips at 3.93:1, 1 red chip at 4.54:1", "after": "3 neutral chips at 7.67:1, 1 red chip at 5.21:1", "selector": ".delta" },
+        { "what": "Routine feed events lose their colour; only the bounce alert keeps red", "law": "color law 7", "before": "4 coloured event icons (green, indigo, red, grey)", "after": "1 coloured icon (the alert), 3 neutral", "selector": ".feed-icon" },
+        { "what": "The previous-period line can be seen", "law": "color law 8", "before": "#b8bfcc dashed — 1.85:1 on white", "after": "#898c92 dashed — 3.65:1", "selector": ".line-prev" },
         { "what": "The 61.3% bounce rate no longer relies on colour alone", "law": "color law 6", "before": "a red pill", "after": "a red chip with an alert glyph and screen-reader text", "selector": ".flag" },
-        { "what": "Light page and dark page re-picked", "law": "color law 8", "before": "light page #f6f7f9 under white cards; dark page #0b0d12 (L 0.16)", "after": "light page white, cards equal and edged; dark page #0f1216 (L 0.18)", "selector": "--bg" }
+        { "what": "Greys tinted less, and the dark page lifted off near-black", "law": "color dials", "before": "neutral chroma 0.03–0.038; dark page OKLCH L 0.159", "after": "chroma ≤ 0.012; dark page L 0.18, raised L 0.22", "selector": ":root" }
       ]
     },
     {
       "domain": "layout",
-      "summary": "A mosaic of seven boxes became a stacked page: a header bar, a strip of figures, a column of sections beside an activity rail, all on one spacing and radius ladder.",
+      "summary": "A mosaic of nine boxes became stacked sections on the page beside an activity rail, with a stat strip on top and one framed table.",
       "changes": [
-        { "what": "Boxes in the content area", "law": "layout law 3", "before": "7 (4 stat tiles, chart, table and activity cards)", "after": "1 (the table's frame)", "selector": ".content" },
-        { "what": "Stat tiles became one row of figures parted by hairlines, each figure over its label", "law": "layout law 3", "before": "4 tiles, 16px apart, label above figure", "after": "1 strip, 0.5px dividers, figure above label", "selector": ".metrics" },
-        { "what": "The header became a slim bar: breadcrumb, then the page title at the nav's size, actions at the end", "law": "layout dials: page structure", "before": "≈ 79px tall, title 22px on its own line, bordered 38px controls", "after": "52px tall, title 13px inline after the breadcrumb, 32px ghost buttons", "selector": ".topbar" },
-        { "what": "Headings sit closer to what they introduce", "law": "layout law 2", "before": "20px between boxes, 18px under a heading (≈ 1.1:1)", "after": "32px above a section, 12px under its heading (≈ 2.7:1)", "selector": ".card-head" },
-        { "what": "Corner radii on one nesting ladder", "law": "layout law 5", "before": "11 radii (2–12px, 99px, 50%)", "after": "3 radii (4 / 6 / 10px) plus pills for dots and tracks", "selector": "--radius" },
-        { "what": "Lines drawn by job", "law": "layout law 6", "before": "1px borders everywhere, dividers the same colour as edges", "after": "0.5px hairlines; dividers a colour step lighter than edges", "selector": "--hairline" },
-        { "what": "Chips share one shape", "law": "layout law 3", "before": "4 shapes (99px pills, 5px keys, mixed paddings)", "after": "1 shape: 20px tall, 4px radius, 6px padding", "selector": ".delta, .flag, .nav-count, kbd" },
-        { "what": "Stacking and breakpoints named for what they do", "law": "layout law 7", "before": "z-index 5 / 20 / 30 / 40 / 50 typed raw; 4 window breakpoints; no skip link", "after": "4 named rungs; 3 breakpoints (shell on the window, rail and narrow on the panel); skip link to #main", "selector": "--z-nav" }
+        { "what": "Headline metrics as one strip parted by hairlines instead of four tiles", "law": "layout law 3", "before": "4 bordered, shadowed tiles with 16px gaps", "after": "1 row, 0.5px vertical hairlines, no boxes", "selector": ".metrics" },
+        { "what": "Chart, table and activity sit on the page instead of in cards", "law": "layout law 3", "before": "9 edged boxes on the screen", "after": "3 (table frame, usage meter, workspace switcher)", "selector": ".card" },
+        { "what": "Activity becomes a rail beside the content, parted by a hairline", "law": "layout law 4", "before": "a 360px card in a two-column card grid", "after": "a 340px rail with a 0.5px left rule", "selector": ".activity-card" },
+        { "what": "A shorter header bar", "law": "layout dials (product header bar)", "before": "79px, 38px controls", "after": "52px, 34px controls", "selector": ".topbar" },
+        { "what": "Radii collapsed onto a ladder", "law": "layout law 5", "before": "11 values (5, 6, 7, 8, 9, 10, 12, 99px…)", "after": "4 / 6 / 10 / 12px + pill; menu 12px holds 6px rows (12 − 6)", "selector": "--radius" },
+        { "what": "Spacing that groups: heading closer to its content than to the section above", "law": "layout law 2", "before": "18px below, 20px between (0.9:1)", "after": "12px below, 32px between (2.67:1)", "selector": ".card-head" },
+        { "what": "Every count, delta and flag shares one chip shape", "law": "layout law 3", "before": "4 chip shapes (paddings 0/7, 1/7/1/5, 2/8, 1/7)", "after": "1: 20px tall, 6px sides, pill", "selector": ".nav-count, .delta, .flag" },
+        { "what": "Breakpoints on the content panel, and a z-index ladder", "law": "layout law 7, law 8", "before": "4 window breakpoints; z-index 5, 20, 30, 40, 50", "after": "3 breakpoints (2 container queries); z 10 / 20 / 50 / 60 / 100 as tokens; skip link added", "selector": ".main" }
       ]
     },
     {
       "domain": "depth",
-      "summary": "Every surface now sits on one of four named levels, the header is opaque, and dark mode lifts menus by lightening them instead of leaning on shadows.",
+      "summary": "Surfaces now say what they do: the header is opaque, buttons are flat, and only menus, the tooltip and the mobile sheet lift off the page.",
       "changes": [
-        { "what": "The sticky header is opaque", "law": "depth law 6", "before": "82% tint with blur(12px) saturate(180%), no fallback", "after": "solid page colour, hairline edge, raised shadow", "selector": ".topbar" },
-        { "what": "Shadows reduced to one recipe per level", "law": "depth law 4", "before": "5 distinct shadows (3 tokens plus 2 inline), on cards, tiles and controls", "after": "4 level tokens: raised, floating, transient tooltip, overlay", "selector": "--shadow-pop" },
-        { "what": "Floating surfaces carry their edge inside the shadow, and keep it in forced colours", "law": "depth law 3", "before": "1px border beside a separate 2-layer shadow", "after": "0.5px ring at the head of the shadow, transparent 1px border, solid under prefers-contrast: more", "selector": ".range-menu" },
-        { "what": "Dark menus and the nav sheet lift by lightening", "law": "depth law 5", "before": "menu #12151c, the same as every card", "after": "menu #1f2227 (+0.04 L), sheet #282b31 (+0.08 L)", "selector": "--surface-float" },
-        { "what": "Controls drop their decorative shadows", "law": "depth law 3", "before": "4 controls with a 1px shadow", "after": "0 — flat controls use their edge only", "selector": ".search" },
-        { "what": "Closing the mobile nav returns focus to the menu button", "law": "depth law 12", "before": "only when closed with Escape", "after": "on Escape, scrim click or button", "selector": ".scrim" }
+        { "what": "The sticky header is opaque instead of a frosted blur", "law": "depth law 6", "before": "82% tint, blur(12px) saturate(180%), no fallback", "after": "opaque page colour, hairline edge, a small raised shadow", "selector": ".topbar" },
+        { "what": "Buttons and fields sit flat", "law": "depth dials (buttons flat)", "before": "4 controls with a drop shadow", "after": "0 shadows on controls", "selector": ".search, .range-btn, .icon-btn, .workspace" },
+        { "what": "Menus and the tooltip get a ring edge and one shared shadow", "law": "depth law 3, law 4", "before": "1px border + 0.18-alpha 32px shadow", "after": "0.5px ring + contact layer + 10% ambient; real border under high contrast", "selector": "--shadow-pop" },
+        { "what": "Floating surfaces lift in dark mode by getting lighter", "law": "depth law 5", "before": "menu the same colour as cards (#12151c)", "after": "menu one step lighter (#21242a, L 0.26) than raised (L 0.22)", "selector": "--surface-float" },
+        { "what": "Feed paths lose their little boxes", "law": "depth law 2", "before": "bordered, tinted path tokens inside sentences", "after": "plain text in ink", "selector": ".feed-body .path" }
       ]
     },
     {
       "domain": "motion",
-      "summary": "Timings now follow one ladder set by how much of the screen changes, exits are quicker than entrances, and reduced motion swaps travel for fades instead of switching everything off.",
+      "summary": "Durations now follow how much of the screen changes, on one curve, and reduced motion swaps slides for fades instead of switching everything off.",
       "changes": [
-        { "what": "Durations on a ladder", "law": "motion law 2", "before": "120 / 140 / 150 / 220ms typed inline", "after": "80 / 100 / 150 / 200ms tokens, plus a 100ms exit", "selector": "--dur-state" },
-        { "what": "One easing curve, plus one for colour and one for exits", "law": "motion law 5", "before": "ease, ease-out and the browser default mixed", "after": "cubic-bezier(0.2, 0, 0, 1); ease-out for colour; ease-in for exits", "selector": "--ease-standard" },
-        { "what": "The date menu closes faster than it opens", "law": "motion law 7", "before": "opens in 140ms, vanishes instantly", "after": "opens in 150ms, leaves in 100ms ease-in", "selector": ".range-menu.is-closing" },
-        { "what": "The mobile nav sheet gets out of the way", "law": "motion law 7", "before": "220ms ease both ways", "after": "200ms in, 100ms out", "selector": ".sidebar.is-open" },
-        { "what": "Reduced motion keeps the signal", "law": "motion law 10", "before": "a global rule turning every transition and animation off", "after": "menu and sheet fade instead of travelling; washes and exits stay", "selector": "@media (prefers-reduced-motion: reduce)" },
-        { "what": "Press feedback lands on press", "law": "motion law 3", "before": "none", "after": "a pressed step at 0ms on nav rows, buttons and menu options", "selector": ":active" }
+        { "what": "Hover colour on rows and nav is quicker", "law": "motion law 2", "before": "120–150ms", "after": "80ms on ease-out", "selector": ".nav-link, .pages tbody tr" },
+        { "what": "The date menu and tooltip open on one curve and leave faster", "law": "motion law 5, law 7", "before": "menu 140ms ease-out; tooltip 120ms in and out", "after": "150ms cubic-bezier(0.2, 0, 0, 1) in; tooltip out at 100ms ease-in", "selector": ".range-menu, .tooltip" },
+        { "what": "The mobile nav sheet opens and closes asymmetrically", "law": "motion law 7", "before": "220ms ease both ways", "after": "200ms in on the standard curve, 130ms out on ease-in", "selector": ".sidebar" },
+        { "what": "The search field's focus edge appears instantly", "law": "motion law 2 (duration.instant)", "before": "150ms border and halo fade", "after": "0ms", "selector": ".search" },
+        { "what": "Reduced motion substitutes instead of subtracting", "law": "motion law 10", "before": "1 global rule: transition and animation none !important", "after": "3 component branches: menu fades, sheet fades in place, chevron flips", "selector": "@media (prefers-reduced-motion)" },
+        { "what": "Durations and curves as tokens", "law": "motion law 2", "before": "4 durations, 3 curves, all inline", "after": "5 duration tokens, 3 curve tokens", "selector": ":root" }
       ]
     },
     {
       "domain": "patterns",
-      "summary": "The words were made to agree with each other and with assistive tech: one name for the comparison period, one shape for see-more links, and Escape closing one layer at a time.",
+      "summary": "Small promise-keeping fixes: links name where they go, and direction, alerts and unread notifications are spoken to screen readers, not only drawn.",
       "changes": [
-        { "what": "One phrase for the comparison period", "law": "patterns law 2", "before": "\"prior 30 days\" (4×) beside \"Previous period\" in the chart", "after": "\"previous period\" everywhere (6×)", "selector": ".metric-foot .muted" },
-        { "what": "See-more links name what they show", "law": "patterns law 1", "before": "\"View all\" beside \"All pages\"", "after": "\"All activity\" beside \"All pages\"", "selector": ".activity-card .link" },
-        { "what": "The workspace switcher's spoken name includes what's on screen", "law": "patterns law 1", "before": "\"Switch workspace\" (hides \"Fieldnote\")", "after": "\"Switch workspace: Fieldnote, Growth plan · 6 seats\"", "selector": ".workspace" },
-        { "what": "Escape closes one layer", "law": "patterns law 7", "before": "Escape in the date menu could also close the nav sheet", "after": "the menu stops the key; the next Escape closes the sheet", "selector": "#rangeMenu" },
-        { "what": "The notifications button says there is something unread, with a tooltip", "law": "patterns law 1", "before": "\"Notifications\", no tooltip, unread shown by a dot only", "after": "\"Notifications, some unread\", title tooltip", "selector": ".icon-btn" }
+        { "what": "The activity link names its destination", "law": "patterns law 14", "before": "View all", "after": "All activity", "selector": ".activity-card .link" },
+        { "what": "Delta direction is announced, not only drawn as an arrow", "law": "patterns law 14", "before": "screen reader hears \"17.5%\"", "after": "\"Up 17.5%\" / \"Down 0.14 pts\"", "selector": ".delta" },
+        { "what": "The notification button says there is something unread", "law": "patterns law 14", "before": "aria-label \"Notifications\", dot hidden", "after": "aria-label \"Notifications, unread\"", "selector": ".icon-btn" }
       ]
     }
   ]

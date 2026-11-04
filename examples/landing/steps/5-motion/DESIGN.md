@@ -6,181 +6,203 @@
 
 | | |
 |---|---|
-| Product | Tandem — a landing page for an app that finds meeting times across time zones for remote teams |
-| Reader | Being persuaded: a prospective buyer who sees the page once, skims the hero, features and pricing, and decides whether to start free |
+| Product | Tandem — finds meeting times across time zones for remote teams. This is its one landing page |
+| Reader | Being persuaded: a team lead seeing the product once, deciding whether to start free |
 | Preset | `expressive` |
 | Areas | — (one page) |
-| Stack | Static HTML and CSS, no framework, no build step |
+| Stack | Static HTML + one hand-written stylesheet, no framework, no build |
 | Tokens live in | `styles.css` `:root` (28 custom properties) |
-| Themes | `light` only. Two inverted bands inside it (`.section-dark` testimonials, `.final-card`), not a theme |
-| Motion | CSS only: transitions, one `@keyframes float`, `scroll-behavior: smooth`; `prefers-reduced-motion` removes all |
+| Themes | `light` only. Two sections (testimonials `.section-dark`, `.final-card`) are dark bands on the light page, not a theme |
+| Motion | CSS only |
 
-**Evidence for the preset:** one page whose job is conversion — a hero with two calls to action, a logo strip, features, steps, testimonials, pricing, FAQ and a closing call to action; a fluid 42–68px headline set in a second display family (Inter Tight); a brand accent plus gradients and a floating product mock. Nothing is read at length or worked in. The user chose `expressive`.
+Evidence for `expressive`: a single marketing page with a 68px display headline over 16px body, two radial-gradient hero and band backgrounds, a brand orange accent, a floating product mock — everything is aimed at one visit and one decision (Start free). User confirmed the preset.
 
 ## Type
 
-**Families** — `family.text`: Inter (`--font`, Google Fonts, 400/600) with `Inter Fallback` (local Arial, `size-adjust` 106.95%, ascent 90.58%, descent 22.55%). `family.display`: Inter Tight (`--font-display`, Google Fonts, 600/700) on `h1`–`h4`, the wordmarks and prices, with `Inter Tight Fallback` (local Arial Bold, `size-adjust` 96%, ascent 100.92%, descent 25.13%). Size-adjust measured in Chrome from canvas widths of real copy; vertical metrics from Inter's 1984/494 on 2048 UPM. No mono.
-
-**Ladder** — tokens in `styles.css` `:root`, all `proposed` 2026-11-04 (the project had none). `rem`, display fluid with a `rem` intercept.
+**Families** — `family.text`: Inter (Google Fonts, 400/600) with `"Inter Fallback"`, a metric-matched local Arial (`size-adjust` 106.7% / 102.1% at 600, measured). `family.display`: Inter Tight (600/700) on `h1`–`h4`, `.brand`, `.amount`, `.step-num`, logo wordmarks, with `"Inter Tight Fallback"` (96.7%). `font-synthesis: none`.
 
 | Role | Name here | Size | Leading | Tracking | Weight | Tier |
 |---|---|---|---|---|---|---|
-| `type.display` | `--text-display` (`.hero h1`) | `clamp(3.25rem, 2.144rem + 5.29cqi, 3.8125rem)` — 52 → 61px | 1 | −0.035em | `--weight-display` 700 | `--ink` |
-| `type.heading` | `--text-heading` (`.section-head h2`, `.final-card h2`) | 2rem (32px) | 1.2 | −0.02em | 600 | `--ink` |
+| `type.display` | `.hero h1` | `clamp(3.25rem, 2.39rem + 4.12cqi, 3.75rem)` (52 → 60px), container units on `.hero-copy` | 1.02 | −0.035em | `--weight-display` 700 | `--ink` |
+| `type.heading` | `--text-heading` (`.section-head h2`, `.final-card h2`) | `clamp(1.75rem, 1.543rem + 0.884vw, 2.25rem)` (28 → 36px) | 1.2 | −0.02em | 600 | `--ink` |
 | `type.subheading` | `--text-sub` (`.feature h3`, `.step h3`, `.plan h3`) | 1.3125rem (21px) | 1.3 | −0.01em | 600 | `--ink` |
-| `type.lead` | `--text-sub` (`.lead`, `.section-sub`, `.final-card p`) | 21px | 1.55 | 0 | 400 | `--ink-2` — separates from the subheading on weight and leading |
-| `type.body` | `--text-body` (`body`, `.quote blockquote`) | 1.0625rem (17px) | 1.6 | 0 | 400 | `--ink` |
-| `type.supporting` | `--text-body` (`.feature p`, `.step p`, `.faq details p`, `.checks`, `.plan-desc`) | 17px | 1.5 | 0 | 400 | `--ink-2` — separates on tier and tighter leading |
-| ↳ question (project role) | `.faq summary` | 17px | 1.4 | 0 | 600 | `--ink` — separates on weight |
-| `type.ui` | `--text-ui` (`.btn`, `.nav a`, `.link-quiet`) | 1rem (16px) | 1 | 0 | 600 buttons · 400 nav | `--ink-2` nav |
-| `type.label` | `--text-label` (`.pill`, `.chip`, `.plan-tag`, `.footer h4`, `.step-num`) | 0.875rem (14px) | 1.3 | 0 | 600 | `--ink-2` |
-| ↳ eyebrow (project role) | `--text-eyebrow` (`.eyebrow`) | 0.8125rem (13px) | 1.2 | +0.08em, capitals | 600 | accent — separates on case |
-| `type.meta` | `--text-label` (`.fine`, `.per`, `.plans-note`, `.logos-title`, `.quote small`, footer links) | 14px | 1.5 | 0 | 400 | `--ink-3` — separates from label on weight and tier |
-| `type.data` | `.amount` | `--text-heading` 32px | 1 | −0.02em | 600, tabular | `--ink` |
-| ↳ mock figures (project role) | `--text-floor` (planner, suggestion card, avatars) | 0.75rem (12px), the floor | 1.3 | 0 | 400 / 600 | per cell, tabular |
-| ↳ wordmark (project role) | `.brand`, `.logo-row li` | 19px | 1 | −0.02em | 700 | artwork — off the ladder by design |
+| `type.lead` | `--text-lead` (`.lead`) | 1.1875rem (19px) | 1.6 | 0 | 400 | `--ink-2` |
+| `type.supporting` | `--text-lead` (`.section-sub`, `.final-card p`) | 19px | 1.5 — separates from the lead on leading and position | 0 | 400 | `--ink-2` |
+| `type.body` | `--text-body` (`body`, card copy, FAQ answers, quotes) | 1.0625rem (17px) | 1.6 | 0 | 400 | `--ink`, `--ink-2` in cards |
+| ↳ FAQ question (project role) | `.faq summary` | 17px | 1.4 | 0 | 600 — separates on weight | `--ink` |
+| `type.ui` | `--text-ui` (`.btn`, `.nav a`, `.checks`, `.plan-desc`) | 0.9375rem (15px) | 1 in controls; 1.5 where it wraps | 0 | 600 buttons / 400 nav | — |
+| `type.meta` | `--text-meta` (`.fine`, `.per`, `.plans-note`, footer, `.btn-sm`, `.chip`, `.pill`) | 0.875rem (14px) | 1.4–1.5 | 0 | 400 | `--ink-3` |
+| ↳ eyebrow (project role under `type.label`) | `--text-eyebrow` (`.eyebrow`, `.plan-tag`) | 0.8125rem (13px) | 1.2 | +0.08em caps on `.eyebrow` | 600 | accent — eyebrow separates on case, tag on its fill |
+| `type.data` | `--text-price` (`.amount`) | 3rem (48px) | 1 | −0.03em | 600, tabular | `--ink` |
 
-**Weights** — `--weight-regular` 400 (all reading copy, nav, meta), `--weight-strong` 600 (headings, buttons, labels, `<b>`/`<strong>`), `--weight-display` 700 (the hero headline and the wordmarks only). `font-synthesis: none`.
+The product visual (`.product`, `role="img"`) is artwork and keeps its own px sizes (10–14px), off the ladder by type law 1.
 
-**Icons** — `.btn svg` 1em, the size of its label.
+**Weights** — `--weight-regular` 400 (reading, nav), `--weight-strong` 600 (headings, buttons, labels, `b`/`strong`), `--weight-display` 700 (the hero headline only). Eight sizes above the floor excluding display.
 
 ## Colour
 
-**Text** — measured with `scripts/contrast.mjs`. Light page; the dark bands have their own ladder.
+**Text** — light theme only; ratios from `contrast.mjs`, on `surface.page` (`#ffffff`) and on the worst light surface, `--bg-tint`.
 
-| Role | Name here | Value | On `--bg` | On `--bg-tint` (worst light surface) |
+| Role | Name here | Light | Ratio (page) | Ratio (`--bg-tint`) |
 |---|---|---|---|---|
 | `text.primary` | `--ink` | `#0d1424` | 18.38:1 | 17.17:1 |
 | `text.secondary` | `--ink-2` | `#3a4356` | 9.92:1 | 9.27:1 |
-| `text.tertiary` | `--ink-3` | `#636c7f` | 5.27:1 | 4.93:1 (4.63:1 on `--night`) |
-| `text.on-accent` | `--ink-on-accent` (proposed) → `--ink` | `#0d1424` | 6.46:1 on `--accent` | — |
-| ↳ accent as text (project role) | `--accent-ink` | `#c2410c` | 5.18:1 | 4.84:1 · 4.66:1 on `--accent-soft` |
-| `text.inverse` | `--ink-on-dark` (proposed) | `#ffffff` | 18.93:1 on `--dark` | — |
-| ↳ inverse secondary | `--ink-on-dark-2` (proposed) | `#c8cedc` | 12.01:1 on `--dark`, 5.50:1 on the final card's warm corner (`#78392d`) | — |
-| ↳ inverse tertiary | `--ink-on-dark-3` (proposed) | `#9aa3b8` | 7.49:1 on `--dark`, 6.35:1 on a quote card | — |
-| ↳ accent on dark | `--accent-on-dark` (proposed) | `#ff9a78` | 9.15:1 on `--dark` | — |
+| `text.tertiary` | `--ink-3` | `#646d80` (was `#6a7386`) | 5.20:1 | 4.85:1; 4.56:1 on `--night` (planner) |
+| `text.inverse` | `--ink-inverse` | `#ffffff` | 18.38:1 on `--ink` | |
+| `text.on-accent` | `--on-accent` → `--ink` | | 6.46:1 on `--accent` (white was 2.85:1) | |
+| ↳ accent as text (eyebrows, icons) | `--accent-ink` | `#bf4318` (was `#e2512a`) | 5.21:1 | 4.87:1; 4.69:1 on `--accent-soft` |
 
-Ladder steps: 18.38 → 9.92 (1.85×) → 5.27 (1.88×); on dark 18.93 → 12.01 (1.58×) → 7.49 (1.60×). Dial minimum 1.25×.
+**Dark bands** — `.section-dark` and `.final-card` are a local theme on the light page; each tier measured on its worst surface there.
+
+| Role | Name here | Value | Ratio |
+|---|---|---|---|
+| `text.primary` | `--band-ink` | `#ffffff` | 17.40:1 on a quote card (`--band-raised` over `--dark`) |
+| `text.secondary` | `--band-ink-2` | `#c8cedc` | 11.03:1; 5.50:1 under the final card's orange glow |
+| `text.tertiary` | `--band-ink-3` | `#9aa3b8` | 6.88:1 |
+| accent as text | `--band-accent-ink` | `#ff9a78` | 9.15:1 |
+| `border.control` | `--band-control` | `rgba(255,255,255,.35)` | 3.19:1 |
+| `focus` | `--focus` → `--accent` inside the bands | | 6.65:1 on `--dark` |
 
 **Surfaces**
 
-| Role | Name here | Value |
+| Role | Name here | Light |
 |---|---|---|
-| `surface.page` | `--bg` | `#ffffff` |
-| `surface.subtle` | `--bg-tint` | `#f6f7fb` |
-| `surface.raised` | `--bg-raised` (proposed) | `#ffffff` |
-| `surface.hover` | `--bg-hover` (proposed) | `#f1f2f6` |
+| `surface.page` · `surface.raised` | `--bg` | `#ffffff` |
+| `surface.subtle` · `surface.hover` | `--bg-tint` | `#f6f7fb` |
+| `material.translucent` tint | `--bg-glass` | `rgba(255,255,255,.8)` |
 | `surface.inverse` | `--dark` | `#0b1020` |
-| ↳ raised on dark | `--dark-raised` (proposed) | `rgba(255,255,255,.04)` |
-| `material.translucent` tint | `--bg-chrome` (proposed) | `rgba(255,255,255,.8)` |
+| raised in a band | `--band-raised`, `--band-hover` | white at 4% / 8% |
 
 **Lines and fills**
 
-| Role | Name here | Value | Note |
-|---|---|---|---|
-| `border.default` | `--line` | `#e4e7ee` | |
-| `border.divider` | `--line-2` | `#eef0f5` | |
-| `border.hover` | `--line-strong` (proposed) | `#d3d8e2` | replaces `#cdd2dd` and `#d6dae4` |
-| `border.layered` | `--line-layered` (proposed) · `--line-on-dark` | `rgba(13,20,36,.08)` · `rgba(255,255,255,.1)` | |
-| `fill.strong` | `--ink` | `#0d1424` | still shares its token with `text.primary` (see open issues) |
-| `fill.strong-hover` | `--ink-hover` (proposed) | `#1e2840` | |
-| `mark` | `--mark` (proposed) | `#c4c9d4` | window dots |
+| Role | Name here | Light |
+|---|---|---|
+| `border.default` | `--line` | `#e4e7ee` |
+| `border.divider` | `--line-2` | `#eef0f5` |
+| `border.hover` | `--line-hover` | `#cdd2dd` (merged `#cdd2dd` and `#d6dae4`) |
+| `border.layered` | `--line-layered` | `rgba(13,20,36,.08)` |
+| `fill.strong` · `fill.strong-hover` | `--ink` · `--ink-hover` | `#0d1424` · `#1e2840` |
 
 **Signal**
 
-| Role | Name here | Value | Note |
+| Role | Name here | Light | Ratio |
 |---|---|---|---|
-| `focus` | `--focus` (proposed) | `#e2512a` | 3.86:1 on `--bg`, 3.60:1 on `--bg-tint`, 3.47:1 on `--accent-soft`, 4.91:1 on `--dark`. Re-pointed to `--ink-on-dark` inside `.final-card` (8.67:1 on its warm corner) |
-| `accent` | `--accent` | `#ff6a3d` | brand: the best-time cell, the "Most popular" tag, "Send invite", the pill dot, the brand mark, the washes |
-| `accent.soft` | `--accent-soft` · `--accent-line` | `#fff0ea` · `#ffd3c3` | icon tiles, the accent chip |
-| `status.success` | `--ok` (fg) · `--ok-soft` (bg) · `--ok-line` | `#0b7a4f` · `#e3f6ee` · `#bfe8d5` | fg 4.78:1 on its tint. Used where the outcome is the news: "Best time found", "Invite sent" — each with a check glyph |
+| `accent` | `--accent` · `--accent-soft` · `--accent-line` | `#ff6a3d` · `#fff0ea` · `#ffd3c3` | — |
+| `focus` | `--focus` → `--accent-ink` | `#bf4318` | 4.87:1 on `--bg-tint`, 4.69:1 on `--accent-soft` |
+| `status.success` | `--ok` · `--ok-soft` · `--ok-line` | `#0b7a4f` · `#e3f6ee` · `#bfe8d5` | 4.78:1 fg on bg |
 
-**Exceptions** (expressive allows ≤ 4, each named)
+**Exceptions** — expressive allows up to four, named.
 
-1. `exception.availability` — `--work*` (blue), `--edge*` (amber), `--night*`: the planner's working / flexible / off hours. Only inside the product mock. Off hours carry a dashed edge (`--night-line`, 3.12:1) so the state survives without hue.
-2. `exception.person` — `--person-1`…`--person-4` (rose, violet, teal, slate): who a row or quote belongs to. Chosen off the accent, availability and success hues; only the avatar disc takes them.
-3. Brand washes — `--wash-hero`, `--wash-dark`, `--wash-final`: accent orange and the availability blue as atmosphere behind content, never on text or controls.
+| Exception | Name here | For | Why it can't spread |
+|---|---|---|---|
+| `exception.person.1–4` | `--person-1` … `--person-4` | Telling four teammates apart (avatars) | Only on avatar discs |
+| `exception.wash` | `--wash-hero`, `--wash-band`, `--wash-final` | Brand atmosphere: orange from above, blue from below | Backgrounds of the hero and the two dark bands only, never on text or controls |
+| success in the how-it-works sequence | `--ok*` | "Connected", "Invite sent" — outcomes in the story the steps tell | Only on those two chips and the mock's "best time found" badge; the pricing ticks are now ink |
 
-Done states: "Connected" (a step the reader passes through) is a neutral chip with an ink check; pricing ticks are ink on a neutral disc — inclusion, not success.
+Illustration (allowed literals, not counted): the planner's hour hues `--work*`, `--edge*`, `--night*` inside `.product` (`role="img"`). Third-party marks: the Google and Outlook dots on `.chip .g` / `.chip .o`.
 
 ## Layout
 
 | Role | Name here | Value |
 |---|---|---|
-| `measure.reading` | `--measure` (proposed) | 33rem (528px) — 62 characters of 17px Inter. Every lead, section intro, FAQ answer and the closing paragraph |
-| `measure.wide` | `--container` | 1200px (content 1136px) |
-| `gutter` | `--gutter` (proposed) | 32px; 20px under `bp.phone` |
-| `space.tight` | `--space-tight` (proposed) | 8px — a heading to its text, chips in a row |
-| `space.group` | `--space-group` (proposed) | 24px — grid gaps, inside cards between groups |
-| `space.heading-below` (section) | `--space-head` (proposed) | 40px; 24px under `bp.phone` |
-| `space.section` | `--space-section` (proposed) | 128px; 80px under `bp.phone`. Pair ratio 3.2 : 1 (3.3 : 1 on phones) |
-| `hairline.chrome` · `hairline.object` | `--hairline` (proposed) | 1px |
-| `rule.emphasis` | `--rule-emphasis` (proposed) | 3px — the focus ring; the featured plan's edge is 2px (object, emphasised) |
+| `measure.reading` | `--measure` (proposed) | 36rem (576px ≈ 62 characters of 17px Inter) — section heads, lead, FAQ answers, final-CTA copy, stacked steps and quotes |
+| `measure.wide` | `--container` | 1200px incl. 32px padding (1136px content) |
+| `gutter` | `.container` padding | 32px; 20px ≤ 640px |
+| `space.tight` | `--space-tight` (proposed) | 8px |
+| `space.group` | `--space-group` (proposed) | 24px — plan gap, quote indent and spacing |
+| `space.section` | `--space-section` (proposed) | 128px top and bottom; 80px ≤ 640px |
+| `space.heading-above` · `space.heading-below` | `--space-section` · `--space-head` (proposed) | 128 : 40 = 3.2 : 1 (phone 80 : 28 = 2.9 : 1). Inside the head: eyebrow → h2 12px, h2 → dek 16px |
+| `hairline.object` · `hairline.chrome` | `--hairline` (proposed) | 1px |
+| `rule.emphasis` | `--rule` (proposed) | 3px — the quote bar; the featured plan's 2px edge |
 
-**Radii** — `--radius-sm` 8px (small: cells, badges, skip link) · `--radius` 12px (control: icon tiles, FAQ rows) · `--radius-lg` 20px (card) · `--radius-xl` 28px (container: the closing band) · 999px pills (chips, buttons) · 50% (avatars, dots, legend swatches). The suggestion badge nests at 20 − 16 = 4px.
+**Structure** — sections stack, each opened by its head. Boxes kept: the three plan cards (each one object with its own action), the final call-to-action card, the product visual. Unboxed: six features (a grid on the page, 56 × 48px gaps), three steps (columns on one rule, the number sitting on it), three quotes (a 3px accent quote bar each), six FAQ items (one list parted by hairlines). Boxes per screen: 32 → 7 (3 plans, final card, window, suggestion card, the hero pill) plus step chips.
 
-**Chips** — one shape per size: 14px label, 6px × 12px padding, pill (`.pill`, `.chip`, `.plan-tag`); the mock's own chip (`.window-chip`) is the 12px size.
+**Radius ladder**
 
-**Z ladder** — `--z-nav` 50 (sticky header) · `--z-skip` 100 (skip link, moved off-screen by `transform`).
+| Role | Name here | Value |
+|---|---|---|
+| `radius.pill` | `999px` | buttons, chips, pill, tags |
+| `radius.small` | `--radius-sm` | 8px — skip link, focus ring, suggestion badge |
+| `radius.control` | `--radius` | 12px (was 14) — feature icon tiles, suggestion card |
+| `radius.card` | `--radius-lg` | 20px (was 22) — plans, product window, final card on phones |
+| `radius.container` | `--radius-xl` (proposed) | 28px — final call-to-action card |
 
-**Breakpoints** — `bp.hero-stacks` 1080px (hero copy and product visual stack; FAQ to one column) · `bp.nav-wraps` 900px (section links move to a second header row, grids collapse) · `bp.phone` 640px (one column, tighter gutter and rhythm).
+Product-visual cells (6px / 4px) and legend swatches (3px) are artwork.
 
-**Anchors** — every `[id]` has `scroll-margin-top` of the header height + `--space-group`.
+**z-index ladder**
+
+| Role | Name here | Value |
+|---|---|---|
+| `z.nav` | `.site-header` | 50 |
+| `z.skip-link` | `.skip` | 100 |
+
+**Breakpoints**
+
+| Role | Name here | Value | What changes |
+|---|---|---|---|
+| `bp.stack-hero` | `max-width: 1080px` | 1080px | Hero and FAQ stack to one column |
+| `bp.nav` | `max-width: 900px` | 900px | Nav links hide; features 2 columns; steps, quotes, plans one column |
+| `bp.phone` | `max-width: 640px` | 640px | Gutter 20px; section space 80px; planner compacts; features one column |
+
+Every hover style sits inside `@media (hover: hover) and (pointer: fine)`. Anchor targets carry `scroll-margin-top: 88px` for the sticky header. Footer column headings are `h2` (were `h4`, chosen for size).
 
 ## Surfaces
 
-| Level | Used on | Surface | Edge | Shadow | Layer |
+| Level | Surface | Edge | Shadow | Layer | Used on |
 |---|---|---|---|---|---|
-| `elevation.flat` | sections, features, steps, quotes, FAQ rows (unboxed — space and hairlines); plan cards; buttons; chips | `--bg` / `--bg-tint` / `--bg-raised` | `--line` 1px where an object needs one | none | — |
-| `elevation.raised` | the sticky header; the featured plan (a named brand object) | `--bg-chrome` over `--bg-raised` · `--bg-raised` | `--line-layered` · 2px `--ink` | none · `--shadow` | `--z-nav` · — |
-| `elevation.floating` | the product visual (`.window`, `.suggest`) — art | `--bg-raised` | `--line-layered` | `--shadow-lg`: contact + 2 ambient + inset highlight, peak 16% | — |
+| `elevation.flat` | `--bg`, `--bg-tint`, `--dark` (bands) | `--line` (plans), 2px `--ink` (featured plan) | — | — | plans, final card, sections |
+| `elevation.raised` | `--bg-glass` / `--bg`; `--ink` fill | `--line-layered`; the button's own fill | `--shadow-sm` | `z.nav` 50 for the header | sticky header; the hero's primary call to action (the page's one raised accent) |
+| `elevation.floating` (named decorative level: the product visual) | `--bg` | `--line-layered` | `--shadow-lg` | — | `.window`, `.suggest` |
 
-No `elevation.overlay` (nothing modal on the page). The closing call to action (`.final-card`) is the one named brand band: `--wash-final` on `--radius-xl`, flat.
+Shadows: one light from above, contact + ambient layers with negative spread, navy-tinted to the ink; `--shadow-sm` = inset highlight + 2px contact + 12px ambient; `--shadow-lg` = expressive floating recipe (inset 0.6 highlight, 6% / 10% / 16% layers). Buttons other than the hero's primary are flat. No overlay level, no scrim.
 
-**Cards** — 4 below the hero (3 plans, the closing band), down from 22. Features, steps and quotes sit on the page, parted by space and a top hairline; FAQ rows are a list parted by `--line`.
-
-**Material** — one translucent surface, the header, at the chrome tier:
+**Material** — `material.translucent.chrome` on `.site-header` only.
 
 | Tier | Blur | Saturate | Tint | Fallback | Used on |
 |---|---|---|---|---|---|
-| chrome | 20px | 1.8 | `--bg-chrome` 80% white | opaque `--bg-raised` baseline, material inside `@supports`; reduced transparency → opaque and no filter; more contrast → `--ink` edge; forced colours → `CanvasText` edge | `.site-header` |
-
-Header text (`--ink-2`) over the tint composited on the darkest backdrop it crosses (`--dark`): 6.37:1.
+| chrome | 20px | 1.8 | `--bg-glass` 80% white | opaque `--bg` without `@supports`; `--bg` and no filter under reduced transparency; `--ink` edge under more contrast; `CanvasText` edge in forced colours | sticky header — `--ink-2` 6.38:1 over the tint composited on `--dark`, the worst backdrop |
 
 ## Motion
 
 | Role | Name here | Value | Used for |
 |---|---|---|---|
-| `duration.instant` | — | 0s | the button press (`:active` scale) |
-| `duration.micro` | `--dur-micro` (proposed) | 120ms | nav, footer and logo link colour; the press releasing |
-| `duration.state` | `--dur-state` (proposed) | 200ms | button fill, edge and text colour |
-| `duration.popover` | `--dur-popover` (proposed) | 280ms | the FAQ marker turning as its answer opens |
-| ↳ exit | `--dur-exit` (proposed) | 180ms | the FAQ marker turning back |
-| `ease.standard` | `--ease` (proposed) | `cubic-bezier(0.34, 1.2, 0.64, 1)` | transforms only (slight overshoot; no filter or floored property rides it) |
-| `ease.colour` | `--ease-colour` (proposed) | `ease` | every colour fade |
-| `ease.exit` | `--ease-exit` (proposed) | `ease-in` | closing |
+| `duration.instant` | — | 0ms | button press (`translateY(1px)` on `:active`, not transitioned) |
+| `duration.micro` | `--duration-micro` (proposed) | 120ms | nav and footer link colour |
+| `duration.state` | `--duration-state` (proposed) | 200ms | button fill, edge and text colour |
+| `duration.popover` | `--duration-popover` (proposed) | 280ms | FAQ plus turning to × as its answer opens |
+| `ease.standard` | `--ease` (proposed) | `cubic-bezier(0.34, 1.2, 0.64, 1)` | the FAQ icon's rotation |
+| `ease.colour` | `--ease-colour` (proposed) | `ease` | every colour transition |
 
-**Press feedback** — `.btn:active` scales to 0.95 at once; colour keeps its 200ms.
+**Named exemptions** — motion off the ladder on purpose.
 
-**Removed** — the suggestion card's 6s infinite bob (it reported no state; law 1) and the feature cards' 2px hover lift (they are no longer cards).
+| Exemption | Values | Why |
+|---|---|---|
+| Suggestion card drift | 6000ms, `ease-in-out`, 2 iterations | Ambient (motion law 4), hero only: the product visual settles as the page opens, then rests. Was infinite; a static page can't pause it off screen, so it is finite. Off under reduced motion and on phones |
 
-**No set pieces, no ambient loops, no sound.**
-
-**Reduced motion** — per component, not a global off switch: smooth scrolling becomes instant; the FAQ marker turns on a flat 200ms tween; colour fades and the press scale stay.
+Reduced motion: smooth scroll off, the drift off, the FAQ icon turns instantly; colour transitions stay because they move nothing. No springs, no reveals, no set pieces.
 
 ## Patterns
 
-**Calls to action** — "Start free" (×4: header, hero, Free plan, final), "See how it works", "Start 14-day trial", "Talk to sales", "Book a demo", "Sign in". **Nouns** — team, member, teammate, calendar, meeting, invite.
+**Nouns** — meeting, teammate, team, calendar, invite. **Primary action** — "Start free" (header, hero, Free plan, final CTA).
 
 ## Decisions
 
-- 2026-11-04 — `measure.wide` stays capped at 1200px rather than the expressive dial's "viewport minus two gutters": the three-up grids of features, steps, quotes and plans would stretch past readable card widths on large screens. Bands still run full-bleed. (User decision, on Keyline's recommendation.)
-- 2026-11-04 — The price (`.amount`, 32px) outranks its plan's name (`.plan h3`, 21px), knowingly breaking type law 3 inside a plan card: the figure is the comparison the reader came for. It is held to `--text-heading`, so it never outranks the section heading. (User decision, on Keyline's recommendation.)
-- 2026-11-04 — Fonts stay on Google Fonts rather than self-hosted (type law 12): self-hosting needs the font files downloaded into the project, which this pass didn't do. The weights requested are trimmed to the four used and each family has a metric-matched fallback. (User decision; open to revisit.)
+- 2026-11-04 — Feature-card lift and logo hover removed: neither answers "what changed?" (features aren't links, logos aren't links). (Law; motion law 1.)
+- 2026-11-04 — One raised button on the page (the hero's "Start free"); the header, ghost and plan buttons and the hero pill are flat; the featured plan is marked by its 2px ink edge, not a floating shadow. (Law; depth law 1, buttons dial.)
+- 2026-11-04 — Features, steps, quotes and FAQ are unboxed; only plans, the final call to action and the product visual keep a surface. (Law; layout law 3, depth law 2.)
+- 2026-11-04 — Text on the orange accent is `--ink`, not white: white measured 2.85:1. (Law; colour law 3.)
+- 2026-11-04 — Pricing ticks are ink on a neutral circle, not green: they mark inclusion, not an outcome, and fourteen green ticks outshouted the featured plan. (Law; colour law 7.)
+- 2026-11-04 — Section and final-CTA headings capped at 36px (were 44px and 52px), so the hero display clears 1.5× them at every width. (Law; type law 3, display tier.)
 - 2026-11-04 — Preset `expressive`. (User decision.)
-- 2026-11-04 — Light theme only, with the testimonials and closing call to action as inverted bands; no dark theme is planned. (User decision: keep the theming the page already has.)
+- 2026-11-04 — Keep the existing theming: light page with two dark bands, no dark theme added. (User decision.)
 
 ## Open issues
 
-- `--ink` does two jobs: `text.primary` and `fill.strong` (primary button, step numbers, skip link).
-- `--dark-2` and `--edge` are defined and never used.
+Type
+- Fonts load from Google Fonts, not self-hosted, and the display file isn't preloaded (type law 12). Metric-matched local fallbacks now hold the lines if the swap happens; self-hosting needs the font files downloaded into the project.
+
+Layout
+- Hero headline and section heads are centred while feature, step and plan text is left-aligned — intentional for a landing page, noted only.
+
+Patterns
+- Two different primary labels for the same action ("Start free", "Start 14-day trial") — check (patterns law 1).

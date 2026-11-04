@@ -6,199 +6,221 @@
 
 | | |
 |---|---|
-| Product | Lumen — product analytics for small SaaS teams; this is the workspace's main dashboard (Overview) |
-| Reader | Working: a team member checking the same screen most days, scanning figures and comparing against the previous period |
+| Product | Lumen — product analytics for small SaaS teams; this is the main Overview dashboard |
+| Reader | Working: a team member who opens it daily to scan headline metrics, a trend, top pages and team activity |
 | Preset | `product` |
-| Areas | none — one page |
-| Stack | Static HTML, one stylesheet (`styles.css`), one script (`script.js`); no framework, no build |
-| Tokens live in | `styles.css` `:root` custom properties (light), redefined under `@media (prefers-color-scheme: dark)` |
-| Themes | `light`, `dark` — by the `prefers-color-scheme` media query only; `<meta name="color-scheme" content="light dark">`. No toggle; kept as is (user decision) |
-| Motion | CSS transitions and one keyframe; JS only for the chart hover, the date menu and the mobile nav |
+| Areas | None — one screen |
+| Stack | Static HTML, one stylesheet, vanilla JS; no framework, no build step |
+| Tokens live in | `styles.css` `:root` custom properties (colour, shadow, radius, sidebar width, font stacks) |
+| Themes | `light`, `dark` — following the device via `@media (prefers-color-scheme: dark)` re-declaring `:root`; `color-scheme: light dark` in the head; no toggle |
+| Motion | CSS transitions and one `@keyframes pop`; JS only toggles classes |
 
-Evidence for `product`: an app shell (sidebar + content), a 30-day chart with a previous-period comparison, a sortable-looking table of five numeric columns, a live activity feed, 14px body with 11.5–13px chrome, `tabular-nums` already on `.num`. Nothing on the page is read at length.
+Evidence for `product`: a sidebar app shell with six destinations, four headline figures, a time-series chart, a sortable-looking data table and an activity feed; every number is a figure to compare, not copy to read. The longest running text on the page is a two-line feed entry.
 
 ## Type
 
-**Families** — `family.text`: Inter via Google Fonts (`--font`), weights 400 and 500 only, `display=swap`, with a metric-matched `"Inter Fallback"` over local Arial (size-adjust 107.12%, ascent 90.44%, descent 22.52%, line-gap 0 — next/font's published values for Inter). No mono: paths and hostnames stay in the text face with a slashed zero (product dial: mono only if code is the product). Body keeps `font-feature-settings: "cv11", "ss01"`; `font-synthesis: none`.
+**Families** — `family.text`: Inter (`--font`), from Google Fonts, 400 and 500 only, with `"Inter Fallback"` — local Arial at size-adjust 107.12%, ascent 90.44%, descent 22.52% — so the swap doesn't move text. `family.mono`: `--mono` system stack, now unused on this screen (no literal code appears; paths and hostnames are in the text face).
 
-**Ladder** — tokens in `styles.css` `:root`, in `rem` (product dial). Five sizes, no responsive steps; the largest (20px) is now only the headline figure; ceiling 20 ÷ 14 = 1.43.
+Sizes are tokens in `styles.css` `:root`, in `rem` (all *proposed*, 2026-11-04):
 
-| Role | Name here | Size | Leading | Tracking | Weight | Tier | Separates on |
-|---|---|---|---|---|---|---|---|
-| `type.title` | `h1`, in the header bar | 13px (`--fs-ui`) — the nav's size (layout pass, product page anatomy) | 1.4 | 0 | 500 | `--text` | weight, position after the breadcrumb |
-| ↳ `stat` (project role: a headline figure) | `.metric-value` · `--fs-title` | 1.25rem (20px) | 1.3 | 0 | 400 | `--text` | weight (regular against the title's 500), tabular figures; never above its owning heading |
-| `type.heading` | `.card-title`, `.brand-name` · `--fs-heading` | 1rem (16px) | 1.35 | −0.02em | 500 | `--text` | size |
-| ↳ section figure (project role under `stat`) | `.chart-stats dd` · `--fs-heading` | 16px | 1.35 | 0 | 400 | `--text` | weight, tabular figures |
-| `type.body` | `body` · `--fs-body` | 0.875rem (14px) | 1.5 | 0 | 400 | `--text` | the baseline |
-| `type.supporting` | `.card-sub`, `.feed-body p` | 14px | 1.45 | 0 | 400 | `--text-2` | tier |
-| `type.ui` | `.nav-link`, `.range-btn`, `.search input`, `.range-menu li`, `.link`, `.ws-name`, `.me-name`, `.usage-link`, `.tooltip` · `--fs-ui` | 0.8125rem (13px) | 1 in fixed-height controls; 1.4 in rows | 0 | 400; 500 when current/selected | `--text-2` | size, curve |
-| `type.data` | `.pages` | 13px | 1.5 | 0 | 400; the row's path 500 | `--text` (views), `--text-2` | tabular figures |
-| `type.label` | `.metric-label`, `.chart-stats dt`, `.legend`, `.pages thead th` · `--fs-meta` | 0.75rem (12px) | 1.3 | 0 | 400 | `--text-2` (`--text-3` on column headers) | tier |
-| ↳ group label (project role) | `.nav-label` | 12px | 1.3 | 0, sentence case | 400 | `--text-3` | tier (a rule beneath is the layout pass's) |
-| `type.meta` | `time`, `.crumb`, `.ws-plan`, `.me-mail`, `.metric-foot`, axis labels, `kbd`, `.nav-count`, `.annotation-label` | 12px | 1 on axes; 1.4 elsewhere | 0 | 400 | `--text-3` | tier |
+| Role | Name here | Size | Leading | Tracking | Weight | Tier |
+|---|---|---|---|---|---|---|
+| `type.title` (header-bar title, chrome) | `h1` → `--type-ui` | 13px | 1 | 0 | `--weight-strong` 500 | `--text` |
+| `type.heading` | `.card-title` → `--type-heading` | 16px | 1.35 | −0.02em | 500 | `--text` |
+| `type.supporting` | `.card-sub` → `--type-body` | 14px | 1.45 | 0 | 400 | `--text-2` |
+| `type.body` | `body`, `.feed-body p` → `--type-body` | 14px | 1.5 / 1.45 | 0 | 400 | `--text` / `--text-2` |
+| `type.ui` | `.nav-link`, `.crumb`, `.range-btn`, menu options, `.link`, search input → `--type-ui` | 13px (input 16px ≤ 860px) | 1 single-line, 1.4 rows | 0 | 400; 500 when current/selected | `--text-2` |
+| `type.data` | `.pages` cells → `--type-ui` + `.num` | 13px | 1.5 | 0 | 400 | `--text` sorted column, `--text-2` others |
+| ↳ headline figure (project role) | `.metric-value` → `--type-figure` | 24px | 1.15 | −0.04em | 400 | `--text` — data, not a tier; larger than its label, never heavier |
+| ↳ secondary figure (project role) | `.chart-stats dd` → `--type-heading` | 16px | 1.35 | 0 | 400 | `--text` — separated from `.card-title` by weight and tracking |
+| `type.label` | `.metric-label` → `--type-meta` | 12px | 1.3 | 0 | 500 | `--text-2` — leads its figure by position and weight |
+| ↳ group label (project role) | `.nav-label` → `--type-meta` | 12px | 1.3 | 0, sentence case | 400 | `--text-3` — a hairline rule beneath |
+| `type.meta` | `time`, `.metric-foot`, `.ws-plan`, `.me-mail`, axes, `.legend`, `dt`, `th`, chips, tooltip → `--type-meta` | 12px | 1 / 1.4 | 0 | 400; chips 500 | `--text-3` |
+| brand wordmark (project role) | `.brand-name` → `--type-heading` | 16px | — | −0.02em | 500 | `--text` |
 
-**Weights** — `--fw-regular` 400: everything at rest, figures included. `--fw-strong` 500: headings, the current nav row and selected menu row, a table row's path, names in the feed (`<strong>`), deltas, the date-range label. No third weight.
-
-**Numerals** — tabular on `.num`, deltas, counts, axis labels, tooltip values, numeric table cells and `time`. Scoped rather than global: Inter's `tnum` also widens hyphens in words (`Sign-ups`, `/docs/getting-started`).
-
-**Icons** — 16px box (glyph ≈ 13.5px on the 20-unit grid) beside 13px UI text, 8px gap; stroke 1.6.
+Five sizes (24 / 16 / 14 / 13 / 12); ceiling for headings 16 ÷ 14 = 1.14. **Weights** — `--weight-regular` 400: everything at rest. `--weight-strong` 500: section headings, the header title, names in the feed (`<strong>`), figure labels, chips, and the one state weight carries — current/selected (nav item, chosen range). `font-synthesis: none`. **Numerals** — tabular on `.num`, the tooltip and counts, scoped, not the root; paths take `slashed-zero` only. **Icons** — 18px boxes drawing ≈ 13px beside 13px text; stroke 1.5 on a 20 grid.
 
 ## Colour
 
-Neutrals derived in OKLCH at hue 265, chroma ≤ 0.012 (product dial ≤ 0.015), hex in `styles.css` with the OKLCH source in a comment. Every ratio below is from `scripts/contrast.mjs`; translucent washes were composited over the surface first.
+Neutrals at OKLCH hue 265, chroma ≤ 0.012 (dial ≤ 0.015), spaced by contrast; each value carries its OKLCH source in a comment in `styles.css`. Token names are the project's own; `--green`, `--red`, `--amber` keep their hue names (never renamed) and are mapped to status roles here.
 
-**Text** — product: three tiers, tertiary ≥ 4.8:1 on its worst surface, adjacent tiers ≥ 1.4× apart.
+**Text** — measured with `scripts/contrast.mjs` on the worst surface each tier lands on (`--hover`, the nav and menu row hover). Product targets 15 · 7.5 · 4.8, step ≥ 1.4×.
 
-| Role | Name here | Light | Ratio (worst: `--surface-2`) | Dark | Ratio (worst: `--surface-2`) |
+| Role | Name here | Light | Ratio on `--hover` | Dark | Ratio on `--hover` |
 |---|---|---|---|---|---|
-| `text.primary` | `--text` | `#181b20` | 15.38:1 | `#e5e8ed` | 13.44:1 |
-| `text.secondary` | `--text-2` | `#44484e` | 8.20:1 (1.88× step) | `#b0b4bc` | 7.94:1 (1.69×) |
-| `text.tertiary` | `--text-3` | `#60636a` | 5.36:1 (1.53×); 5.14:1 on a hovered sidebar row | `#92959d` | 5.51:1 (1.44×); 5.18:1 on a hovered row |
-| `text.link` | `--accent-ink` | `#4a48d8` — 6.54:1 on white | | `#a5a5ff` — 7.97:1 on `--surface` | |
-| `text.on-accent` | `--on-accent` (proposed) | `#ffffff` | | `#0f1216` | |
+| `text.primary` | `--text` | `#191c22` | 14.95:1 | `#e8ebf1` | 13.34:1 |
+| `text.secondary` | `--text-2` | `#494d53` | 7.45:1 (step 2.0×) | `#adb1b9` | 7.41:1 (1.8×) |
+| `text.tertiary` | `--text-3` | `#656970` | 4.83:1 (1.54×) | `#8a8e95` | 4.84:1 (1.53×) |
+| `text.link` | `--accent-ink` | `#4a48d8` | 6.54:1 on `--surface` | `#a5a5ff` | 7.75:1 on `--surface` |
 
-Links sit 1.41:1 from the `--text-2` sentence around them, so in-text links (`.feed-body a`) carry an underline too.
+On `--bg`: 15.90 / 7.92 / 5.14 (light), 15.71 / 8.73 / 5.70 (dark).
 
 **Surfaces**
 
 | Role | Name here | Light | Dark |
 |---|---|---|---|
-| `surface.page` | `--bg` | `#ffffff` | `#0f1216` (L 0.18) |
-| `surface.subtle` | `--sidebar` | `#f7f8fa` | `#14161b` |
-| `surface.raised` | `--surface` | `#ffffff` (= page, with an edge) | `#16181d` (lifted) |
-| `surface.hover` (on a raised surface) · header band | `--surface-2` | `#f0f2f4` | `#1c1f25` |
-| `surface.hover` (layered wash) | `--hover` (proposed) | `rgba(24,27,32,.05)` | `rgba(229,232,237,.06)` |
-| where the reader is · focused option | `--current` (proposed) | `rgba(24,27,32,.07)` | `rgba(229,232,237,.08)` |
-| `scrim` | `--scrim` (proposed) | `rgba(10,14,22,.4)` | `rgba(0,0,0,.6)` |
+| `surface.page` | `--bg` | `#f5f7fa` | `#0f1217` (OKLCH L 0.18) |
+| `surface.subtle` | `--sidebar` | `#f8f9fb` | `#12151a` |
+| `surface.raised` | `--surface` | `#ffffff` | `#181b20` (+0.04 L) |
+| `surface.hover` (table) · table head · kbd | `--surface-2` | `#f2f3f7` | `#1c1f25` |
+| `surface.hover` (nav, menu rows) | `--hover` *(proposed)* | `#eef0f4` | `#1f2228` |
+| `surface.selected` | `--selected` *(proposed)* | `#e8ebf1` | `#24262c` |
 
 **Lines and fills**
 
 | Role | Name here | Light | Dark |
 |---|---|---|---|
-| `border.default` · `border.divider` | `--border` | `#dfe1e5` | `#2b2e34` |
-| `border.hover` | `--border-strong` | `#c8cad0` | `#3f424a` |
-| `border.control` | `--border-control` (proposed) | `#83868c` — 3.65:1 on white | `#6b6f76` — 3.52:1 on `--surface` |
-| `mark` — previous-period series | `--prev` | `#8f9299` — 3.12:1 | `#6e7279` — 3.68:1 |
-| `mark` — in-row share bars (decorative) | `--bar` (proposed) | `#c8cad0` | `#3f424a` |
-| `fill.strong` — usage meter | `--text-2` | | |
+| `border.default` · `border.divider` | `--border` | `#e2e4e9` | `#2b2e34` |
+| `border.hover` | `--border-strong` | `#cbced3` | `#3a3d44` |
+| `border.control` | `--border-control` *(proposed)* | `#83868c` — 3.40:1 on `--bg`, 3.65:1 on `--surface` | `#686c73` — 3.27:1 on `--surface`, 3.56:1 on `--bg` |
+| `fill.strong` (meters) | `--fill` *(proposed)* | `#898c92` | `#686c73` |
+| chart comparison series (`mark`) | `--prev` | `#898c92` — 3.65:1 on `--surface` | `#686c73` — 3.27:1 |
+| `scrim` | `--scrim` *(proposed)* | `rgba(15,18,23,.4)` | `rgba(0,0,0,.6)` |
 
 **Signal**
 
 | Role | Name here | Light | Dark |
 |---|---|---|---|
-| `accent` · `focus` | `--accent` | `#5b5bf0` — focus 4.35:1 on `--current` (worst) | `#8282ff` — 5.18:1 on `--surface-2` (worst) |
-| `status.danger` fg / bg | `--red` / `--red-soft` | `#b24039` / `#fef0ee` — 5.70 page · 5.13 tint · 5.08 hover | `#dd766c` / `#311b18` — 6.15 · 5.29 · 5.41 |
-| `status.warning` fg / bg | `--amber` / `--amber-soft` | `#8d5d1c` / `#fdf1e5` — 5.65 · 5.08 · 5.04 | `#c38c46` / `#2c1f0e` — 6.40 · 5.47 · 5.63 |
-| `status.success` fg / bg | `--green` / `--green-soft` | `#25793f` / `#ebf8ec` — 5.40 · 4.93 · 4.82 | `#5da56e` / `#152619` — 6.32 · 5.35 · 5.56 |
+| `accent` · `focus` | `--accent` | `#5b5bf0` — focus 4.66:1 on `--bg`, 4.19:1 on `--selected` | `#8282ff` — 5.18:1 on `--hover`, 4.74:1 on `--selected` |
+| `surface` tint of accent | `--accent-soft` | `#eeeefe` — search focus halo only | `rgba(130,130,255,.14)` |
+| `status.danger.fg` / `.bg` | `--red` / `--red-soft` | `#b8322a` on `#fdecea` — 5.21:1; 5.55 on `--bg`; 5.37 on `--surface-2` | `#ff7a6e` — 5.66:1 on its tint over `--surface` |
+| `status.success.fg` / `.bg` | `--green` / `--green-soft` | `#0f7a47` on `#e6f6ee` — 4.82:1; 5.02 on `--bg` | `#3ccf8e` — 6.91:1 on its tint |
+| `status.warning.fg` / `.bg` | `--amber` / `--amber-soft` *(proposed)* | `#9a5c00` on `#fff4e0` — 4.93:1 | `#f2b24c` — 7.30:1 on its tint |
+| `status.info` | — | none: an info hue near h 250 sits within 40° of the indigo accent (h 277), so info takes no colour | — |
 
-`status.info` is left out: nothing on the page reports information that needs a colour, and an info blue would sit beside the indigo accent.
-
-**What each hue does**
-- **Accent (indigo)** — links, focus, the range menu's check, the unread-notification dot ("your turn"). Not the current nav row (neutral `--current` pill + weight 500 + `aria-current`), not the chart, not the share bars, not feed icons.
-- **Danger** — only what needs a person: the conversion-rate drop, the bounce-rate alert in the feed, the 61.3% bounce cell (with an alert glyph and screen-reader text, so colour never carries it alone).
-- **Success, warning** — defined and measured; nothing on this screen currently reports them. Rising figures are not news that needs anyone, so up-deltas are ink on a neutral chip; the arrow carries the direction.
-- **Chart** — current period in ink (`--text`), previous period in `--prev`, dashed. Series are not the accent's job.
+**Where colour goes** — the accent: links, focus, the chart's primary series and its row bars, the chosen range's check, the unread-notification dot ("your turn"). Danger: the conversion drop, the 61.3% bounce rate, the bounce alert in the feed — the three things that need a person. Everything else is neutral: rising deltas, routine feed events, the current nav item, the usage meter, the chart annotation.
 
 **Exceptions**
-- `exception.person.*` — who did it. Avatars only (`.av-1`…`.av-3`), never names or rows. Hues 330 / 110 / 210, each ≥ 40° from the accent (277) and the status hues; re-picked per theme. Lettermarks: light 5.44 / 5.12 / 4.84:1, dark 7.17 / 7.32 / 7.40:1 on their tints.
-- Brand mark — the logo's gradient lives inside its SVG as artwork, not in CSS.
+
+- `exception.person.*` — *who*. `--person-1…3` with `-soft` tints, per theme; avatars only, never names or rows. Letters 7.20 / 5.61 / 5.00:1 light, 7.43 / 8.90 / 8.74:1 dark.
+- Brand mark (`--brand-mark-from/to`) and Fieldnote's workspace logo (`--ws-logo-from/to`) are marks, not interface hues: they count against neither the accent nor the exceptions.
 
 ## Layout
 
-**Structure** — the product app shell: a 248px sidebar holding all navigation (workspace switcher as a row of the nav list at the nav's size), and a main panel. The panel is a page under its own **header bar** (52px, sticky): breadcrumb `Fieldnote / app.fieldnote.io /` then the `h1` at the nav's size (13/500), the page's actions at the end — the search field, the date range and notifications as quiet ghost buttons. No navigation lives in the bar. Content fills the panel, left-aligned at one `gutter`; the page sets no width of its own.
-
-Below the bar, in reading order: the **stat strip** (four figures, each over its label, parted by vertical hairlines — no tiles), then a **content column** (Daily visitors, Top pages) beside the **activity rail**, parted by a vertical hairline. Sections are unboxed: a heading row, then the content on the page.
+The app shell: one navigation surface (the sidebar), a header bar, then the content panel with the activity feed as a rail beside it. Sections stack, each opened by its heading; nothing on the page is a card except the table's frame and the sidebar's usage meter. All values are tokens in `styles.css` `:root` (*proposed* 2026-11-04 unless noted).
 
 | Role | Name here | Value |
 |---|---|---|
-| nav region | `--sidebar-w` | 248px |
-| rail (inspector-width region) | `--rail-w` (proposed) | 320px |
-| `gutter` | `--gutter` (proposed) | 32px; 16px below `bp.shell` |
-| `space.tight` | `--space-tight` (proposed) | 8px |
-| `space.group` | `--space-group` (proposed) | 16px |
-| `space.section` · `space.heading-above` | `--space-section` (proposed) | 32px |
-| `space.heading-below` | `--space-heading-below` (proposed) | 12px — pair ratio 32 : 12 ≈ 2.7:1 (dial 2–3:1) |
-| page top space | `.content` padding-top | 20px under the header bar (16px below `bp.shell`) |
+| `measure.app` | `.content` | fills the panel, left-aligned (the old `max-width: 1440px` removed: the shell owns width) |
+| nav region | `--sidebar-w` (existing) | 248px |
+| `measure.rail` | `--rail-w` | 340px — the activity rail |
+| header bar | `--header-h` | 52px min (controls 34px) |
+| `gutter` | `--gutter` | 32px; 16px ≤ 860px |
+| `space.tight` | `--space-tight` | 6px |
+| `space.group` | `--space-group` | 16px |
+| `space.section` | `--space-section` | 32px — between the stat strip, sections and rail |
+| `space.heading-above` · `space.heading-below` | `--space-section` · `.card-head` margin | 32px · 12px — 2.67:1 |
+| page top space | `.content` padding-top | 24px under the header bar (16px ≤ 860px) |
 
-**Radius ladder** (product dial, nestings derived inward):
+**Radius ladder**
 
-| Role | Name here | Value | Nesting |
+| Role | Name here | Value | Used on |
 |---|---|---|---|
-| `radius.small` | `--radius-sm` | 4px | chips; menu options (menu 10 − padding 6 = 4); `kbd` in the search (6 − 4 inset = 2, snapped to 4); workspace lettermark (row 6 − 4 inset) |
-| `radius.control` | `--radius-control` (proposed) | 6px | search, ghost buttons, nav rows, tooltip, skip link |
-| `radius.card` | `--radius` | 10px | the table frame, the usage card, the range menu |
-| `radius.pill` | `99px` / `50%` | — | meter tracks, share bars, avatars, dots only |
+| `radius.small` | `--radius-xs` | 4px | kbd, inline path tokens |
+| `radius.control` | `--radius-sm` (existing, was 8px and unused) | 6px | buttons, search, nav rows, menu rows, logo tiles, focus ring |
+| `radius.card` | `--radius-md` | 10px | table frame, tooltip, usage meter |
+| `radius.container` | `--radius` (existing) | 12px | the range menu: 6px padding holds 6px rows (12 − 6) |
+| `radius.pill` | `--radius-pill` | 999px | chips, avatars, dots, tracks |
 
-**Lines** — `hairline.chrome` and `hairline.object` both `--hairline` (proposed) 0.5px, drawn as borders, 1px under `prefers-contrast: more`; dividers take `--divider` (proposed), a colour step lighter than `--border`, so none outranks its object's edge. `rule.emphasis` `--rule-emphasis` (proposed) 2px: focus rings, the selected option's check.
+**Lines** — `hairline.chrome` and `hairline.object` share `--hairline` 0.5px (1px under `prefers-contrast: more`); the divider steps down in colour (`--divider` under `--border`). `rule.emphasis` 2px: the focus ring.
 
-**One table style** — `.table-wrap` + `.pages`: a 0.5px frame at `radius.card`, a tinted 36px header row with `text.primary` labels (the sorted column at 500), 48px rows, 0.5px `--divider` between rows only, a hover wash.
-**One group-label style** — `.nav-label`: 12px sentence case, `--text-3`, a hairline beneath.
-**One chip shape** — 20px tall, 4px radius, 6px padding, 12px text (`.delta`, `.flag`, `.nav-count`, `.annotation-label`, `kbd` at 24px inside the field); only fill and text vary.
+**One of each device** — one table style (hairline frame at `radius.card`, tinted head in `--text-2`, `--divider` between rows only); one group-label style (`.nav-label`, over a hairline); one chip shape (`.nav-count`, `.delta`, `.flag`: 20px tall, pill, 6px sides).
 
-**Z ladder** — `--z-popover` 20 (range menu, chart tooltip) · `--z-nav` 50 (header bar) · `--z-overlay` 60 (mobile sidebar sheet, and its scrim one step earlier in the document) · `--z-skip-link` 100. Unused rungs left out.
+**z-index ladder**
 
-**Breakpoints**, named for what changes:
-- `bp.shell` — window ≤ 860px: the sidebar becomes a sheet over a scrim, the header bar wraps (toolbar on its own row), the gutter drops to 16px, the search input goes to 16px text.
-- `bp.rail` — main panel ≤ 960px (container query): the activity rail drops under the column; the date range hides its dates.
-- `bp.narrow` — main panel ≤ 560px: the strip runs two figures a row, chart stats stack, the table keeps path, views and bounce rate.
+| Role | Name here | Value |
+|---|---|---|
+| `z.raised` | `--z-raised` | 10 |
+| `z.popover` | `--z-popover` | 20 |
+| `z.nav` | `--z-nav` | 50 |
+| `z.overlay` | `--z-overlay` | 60 |
+| `z.skip-link` | `--z-skip-link` | 100 |
 
-**Accessibility structure** — skip link to `#main`; the sidebar `aside` labelled "Primary", its `nav` "Sections"; `aria-current` on the current row; one `h1`, an `h2` per section; the figures are a `dl`.
+The mobile sheet and its scrim share `z.overlay` and stack by document order (scrim first).
+
+**Breakpoints** — three; the content ones on the panel container (`container: panel`), the shell one on the window.
+
+| Role | Name here | Value | What changes |
+|---|---|---|---|
+| `bp.rail` | `@container panel (max-width: 900px)` | panel 900px | the activity rail stacks under the table; the stat strip goes 2 × 2; range dates hide |
+| `bp.shell` | `@media (max-width: 860px)` | window 860px | the sidebar becomes a sheet with a scrim; the toolbar wraps; inputs go to 16px |
+| `bp.phone` | `@container panel (max-width: 560px)` | panel 560px | comparison text, two table columns, half the x-axis labels and the annotation label hide |
+
+Every hover style is gated on `(hover: hover) and (pointer: fine)`. Skip link → `#main`.
 
 ## Surfaces
 
-Product: content unboxed; four levels, each one bundle; opaque materials only; edges carry most of the separation.
+Four levels, all opaque. Product: hairlines do more work than shadows; buttons are flat; no translucency.
 
-| Level | What uses it | Surface | Edge | Shadow | Layer |
+| Level | Used by | Surface | Edge | Shadow | Layer |
 |---|---|---|---|---|---|
-| `elevation.flat` | page, sections, stat strip, the table (its frame is the product table style, not a card), the usage card (one object), the search field | `--bg`; `--surface` for the usage card | `--border` / `--border-control` hairline, or none | none | page flow |
-| `elevation.raised` | the sticky header bar | `--bg` | `--border` hairline beneath | `--shadow` — contact + 1 ambient | `--z-nav` |
-| `elevation.floating` | the date-range menu; the chart tooltip (transient) | `--surface-float` (proposed; dark +0.04 L) | 0.5px `--border` ring at the head of the shadow (dark `--border-strong`); `1px transparent` border for forced colours, `--text` under `prefers-contrast: more` | `--shadow-pop` — ring + contact + 1 ambient; `--shadow-tip` (proposed) drops the contact layer | `--z-popover` |
-| `elevation.overlay` | the sidebar as a sheet below `bp.shell` | `--surface-overlay` (proposed; dark +0.08 L) | ring, as floating | `--shadow-overlay` (proposed) — ring + contact + 1 longer ambient | `--z-overlay` |
+| `elevation.flat` | page sections, stat strip, table frame, sidebar, usage meter, controls | `--bg`, `--sidebar`, `--surface` | `--border` at `--hairline` (controls `--border-control`) | — | flow |
+| `elevation.raised` | the sticky header bar | `--bg` (opaque; was a translucent blur) | `--border` bottom hairline | `--shadow` | `--z-nav` |
+| `elevation.floating` | range menu, chart tooltip | `--surface-float` *(proposed)*: white · dark `#21242a` (L 0.26) | 0.5px `--border` ring at the head of `--shadow-pop`; `1px solid transparent` border for forced colours; a real `--text` border under `prefers-contrast: more` | `--shadow-pop`: contact + 1 ambient, 10% light / 55% dark | `--z-popover`, `--z-raised` |
+| `elevation.overlay` | the mobile nav sheet (≤ 860px) | `--sidebar` | ring in `--shadow-overlay` | `--shadow-overlay` *(proposed)*: 16% / 60% | `--z-overlay` |
 
-Peak opacities (light / dark): raised 6% / 40%, floating 10% / 55%, overlay 16% / 60%. Dark surfaces lift: page L 0.18 → raised 0.21 → floating 0.25 → overlay 0.29. Text on them, dark: tertiary 5.39:1 on floating, 4.80:1 on overlay (it never sits on `--current` there).
-
-**Scrim** — `--scrim`, 40% light / 60% dark, no blur; only behind the sheet. Closing the sheet — Escape, scrim or button — returns focus to the menu button.
-
-**Materials** — opaque only. The header bar was translucent (`backdrop-filter: saturate(180%) blur(12px)` over an 82% tint); product chrome takes none, so it is now opaque, and no fallback block is needed.
+**Scrim** — `--scrim`: 40% light, 60% dark, no blur, only under the nav sheet. **Materials** — opaque only. **Row hover on a floating surface** — `--wash` *(proposed)*, black 5% light / white 5% dark.
 
 ## Motion
 
-Product ladder, tokens in `styles.css` `:root`. Tiers strictly ascend: 80 < 100 < 150 < 200ms.
+CSS only. Tokens in `styles.css` `:root` (*proposed* 2026-11-04), at the `product` dials.
 
 | Role | Name here | Value | Used for |
 |---|---|---|---|
-| `duration.instant` | `transition-duration: 0s` on `:active` | 0 | press feedback: the `--current` step, no scale |
-| `duration.micro` | `--dur-micro` (proposed) | 80ms | table row wash (rows swept in bulk) |
-| `duration.state` | `--dur-state` (proposed) | 100ms | nav rows, workspace row, ghost buttons: background and colour |
-| `duration.popover` | `--dur-popover` (proposed) | 150ms | date menu entrance, its chevron, the chart tooltip and hover line fading in |
-| `duration.overlay` | `--dur-overlay` (proposed) | 200ms | the nav sheet sliding in, its scrim fading in |
-| `duration.exit` | `--dur-exit` (proposed) | 100ms | everything leaving: the menu, the sheet, the tooltip |
-| `ease.standard` | `--ease-standard` (proposed) | `cubic-bezier(0.2, 0, 0, 1)` | everything that moves; no overshoot |
-| `ease.colour` | `--ease-colour` (proposed) | `ease-out` | colour and opacity |
-| `ease.exit` | `--ease-exit` (proposed) | `ease-in` | exits |
+| `duration.instant` | — | 0ms | the search field's focus edge and halo (no transition) |
+| `duration.micro` | `--dur-micro` | 80ms | nav, table-row and button hover colour; annotation dim |
+| `duration.popover` | `--dur-popover` | 150ms | range menu entrance, its chevron, chart tooltip and crosshair in |
+| `duration.overlay` | `--dur-overlay` | 200ms | mobile nav sheet opening, scrim fade |
+| `duration.exit` | `--dur-exit` | 100ms | tooltip and crosshair out |
+| sheet exit | `--dur-sheet-exit` | 130ms | mobile nav sheet closing |
+| `ease.standard` | `--ease` | `cubic-bezier(0.2, 0, 0, 1)` | everything that moves |
+| `ease.colour` | `--ease-colour` | `ease-out` | colour and opacity |
+| `ease.exit` | `--ease-exit` | `ease-in` | closing |
 
-No springs (nothing is dragged or re-targets), no loops, no set pieces, no route transition, no sound. Hover is a wash, never travel. Every transition names its properties.
+**Named exemptions** — none. No set pieces, no loops, no springs (nothing is dragged or re-targeted).
 
-**Reduced motion** — per component, not a global off switch: the menu and the nav sheet fade instead of travelling (sheet at `--dur-state`); colour washes, the chevron and the short exits stay.
-
-**Exits** — the date menu stays mounted while it plays `pop-out` (100ms, ease-in); `script.js` hides it afterwards, and re-opening mid-exit takes over at once. Focus and `aria-expanded` move immediately. The closed sheet is `visibility: hidden` after its exit, so it leaves the tab order.
+**Reduced motion** — a branch per component, not a kill switch: the range menu's slide-and-scale becomes a plain fade at 150ms; the chevron flips without turning; the mobile sheet fades in place instead of sliding; colour transitions stay. The closed sheet is `visibility: hidden`, so it is out of the tab order whether or not it animates.
 
 ## Patterns
 
-**Nouns** — page, event, funnel, cohort, visitor, sign-up, workspace, teammate. **Comparison** — "previous period" everywhere (metrics, chart legend, tooltip), never "prior 30 days": the range can change. **See-more links** — "All {noun}": All pages, All activity. **Problem markers** — a figure or cell that needs a person takes `status.danger`, an alert glyph, and words for screen readers ("above the 60% alert threshold"). **Shortcuts** — ⌘K focuses search (shown in the field); Escape closes one layer: the date menu first, then the nav sheet. **Icon buttons** — an accessible name that matches what a text button would say, plus a `title` tooltip. **Destructive** — none on this screen.
+**Nouns** — page (a path), event, funnel, cohort, teammate, workspace. **Links** name their destination: "All activity", "All pages", "Upgrade plan". **Labels** — sentence case everywhere. **Shortcuts** — ⌘K / Ctrl+K focuses search (shown as a `kbd` in the field); Escape closes the range menu, then the mobile nav, one layer at a time. **Destructive** — none on this screen. **State for screen readers** — delta direction ("Up", "Down"), the flagged bounce rate ("above the 60% alert") and unread notifications are spoken, not only drawn.
+
+**Dashboard order** — overview (stat strip), trend (daily visitors), detail (top pages), then the activity rail. The activity feed is required by the brief and stays; its one alert is the only coloured event.
 
 ## Decisions
 
-- 2026-11-04 — Light `surface.page` moved from `#f6f7f9` to white, with cards equal to the page and edged (colour law 8: raised is never lighter than the page in light). Dark page raised to L 0.18 (product dial 0.17–0.21). (Agent recommendation.)
-- 2026-11-04 — Tabular figures scoped to numeric roles instead of the product dial's global setting: Inter's `tnum` also spaces out hyphens in running text. (Agent recommendation, under the user's "take your recommendations".)
-- 2026-11-04 — Theming stays as the page had it: light and dark from `prefers-color-scheme`, no toggle. (User decision.)
+- 2026-11-04 — The global `transition: none !important` reduced-motion rule is replaced by per-component substitutes. (Law; motion law 10.)
+- 2026-11-04 — The mobile nav sheet keeps the `--sidebar` surface in dark rather than lifting two steps to L 0.30: on 0.30, `--text-3` (nav counts, group labels) falls to 4.14:1. Scrim and `--shadow-overlay` carry the level. (Law; colour law 3 over the depth recipe.)
+- 2026-11-04 — Header bar opaque, no backdrop blur: `product` allows no translucency on chrome. (Law; depth law 6.)
+- 2026-11-04 — Light page `--bg` is white, replacing the grey: with the cards gone the content sits on the page, and the page is the surface it was sitting on. Supersedes keeping the grey page. (Law; colour law 8, made in the layout pass.)
+- 2026-11-04 — Headline metrics are a stat strip parted by hairlines, and chart, table and activity sit on the page; only the table keeps a frame. (Law; layout law 3, depth law 2.)
+- 2026-11-04 — Rising deltas and routine feed events are neutral; red is kept for the conversion drop, the 61.3% bounce rate and the bounce alert. Colour points at what needs a person, and growth is not an action item. (Law; colour law 7.)
+- 2026-11-04 — Current nav item on a neutral `--selected` pill at 500 with `aria-current`, not the accent: where the reader is, is position, not a call to act. (Law; colour law 7, product dial.)
+- 2026-11-04 — Page title "Overview" set as header-bar chrome (13px/500, last item of the breadcrumb), not a 22px heading: an app's page title labels where you are, and a page uses either a header-bar title or a content `type.title`, never both. (Law; type ladders, product.)
+- 2026-11-04 — Headline figures at 24px/400, not 30px/600: a figure is data, larger than its label but never heavier, and product runs two weights. (Law; type law 3, law 5.)
+- 2026-11-04 — Paths take `slashed-zero` but not `tabular-nums`: Inter's `tnum` widens the hyphen in `/docs/getting-started`. (Law; type numerals.)
+- 2026-11-04 — Keep the existing theming: light and dark following the device through `prefers-color-scheme`, no toggle. (User decision; matches the `product` theme-control dial.)
+- 2026-11-04 — Preset `product`. (User decision.)
 
 ## Open issues
 
-- Recent activity rows read as events ("Priya Raman created the funnel …"), and patterns law 12 lists an activity feed as the usual casualty on a dashboard. The brief asks for the feed, so it stays; its rows are left as written.
-- "Custom range…" promises a further step (the ellipsis) but only changes the label; the date picker behind it doesn't exist.
-- The chart's subtitle and the table's ("last 30 days") don't follow the range picker; the picker changes only its own label.
-- Headline figures (20px) sit under a header-bar title at 13px: type law 3 says nothing outranks its owning heading, while the product page puts the title at the nav's size. Read here as: the bar is chrome, the strip is the page's overview. Needs a user decision.
-- The sidebar doesn't collapse to an icon rail (product shell dial). Adding it is a feature, outside this pass.
-- The stat strip's figures don't filter anything (product dial: figures filter the table below); here they don't count the table's rows, so there is nothing to filter.
-- Inter still comes from Google Fonts (third-party; type law 12 wants it self-hosted). Weights are trimmed to the two in use and a metric-matched fallback is in place; self-hosting needs the font files added to the project.
+**Type**
+- Inter still loads from Google Fonts rather than self-hosted (now 2 weights, with a metric-matched fallback) — type law 12. Self-hosting needs the font files fetched into the project.
+
+**Colour**
+- `--amber` warning pair and `status.info` are defined but unused on this screen — kept because `product` requires the status palette.
+- Fieldnote's workspace logo puts white on orange at 2.15–3.58:1; it is a third-party mark and was left as is.
+
+**Layout**
+- The stat-strip figures don't filter the table (layout dial: product stat strip): Visitors, Sign-ups, Conversion and Revenue don't count the table's rows, so there is nothing to filter. Left as is.
+- No sidebar collapse to an icon rail — a shell feature, not added when improving a screen (layout dial: the shell).
+
+**Depth**
+- None open.
+
+**Motion**
+- The range menu closes instantly rather than on a 100ms exit: the `hidden` attribute is toggled in `script.js`. Acceptable under motion law 7 (exits get out of the way); an animated exit would need the script to delay `hidden`.
+
+**Patterns**
+- No action-items section: the dashboard's "what needs the reader" (the bounce alert, the conversion drop) lives in the feed and the table — patterns law 12. Adding one is a feature; `/keyline patterns` when asked.
+- "Custom range…" sets the label but opens no picker, and "Switch workspace" opens nothing — patterns law 14. Both need features, not styling.

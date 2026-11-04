@@ -3,27 +3,30 @@
   const $$ = (sel, root = document) => [...root.querySelectorAll(sel)];
 
   /* ---------- Toast ---------- */
+  // Toasts carry failures, undo windows and results the reader can't see happen (product patterns dial).
   const toast = $("#toast");
+  const toastText = $(".toast__text", toast);
+  const toastAction = $(".toast__action", toast);
   let toastTimer;
-  /* Toasts are for failures, Undo and results off screen — not for a save the status line already shows */
-  function showToast(text, action) {
-    toast.textContent = "";
-    const msg = document.createElement("span");
-    msg.textContent = text;
-    toast.append(msg);
-    if (action) {
-      const btn = document.createElement("button");
-      btn.type = "button";
-      btn.className = "toast__action";
-      btn.textContent = action.label;
-      btn.addEventListener("click", () => { hideToast(); action.onClick(); });
-      toast.append(btn);
-    }
+  let toastUndo = null;
+  function hideToast() {
+    toast.classList.remove("is-visible");
+    toastUndo = null;
+  }
+  function showToast(text, undo) {
+    toastText.textContent = text;
+    toastUndo = undo || null;
+    toastAction.hidden = !undo;
     toast.classList.add("is-visible");
     clearTimeout(toastTimer);
-    toastTimer = setTimeout(hideToast, action ? 6000 : 4000);
+    toastTimer = setTimeout(hideToast, undo ? 6000 : 2600);
   }
-  function hideToast() { toast.classList.remove("is-visible"); }
+  toastAction.addEventListener("click", () => {
+    const undo = toastUndo;
+    clearTimeout(toastTimer);
+    hideToast();
+    if (undo) undo();
+  });
 
   /* ---------- Field helpers ---------- */
   function setError(input, message) {
@@ -37,7 +40,7 @@
   const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
   function validateEmail(input) {
     const v = input.value.trim();
-    if (!v) return "Enter your email address.";
+    if (!v) return "Email is required.";
     if (!EMAIL_RE.test(v)) return "Enter a valid email address, like name@company.com.";
     return "";
   }
@@ -89,8 +92,9 @@
   }
 
   email.addEventListener("blur", () => setError(email, validateEmail(email)));
+  // An error clears as soon as the value changes; the check runs again on blur and on save.
   email.addEventListener("input", () => {
-    if (email.closest(".field--invalid")) setError(email, validateEmail(email));
+    if (email.closest(".field--invalid")) setError(email, "");
   });
   fullName.addEventListener("input", () => {
     if (!avatar.style.backgroundImage) avatar.textContent = initials(fullName.value);
@@ -104,12 +108,12 @@
     setError(email, emailErr);
     if (!fullName.value.trim()) {
       ensureMsg(fullName);
-      setError(fullName, "Enter your full name.");
+      setError(fullName, "Full name is required.");
     }
     const firstInvalid = $(".field--invalid input", profile);
     if (firstInvalid) {
       status.className = "status is-error";
-      status.textContent = "Fix the highlighted field to save your profile.";
+      status.textContent = "Fix the highlighted field to save.";
       firstInvalid.focus();
       return;
     }
@@ -231,7 +235,7 @@
     const firstInvalid = $(".field--invalid input", pwForm);
     if (firstInvalid) {
       status.className = "status is-error";
-      status.textContent = "Fix the highlighted fields to change your password.";
+      status.textContent = "Check the fields above.";
       firstInvalid.focus();
       return;
     }
@@ -253,79 +257,92 @@
   });
 
   /* ---------- Connected accounts ---------- */
-  function setConnected(row, on) {
+  function renderConnection(row, connected) {
     const badge = $(".badge", row);
     const btn = $(".js-connect", row);
-    row.dataset.connected = String(on);
-    badge.className = on ? "badge badge--ok" : "badge";
-    badge.textContent = on ? "Connected" : "Not connected";
-    btn.textContent = on ? "Disconnect" : "Connect";
+    row.dataset.connected = String(connected);
+    badge.className = connected ? "badge badge--ok" : "badge";
+    badge.textContent = connected ? "Connected" : "Not connected";
+    btn.className = connected ? "btn btn--secondary btn--sm js-connect" : "btn btn--primary btn--sm js-connect";
+    btn.textContent = connected ? "Disconnect" : "Connect";
   }
   $$(".js-connect").forEach((btn) => {
     btn.addEventListener("click", () => {
       const row = btn.closest(".connection");
       const service = btn.dataset.service;
-      const connected = row.dataset.connected === "true";
+      if (row.dataset.connected === "true") {
+        // Reversible: act now, offer Undo, no dialog.
+        renderConnection(row, false);
+        showToast(`${service} disconnected`, () => renderConnection(row, true));
+        return;
+      }
+      // Connecting is the provider's answer, so it waits for it; the row itself shows the result.
       btn.classList.add("is-loading");
-      btn.textContent = connected ? "Disconnecting…" : "Connecting…";
       setTimeout(() => {
         btn.classList.remove("is-loading");
-        setConnected(row, !connected);
-        // Disconnecting can be reversed, so it asks for nothing and offers Undo
-        if (connected) showToast(`${service} disconnected`, { label: "Undo", onClick: () => setConnected(row, true) });
+        renderConnection(row, true);
       }, 700);
     });
   });
 
   /* ---------- Danger zone ---------- */
   const dialog = $("#delete-dialog");
-  const deleteForm = $("#delete-form");
   const confirmInput = $("#delete-confirm");
   const confirmBtn = $("#delete-confirm-btn");
-  const cancelBtn = $('[value="cancel"]', deleteForm);
-  const PHRASE = "delete my account";
-  let opener = null;
-  let pending = false;
   $("#delete-open").addEventListener("click", () => {
-    opener = document.activeElement;
     confirmInput.value = "";
     confirmBtn.disabled = true;
-    confirmBtn.textContent = "Delete account";
     if (typeof dialog.showModal === "function") dialog.showModal();
     confirmInput.focus();
   });
+  const matches = () => confirmInput.value.trim().toLowerCase() === "delete my account";
+  let deleting = false;
   confirmInput.addEventListener("input", () => {
-    confirmBtn.disabled = confirmInput.value.trim().toLowerCase() !== PHRASE;
+    confirmBtn.disabled = !matches();
   });
-  // Held open while it runs: Escape and Cancel do nothing until it settles
-  dialog.addEventListener("cancel", (e) => { if (pending) e.preventDefault(); });
-  deleteForm.addEventListener("submit", (e) => {
+  // Held open while the deletion runs, so a failure has somewhere to be reported.
+  $("#delete-form").addEventListener("submit", (e) => {
     if (e.submitter !== confirmBtn) return;
     e.preventDefault();
-    if (confirmBtn.disabled || pending) return;
-    pending = true;
-    confirmBtn.disabled = cancelBtn.disabled = true;
+    if (!matches() || deleting) return;
+    deleting = true;
+    confirmBtn.disabled = true;
     confirmBtn.textContent = "Deleting…";
+    $$("#delete-form .btn--ghost").forEach((b) => (b.disabled = true));
     setTimeout(() => {
-      pending = false;
-      cancelBtn.disabled = false;
+      deleting = false;
+      confirmBtn.textContent = "Delete account";
+      $$("#delete-form .btn--ghost").forEach((b) => (b.disabled = false));
       dialog.close("confirm");
-    }, 900);
+    }, 800);
+  });
+  dialog.addEventListener("cancel", (e) => {
+    if (deleting) e.preventDefault();
   });
   dialog.addEventListener("close", () => {
-    if (opener && opener.isConnected) opener.focus();
     if (dialog.returnValue === "confirm") showToast("Account scheduled for deletion. Check your email to finish.");
   });
 
-  /* ---------- Shortcut: ⌘K or Ctrl+K focuses search ---------- */
-  const search = $('.search input');
+  /* ---------- Search shortcut: the ⌘K hint in the search field works ---------- */
+  const search = $(".search input");
   document.addEventListener("keydown", (e) => {
-    if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") { e.preventDefault(); search.focus(); }
+    if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k" && search && search.offsetParent) {
+      e.preventDefault();
+      search.focus();
+    }
   });
 
   /* ---------- Section nav highlight ---------- */
+  const sidenav = $(".sidenav");
+  const marker = $(".sidenav__marker");
   const links = $$(".sidenav a");
   const sections = links.map((a) => document.querySelector(a.getAttribute("href")));
+  function placeMarker() {
+    const a = $(".sidenav a.is-active");
+    if (!a || !marker) return;
+    marker.style.setProperty("--marker-y", a.offsetTop + "px");
+    marker.style.setProperty("--marker-h", a.offsetHeight + "px");
+  }
   function setActive(id) {
     links.forEach((a) => {
       const on = a.getAttribute("href") === "#" + id;
@@ -333,6 +350,14 @@
       if (on) a.setAttribute("aria-current", "true");
       else a.removeAttribute("aria-current");
     });
+    placeMarker();
+  }
+  // The marker is placed before it is shown, and animates only after that, so it never flies in on load.
+  if (marker) {
+    placeMarker();
+    sidenav.classList.add("has-marker");
+    requestAnimationFrame(() => requestAnimationFrame(() => sidenav.classList.add("is-ready")));
+    window.addEventListener("resize", placeMarker, { passive: true });
   }
   if ("IntersectionObserver" in window) {
     const visible = new Map();
@@ -342,27 +367,9 @@
         const first = sections.find((s) => visible.get(s.id));
         if (first) setActive(first.id);
       },
-      { rootMargin: "-64px 0px -55% 0px" }
+      { rootMargin: "-90px 0px -55% 0px" }
     );
     sections.forEach((s) => io.observe(s));
   }
   links.forEach((a) => a.addEventListener("click", () => setActive(a.getAttribute("href").slice(1))));
-
-  /* ---------- Navigation sheet (below bp.shell) ---------- */
-  const shell = $(".shell");
-  const navToggle = $("[data-nav-toggle]");
-  const scrim = $("[data-nav-close]");
-  function setNav(open) {
-    shell.classList.toggle("is-nav-open", open);
-    navToggle.setAttribute("aria-expanded", String(open));
-    navToggle.setAttribute("aria-label", open ? "Close navigation" : "Open navigation");
-    scrim.hidden = !open;
-    if (open) $("#shell-nav a").focus();
-  }
-  navToggle.addEventListener("click", () => setNav(!shell.classList.contains("is-nav-open")));
-  scrim.addEventListener("click", () => { setNav(false); navToggle.focus(); });
-  document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape" && shell.classList.contains("is-nav-open")) { setNav(false); navToggle.focus(); }
-  });
-  $$("#shell-nav a").forEach((a) => a.addEventListener("click", () => setNav(false)));
 })();

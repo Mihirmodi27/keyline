@@ -70,27 +70,17 @@
   var rangeLabel = document.getElementById("rangeLabel");
   var options = Array.prototype.slice.call(rangeMenu.querySelectorAll('[role="option"]'));
 
-  var closeTimer = null;
-
   function openMenu() {
-    clearTimeout(closeTimer); // re-opening during the exit takes over at once
-    rangeMenu.classList.remove("is-closing");
     rangeMenu.hidden = false;
     rangeBtn.setAttribute("aria-expanded", "true");
     var current = rangeMenu.querySelector('[aria-selected="true"]') || options[0];
     current.focus();
   }
 
-  // The exit runs in CSS (--dur-exit); the menu is hidden when it ends. Focus and state move at once.
   function closeMenu(returnFocus) {
+    rangeMenu.hidden = true;
     rangeBtn.setAttribute("aria-expanded", "false");
     if (returnFocus) rangeBtn.focus();
-    rangeMenu.classList.add("is-closing");
-    clearTimeout(closeTimer);
-    closeTimer = setTimeout(function () {
-      rangeMenu.hidden = true;
-      rangeMenu.classList.remove("is-closing");
-    }, 100);
   }
 
   function choose(opt) {
@@ -101,7 +91,7 @@
   }
 
   rangeBtn.addEventListener("click", function () {
-    rangeBtn.getAttribute("aria-expanded") === "true" ? closeMenu(false) : openMenu();
+    rangeMenu.hidden ? openMenu() : closeMenu(false);
   });
 
   rangeMenu.addEventListener("click", function (e) {
@@ -114,12 +104,12 @@
     if (e.key === "ArrowDown") { e.preventDefault(); options[(i + 1) % options.length].focus(); }
     else if (e.key === "ArrowUp") { e.preventDefault(); options[(i - 1 + options.length) % options.length].focus(); }
     else if (e.key === "Enter" || e.key === " ") { e.preventDefault(); if (i > -1) choose(options[i]); }
-    else if (e.key === "Escape") { e.stopPropagation(); closeMenu(true); } // one layer only
+    else if (e.key === "Escape") { closeMenu(true); }
     else if (e.key === "Tab") { closeMenu(false); }
   });
 
   document.addEventListener("click", function (e) {
-    if (rangeBtn.getAttribute("aria-expanded") === "true" && !e.target.closest("#range")) closeMenu(false);
+    if (!rangeMenu.hidden && !e.target.closest("#range")) closeMenu(false);
   });
 
   /* ---------- Search shortcut ---------- */
@@ -136,19 +126,15 @@
   var scrim = document.getElementById("scrim");
   var menuBtn = document.getElementById("menuBtn");
 
-  // The sheet is modal: closing it, however it closes, hands focus back to the button that opened it.
   function setNav(open) {
-    var wasOpen = sidebar.classList.contains("is-open");
     sidebar.classList.toggle("is-open", open);
     scrim.hidden = !open;
     menuBtn.setAttribute("aria-expanded", String(open));
-    if (open) { var first = sidebar.querySelector("a, button"); if (first) first.focus(); }
-    else if (wasOpen) { menuBtn.focus(); }
   }
 
   menuBtn.addEventListener("click", function () { setNav(!sidebar.classList.contains("is-open")); });
   scrim.addEventListener("click", function () { setNav(false); });
   document.addEventListener("keydown", function (e) {
-    if (e.key === "Escape" && sidebar.classList.contains("is-open")) setNav(false);
+    if (e.key === "Escape" && sidebar.classList.contains("is-open")) { setNav(false); menuBtn.focus(); }
   });
 })();

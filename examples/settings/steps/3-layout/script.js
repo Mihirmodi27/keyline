@@ -304,27 +304,9 @@
         const first = sections.find((s) => visible.get(s.id));
         if (first) setActive(first.id);
       },
-      { rootMargin: "-64px 0px -55% 0px" }
+      { rootMargin: "-90px 0px -55% 0px" }
     );
     sections.forEach((s) => io.observe(s));
   }
   links.forEach((a) => a.addEventListener("click", () => setActive(a.getAttribute("href").slice(1))));
-
-  /* ---------- Navigation sheet (below bp.shell) ---------- */
-  const shell = $(".shell");
-  const navToggle = $("[data-nav-toggle]");
-  const scrim = $("[data-nav-close]");
-  function setNav(open) {
-    shell.classList.toggle("is-nav-open", open);
-    navToggle.setAttribute("aria-expanded", String(open));
-    navToggle.setAttribute("aria-label", open ? "Close navigation" : "Open navigation");
-    scrim.hidden = !open;
-    if (open) $("#shell-nav a").focus();
-  }
-  navToggle.addEventListener("click", () => setNav(!shell.classList.contains("is-nav-open")));
-  scrim.addEventListener("click", () => { setNav(false); navToggle.focus(); });
-  document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape" && shell.classList.contains("is-nav-open")) { setNav(false); navToggle.focus(); }
-  });
-  $$("#shell-nav a").forEach((a) => a.addEventListener("click", () => setNav(false)));
 })();
