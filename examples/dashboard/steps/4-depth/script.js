@@ -133,7 +133,7 @@
   }
 
   menuBtn.addEventListener("click", function () { setNav(!sidebar.classList.contains("is-open")); });
-  scrim.addEventListener("click", function () { setNav(false); });
+  scrim.addEventListener("click", function () { setNav(false); menuBtn.focus(); }); // a modal hands focus back to its opener
   document.addEventListener("keydown", function (e) {
     if (e.key === "Escape" && sidebar.classList.contains("is-open")) { setNav(false); menuBtn.focus(); }
   });

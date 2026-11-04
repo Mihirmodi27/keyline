@@ -12,6 +12,7 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+  <div class="progress" aria-hidden="true"></div>
   <a class="skip" href="#main">Skip to article</a>
 
   <header class="site-header">
@@ -20,7 +21,7 @@
         <svg class="brand__mark" viewBox="0 0 32 32" aria-hidden="true">
           <rect width="32" height="32" rx="8" fill="currentColor"/>
           <path d="M9 21.5V10.5h8.5M9 16h6.5" fill="none" stroke="var(--bg)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
-          <circle cx="22.5" cy="20.5" r="2.6" fill="var(--brand-mark)"/>
+          <circle cx="22.5" cy="20.5" r="2.6" fill="var(--accent)"/>
         </svg>
         <span class="brand__text">Field Notes <span class="brand__by">by Halden</span></span>
       </a>
@@ -39,7 +40,6 @@
       </div>
     </div>
   </header>
-  <div class="progress" aria-hidden="true"></div>
 
   <main id="main">
     <article class="article">
@@ -126,13 +126,12 @@
           <text x="272" y="408" text-anchor="middle" class="cv-label">MySQL · 16 shards</text>
           <text x="920" y="432" text-anchor="middle" class="cv-label">PostgreSQL · monthly partitions</text>
 
-          <!-- Subject motion: the packets run the dual-write path a few times on load, then rest (no loop) -->
           <g class="cv-packets" fill="#FFB27F">
-            <circle r="4"><animateMotion dur="3.2s" repeatCount="2" fill="freeze"><mpath href="#r1"/></animateMotion></circle>
-            <circle r="4"><animateMotion dur="2.6s" begin="-1s" repeatCount="2" fill="freeze"><mpath href="#r3"/></animateMotion></circle>
-            <circle r="4"><animateMotion dur="3.6s" begin="-2s" repeatCount="2" fill="freeze"><mpath href="#r4"/></animateMotion></circle>
-            <circle r="4"><animateMotion dur="2.9s" begin="-.4s" repeatCount="2" fill="freeze"><mpath href="#r2"/></animateMotion></circle>
-            <circle r="5" fill="#FF7A2F"><animateMotion dur="1.4s" repeatCount="4" fill="freeze"><mpath href="#r5"/></animateMotion></circle>
+            <circle r="4"><animateMotion dur="3.2s" repeatCount="3" fill="freeze"><mpath href="#r1"/></animateMotion></circle>
+            <circle r="4"><animateMotion dur="2.6s" begin="-1s" repeatCount="3" fill="freeze"><mpath href="#r3"/></animateMotion></circle>
+            <circle r="4"><animateMotion dur="3.6s" begin="-2s" repeatCount="3" fill="freeze"><mpath href="#r4"/></animateMotion></circle>
+            <circle r="4"><animateMotion dur="2.9s" begin="-.4s" repeatCount="3" fill="freeze"><mpath href="#r2"/></animateMotion></circle>
+            <circle r="5" fill="#FF7A2F"><animateMotion dur="1.4s" repeatCount="7" fill="freeze"><mpath href="#r5"/></animateMotion></circle>
           </g>
         </svg>
         <figcaption>Before and after: customer-keyed shards (hot ones in orange) became one database partitioned by month.</figcaption>
@@ -364,7 +363,7 @@
           <svg class="brand__mark" viewBox="0 0 32 32" aria-hidden="true">
             <rect width="32" height="32" rx="8" fill="currentColor"/>
             <path d="M9 21.5V10.5h8.5M9 16h6.5" fill="none" stroke="var(--footer-bg)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
-            <circle cx="22.5" cy="20.5" r="2.6" fill="var(--brand-mark)"/>
+            <circle cx="22.5" cy="20.5" r="2.6" fill="var(--accent)"/>
           </svg>
           <span class="brand__text">Field Notes</span>
         </a>
@@ -393,16 +392,5 @@
       <p><a href="#">Privacy</a> · <a href="#">Imprint</a></p>
     </div>
   </footer>
-  <script>
-    // Contents: always open beside the text; a closed disclosure above it below the rail breakpoint.
-    (function () {
-      var d = document.querySelector(".toc details");
-      var wide = matchMedia("(min-width: 78rem)");
-      function sync() { d.open = wide.matches; }
-      sync();
-      wide.addEventListener("change", sync);
-      d.addEventListener("toggle", function () { if (wide.matches && !d.open) d.open = true; });
-    })();
-  </script>
 </body>
 </html>

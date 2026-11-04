@@ -228,7 +228,7 @@ Report each finding as one line in `DESIGN.md` `## Open issues`, with evidence â
 - [ ] Each `status.*` is a fg/bg pair per theme, fg at 4.5:1 on the page and its tint.
 - [ ] Each `exception.<name>` has a written reason no other element shares; only its mark is coloured.
 - [ ] Each hue family answers one question (what, how, where, who) and never another's.
-- [ ] One hue calls for action; the reader's current location is uncoloured; done is coloured only where the dial says completion is the news.
+- [ ] One hue calls for action; the reader's current location follows the dial (the accent tint under product and expressive, uncoloured under editorial); done is coloured only where the dial says completion is the news.
 - [ ] Accents, status pairs, exceptions and family hues are re-picked per theme; every gradient stop moves; marks clear 3:1 on every ground.
 - [ ] Dark `surface.page` and light `text.primary` are near-black, not `#000`.
 - [ ] With a toggle, the theme is a root attribute or class set by a blocking inline script before the stylesheet.

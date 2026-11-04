@@ -3,30 +3,25 @@
   const $$ = (sel, root = document) => [...root.querySelectorAll(sel)];
 
   /* ---------- Toast ---------- */
-  // Toasts carry failures, undo windows and results the reader can't see happen (product patterns dial).
+  /* Toasts are for failures, undo windows and results the reader can't see happen;
+     a save confirms in place, in the form's own status line. */
   const toast = $("#toast");
-  const toastText = $(".toast__text", toast);
-  const toastAction = $(".toast__action", toast);
   let toastTimer;
-  let toastUndo = null;
-  function hideToast() {
-    toast.classList.remove("is-visible");
-    toastUndo = null;
-  }
-  function showToast(text, undo) {
-    toastText.textContent = text;
-    toastUndo = undo || null;
-    toastAction.hidden = !undo;
+  function hideToast() { toast.classList.remove("is-visible"); }
+  function showToast(text, action) {
+    toast.textContent = text;
+    if (action) {
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "toast__action";
+      btn.textContent = action.label;
+      btn.addEventListener("click", () => { hideToast(); action.run(); });
+      toast.append(" ", btn);
+    }
     toast.classList.add("is-visible");
     clearTimeout(toastTimer);
-    toastTimer = setTimeout(hideToast, undo ? 6000 : 2600);
+    toastTimer = setTimeout(hideToast, action ? 6000 : 2600);
   }
-  toastAction.addEventListener("click", () => {
-    const undo = toastUndo;
-    clearTimeout(toastTimer);
-    hideToast();
-    if (undo) undo();
-  });
 
   /* ---------- Field helpers ---------- */
   function setError(input, message) {
@@ -54,7 +49,7 @@
       button.classList.remove("is-loading");
       button.disabled = false;
       status.className = "status is-ok";
-      status.textContent = "Saved just now";
+      status.textContent = "✓ Saved just now";
       done && done();
     }, 800);
   }
@@ -92,9 +87,8 @@
   }
 
   email.addEventListener("blur", () => setError(email, validateEmail(email)));
-  // An error clears as soon as the value changes; the check runs again on blur and on save.
   email.addEventListener("input", () => {
-    if (email.closest(".field--invalid")) setError(email, "");
+    if (email.closest(".field--invalid")) setError(email, validateEmail(email));
   });
   fullName.addEventListener("input", () => {
     if (!avatar.style.backgroundImage) avatar.textContent = initials(fullName.value);
@@ -193,7 +187,8 @@
   }
 
   pwNew.addEventListener("input", () => {
-    checkRules();
+    const ok = checkRules();
+    if (ok && pwNew.closest(".field--invalid")) setError(pwNew, "");
     if (pwConfirm.value) checkConfirm();
   });
   pwConfirm.addEventListener("input", () => {
@@ -222,20 +217,17 @@
     e.preventDefault();
     const status = $(".status", pwForm);
     setError(pwCurrent, pwCurrent.value ? "" : "Enter your current password.");
+    // The rules are this field's hint, so its error shows on them rather than in a line beside them
     const rulesOk = checkRules();
-    if (!rulesOk) {
-      ensureMsg(pwNew);
-      setError(pwNew, pwNew.value ? "Your new password doesn’t meet every requirement yet." : "Choose a new password.");
-    } else {
-      setError(pwNew, "");
-    }
+    pwNew.closest(".field").classList.toggle("field--invalid", !rulesOk);
+    pwNew.setAttribute("aria-invalid", rulesOk ? "false" : "true");
     if (!pwConfirm.value) setError(pwConfirm, "Confirm your new password.");
     else checkConfirm();
 
     const firstInvalid = $(".field--invalid input", pwForm);
     if (firstInvalid) {
       status.className = "status is-error";
-      status.textContent = "Check the fields above.";
+      status.textContent = "Fix the highlighted fields to update your password.";
       firstInvalid.focus();
       return;
     }
@@ -246,7 +238,7 @@
         strength.dataset.score = 0;
         pwConfirm.closest(".field").classList.remove("field--valid");
         status.className = "status is-ok";
-        status.textContent = "Password updated";
+        status.textContent = "✓ Password updated";
       });
     });
   });
@@ -257,30 +249,26 @@
   });
 
   /* ---------- Connected accounts ---------- */
-  function renderConnection(row, connected) {
+  function setConnected(row, on) {
     const badge = $(".badge", row);
     const btn = $(".js-connect", row);
-    row.dataset.connected = String(connected);
-    badge.className = connected ? "badge badge--ok" : "badge";
-    badge.textContent = connected ? "Connected" : "Not connected";
-    btn.className = connected ? "btn btn--secondary btn--sm js-connect" : "btn btn--primary btn--sm js-connect";
-    btn.textContent = connected ? "Disconnect" : "Connect";
+    row.dataset.connected = String(on);
+    badge.className = on ? "badge badge--ok" : "badge";
+    badge.textContent = on ? "Connected" : "Not connected";
+    btn.className = on ? "btn btn--secondary btn--sm js-connect" : "btn btn--primary btn--sm js-connect";
+    btn.textContent = on ? "Disconnect" : "Connect";
   }
   $$(".js-connect").forEach((btn) => {
     btn.addEventListener("click", () => {
       const row = btn.closest(".connection");
       const service = btn.dataset.service;
-      if (row.dataset.connected === "true") {
-        // Reversible: act now, offer Undo, no dialog.
-        renderConnection(row, false);
-        showToast(`${service} disconnected`, () => renderConnection(row, true));
-        return;
-      }
-      // Connecting is the provider's answer, so it waits for it; the row itself shows the result.
+      const connected = row.dataset.connected === "true";
       btn.classList.add("is-loading");
       setTimeout(() => {
         btn.classList.remove("is-loading");
-        renderConnection(row, true);
+        setConnected(row, !connected);
+        // Disconnecting is reversible, so it asks nothing and offers Undo
+        if (connected) showToast(`${service} disconnected`, { label: "Undo", run: () => setConnected(row, true) });
       }, 700);
     });
   });
@@ -295,54 +283,36 @@
     if (typeof dialog.showModal === "function") dialog.showModal();
     confirmInput.focus();
   });
-  const matches = () => confirmInput.value.trim().toLowerCase() === "delete my account";
-  let deleting = false;
   confirmInput.addEventListener("input", () => {
-    confirmBtn.disabled = !matches();
+    confirmBtn.disabled = confirmInput.value.trim().toLowerCase() !== "delete my account";
   });
-  // Held open while the deletion runs, so a failure has somewhere to be reported.
+  // Held open, with a pending label, until the deletion is accepted
   $("#delete-form").addEventListener("submit", (e) => {
     if (e.submitter !== confirmBtn) return;
     e.preventDefault();
-    if (!matches() || deleting) return;
-    deleting = true;
+    confirmBtn.classList.add("is-loading");
     confirmBtn.disabled = true;
     confirmBtn.textContent = "Deleting…";
-    $$("#delete-form .btn--ghost").forEach((b) => (b.disabled = true));
     setTimeout(() => {
-      deleting = false;
+      confirmBtn.classList.remove("is-loading");
       confirmBtn.textContent = "Delete account";
-      $$("#delete-form .btn--ghost").forEach((b) => (b.disabled = false));
       dialog.close("confirm");
-    }, 800);
-  });
-  dialog.addEventListener("cancel", (e) => {
-    if (deleting) e.preventDefault();
-  });
-  dialog.addEventListener("close", () => {
-    if (dialog.returnValue === "confirm") showToast("Account scheduled for deletion. Check your email to finish.");
+      showToast("Account scheduled for deletion. Check your email to finish.");
+    }, 900);
   });
 
-  /* ---------- Search shortcut: the ⌘K hint in the search field works ---------- */
+  /* ---------- ⌘K focuses search, as its hint promises ---------- */
   const search = $(".search input");
   document.addEventListener("keydown", (e) => {
-    if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k" && search && search.offsetParent) {
+    if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k" && search.offsetParent) {
       e.preventDefault();
       search.focus();
     }
   });
 
   /* ---------- Section nav highlight ---------- */
-  const sidenav = $(".sidenav");
-  const marker = $(".sidenav__marker");
   const links = $$(".sidenav a");
   const sections = links.map((a) => document.querySelector(a.getAttribute("href")));
-  function placeMarker() {
-    const a = $(".sidenav a.is-active");
-    if (!a || !marker) return;
-    marker.style.setProperty("--marker-y", a.offsetTop + "px");
-    marker.style.setProperty("--marker-h", a.offsetHeight + "px");
-  }
   function setActive(id) {
     links.forEach((a) => {
       const on = a.getAttribute("href") === "#" + id;
@@ -350,14 +320,6 @@
       if (on) a.setAttribute("aria-current", "true");
       else a.removeAttribute("aria-current");
     });
-    placeMarker();
-  }
-  // The marker is placed before it is shown, and animates only after that, so it never flies in on load.
-  if (marker) {
-    placeMarker();
-    sidenav.classList.add("has-marker");
-    requestAnimationFrame(() => requestAnimationFrame(() => sidenav.classList.add("is-ready")));
-    window.addEventListener("resize", placeMarker, { passive: true });
   }
   if ("IntersectionObserver" in window) {
     const visible = new Map();

@@ -11,6 +11,7 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+  <a class="skip-link" href="#main">Skip to content</a>
   <svg width="0" height="0" style="position:absolute" aria-hidden="true">
     <defs>
       <symbol id="i-overview" viewBox="0 0 20 20"><rect x="3" y="3" width="6" height="6" rx="1.5"/><rect x="11" y="3" width="6" height="6" rx="1.5"/><rect x="3" y="11" width="6" height="6" rx="1.5"/><rect x="11" y="11" width="6" height="6" rx="1.5"/></symbol>
@@ -35,10 +36,7 @@
     </defs>
   </svg>
 
-  <a class="skip-link" href="#main">Skip to content</a>
-
   <div class="app">
-    <div class="scrim" id="scrim" hidden></div>
     <aside class="sidebar" id="sidebar" aria-label="Primary">
       <div class="brand">
         <span class="brand-mark" aria-hidden="true">
@@ -56,7 +54,7 @@
         <svg class="icon ws-chevron" aria-hidden="true"><use href="#i-chevrons"/></svg>
       </button>
 
-      <nav class="nav" aria-label="Main">
+      <nav class="nav">
         <p class="nav-label">Analytics</p>
         <ul>
           <li><a href="#" class="nav-link is-active" aria-current="page"><svg class="icon" aria-hidden="true"><use href="#i-overview"/></svg>Overview</a></li>
@@ -83,6 +81,7 @@
         </div>
       </div>
     </aside>
+    <div class="scrim" id="scrim" hidden></div>
 
     <div class="main">
       <header class="topbar">
@@ -90,8 +89,10 @@
           <button class="icon-btn menu-btn" id="menuBtn" type="button" aria-label="Open navigation" aria-controls="sidebar" aria-expanded="false">
             <svg class="icon" aria-hidden="true"><use href="#i-menu"/></svg>
           </button>
-          <div class="crumb">
-            <span>Fieldnote</span><span class="sep" aria-hidden="true">/</span><span>app.fieldnote.io</span><span class="sep" aria-hidden="true">/</span><h1>Overview</h1>
+          <div class="crumbs">
+            <span class="crumb">Fieldnote</span><span class="crumb-sep" aria-hidden="true">/</span>
+            <span class="crumb">app.fieldnote.io</span><span class="crumb-sep" aria-hidden="true">/</span>
+            <h1>Overview</h1>
           </div>
         </div>
 
@@ -120,55 +121,55 @@
             </ul>
           </div>
 
-          <button class="icon-btn" type="button" aria-label="Notifications, unread">
+          <button class="icon-btn" type="button" aria-label="Notifications, some unread">
             <svg class="icon" aria-hidden="true"><use href="#i-bell"/></svg>
             <span class="dot" aria-hidden="true"></span>
           </button>
         </div>
       </header>
 
-      <main class="content" id="main" tabindex="-1">
+      <main class="content" id="main">
         <section class="metrics" aria-label="Headline metrics">
-          <div class="metric">
-            <p class="metric-label">Visitors</p>
+          <article class="metric">
+            <h2 class="metric-label">Visitors</h2>
             <p class="metric-value num">43,264</p>
             <p class="metric-foot">
-              <span class="delta up"><svg aria-hidden="true"><use href="#i-up"/></svg><span class="sr-only">Up </span>17.5%</span>
+              <span class="delta up"><svg aria-hidden="true"><use href="#i-up"/></svg>17.5%</span>
               <span class="muted">vs 36,818 prior 30 days</span>
             </p>
-          </div>
-          <div class="metric">
-            <p class="metric-label">Sign-ups</p>
+          </article>
+          <article class="metric">
+            <h2 class="metric-label">Sign-ups</h2>
             <p class="metric-value num">1,152</p>
             <p class="metric-foot">
-              <span class="delta up"><svg aria-hidden="true"><use href="#i-up"/></svg><span class="sr-only">Up </span>11.7%</span>
+              <span class="delta up"><svg aria-hidden="true"><use href="#i-up"/></svg>11.7%</span>
               <span class="muted">vs 1,031 prior 30 days</span>
             </p>
-          </div>
-          <div class="metric">
-            <p class="metric-label">Conversion rate</p>
+          </article>
+          <article class="metric">
+            <h2 class="metric-label">Conversion rate</h2>
             <p class="metric-value num">2.66%</p>
             <p class="metric-foot">
-              <span class="delta down"><svg aria-hidden="true"><use href="#i-down"/></svg><span class="sr-only">Down </span>0.14 pts</span>
+              <span class="delta down"><svg aria-hidden="true"><use href="#i-down"/></svg>0.14 pts</span>
               <span class="muted">vs 2.80% prior 30 days</span>
             </p>
-          </div>
-          <div class="metric">
-            <p class="metric-label">Revenue</p>
+          </article>
+          <article class="metric">
+            <h2 class="metric-label">Revenue</h2>
             <p class="metric-value num">$18,940</p>
             <p class="metric-foot">
-              <span class="delta up"><svg aria-hidden="true"><use href="#i-up"/></svg><span class="sr-only">Up </span>16.8%</span>
+              <span class="delta up"><svg aria-hidden="true"><use href="#i-up"/></svg>16.8%</span>
               <span class="muted">vs $16,210 prior 30 days</span>
             </p>
-          </div>
+          </article>
         </section>
 
         <div class="grid">
-          <section class="card chart-card" aria-labelledby="chartTitle">
-            <div class="card-head">
+          <section class="chart-section" aria-labelledby="chartTitle">
+            <div class="section-head">
               <div>
-                <h2 id="chartTitle" class="card-title">Daily visitors</h2>
-                <p class="card-sub">Unique visitors per day, last 30 days</p>
+                <h2 id="chartTitle" class="section-title">Daily visitors</h2>
+                <p class="section-sub">Unique visitors per day, last 30 days</p>
               </div>
               <ul class="legend">
                 <li><span class="swatch swatch-current"></span>This period</li>
@@ -225,10 +226,10 @@
           </section>
 
           <section class="card activity-card" aria-labelledby="activityTitle">
-            <div class="card-head">
+            <div class="section-head">
               <div>
-                <h2 id="activityTitle" class="card-title">Recent activity</h2>
-                <p class="card-sub">Your team and your tracking</p>
+                <h2 id="activityTitle" class="section-title">Recent activity</h2>
+                <p class="section-sub">Your team and your tracking</p>
               </div>
               <a href="#" class="link">All activity</a>
             </div>
@@ -241,7 +242,7 @@
                 </div>
               </li>
               <li class="feed-item">
-                <span class="feed-icon fi-grey" aria-hidden="true"><svg class="icon"><use href="#i-bolt"/></svg></span>
+                <span class="feed-icon fi-green" aria-hidden="true"><svg class="icon"><use href="#i-bolt"/></svg></span>
                 <div class="feed-body">
                   <p><strong>Spike detected</strong> · 64 sign-ups in the last hour, 3.1× the usual rate</p>
                   <time datetime="2026-11-04T10:02">58 min ago</time>
@@ -255,7 +256,7 @@
                 </div>
               </li>
               <li class="feed-item">
-                <span class="feed-icon fi-grey" aria-hidden="true"><svg class="icon"><use href="#i-mail"/></svg></span>
+                <span class="feed-icon fi-blue" aria-hidden="true"><svg class="icon"><use href="#i-mail"/></svg></span>
                 <div class="feed-body">
                   <p><strong>Weekly digest</strong> sent to 6 teammates</p>
                   <time datetime="2026-11-02T09:00">Mon, 9:00</time>
@@ -285,11 +286,11 @@
             </ol>
           </section>
 
-          <section class="card table-card" aria-labelledby="pagesTitle">
-            <div class="card-head">
+          <section class="table-section" aria-labelledby="pagesTitle">
+            <div class="section-head">
               <div>
-                <h2 id="pagesTitle" class="card-title">Top pages</h2>
-                <p class="card-sub">By views, last 30 days</p>
+                <h2 id="pagesTitle" class="section-title">Top pages</h2>
+                <p class="section-sub">By views, last 30 days</p>
               </div>
               <a href="#" class="link">All pages</a>
             </div>
@@ -323,7 +324,7 @@
                   <tr>
                     <td><span class="path">/blog/event-tracking-without-cookies</span><span class="bar" style="--w:28.3%"></span></td>
                     <td class="r num">5,214</td><td class="r num">4,870</td><td class="r num">4:05</td>
-                    <td class="r num"><span class="flag"><svg class="icon" aria-hidden="true"><use href="#i-alert"/></svg>61.3%<span class="sr-only"> (above the 60% alert)</span></span></td>
+                    <td class="r num"><span class="flag"><svg class="flag-icon" aria-hidden="true"><use href="#i-alert"/></svg>61.3%<span class="sr-only">, above the 60% alert threshold</span></span></td>
                   </tr>
                   <tr>
                     <td><span class="path">/features/funnels</span><span class="bar" style="--w:21.5%"></span></td>

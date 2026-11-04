@@ -29,48 +29,60 @@
 
   --font: "Inter", "Inter Fallback", system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-display: "Inter Tight", "Inter Tight Fallback", "Inter", system-ui, sans-serif;
+  --container: 1200px;
 
-  /* Type ladder — sizes by role (rem from a 16px root) */
-  --text-heading: clamp(1.75rem, 1.543rem + 0.884vw, 2.25rem); /* 28 → 36, section h2 */
-  --text-sub: 1.3125rem; /* 21px, h3 */
-  --text-lead: 1.1875rem; /* 19px, hero lead and section deks */
-  --text-body: 1.0625rem; /* 17px, reading copy */
-  --text-ui: 0.9375rem; /* 15px, buttons, nav */
-  --text-meta: 0.875rem; /* 14px, meta, labels, small buttons */
-  --text-eyebrow: 0.8125rem; /* 13px, eyebrows and tags */
-  --text-price: 3rem; /* 48px, plan prices (data) */
+  /* Type ladder: one size per role (DESIGN.md ## Type) */
+  --text-display: clamp(3rem, 2.6rem + 1.7vw, 3.875rem); /* 48px at 375 → 62px at 1200 */
+  --text-heading: clamp(1.75rem, 1.409rem + 1.455vw, 2.5rem); /* 28px at 375 → 40px at 1200 */
+  --text-price: 3rem; /* 48px, type.data on plan cards */
+  --text-subheading: 1.25rem; /* 20px */
+  --text-lead: 1.25rem; /* 20px, separated from subheading on weight and leading */
+  --text-body: 1.0625rem; /* 17px */
+  --text-ui: 1rem; /* 16px */
+  --text-meta: 0.875rem; /* 14px */
+  --text-label: 0.8125rem; /* 13px */
+  --text-fine: 0.75rem; /* 12px, the readable floor: product visual only */
+
   --weight-regular: 400;
   --weight-strong: 600;
-  --weight-display: 700; /* the hero headline only */
-  --container: 1200px;
+  --weight-display: 700;
 }
 
-/* Metric-matched fallbacks: if the webfont swaps in, lines don't move */
+/* Metric-matched fallbacks, so the swap to the webfont doesn't move the text */
 @font-face {
   font-family: "Inter Fallback";
-  src: local("Arial"), local("ArialMT");
   font-weight: 400;
-  size-adjust: 106.7%;
-  ascent-override: 90.8%;
-  descent-override: 22.6%;
+  src: local("Arial"), local("ArialMT");
+  size-adjust: 106.6%;
+  ascent-override: 91%;
+  descent-override: 22.5%;
   line-gap-override: 0%;
 }
 @font-face {
   font-family: "Inter Fallback";
-  src: local("Arial Bold"), local("Arial-BoldMT");
   font-weight: 600;
-  size-adjust: 102.1%;
-  ascent-override: 94.9%;
-  descent-override: 23.6%;
+  src: local("Arial Bold"), local("Arial-BoldMT");
+  size-adjust: 101.2%;
+  ascent-override: 95.8%;
+  descent-override: 23.7%;
   line-gap-override: 0%;
 }
 @font-face {
   font-family: "Inter Tight Fallback";
+  font-weight: 600;
   src: local("Arial Bold"), local("Arial-BoldMT");
-  font-weight: 600 700;
-  size-adjust: 96.7%;
-  ascent-override: 100.2%;
-  descent-override: 24.9%;
+  size-adjust: 93.9%;
+  ascent-override: 103.3%;
+  descent-override: 25.6%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: "Inter Tight Fallback";
+  font-weight: 700;
+  src: local("Arial Bold"), local("Arial-BoldMT");
+  size-adjust: 95.9%;
+  ascent-override: 101.1%;
+  descent-override: 25%;
   line-gap-override: 0%;
 }
 
@@ -81,7 +93,6 @@
 }
 
 html {
-  font-synthesis: none;
   scroll-behavior: smooth;
   -webkit-text-size-adjust: 100%;
 }
@@ -90,9 +101,11 @@ body {
   margin: 0;
   font-family: var(--font);
   font-size: var(--text-body);
+  font-weight: var(--weight-regular);
   line-height: 1.6;
   color: var(--ink);
   background: var(--bg);
+  font-synthesis: none;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
@@ -104,9 +117,8 @@ h4 {
   font-family: var(--font-display);
   font-weight: var(--weight-strong);
   margin: 0;
-  line-height: 1.2;
-  letter-spacing: -0.02em;
-  text-wrap: balance;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
 }
 
 b,
@@ -157,7 +169,7 @@ a {
   align-items: center;
   justify-content: center;
   gap: 8px;
-  font: var(--weight-strong) var(--text-ui)/1 var(--font);
+  font: var(--weight-strong) var(--text-ui) / 1 var(--font);
   text-decoration: none;
   border-radius: 999px;
   padding: 12px 20px;
@@ -174,8 +186,7 @@ a {
   height: 18px;
 }
 .btn-sm {
-  padding: 9px 16px;
-  font-size: var(--text-meta);
+  padding: 10px 16px;
 }
 .btn-lg {
   padding: 15px 24px;
@@ -239,7 +250,7 @@ a {
   align-items: center;
   gap: 10px;
   text-decoration: none;
-  font: var(--weight-strong) 19px/1 var(--font-display);
+  font: 700 19px/1 var(--font-display);
   letter-spacing: -0.02em;
 }
 .brand-mark {
@@ -254,7 +265,7 @@ a {
 .nav a,
 .link-quiet {
   font-size: var(--text-ui);
-  line-height: 1;
+  font-weight: var(--weight-regular);
   color: var(--ink-2);
   text-decoration: none;
   transition: color 0.15s ease;
@@ -294,8 +305,9 @@ a {
   border-radius: 999px;
   background: #fff;
   border: 1px solid var(--line);
-  font-size: var(--text-meta);
-  line-height: 1.4;
+  font-size: var(--text-label);
+  font-weight: var(--weight-strong);
+  line-height: 1.2;
   color: var(--ink-2);
   box-shadow: var(--shadow-sm);
 }
@@ -306,22 +318,18 @@ a {
   background: var(--accent);
   box-shadow: 0 0 0 4px var(--accent-soft);
 }
-.hero-copy {
-  container-type: inline-size;
-}
-/* Display: derived from the text column (Inter Tight 700 advance 0.459em):
-   14 characters a line at a 335px column → 52px, 19 at 505px → 59px */
 .hero h1 {
   margin-top: 24px;
-  font-size: clamp(3.25rem, 2.39rem + 4.12cqi, 3.75rem);
+  font-size: var(--text-display);
   line-height: 1.02;
-  letter-spacing: -0.035em;
+  letter-spacing: -0.03em;
   font-weight: var(--weight-display);
+  text-wrap: balance;
 }
 .lead {
   margin-top: 24px;
   font-size: var(--text-lead);
-  line-height: 1.6;
+  line-height: 1.55;
   color: var(--ink-2);
   max-width: 34em;
 }
@@ -373,12 +381,13 @@ a {
   background: #e2e4ea;
 }
 .window-title {
-  font-size: 13px;
+  font-size: var(--text-label);
   font-weight: var(--weight-strong);
 }
 .window-chip {
   margin-left: auto;
-  font-size: 12px;
+  font-size: var(--text-fine);
+  font-weight: var(--weight-regular);
   color: var(--ink-2);
   padding: 4px 10px;
   border: 1px solid var(--line);
@@ -401,7 +410,7 @@ a {
   margin-bottom: 8px;
 }
 .planner-label {
-  font-size: 11px;
+  font-size: var(--text-fine);
   font-weight: var(--weight-strong);
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -415,7 +424,8 @@ a {
 }
 .hours-scale span {
   text-align: center;
-  font-size: 11px;
+  font-size: var(--text-fine);
+  font-weight: var(--weight-regular);
   color: var(--ink-3);
   font-variant-numeric: tabular-nums;
 }
@@ -435,13 +445,12 @@ a {
 }
 .who b {
   display: block;
-  font-size: 13px;
-  font-weight: var(--weight-strong);
+  font-size: var(--text-label);
   line-height: 1.2;
 }
 .who small {
   display: block;
-  font-size: 11px;
+  font-size: var(--text-fine);
   color: var(--ink-3);
   white-space: nowrap;
 }
@@ -452,7 +461,8 @@ a {
   height: 30px;
   border-radius: 6px;
   font-style: normal;
-  font-size: 11px;
+  font-size: var(--text-fine);
+  font-weight: var(--weight-regular);
   font-variant-numeric: tabular-nums;
 }
 .cells .w {
@@ -480,7 +490,8 @@ a {
   margin-top: 14px;
   padding-top: 14px;
   border-top: 1px solid var(--line-2);
-  font-size: 12px;
+  font-size: var(--text-fine);
+  line-height: 1.4;
   color: var(--ink-3);
 }
 .legend span {
@@ -529,13 +540,13 @@ a {
 }
 .suggest-top b {
   display: block;
-  font-size: 14px;
+  font-size: var(--text-meta);
   line-height: 1.3;
 }
 .suggest-top small {
   display: block;
   white-space: nowrap;
-  font-size: 12px;
+  font-size: var(--text-fine);
   color: var(--ink-3);
 }
 .suggest-badge {
@@ -560,7 +571,8 @@ a {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 6px;
-  font-size: 12px;
+  font-size: var(--text-fine);
+  line-height: 1.4;
 }
 .suggest-list li {
   display: flex;
@@ -580,8 +592,9 @@ a {
   border-radius: 999px;
   background: var(--accent);
   color: #fff;
-  font-size: 13px;
+  font-size: var(--text-label);
   font-weight: var(--weight-strong);
+  line-height: 1.2;
 }
 
 @keyframes float {
@@ -603,9 +616,9 @@ a {
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  font: 600 12px/1 var(--font);
+  font: var(--weight-strong) var(--text-fine) / 1 var(--font);
   color: #fff;
-  letter-spacing: 0.01em;
+  letter-spacing: 0.02em;
 }
 .a1 {
   background: linear-gradient(135deg, #ff8a5c, #e2512a);
@@ -630,6 +643,7 @@ a {
 .logos-title {
   text-align: center;
   font-size: var(--text-meta);
+  font-weight: var(--weight-regular);
   color: var(--ink-3);
 }
 .logo-row {
@@ -647,7 +661,7 @@ a {
   justify-content: center;
   gap: 8px;
   color: #7c8496;
-  font: var(--weight-strong) 19px/1 var(--font-display);
+  font: 700 19px/1 var(--font-display);
   letter-spacing: -0.02em;
   transition: color 0.2s ease;
 }
@@ -677,9 +691,9 @@ a {
   margin: 0;
 }
 .eyebrow {
-  font-size: var(--text-eyebrow);
-  line-height: 1.2;
+  font-size: var(--text-label);
   font-weight: var(--weight-strong);
+  line-height: 1.2;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--accent-ink);
@@ -687,10 +701,14 @@ a {
 .section-head h2 {
   margin-top: 12px;
   font-size: var(--text-heading);
+  font-weight: var(--weight-strong);
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  text-wrap: balance;
 }
 .section-sub {
   margin-top: 16px;
-  font-size: var(--text-lead);
+  font-size: var(--text-body);
   line-height: 1.5;
   color: var(--ink-2);
 }
@@ -736,16 +754,13 @@ a {
   stroke-linecap: round;
   stroke-linejoin: round;
 }
-.feature h3,
-.step h3,
-.plan h3 {
-  font-size: var(--text-sub);
-  line-height: 1.3;
-  letter-spacing: -0.01em;
+.feature h3 {
+  font-size: var(--text-subheading);
 }
 .feature p {
   margin-top: 8px;
   color: var(--ink-2);
+  line-height: 1.5;
 }
 
 /* Steps */
@@ -778,13 +793,17 @@ a {
   border-radius: 50%;
   background: var(--ink);
   color: #fff;
-  font: var(--weight-strong) var(--text-ui)/1 var(--font-display);
+  font: var(--weight-strong) var(--text-ui) / 1 var(--font-display);
   font-variant-numeric: tabular-nums;
   margin-bottom: 20px;
+}
+.step h3 {
+  font-size: var(--text-subheading);
 }
 .step p {
   margin-top: 8px;
   color: var(--ink-2);
+  line-height: 1.5;
 }
 .step-visual {
   margin-top: auto;
@@ -802,8 +821,9 @@ a {
   border-radius: 999px;
   border: 1px solid var(--line);
   background: var(--bg-tint);
-  font-size: var(--text-meta);
-  line-height: 1.4;
+  font-size: var(--text-label);
+  font-weight: var(--weight-regular);
+  line-height: 1.2;
   color: var(--ink-2);
 }
 .chip i {
@@ -833,7 +853,6 @@ a {
 .stack .avatar {
   width: 30px;
   height: 30px;
-  font-size: 11px;
   box-shadow: 0 0 0 2px #fff;
 }
 .stack .avatar + .avatar {
@@ -866,7 +885,6 @@ a {
 }
 .quote blockquote {
   margin: 0 0 28px;
-  font-size: var(--text-body);
   line-height: 1.6;
   color: #e7eaf2;
 }
@@ -879,17 +897,16 @@ a {
 .quote figcaption .avatar {
   width: 40px;
   height: 40px;
-  font-size: 13px;
 }
 .quote b {
   display: block;
-  font-size: var(--text-ui);
-  line-height: 1.4;
+  font-size: var(--text-meta);
+  line-height: 1.5;
 }
 .quote small {
   display: block;
   font-size: var(--text-meta);
-  line-height: 1.4;
+  line-height: 1.5;
   color: #9aa3b8;
 }
 
@@ -910,12 +927,14 @@ a {
   border: 1px solid var(--line);
   border-radius: var(--radius-lg);
 }
+.plan h3 {
+  font-size: var(--text-subheading);
+}
 .plan-desc {
   margin-top: 6px;
-  font-size: var(--text-ui);
   line-height: 1.5;
   color: var(--ink-3);
-  min-height: 48px;
+  min-height: 3em;
 }
 .price {
   display: flex;
@@ -924,7 +943,7 @@ a {
   margin: 20px 0 24px;
 }
 .amount {
-  font: var(--weight-strong) var(--text-price)/1 var(--font-display);
+  font: var(--weight-strong) var(--text-price) / 1 var(--font-display);
   letter-spacing: -0.03em;
   font-variant-numeric: tabular-nums;
 }
@@ -944,9 +963,9 @@ a {
   border-radius: 999px;
   background: var(--accent);
   color: #fff;
-  font-size: var(--text-eyebrow);
-  line-height: 1.2;
+  font-size: var(--text-label);
   font-weight: var(--weight-strong);
+  line-height: 1.2;
 }
 .checks {
   list-style: none;
@@ -956,7 +975,7 @@ a {
   display: grid;
   gap: 12px;
   font-size: var(--text-ui);
-  line-height: 1.5;
+  line-height: 1.4;
   color: var(--ink-2);
 }
 .checks li {
@@ -1012,8 +1031,8 @@ a {
   justify-content: space-between;
   gap: 16px;
   padding: 20px 24px;
+  font-family: var(--font-display);
   font-weight: var(--weight-strong);
-  font-size: var(--text-body);
   line-height: 1.4;
 }
 .faq summary::-webkit-details-marker {
@@ -1036,6 +1055,7 @@ a {
 .faq details p {
   padding: 0 24px 22px;
   color: var(--ink-2);
+  line-height: 1.5;
 }
 
 /* Final CTA */
@@ -1055,13 +1075,15 @@ a {
 }
 .final-card h2 {
   font-size: var(--text-heading);
+  line-height: 1.2;
+  letter-spacing: -0.02em;
   max-width: 16ch;
   margin: 0 auto;
+  text-wrap: balance;
 }
 .final-card p {
   margin: 18px auto 0;
   max-width: 34em;
-  font-size: var(--text-lead);
   line-height: 1.5;
   color: #c8cedc;
 }
@@ -1085,7 +1107,7 @@ a {
   max-width: 24em;
 }
 .footer h4 {
-  font: var(--weight-strong) var(--text-meta)/1.2 var(--font);
+  font: var(--weight-strong) var(--text-meta) / 1.2 var(--font);
   letter-spacing: 0;
   margin-bottom: 14px;
 }
@@ -1134,6 +1156,9 @@ a {
   .hero-grid {
     grid-template-columns: 1fr;
     gap: 56px;
+  }
+  .hero h1 {
+    max-width: 16ch;
   }
   .suggest {
     left: 24px;
@@ -1214,15 +1239,10 @@ a {
   .avatar {
     width: 30px;
     height: 30px;
-    font-size: 11px;
   }
   .hours-scale,
   .cells {
     gap: 2px;
-  }
-  .hours-scale span,
-  .cells i {
-    font-size: 10px;
   }
   .cells i {
     height: 26px;
@@ -1231,9 +1251,6 @@ a {
   .legend {
     flex-wrap: wrap;
     gap: 6px 14px;
-  }
-  .window-title {
-    font-size: 12px;
   }
   .product {
     padding-bottom: 0;
@@ -1254,9 +1271,6 @@ a {
   }
   .logo-row {
     grid-template-columns: repeat(2, 1fr);
-  }
-  .logo-row li {
-    font-size: 17px;
   }
   .final-card {
     padding: 56px 24px;

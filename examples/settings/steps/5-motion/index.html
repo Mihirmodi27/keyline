@@ -48,7 +48,6 @@
     <aside class="sidenav">
       <p class="sidenav__title">Settings</p>
       <nav aria-label="Settings sections">
-        <span class="sidenav__marker" aria-hidden="true"></span>
         <ul>
           <li><a href="#profile" class="is-active" aria-current="true">
             <svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="7" r="3.2" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M4 16.5c.9-2.8 3.2-4.3 6-4.3s5.1 1.5 6 4.3" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
@@ -81,19 +80,19 @@
       </header>
 
       <!-- Profile -->
-      <section class="card" id="profile" aria-labelledby="profile-title">
+      <section class="section" id="profile" aria-labelledby="profile-title">
         <form class="js-form" novalidate data-form="profile">
-          <div class="card__head">
+          <div class="section__head">
             <h2 id="profile-title">Profile</h2>
             <p>This is how teammates see you across projects, comments and mentions.</p>
           </div>
 
-          <div class="card__body">
+          <div class="section__body">
             <div class="photo">
               <span class="avatar avatar--lg" id="avatar" aria-hidden="true">PA</span>
               <div class="photo__text">
                 <p class="photo__label">Profile photo</p>
-                <p class="hint">PNG or JPG, at least 256 × 256 px. Up to 4 MB.</p>
+                <p class="hint">PNG or JPG, at least <span class="num">256 × 256</span> px. Up to 4 MB.</p>
                 <div class="photo__actions">
                   <label class="btn btn--secondary btn--sm">
                     <input type="file" accept="image/png,image/jpeg" class="visually-hidden" id="photo-input">
@@ -127,7 +126,7 @@
               <div class="field">
                 <label for="timezone">Time zone</label>
                 <div class="select-wrap">
-                  <select id="timezone" name="timezone" class="num" aria-describedby="tz-msg">
+                  <select id="timezone" name="timezone" aria-describedby="tz-msg">
                     <option value="America/Los_Angeles">(GMT−08:00) Los Angeles</option>
                     <option value="America/Denver">(GMT−07:00) Denver</option>
                     <option value="America/Chicago">(GMT−06:00) Chicago</option>
@@ -146,7 +145,7 @@
             </div>
           </div>
 
-          <div class="card__foot">
+          <div class="section__foot">
             <p class="status" role="status" aria-live="polite"></p>
             <button type="reset" class="btn btn--ghost">Cancel</button>
             <button type="submit" class="btn btn--primary">Save profile</button>
@@ -155,14 +154,14 @@
       </section>
 
       <!-- Notifications -->
-      <section class="card" id="notifications" aria-labelledby="notif-title">
+      <section class="section" id="notifications" aria-labelledby="notif-title">
         <form class="js-form" data-form="notifications">
-          <div class="card__head">
+          <div class="section__head">
             <h2 id="notif-title">Notifications</h2>
             <p>Choose what Northwind tells you about, and where.</p>
           </div>
 
-          <div class="card__body card__body--flush">
+          <div class="section__body section__body--flush">
             <table class="prefs">
               <thead>
                 <tr>
@@ -208,7 +207,7 @@
             </table>
           </div>
 
-          <div class="card__foot">
+          <div class="section__foot">
             <p class="status" role="status" aria-live="polite"></p>
             <button type="submit" class="btn btn--primary">Save preferences</button>
           </div>
@@ -216,14 +215,14 @@
       </section>
 
       <!-- Password -->
-      <section class="card" id="password" aria-labelledby="pw-title">
+      <section class="section" id="password" aria-labelledby="pw-title">
         <form class="js-form" novalidate data-form="password">
-          <div class="card__head">
+          <div class="section__head">
             <h2 id="pw-title">Password</h2>
             <p>Last changed 4 months ago. You’ll stay signed in on this device.</p>
           </div>
 
-          <div class="card__body">
+          <div class="section__body">
             <div class="stack">
               <div class="field">
                 <label for="pw-current">Current password</label>
@@ -253,7 +252,7 @@
             </div>
           </div>
 
-          <div class="card__foot">
+          <div class="section__foot">
             <a class="link" href="#">Forgot your password?</a>
             <p class="status" role="status" aria-live="polite"></p>
             <button type="submit" class="btn btn--primary">Update password</button>
@@ -262,13 +261,13 @@
       </section>
 
       <!-- Connected accounts -->
-      <section class="card" id="connections" aria-labelledby="conn-title">
-        <div class="card__head">
+      <section class="section" id="connections" aria-labelledby="conn-title">
+        <div class="section__head">
           <h2 id="conn-title">Connected accounts</h2>
           <p>Sign in faster and bring files, code and conversations into your projects.</p>
         </div>
 
-        <ul class="card__body card__body--flush connections">
+        <ul class="section__body section__body--flush connections">
           <li class="connection" data-connected="true">
             <span class="connection__logo">
               <svg viewBox="0 0 48 48" aria-hidden="true">
@@ -319,12 +318,12 @@
       </section>
 
       <!-- Danger zone -->
-      <section class="card card--danger" id="danger" aria-labelledby="danger-title">
-        <div class="card__head">
+      <section class="section section--danger" id="danger" aria-labelledby="danger-title">
+        <div class="section__head">
           <h2 id="danger-title">Danger zone</h2>
           <p>These actions are permanent and can’t be undone.</p>
         </div>
-        <div class="card__body danger-row">
+        <div class="section__body danger-row">
           <div>
             <p class="danger-row__title">Delete account</p>
             <p class="hint">Removes your profile, personal tasks and comments. Projects you own in Halcyon Studio will be transferred to a workspace admin. <a class="link" href="#">Export your data</a> first.</p>
@@ -333,7 +332,7 @@
         </div>
       </section>
 
-      <p class="footnote">Northwind · Workspace ID nw-<span class="id">48213</span> · <a class="link" href="#">Privacy</a> · <a class="link" href="#">Help centre</a></p>
+      <p class="footnote">Northwind · Workspace ID <span class="num">nw-48213</span> · <a class="link" href="#">Privacy</a> · <a class="link" href="#">Help centre</a></p>
     </main>
   </div>
 

@@ -25,15 +25,14 @@
   --font-read: "Source Serif 4", Georgia, "Times New Roman", serif;
   --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
 
-  /* Type ladder — one size per role (editorial, body 18px) */
-  --text-title: 2.5rem; /* 40px  type.title (2rem on phones) */
-  --text-heading: 1.5rem; /* 24px  type.heading · pull quote */
-  --text-lead: 1.25rem; /* 20px  type.lead · dek · card and author titles */
-  --text-body: 1.125rem; /* 18px  type.body */
-  --text-ui: 1rem; /* 16px  type.ui · notes */
-  --text-meta: 0.875rem; /* 14px  type.meta · type.data */
-  --text-label: 0.8125rem; /* 13px  type.label */
-  --text-code: 0.9375rem; /* 15px  type.code */
+  /* Type ladder (rem from a 16px root). Six sizes above the 12px floor, plus one phone step for the title. */
+  --size-title: 2.5rem; /* 40px  type.title */
+  --size-title-phone: 2rem; /* 32px  type.title under 640px, its one responsive step */
+  --size-heading: 1.5rem; /* 24px  type.heading, pull quote */
+  --size-dek: 1.25rem; /* 20px  type.supporting (dek), author name */
+  --size-body: 1.125rem; /* 18px  type.body, type.lead, type.subheading */
+  --size-ui: 0.9375rem; /* 15px  type.ui, type.data */
+  --size-meta: 0.875rem; /* 14px  type.meta, type.label, type.code */
   --weight-regular: 400;
   --weight-strong: 600;
 
@@ -85,7 +84,7 @@ body {
   background: var(--bg);
   color: var(--ink);
   font-family: var(--font-ui);
-  font-size: var(--text-ui);
+  font-size: var(--size-ui);
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
@@ -93,11 +92,6 @@ body {
 
 a {
   color: inherit;
-}
-
-strong,
-b {
-  font-weight: var(--weight-strong);
 }
 
 img,
@@ -168,7 +162,7 @@ svg {
   padding: 0 16px;
   border-radius: 999px;
   border: 0;
-  font: var(--weight-strong) var(--text-ui)/1 var(--font-ui);
+  font: var(--weight-strong) var(--size-ui)/1 var(--font-ui);
   text-decoration: none;
   cursor: pointer;
   transition: background-color 0.15s ease, transform 0.15s ease;
@@ -199,7 +193,7 @@ svg {
   height: 20px;
   fill: none;
   stroke: currentColor;
-  stroke-width: 1.75;
+  stroke-width: 1.7;
   stroke-linecap: round;
   stroke-linejoin: round;
 }
@@ -223,17 +217,17 @@ svg {
 .avatar--sm {
   width: 24px;
   height: 24px;
-  font-size: 0.625rem; /* lettermark, below the readable floor on purpose */
+  font-size: 10px;
 }
 .avatar--md {
   width: 44px;
   height: 44px;
-  font-size: var(--text-ui);
+  font-size: var(--size-ui);
 }
 .avatar--lg {
   width: 72px;
   height: 72px;
-  font-size: var(--text-heading);
+  font-size: var(--size-heading);
 }
 
 /* Header */
@@ -269,7 +263,7 @@ svg {
 }
 .brand__text {
   font-weight: var(--weight-strong);
-  font-size: var(--text-body);
+  font-size: var(--size-body);
 }
 .brand__by {
   font-weight: var(--weight-regular);
@@ -284,8 +278,7 @@ svg {
 .site-nav a {
   padding: 8px 12px;
   border-radius: 999px;
-  font-size: var(--text-ui);
-  line-height: 1;
+  font-size: var(--size-ui);
   color: var(--muted);
   text-decoration: none;
   transition: color 0.15s ease, background-color 0.15s ease;
@@ -318,14 +311,13 @@ svg {
   border-radius: 999px;
   background: var(--accent-soft);
   color: var(--accent-ink);
-  font-size: var(--text-label);
+  font-size: var(--size-meta);
   font-weight: var(--weight-strong);
   text-decoration: none;
 }
 .article-title {
   margin: 20px 0 0;
-  font-family: var(--font-read);
-  font-size: var(--text-title);
+  font-size: var(--size-title);
   line-height: 1.2;
   letter-spacing: -0.02em;
   font-weight: var(--weight-strong);
@@ -335,7 +327,7 @@ svg {
   margin: 20px auto 0;
   max-width: 700px;
   font-family: var(--font-read);
-  font-size: var(--text-lead);
+  font-size: var(--size-dek);
   line-height: 1.5;
   color: var(--ink-2);
   text-wrap: pretty;
@@ -360,8 +352,7 @@ svg {
   color: var(--accent-ink);
 }
 .byline__meta {
-  font-size: var(--text-meta);
-  font-variant-numeric: tabular-nums;
+  font-size: var(--size-meta);
   color: var(--muted);
 }
 .dot {
@@ -382,7 +373,7 @@ svg {
 }
 .cover figcaption {
   margin-top: 12px;
-  font-size: var(--text-meta);
+  font-size: var(--size-meta);
   color: var(--muted);
   text-align: center;
 }
@@ -393,12 +384,12 @@ svg {
 }
 .cv-label--strong {
   font-family: var(--font-ui);
-  font-weight: 600;
+  font-weight: var(--weight-strong);
   font-size: 18px;
   fill: #fff;
 }
 .cv-label--small {
-  font-size: 12px;
+  font-size: 13px;
   fill: #c9d6e6;
 }
 @media (prefers-reduced-motion: reduce) {
@@ -436,7 +427,8 @@ svg {
   gap: 6px;
 }
 .share__label {
-  font-size: var(--text-label);
+  font-size: var(--size-meta);
+  font-weight: var(--weight-strong);
   color: var(--muted);
   margin-bottom: 4px;
 }
@@ -453,9 +445,9 @@ svg {
 }
 .toc__title {
   margin: 0 0 12px;
-  font-size: var(--text-label);
+  font-size: var(--size-meta);
   font-weight: var(--weight-strong);
-  color: var(--ink);
+  color: var(--muted);
 }
 .toc ol {
   list-style: none;
@@ -468,7 +460,7 @@ svg {
   padding: 6px 0 6px 16px;
   margin-left: -1px;
   border-left: 2px solid transparent;
-  font-size: var(--text-meta);
+  font-size: var(--size-meta);
   line-height: 1.4;
   color: var(--muted);
   text-decoration: none;
@@ -481,10 +473,10 @@ svg {
 
 /* Prose */
 .prose > p,
-.prose > ul:not(.tags),
+.prose > ul,
 .prose > ol {
   font-family: var(--font-read);
-  font-size: var(--text-body);
+  font-size: var(--size-body);
   line-height: 1.7;
   color: var(--ink-2);
 }
@@ -492,13 +484,12 @@ svg {
   margin: 0 0 1.25em;
 }
 .prose .lead {
-  font-size: var(--text-lead);
-  line-height: 1.75;
+  line-height: 1.85;
   color: var(--ink);
 }
 .prose .lead::first-letter {
   float: left;
-  font-family: var(--font-read);
+  font-family: var(--font-ui);
   font-weight: var(--weight-strong);
   font-size: 4.1em;
   line-height: 0.82;
@@ -511,10 +502,9 @@ svg {
 }
 .prose > h2 {
   margin: 2.4em 0 0.7em;
-  font-family: var(--font-read);
-  font-size: var(--text-heading);
+  font-size: var(--size-heading);
   line-height: 1.3;
-  letter-spacing: -0.015em;
+  letter-spacing: -0.01em;
   font-weight: var(--weight-strong);
   color: var(--ink);
   text-wrap: balance;
@@ -566,15 +556,15 @@ svg {
 .pullquote p {
   margin: 0;
   font-family: var(--font-read);
-  font-size: var(--text-heading);
-  line-height: 1.35;
+  font-size: var(--size-heading);
+  line-height: 1.4;
   font-style: italic;
   color: var(--ink);
   text-wrap: balance;
 }
 .pullquote figcaption {
   margin-top: 16px;
-  font-size: var(--text-meta);
+  font-size: var(--size-meta);
   color: var(--muted);
 }
 .pullquote figcaption::before {
@@ -598,7 +588,7 @@ svg {
   padding: 12px 18px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   font-family: var(--font-mono);
-  font-size: var(--text-label);
+  font-size: var(--size-meta);
   color: #8fa0b6;
 }
 .code__file::before {
@@ -619,7 +609,7 @@ svg {
   padding: 20px 22px 22px;
   overflow-x: auto;
   font-family: var(--font-mono);
-  font-size: var(--text-code);
+  font-size: var(--size-meta);
   line-height: 1.6;
   tab-size: 4;
 }
@@ -642,13 +632,13 @@ svg {
 table {
   width: 100%;
   border-collapse: collapse;
-  font-size: var(--text-meta);
+  font-size: var(--size-ui);
   font-variant-numeric: tabular-nums;
 }
 caption {
   caption-side: bottom;
   padding: 12px 18px;
-  font-size: var(--text-meta);
+  font-size: var(--size-meta);
   color: var(--muted);
   text-align: left;
   border-top: 1px solid var(--line);
@@ -661,8 +651,8 @@ td {
   white-space: nowrap;
 }
 thead th {
-  font-size: var(--text-label);
-  font-weight: var(--weight-regular);
+  font-size: var(--size-meta);
+  font-weight: var(--weight-strong);
   color: var(--muted);
   border-bottom: 1px solid var(--line);
 }
@@ -688,6 +678,7 @@ tbody tr:hover > * {
   border-radius: 999px;
   background: var(--good-soft);
   color: var(--good);
+  font-size: var(--size-meta);
   font-weight: var(--weight-strong);
 }
 
@@ -705,7 +696,7 @@ tbody tr:hover > * {
   flex: none;
   width: 20px;
   height: 20px;
-  margin-top: 3px;
+  margin-top: 5px;
   fill: none;
   stroke: var(--accent);
   stroke-width: 1.75;
@@ -715,8 +706,8 @@ tbody tr:hover > * {
 .callout p {
   margin: 0;
   font-family: var(--font-read);
-  font-size: var(--text-ui);
-  line-height: 1.6;
+  font-size: var(--size-body);
+  line-height: 1.7;
   color: var(--ink-2);
 }
 .callout .callout__title {
@@ -741,7 +732,8 @@ tbody tr:hover > * {
   padding: 7px 14px;
   border-radius: 999px;
   border: 1px solid var(--line-strong);
-  font-size: var(--text-label);
+  font-family: var(--font-ui);
+  font-size: var(--size-meta);
   color: var(--ink-2);
   text-decoration: none;
   transition: border-color 0.15s ease, color 0.15s ease, background-color 0.15s ease;
@@ -772,24 +764,23 @@ tbody tr:hover > * {
   margin: 0;
 }
 .author-card__eyebrow {
-  font-size: var(--text-label);
+  font-size: var(--size-meta);
   color: var(--muted);
 }
 .author-card__name {
   margin: 4px 0 0;
-  font-family: var(--font-read);
-  font-size: var(--text-lead);
+  font-size: var(--size-dek);
   line-height: 1.3;
   font-weight: var(--weight-strong);
 }
 .author-card__role {
-  font-size: var(--text-meta);
+  font-size: var(--size-meta);
   color: var(--muted);
 }
 .author-card__bio {
   margin-top: 12px !important;
   font-family: var(--font-read);
-  font-size: var(--text-ui);
+  font-size: var(--size-body);
   line-height: 1.6;
   color: var(--ink-2);
 }
@@ -800,7 +791,7 @@ tbody tr:hover > * {
   margin-top: 16px;
 }
 .author-card__links a {
-  font-size: var(--text-meta);
+  font-size: var(--size-meta);
   font-weight: var(--weight-strong);
   color: var(--ink);
   text-decoration: none;
@@ -832,14 +823,13 @@ tbody tr:hover > * {
 }
 .related__head h2 {
   margin: 0;
-  font-family: var(--font-read);
-  font-size: var(--text-heading);
+  font-size: var(--size-heading);
   line-height: 1.3;
-  letter-spacing: -0.015em;
+  letter-spacing: -0.01em;
   font-weight: var(--weight-strong);
 }
 .link-arrow {
-  font-size: var(--text-ui);
+  font-size: var(--size-ui);
   font-weight: var(--weight-strong);
   text-decoration: none;
   color: var(--ink);
@@ -899,14 +889,13 @@ tbody tr:hover > * {
 }
 .post-card__meta {
   margin: 0;
-  font-size: var(--text-meta);
+  font-size: var(--size-meta);
   color: var(--accent-ink);
 }
 .post-card h3 {
   margin: 8px 0 20px;
-  font-family: var(--font-read);
-  font-size: var(--text-lead);
-  line-height: 1.3;
+  font-size: var(--size-body);
+  line-height: 1.35;
   font-weight: var(--weight-strong);
   text-wrap: balance;
 }
@@ -915,7 +904,7 @@ tbody tr:hover > * {
   align-items: center;
   gap: 8px;
   margin: auto 0 0;
-  font-size: var(--text-meta);
+  font-size: var(--size-meta);
   color: var(--muted);
 }
 
@@ -939,7 +928,7 @@ tbody tr:hover > * {
 .footer-brand p {
   margin: 16px 0 20px;
   max-width: 360px;
-  font-size: var(--text-ui);
+  font-size: var(--size-ui);
   line-height: 1.6;
   color: var(--footer-muted);
 }
@@ -957,7 +946,7 @@ tbody tr:hover > * {
   border: 1px solid #2c323d;
   background: #171b23;
   color: var(--footer-ink);
-  font: var(--text-ui) var(--font-ui);
+  font: var(--size-ui) var(--font-ui);
 }
 .subscribe input::placeholder {
   color: #6c7480;
@@ -977,12 +966,12 @@ tbody tr:hover > * {
 }
 .footer-col__title {
   margin: 4px 0 6px;
-  font-size: var(--text-label);
+  font-size: var(--size-meta);
   font-weight: var(--weight-strong);
   color: var(--footer-muted);
 }
 .footer-col a {
-  font-size: var(--text-ui);
+  font-size: var(--size-ui);
   color: var(--footer-ink);
   text-decoration: none;
   opacity: 0.85;
@@ -997,7 +986,7 @@ tbody tr:hover > * {
   border-radius: 999px;
   background: rgba(255, 122, 47, 0.16);
   color: #ff9a5c;
-  font-size: var(--text-label);
+  font-size: var(--size-meta);
 }
 .site-footer__base {
   max-width: var(--page);
@@ -1007,7 +996,7 @@ tbody tr:hover > * {
   justify-content: space-between;
   gap: 16px;
   border-top: 1px solid #222731;
-  font-size: var(--text-meta);
+  font-size: var(--size-meta);
   color: var(--footer-muted);
 }
 .site-footer__base p {
@@ -1072,7 +1061,7 @@ tbody tr:hover > * {
     text-align: left;
   }
   .article-title {
-    font-size: 2rem; /* type.title, one step down on phones */
+    font-size: var(--size-title-phone);
   }
   .cover {
     padding: 0;
@@ -1126,5 +1115,8 @@ tbody tr:hover > * {
   }
   .site-footer__base {
     flex-direction: column;
+  }
+  .subscribe input {
+    font-size: 16px; /* iOS zooms into a smaller field on focus */
   }
 }

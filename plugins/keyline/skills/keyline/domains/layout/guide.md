@@ -175,7 +175,7 @@ The `glass` preset takes its values from `glass/layout/`.
 3. **Derive the frame.** With a rail, `measure.frame` = `measure.reading` + 2 × (`measure.rail` + gap) + 2 × `gutter`, and `bp.rail` is that width; for a shell, set the region widths and where the inspector, then the nav, collapses.
 4. **Build spacing from ratios**: the base (4px) and `space.section`, the heading pair at the preset's ratio, then `space.tight` and `space.group` so every group's inner gap is at most half its outer one.
 5. **Stack the sections**: each a heading and its content on the page, figures in hairline-parted rows; list the things that are single objects, which alone get a card (the depth guide). Pick the one table style and the one group-label style for the preset.
-6. **Build the radius ladder inward** from `radius.container` through every concentric nesting (container → control → avatar), subtracting padding and snapping; anything inset past the outer radius takes the rung for its size.
+6. **Build the radius ladder inward** from `radius.container` through every concentric nesting (container → control → avatar), subtracting padding and snapping; anything inset past the outer radius takes the rung for its size. **Set the corner shape** from the dial in the same step: under editorial and product, `corner-shape: superellipse(1.5)` on everything, with pills and circles kept `round` (the snippet in `radius-lines-and-layers.md`). It costs one rule and is what makes rounded corners read as squircles rather than boxes.
 7. **Assign the three line jobs** per the preset, drawn as borders; no divider outranks its object's edge, and a frame matches the dividers inside it.
 8. **Write the z ladder** from law 7, dropping unused rungs and keeping the gaps.
 9. **List the forks and the gates**: which components ship twice and why; which collections are owner-curated (gated) and which are user data (empty states).
@@ -227,6 +227,7 @@ In a browser, resize from 320px to 2560px watching the rail gap, tab through col
 - [ ] Product: one navigation surface — a sidebar holding every destination, no top bar repeating it; every page under its own header bar, which is not navigation; an existing app's navigation surface kept unless a restructure is asked for, and shell features it lacks listed, not added; pages fill the panel, forms and settings cap at `measure.form`, and no page sets its own width or padding.
 - [ ] Rails anchor to the content's frame; sticky panels are capped with `dvh` and scroll within.
 - [ ] Below `bp.rail` the rail becomes an in-flow disclosure; fixed chrome has clearance on every template.
+- [ ] Corner shape matches the dial: editorial and product carry the `superellipse(1.5)` rule, with pills and circles `round`.
 - [ ] Inner radius = outer − padding at every concentric corner (inset under the outer radius); elements away from the corners take the ladder's radius for their size, never square by subtraction; `radius.pill` only on things without a top and bottom.
 - [ ] `hairline.chrome`, `hairline.object`, `rule.emphasis` have one job each; no divider outranks its object's edge; a frame matches its dividers; hairlines are borders; `border.layered` on translucent backdrops.
 - [ ] Every z-index is on the ladder; `z.dismiss` sits under what it dismisses; `z.skip-link` tops `z.overlay`.

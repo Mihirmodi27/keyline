@@ -38,7 +38,7 @@
       button.classList.remove("is-loading");
       button.disabled = false;
       status.className = "status is-ok";
-      status.textContent = "Saved just now";
+      status.textContent = "✓ Saved just now";
       done && done();
     }, 800);
   }
@@ -229,7 +229,7 @@
         strength.dataset.score = 0;
         pwConfirm.closest(".field").classList.remove("field--valid");
         status.className = "status is-ok";
-        status.textContent = "Password updated";
+        status.textContent = "✓ Password updated";
       });
       showToast("Password updated");
     });
@@ -286,16 +286,8 @@
   });
 
   /* ---------- Section nav highlight ---------- */
-  const sidenav = $(".sidenav");
-  const marker = $(".sidenav__marker");
   const links = $$(".sidenav a");
   const sections = links.map((a) => document.querySelector(a.getAttribute("href")));
-  function placeMarker() {
-    const a = $(".sidenav a.is-active");
-    if (!a || !marker) return;
-    marker.style.setProperty("--marker-y", a.offsetTop + "px");
-    marker.style.setProperty("--marker-h", a.offsetHeight + "px");
-  }
   function setActive(id) {
     links.forEach((a) => {
       const on = a.getAttribute("href") === "#" + id;
@@ -303,14 +295,6 @@
       if (on) a.setAttribute("aria-current", "true");
       else a.removeAttribute("aria-current");
     });
-    placeMarker();
-  }
-  // The marker is placed before it is shown, and animates only after that, so it never flies in on load.
-  if (marker) {
-    placeMarker();
-    sidenav.classList.add("has-marker");
-    requestAnimationFrame(() => requestAnimationFrame(() => sidenav.classList.add("is-ready")));
-    window.addEventListener("resize", placeMarker, { passive: true });
   }
   if ("IntersectionObserver" in window) {
     const visible = new Map();

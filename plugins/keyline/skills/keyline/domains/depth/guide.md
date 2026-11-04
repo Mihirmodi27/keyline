@@ -31,7 +31,7 @@ The ladder has only the rungs this project uses; the dial lists the most a prese
 
 In order of preference:
 
-1. **Unboxed** — a heading row, then the content straight on `surface.page`: rows parted by `border.divider`, figures by vertical hairlines, never an edge round a group of unlike content. A data table is one object, so under `product` it may take one hairline frame and a tinted header row.
+1. **Unboxed** — a heading row, then the content straight on `surface.page` (when the cards were white on a grey page, the page takes the cards' white: unboxing removes the boxes, not the brightness): rows parted by `border.divider`, figures by vertical hairlines, never an edge round a group of unlike content. A data table is one object, so under `product` it may take one hairline frame and a tinted header row.
 2. **A card** — one object: a decision awaiting approval, a document, a side rail. A rail with two topics is one card in two parts, parted by a divider; several items of one kind (three pending approvals) share one card the same way, not a card each.
 3. **A note** — an aside or caveat takes a hairline rule on its leading edge, not a tinted box.
 

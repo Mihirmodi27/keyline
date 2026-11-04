@@ -12,6 +12,7 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+  <div class="progress" aria-hidden="true"></div>
   <a class="skip" href="#main">Skip to article</a>
 
   <header class="site-header">
@@ -20,7 +21,7 @@
         <svg class="brand__mark" viewBox="0 0 32 32" aria-hidden="true">
           <rect width="32" height="32" rx="8" fill="currentColor"/>
           <path d="M9 21.5V10.5h8.5M9 16h6.5" fill="none" stroke="var(--bg)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
-          <circle cx="22.5" cy="20.5" r="2.6" fill="var(--brand-mark)"/>
+          <circle cx="22.5" cy="20.5" r="2.6" fill="var(--accent)"/>
         </svg>
         <span class="brand__text">Field Notes <span class="brand__by">by Halden</span></span>
       </a>
@@ -39,7 +40,6 @@
       </div>
     </div>
   </header>
-  <div class="progress" aria-hidden="true"></div>
 
   <main id="main">
     <article class="article">
@@ -363,7 +363,7 @@
           <svg class="brand__mark" viewBox="0 0 32 32" aria-hidden="true">
             <rect width="32" height="32" rx="8" fill="currentColor"/>
             <path d="M9 21.5V10.5h8.5M9 16h6.5" fill="none" stroke="var(--footer-bg)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
-            <circle cx="22.5" cy="20.5" r="2.6" fill="var(--brand-mark)"/>
+            <circle cx="22.5" cy="20.5" r="2.6" fill="var(--accent)"/>
           </svg>
           <span class="brand__text">Field Notes</span>
         </a>
@@ -392,16 +392,5 @@
       <p><a href="#">Privacy</a> · <a href="#">Imprint</a></p>
     </div>
   </footer>
-  <script>
-    // Contents: always open beside the text; a closed disclosure above it below the rail breakpoint.
-    (function () {
-      var d = document.querySelector(".toc details");
-      var wide = matchMedia("(min-width: 78rem)");
-      function sync() { d.open = wide.matches; }
-      sync();
-      wide.addEventListener("change", sync);
-      d.addEventListener("toggle", function () { if (wide.matches && !d.open) d.open = true; });
-    })();
-  </script>
 </body>
 </html>

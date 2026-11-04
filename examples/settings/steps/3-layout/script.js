@@ -38,7 +38,7 @@
       button.classList.remove("is-loading");
       button.disabled = false;
       status.className = "status is-ok";
-      status.textContent = "Saved just now";
+      status.textContent = "✓ Saved just now";
       done && done();
     }, 800);
   }
@@ -229,7 +229,7 @@
         strength.dataset.score = 0;
         pwConfirm.closest(".field").classList.remove("field--valid");
         status.className = "status is-ok";
-        status.textContent = "Password updated";
+        status.textContent = "✓ Password updated";
       });
       showToast("Password updated");
     });

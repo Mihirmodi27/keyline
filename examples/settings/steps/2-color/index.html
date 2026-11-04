@@ -6,7 +6,7 @@
   <title>Account settings · Northwind</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -92,7 +92,7 @@
               <span class="avatar avatar--lg" id="avatar" aria-hidden="true">PA</span>
               <div class="photo__text">
                 <p class="photo__label">Profile photo</p>
-                <p class="hint">PNG or JPG, at least 256 × 256 px. Up to 4 MB.</p>
+                <p class="hint">PNG or JPG, at least <span class="num">256 × 256</span> px. Up to 4 MB.</p>
                 <div class="photo__actions">
                   <label class="btn btn--secondary btn--sm">
                     <input type="file" accept="image/png,image/jpeg" class="visually-hidden" id="photo-input">
@@ -126,7 +126,7 @@
               <div class="field">
                 <label for="timezone">Time zone</label>
                 <div class="select-wrap">
-                  <select id="timezone" name="timezone" class="num" aria-describedby="tz-msg">
+                  <select id="timezone" name="timezone" aria-describedby="tz-msg">
                     <option value="America/Los_Angeles">(GMT−08:00) Los Angeles</option>
                     <option value="America/Denver">(GMT−07:00) Denver</option>
                     <option value="America/Chicago">(GMT−06:00) Chicago</option>
@@ -332,7 +332,7 @@
         </div>
       </section>
 
-      <p class="footnote">Northwind · Workspace ID nw-<span class="id">48213</span> · <a class="link" href="#">Privacy</a> · <a class="link" href="#">Help centre</a></p>
+      <p class="footnote">Northwind · Workspace ID <span class="num">nw-48213</span> · <a class="link" href="#">Privacy</a> · <a class="link" href="#">Help centre</a></p>
     </main>
   </div>
 

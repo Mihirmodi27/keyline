@@ -7,200 +7,202 @@
 | | |
 |---|---|
 | Product | Northwind, a project-management app; this is its account settings page |
-| Reader | Working — a returning user changing a few fields, scanning for the one setting they came for |
+| Reader | Working — a fluent user changing a few settings and leaving |
 | Preset | `product` |
-| Areas | None — one page |
-| Stack | Static HTML, one stylesheet (`styles.css`), vanilla JS (`script.js`); no build, no framework |
-| Tokens live in | `styles.css` `:root` (colour, shadow, radius, font) |
-| Themes | `light`, `dark` — `@media (prefers-color-scheme: dark)` re-tints the same custom properties; `color-scheme` declared per theme |
-| Motion | CSS transitions and keyframes only; JS toggles classes |
-
-Evidence for `product`: a form-and-toggle settings screen inside an app shell (top bar with Projects / My tasks / Inbox / Reports, a section sidebar), 4 forms with save buttons, a preferences table, connection rows and a destructive action. No prose, no marketing. The codebase uses four weights and two uppercase labels, which the preset doesn't change — they are open issues.
+| Areas | none |
+| Stack | Static HTML, one stylesheet (`styles.css`), vanilla JS (`script.js`); no framework |
+| Tokens live in | `styles.css` `:root` (25 custom properties) |
+| Themes | `light`, `dark` — `@media (prefers-color-scheme: dark)` re-defines the `:root` tokens; `color-scheme` declared per theme; no toggle (kept as is: user decision) |
+| Motion | CSS transitions and one `@keyframes` (dialog), no library |
 
 ## Type
 
-**Families** — `family.text`: Inter (Google Fonts `<link>`, `display=swap`, weights 400, 500 and 600 only), fallback `system-ui` stack, declared as `--font`. No mono family. `font-synthesis: none` on `body`.
+**Families** — `family.text`: Inter (Google Fonts `<link>`, `wght@400;500;600`), fallback `system-ui` stack, declared as `--font`. No mono. `font-synthesis: none` on `body`.
 
-Type tokens in `styles.css` `:root` (proposed 2026-11-04, `rem` from a 16px root):
+Sizes are `rem` tokens in `styles.css` `:root` (proposed 2026-11-04, in the project's short-name style).
 
 | Role | Name here | Size | Leading | Tracking | Weight | Tier |
 |---|---|---|---|---|---|---|
-| `type.title` | `--type-title` (`.page-head h1`) | 1.25rem (20px) | 1.3 | −0.02em | `--weight-heading` | `--text` |
-| `type.heading` | `--type-heading` (`.card__head h2`, `.modal h2`) | 1rem (16px) | 1.35 | −0.02em | `--weight-heading` | `--text` |
-| `type.body` | `--type-body` (`body`) | 0.875rem (14px) | 1.5 | 0 | `--weight-regular` | `--text` |
-| ↳ row title (project role) | `.prefs__name`, `.connection__name`, `.danger-row__title`, `.photo__label`, `.sidenav__plan-name` | 14px | 1.5 | 0 | `--weight-strong` | `--text` — separated from body by weight |
-| `type.supporting` | `.page-head p`, `.card__head p`, `.modal p` | 14px | 1.45 | 0 | `--weight-regular` | `--text-2` — separated by tier |
-| `type.ui` | `--type-ui` (`.btn`, inputs, `.topnav a`, `.sidenav a`, `.reveal`, toast) | 0.8125rem (13px); inputs 1rem ≤760 | 1 in fixed-height boxes, 1.4 in nav rows | 0 | regular; strong on buttons, top nav and the active side-nav item | `--text-2` / `--text` |
-| `type.label` | `--type-meta` (`.field label`) | 0.75rem (12px) | 1.3 | 0 | `--weight-strong` | `--text-2` |
-| ↳ group label (project role) | `.sidenav__title` | 12px, sentence case | 1.3 | 0 | `--weight-regular` | `--text-3` — separated by tier and a hairline rule |
-| ↳ table header label (project role) | `.prefs thead th` | 12px, sentence case | 1.3 | 0 | `--weight-strong` | `--text` on the `--surface-2` header row (the product table) |
-| ↳ badge | `.badge` | 12px | 1.3 | 0 | `--weight-regular` | status fg |
-| `type.meta` | `--type-meta` (`.hint`, `.status`, `.msg`, `.rules`, `.footnote`, `.sidenav__plan-meta`, `.optional`, `kbd`) | 12px | 1.4 | 0 | `--weight-regular` | `--text-3` |
-| `type.data` | `.num` (tabular), `.id` (tabular, slashed zero) — seat count, time-zone select, workspace ID digits | inherits | — | — | — | — |
-| ↳ lettermark (artwork) | `.avatar` | 12 / 24 / 20px | — | +0.02em, capitals | `--weight-strong` | `#fff` on the avatar fill |
-| ↳ brand | `.brand__name` | 14px | — | −0.02em | `--weight-strong` | `--text` |
+| `type.title` | `--fs-title` · `.page-head h1` | 1.25rem (20px) | 1.3 | −0.02em | `--weight-heading` 600 | `text.primary` |
+| `type.heading` | `--fs-heading` · `.card__head h2`, `.modal h2` | 1rem (16px) | 1.35 | −0.02em | `--weight-heading` 600 | `text.primary` |
+| `type.body` | `--fs-body` · `body`, input values | 0.875rem (14px) | 1.5 | 0 | 400 | `text.primary` |
+| `type.supporting` | `--fs-body` · `.page-head p`, `.card__head p`, `.modal p` | 14px | 1.45 | 0 | 400 | `text.secondary` — separates on tier |
+| ↳ row title (project role) | `--fs-body` · `.prefs__name`, `.connection__name`, `.photo__label`, `.danger-row__title`, `.sidenav__plan-name` | 14px | 1.5 | 0 | 500 | `text.primary` — separates on weight |
+| ↳ brand name | `--fs-body` · `.brand__name` | 14px | 1.5 | −0.02em | 500 | `text.primary` |
+| `type.ui` | `--fs-ui` · `.btn`, `.sidenav a`, `.topnav a`, `.search input`, `.toast` | 0.8125rem (13px) | 1 in fixed-height boxes, 1.4 in nav rows | 0 | 500 buttons; 400 nav, 500 when current | per control |
+| `type.label` | `--fs-ui` · `.field label` | 13px | 1.3 | 0 | 500 | `text.primary` |
+| ↳ help text (project role, reading copy) | `--fs-ui` · `.hint`, `.msg`, `.rules` | 13px | 1.45 | 0 | 400 | `text.tertiary` / `status.danger.fg` |
+| `type.meta` | `--fs-meta` · `.status`, `.badge`, `.optional`, `.footnote`, `.sidenav__plan-meta`, `.reveal` | 0.75rem (12px) | 1.4–1.5 | 0 | 400 (`.reveal` 500) | `text.tertiary` |
+| ↳ group label | `--fs-meta` · `.sidenav__title`, `.prefs thead th` | 12px, sentence case | 1.3 | 0 | 400 | `text.tertiary` |
+| ↳ keyboard hint | `--fs-micro` · `.search kbd` | 0.6875rem (11px) | 1.4 | 0 | 400 | `text.tertiary` |
+| `type.data` | `.num`, time-zone `select` | inherits | — | 0 | — | tabular, slashed zero |
 
-Five sizes above the floor; ceiling 20 ÷ 14 = 1.43. **Weights** — `--weight-regular` 400 (body, hints, group labels, badges), `--weight-strong` 500 (row titles, field labels, table header labels, buttons, active nav item, `<strong>`), `--weight-heading` 600 (proposed; `h1` and `h2` only). **Icons** — 18–20px boxes on a 20-unit grid draw ≈13px beside 13px text; stroke 1.5.
+Lettermarks: `.avatar--lg` initials at `--fs-title`, `.avatar--sm` at `--fs-meta`. Icons beside nav and field text are 16px boxes (≈13px drawn), stroke 1.6 on a 20 grid. Fields are 1rem under 760px so iOS doesn't zoom on focus.
+
+**Weights** — three, the third recorded: `--weight-regular` 400, `--weight-strong` 500, `--weight-heading` 600.
+
+| Size | Quiet, 400 | Lifted, 500 | Heading, 600 |
+|---|---|---|---|
+| 20 | — | — | page title |
+| 16 | — | — | section and dialog headings |
+| 14 | body, descriptions, input values | row titles, brand name | — |
+| 13 | help text, nav items | buttons, field labels, current nav item | — |
+| 12 | meta, badges, group labels | the password Show button | — |
 
 ## Colour
 
-Neutrals re-picked 2026-11-04 on hue 264 at chroma ≤ 0.014 (the `product` dial); the old greys ran at 0.035–0.04 and read blue.
+**Text** — measured with `scripts/contrast.mjs` on the worst surface each tier lands on (`--surface-hover`, the hovered notification row).
 
-**Text** — light checked on `--bg` (its darkest surface for text) and `--surface-3`; dark on `--surface-2` and `--surface-3` (lightest). Ratios from `contrast.mjs`.
-
-| Role | Name here | Light | Ratio (`--bg` · `--surface-3`) | Dark | Ratio (`--surface-2` · `--surface-3`) |
+| Role | Name here | Light | Ratio | Dark | Ratio |
 |---|---|---|---|---|---|
-| `text.primary` | `--text` | `#13161d` | 16.89 · 15.88 | `#eff0f3` | 14.78 · 13.49 |
-| `text.secondary` | `--text-2` | `#474b53` | 8.17 · 7.68 | `#b8bcc2` | 8.83 · 8.06 |
-| `text.tertiary` | `--text-3` | `#62666f` | 5.37 · 5.05 | `#93979d` | 5.74 · 5.24 |
-| `text.on-accent` | `--on-accent` (proposed) | `#ffffff` on `--accent` | 5.69 | `#0e1115` on `--accent` | 5.62 |
-| `text.inverse` | `--surface` on `--text` (toast, skip link) | `#ffffff` | 16.9+ | `#16191d` | 14+ |
-| `text.link` | `.link` → `--accent` | `#3e5bd8` | 5.44 on `--surface-2` | `#6b85f0` | 5.00 on `--surface-2` |
+| `text.primary` | `--text` | `#101828` | 16.11:1 | `#f2f4f7` | 15.0:1 |
+| `text.secondary` | `--text-2` | `#475467` | 6.98:1 | `#c2c7d0` | 9.61:1 |
+| `text.tertiary` | `--text-3` | `#5f6b7e` | 4.90:1 | `#8e95a2` | 5.41:1 |
+| `text.inverse` | `--surface` on `--text` | `#ffffff` | 17.75:1 | `#14171c` | 16.30:1 |
+| `text.on-accent` | `--on-accent` | `#ffffff` | 5.69:1 on `--accent` | `#ffffff` | 4.92:1 on `--accent` |
+| `text.link` · `accent.ink` | `--accent-ink` | `#3249b8` | 4.95:1 on `--accent-soft` | `#8299f3` | 5.33:1 on `--accent-soft`, 6.85:1 on `--bg` |
 
-Steps: light 2.07× · 1.52×, dark 1.67× · 1.54× (product minimum 1.4×); tertiary clears the 4.8:1 target on every surface.
+Steps (ratio of ratios, light): primary → secondary 2.31×, secondary → tertiary 1.42× (dial ≥ 1.4×).
 
 **Surfaces**
 
 | Role | Name here | Light | Dark |
 |---|---|---|---|
-| `surface.page` | `--bg` | `#f6f7f9` | `#0e1115` (OKLCH L 0.175) |
-| `surface.raised` | `--surface` | `#ffffff` | `#16191d` |
-| `surface.subtle` / `surface.hover` | `--surface-2` | `#f9fafb` | `#1b1d23` |
-| `surface.pressed` / hover on subtle | `--surface-3` (proposed) | `#eff0f3` | `#22252a` |
-| `surface.inverse` | `--text` | `#13161d` | `#eff0f3` |
+| `surface.page` | `--bg` | `#f6f7f9` | `#101318` (OKLCH L 0.186) |
+| `surface.raised` | `--surface` | `#ffffff` | `#14171c` |
+| `surface.subtle` | `--surface-2` | `#f9fafb` | `#181b21` |
+| `surface.hover` | `--surface-hover` (proposed) | `#f2f4f7` | `#1d2027` |
+| `surface.selected` | `--accent-soft` | `rgba(62,91,216,.25)` | `rgba(74,102,224,.25)` |
+| `surface.inverse` | `--text` (toast, skip link) | `#101828` | `#f2f4f7` |
 
 **Lines and fills**
 
-| Role | Name here | Light | Dark | Measured |
-|---|---|---|---|---|
-| `border.default` / `border.divider` | `--border` | `#e4e6ea` | `#282b31` | visibility only |
-| `border.control` | `--border-strong` | `#8f929a` | `#656970` | 3.11:1 · 3.20:1 on `--surface` |
-| `border.hover` | `--border-hover` (proposed) | `#5a5e65` | `#8e929a` | — |
-| `fill.strong` | `--accent` (switch on, primary button, meter) | `#3e5bd8` | `#6b85f0` | — |
-| switch knob | `--thumb` (proposed) | `#ffffff` | `#ffffff` | — |
+| Role | Name here | Light | Dark |
+|---|---|---|---|
+| `border.default` · `border.divider` | `--border` | `#e4e7ec` | `#262a32` |
+| `border.control` | `--border-strong` | `#848c9b` (3.38:1 on `--surface`, 3.07:1 on `--surface-hover`) | `#666d7c` (3.46:1 · 3.14:1) |
+| `border.hover` | `--text-3` (input hover) | `#5f6b7e` | `#8e95a2` |
+| `fill.strong` | `--accent` | `#3e5bd8` | `#4a66e0` |
+| `fill.strong-hover` | `--accent-hover` | `#3249b8` | `#3f5bd6` |
+| toggle knob | `--thumb` (proposed) | `#ffffff` | `#ffffff` |
+| `mark` | `--border` (strength steps off), `--border-strong` (rule circles) | — | — |
 
 **Signal**
 
-| Role | Name here | Light | Dark | Note |
-|---|---|---|---|---|
-| `focus` | `--accent`, `:focus-visible` outline 2px, offset 2px — inputs and search included | `#3e5bd8` | `#6b85f0` | light 4.99–5.69:1, dark 4.57–5.62:1 across `--bg`…`--surface-3` |
-| `accent` · `accent.hover` | `--accent` · `--accent-hover` | `#3e5bd8` · `#3249b8` | `#6b85f0` · `#8299f3` | primary action, switches on, links, focus, unread dot |
-| `status.success` fg · bg | `--ok` · `--ok-soft` | `#067647` (5.45 on `--surface-2`) · `#ecfdf3` | `#47cd89` (8.31) · 12% | the "saved" check only |
-| `status.danger` fg · bg · solid | `--danger-text` · `--danger-soft` · `--danger` | `#b42318` (6.29) · `#fef3f2` · `#d92d20` | `#fda29b` (8.68) · 10% · `#d92d20` | solid text `--on-danger` 4.83:1; hover `--danger-hover` |
-| `status.warning` fg | `--warn` | `#915c08` (5.38) | `#db9d4f` (7.18) | the "unsaved" dot, weak-password bars |
-| `status.info` | — | — | — | no info message on this page |
+| Role | Name here | Light | Dark |
+|---|---|---|---|
+| `focus` | `--focus` (proposed), `outline` 2px, offset 2px | `#3e5bd8` (5.69:1 on `--surface`) | `#8299f3` (6.85:1 on `--bg`) |
+| `accent` · `accent.hover` | `--accent` · `--accent-hover` | `#3e5bd8` · `#3249b8` | `#4a66e0` · `#3f5bd6` |
+| `status.danger.fg` | `--danger-text` (`--danger` for icons) | `#b42318` (6.57:1) | `#fda29b` (9.25:1) |
+| `status.danger.bg` | `--danger-soft`; edge `--danger-border` | `#fef3f2` | `rgba(240,68,56,.1)` |
+| `status.danger.solid` | `--danger-solid` · `--danger-solid-hover` (proposed) | `#d92d20` (white 4.83:1) · `#b42318` | same |
+| `status.success.fg` · `.bg` | `--ok` · `--ok-soft` | `#067647` (5.69:1) | `#47cd89` (8.86:1) |
+| `status.warning.fg` | `--warn` | `#b54708` (5.19:1 on `--surface-2`) | `#f79009` (7.65:1) |
+| `scrim` | `--scrim` (proposed) | `rgba(16,24,40,.5)` | `rgba(0,0,0,.6)` |
 
-**Exceptions** — `exception.person` (`--person` / `--on-person`): the avatar fill, answering *who*; a muted teal at h 200, ≥ 50° from success and accent; initials 5.06:1 light, 7.35:1 dark. Third-party marks (Google, Slack, GitHub) keep their own colours.
-
-**Rules recorded** — status lines and field messages keep their words in `--text-2`; only the glyph takes the status colour. Connection state is a filled dot vs a ring, uncoloured. Met password rules are an ink tick on a neutral circle (`--tick`, per theme). The current nav item is ink, not accent.
+**Exceptions** — `--avatar-fill`, the brand gradient every avatar shares (re-picked per theme, every stop moved); third-party logos in their own colours.
 
 ## Layout
 
-Tokens in `styles.css` `:root`, proposed 2026-11-04 in the project's short-name style.
-
 | Role | Name here | Value |
 |---|---|---|
-| `measure.app` | `.layout`, `.topbar__inner` | `max-width: 1280px`; rail 240px + content, gap 56px, centred |
-| `measure.form` | `--measure-form` | 760px — the content column |
-| ↳ password column | `.stack` | 420px |
-| `measure.rail` | `.sidenav` column | 240px (200px ≤ 1080); sticky at 84px, capped `100dvh − 108px`, scrolls inside |
-| `gutter` | `--gutter` | 32px; 16px ≤ 760 |
-| `space.tight` | `--space-tight` | 6px — label → input, heading → description |
-| `space.group` | `--space-group` | 16px — between fields, photo → fields, content → actions |
-| `space.heading-below` | `--space-heading-below` | 12px — a section's heading block → its content |
-| `space.section` · `space.heading-above` | `--space-section` | 32px — between sections; pair 32 : 12 ≈ 2.7 : 1 |
-| page top | `.layout` padding-top | 24px under the top bar |
+| `measure.frame` | `.layout`, `.topbar__inner` `max-width` | 1280px |
+| `measure.rail` | `.layout` first column | 240px (200px < 1080px) |
+| `measure.form` | `.layout` second column | `minmax(0, 760px)` |
+| ↳ narrow form | `.stack` | 420px |
+| `measure.reading` | `.section__head p` | 65ch (help prose only) |
+| `gutter` | `--gutter` (proposed) | 32px (16px < 760px) |
+| `space.tight` | `--space-tight` (proposed) | 6px — label → field |
+| `space.group` | `--space-group` (proposed) | 16px — between fields; heading block → content |
+| `space.section` | `--space-section` (proposed) | 40px (32px < 760px) — between settings sections |
+| `space.heading-above` · `space.heading-below` | `--space-section` · `--space-group` | 40px · 16px — 2.5:1 |
+| page top space | `.layout` padding-top | 24px under the top bar |
 
-**Sections** — stacked on the page, each opened by its `h2`; no panel round a section (`.card` keeps its name, draws no box). Save buttons sit at the end of their section. **Table** — the notifications table is the product table: one hairline frame at `--radius`, a `--surface-2` header row, hairlines between rows only. **Lists** — connection rows unframed, parted by hairlines.
+**Sections** — stacked on the page, each opened by its heading (`.section`, `.section__head`, `.section__body`, `.section__foot`); no box round a section, no rule between them. Single objects keep an edge: the notifications table (one hairline frame, tinted header row, hairlines between rows — the one table style) and the delete-account row. The plan card in the rail is a card for one object.
 
 **Radius ladder**
 
 | Role | Name here | Value |
 |---|---|---|
-| `radius.pill` | `99px`, `50%` | switches, badges, meters, avatars |
-| `radius.small` | `--radius-xs` (proposed) | 4px — `kbd`, the Show button inside a field |
-| `radius.control` | `--radius-sm` | 6px (was 8px) — inputs, buttons, nav items |
-| `radius.card` | `--radius` | 8px (was 12px) — table frame, plan card, logo tiles, toast |
-| `radius.container` | `--radius-lg` (proposed) | 12px (was 16px) — the dialog |
+| `radius.pill` | `99px`, `50%` | toggles, badges, meter, avatars |
+| `radius.small` | `--radius-xs` (proposed) | 4px — `kbd`; the Show button inset 6px in an 8px field (8 − 6 = 2, snapped) |
+| `radius.control` | `--radius-sm` | 8px — fields, buttons, nav items |
+| `radius.card` | `--radius` | 12px — table frame, danger row, plan card, logo tiles, toast |
+| `radius.container` | `--radius-lg` (proposed) | 16px — dialog |
 
-**Lines** — `hairline.chrome` and `hairline.object`: `--hairline` 0.5px (proposed) on dividers, the table frame, the top bar's edge, the plan card; controls (inputs, buttons, switches) keep a 1px edge at 3:1. `rule.emphasis`: the 2px focus outline.
+**Lines** — `hairline.chrome` · `hairline.object`: `--hairline` 0.5px in `--border` (top bar edge, table frame and rows, connection rows, plan card, dialog). Control edges stay 1px in `--border-strong`, because they must be seen (3:1). `rule.emphasis`: the 2px focus outline.
 
 **z-index ladder**
 
 | Role | Name here | Value |
 |---|---|---|
 | `z.raised` | `--z-raised` | 10 |
+| ↳ section strip (phones) | `--z-subnav` | 40 |
 | `z.nav` | `--z-nav` | 50 |
+| `z.overlay` | `dialog.modal` | top layer (`showModal()`) |
 | `z.toast` | `--z-toast` | 70 |
-| `z.skip-link` | `--z-skip-link` | 100 |
-
-The dialog is in the browser's top layer, above every rung.
+| `z.skip-link` | `--z-skip` | 100 |
 
 **Breakpoints**
 
 | Role | Name here | Value | What changes |
 |---|---|---|---|
-| `bp.compact-nav` | `@media (max-width: 1080px)` | 1080px | Top-bar links and the plan card go; the rail narrows to 200px |
-| `bp.single-column` | `@media (max-width: 760px)` | 760px | The rail becomes a sticky horizontal strip; gutter 16px; search goes |
-| `bp.form-columns` | `@container (max-width: 560px)` on `.content` | 560px | The profile field grid goes to one column |
+| `bp.compact-nav` | `@media (max-width: 1080px)` | 1080px | Top nav and plan card hide; rail narrows to 200px |
+| `bp.single-column` | `@media (max-width: 760px)` | 760px | Rail becomes a sticky horizontal section strip; search hides; fields go to one column and 16px text |
 
-Every hover style is gated on `(hover: hover) and (pointer: fine)`.
+Hover styles are gated on `(hover: hover) and (pointer: fine)`; nothing hover-only carries information.
 
 ## Surfaces
 
 | Level | Surface | Edge | Shadow | Layer |
 |---|---|---|---|---|
-| `elevation.flat` | `--bg` | — | — | — |
-| `elevation.raised` | `--surface` (`.card`) | `--border` | `--shadow-md` | — |
-| ↳ small raised | inputs, `.btn--secondary`, `.connection__logo`, active `.sidenav a` | `--border` / `--border-strong` | `--shadow-sm` | — |
-| `elevation.raised` (chrome) | `.topbar` — `--surface` at 85% | `--border` bottom | none | `z-index: 20` |
+| `elevation.flat` | `--surface` (inputs, logo tiles) | `--border-strong` / `--border` | `--shadow-sm` | — |
+| `elevation.raised` | `.card` `--surface` | `--border` | `--shadow-md` | — |
+| ↳ sticky chrome | `.topbar` 85% `--surface` | `--border` bottom | none | `z.nav` |
 | `elevation.overlay` | `.modal` `--surface` | `--border` | `--shadow-lg` | top layer |
-| `elevation.overlay` (toast) | `--text` | none | `--shadow-lg` | `z-index: 50` |
+| `scrim` | `.modal::backdrop` | — | `rgba(16,24,40,.5)` + `blur(4px)` | — |
+| toast | `--text` | none | `--shadow-lg` | `z.toast` |
 
-`material.translucent` — `.topbar`: `color-mix(--surface 85%)` with `saturate(180%) blur(12px)`; `.modal::backdrop` blur(4px). No `@supports` guard, no reduced-transparency branch. `scrim` — `rgba(16, 24, 40, 0.5)`.
+`material.translucent` `.chrome` — `.topbar`: `color-mix(--surface 85%)` + `saturate(180%) blur(12px)`; no `@supports` guard, no reduced-transparency branch.
 
 ## Motion
 
-No motion tokens; durations and curves typed inline.
+No duration or easing tokens; every value is inline.
 
 | Role | Name here | Value | Used for |
 |---|---|---|---|
-| `duration.instant` | `.btn:active` transform | 50ms | press nudge |
-| `duration.state` | inline | 150ms | sidenav, inputs, buttons, password rules |
-| `duration.popover` | inline | 200ms | toggle track and knob, strength bars, toast |
-| `duration.overlay` | `.modal[open]` `pop` | 180ms | dialog entrance |
-| `ease.standard` | — | browser `ease`, plus `cubic-bezier(.3,.7,.4,1)` (toggle knob) and `cubic-bezier(.2,.8,.3,1)` (dialog) | — |
+| press | inline `.btn` `transform` | 50ms | button press nudge |
+| hover / state | inline | 150ms | sidenav, field borders, buttons, rule circles |
+| toggle / strength / toast | inline | 200ms | toggle track and knob, strength steps, toast in/out |
+| dialog open | inline `@keyframes pop` | 180ms | modal entrance |
+| spinner | inline `@keyframes spin` | 700ms linear, infinite | loading buttons |
 
-**Named exemptions**
-
-| Exemption | Values | Why |
-|---|---|---|
-| Loading spinner | 700ms linear, infinite | Indeterminate progress while a save runs |
-| Toast dwell | 2600ms | Reading time, not motion |
-
-Reduced motion: every transition and animation is cut to 0.01ms globally; smooth scroll off.
+Curves: `cubic-bezier(.3,.7,.4,1)` (toggle knob), `cubic-bezier(.2,.8,.3,1)` (dialog), browser `ease` everywhere else. Reduced motion: a global `.01ms` override on every transition and animation, and `scroll-behavior: auto`.
 
 ## Patterns
 
-**Nouns** — task, project, workspace, account. **Destructive** — "Delete account": last section, typed phrase `delete my account` in a native `<dialog>`. "Disconnect" acts immediately with no confirmation. **Saving** — one save button per section, a live status line ("Unsaved changes", "Saved just now"), a toast on success.
+**Nouns** — account, profile, project, task, workspace. **Destructive** — "Delete account" last on the page, behind a dialog that names what is lost and needs the typed phrase "delete my account". **Save model** — one save button per form section, with an inline status ("Unsaved changes", "Saving…", "✓ Saved just now") and a toast.
 
 ## Decisions
 
-- 2026-11-04 — A third weight, 600, for `h1` and `h2` only (`--weight-heading`): with the sections unboxed, a 16/500 heading sat 2px above the 14/500 row titles (Mentions, Google, Delete account) and the sections ran together. 500 is spent lifting row titles, and nothing in a row goes above it. (Agent recommendation under the user's standing go-ahead; the type guide's recorded-third dial.)
-- 2026-11-04 — Sections unboxed: the five setting groups sit on the page under their headings, the save row at the end of each. (Law; layout law 3, depth law 2.)
-- 2026-11-04 — Controls keep a 1px edge while dividers and frames go to 0.5px: an input's edge must be seen at 3:1, and halving it on a 2× screen halves what is seen. (Law; colour roles `border.control`.)
-- 2026-11-04 — Done is uncoloured on this page: a connected service and a met password rule are states the reader passes through, not news. Green is kept for "Saved". (Law; colour law 7, `product` dial.)
-- 2026-11-04 — Dark primary buttons take dark text (`--on-accent` `#0e1115`): white on `#6b85f0` was 3.37:1. (Law; colour law 8.)
+- 2026-11-04 — Settings sections sit on the page instead of in five cards, and the tinted footer bands are gone; light `--bg` is now white, the white the cards were, so the unboxed page doesn't turn grey. (Law; depth law 2 and layout law 3. The page colour is a colour change the layout pass surfaced.)
+- 2026-11-04 — Structural lines are 0.5px (`--hairline`); control edges stay 1px. (Law-adjacent; the `product` hairline dial, with controls kept visible under colour law 2.)
+- 2026-11-04 — Breakpoints stay on the window, not containers: the content column is not a resizable panel. (Dial left; no panel resizes here.)
+- 2026-11-04 — Passed password rules are an ink check on a neutral circle, and the matching confirm field has no green border: passing a check in a sequence isn't the news, and the green border was colour alone. Saved confirmations and "Connected" keep `--ok`. (Law; colour law 6 and the completed-states dial.)
+- 2026-11-04 — Inputs, secondary buttons and the off toggle track darkened to 3:1 (`--border-strong`): a control's edge must be seen. (Law; colour law 2.)
+- 2026-11-04 — Dark `--accent` deepened to `#4a66e0` for white button text; links, focus and the current nav item take the lighter `--accent-ink`. (Law; colour law 8.)
+- 2026-11-04 — Greys keep their existing cool tint (OKLCH C ≈ 0.035, above the `product` dial's 0.015): the palette is the design's own, and the dial describes a new system. (Keep what the design chose.)
+- 2026-11-04 — Three weights, not two: 500 lifts row titles, field labels and buttons, so headings at 500 differed from the rows under them by size alone; 600 is reserved for the page title and section/dialog headings. (User decision by delegation — recommendation taken; type guide dial override.)
+- 2026-11-04 — Page title 20px, not 28px: the `product` ceiling is 1.6 × body. (Law; type dials.)
+- 2026-11-04 — Theme follows the OS through `prefers-color-scheme`, no toggle. (User decision: keep the theming the page already has.)
 - 2026-11-04 — Preset `product`. (User decision.)
-- 2026-11-04 — Keep the existing theming as is: light and dark from `prefers-color-scheme`, no toggle. (User decision.)
 
 ## Open issues
 
-- **Type law 12** — Inter comes from Google Fonts (two third-party origins) with `swap` and no metric-matched fallback; self-hosting needs the font files added to the project.
-- **Layout law 7** — the toast sits on `--z-toast` (70) but the dialog is in the top layer, so a toast raised while the dialog is open would sit under it; none does today (the delete toast fires after close). Moving the toast into the top layer (`popover`) would settle it.
-- **Depth law 15** — translucent top bar and blurred scrim with no `@supports (backdrop-filter)` guard and no `prefers-reduced-transparency` branch.
-- **Depth law 4** — three shadow recipes plus inline ones (toggle knob, avatar ring, primary inset highlight); dark `--shadow-md` equals `--shadow-sm`.
-- **Motion law 5** — three curves (browser `ease`, two hand-typed béziers) and no tokens; colour transitions run on the default `ease`.
-- **Motion law 2** — 150 / 180 / 200ms with no ladder: the toggle knob (200ms) runs longer than the dialog (180ms).
-- **Motion law 10** — reduced motion is a global 0.01ms kill rather than a branch with a substitute.
-- **Patterns law 3** — "Disconnect" on Google and GitHub acts at once with no confirmation and no undo.
+- **type law 12** — Inter comes from Google Fonts with `swap` and no metric-matched fallback; self-hosting needs the font files added to the project.
+- **color dials** — no `status.info` pair: nothing on this page reports information, so none was added.
+- **layout law 4** — the plan card is simply hidden below 1080px rather than moving in-flow; moving it is a restructure, left for the owner.
+- **depth law 15** — the translucent top bar and the blurred scrim have no `@supports` guard and no `prefers-reduced-transparency` branch.
+- **depth law 4** — shadows outside the three shadow tokens: toggle knob `0 1px 3px rgba(16,24,40,.2)`, avatar ring, primary-button inner highlight.
+- **motion law 4 / 5** — no duration or easing tokens; five durations and three curves inline.
+- **motion law 10** — reduced motion is a blanket `.01ms` kill on everything, not a branch with substitutes.
