@@ -1,0 +1,15 @@
+# How a refining command works
+
+`type`, `color`, `layout`, `depth`, `motion` and `patterns` share one procedure. Each command's own file names its guide and what it covers; this is the rest.
+
+1. **Read the domain's `guide.md` in full**, and the references its laws point to for the parts the target touches. Under preset `glass`, read `glass/<domain>/guide.md` too, and take values and components from its `assets/`.
+2. **Read the domain's section of `DESIGN.md`** and every `## Decisions` entry it covers. A decision beats a dial; never "fix" a decided value back.
+3. **Find the problems first.** Run the guide's `## Auditing existing code` on the target only, and list what breaks a law before changing anything. With no target, take the screen the conversation is about; if there isn't one, ask which, or offer the whole project as a longer pass.
+4. **Fix in the project's names**, at the smallest scope that removes the cause — a token over twenty call sites, a shared component over its instances. Add a role only where the guide's `## Building it` says one is missing, in the project's naming style, marked `proposed` in `DESIGN.md`.
+5. **Stay in the domain.** Something another domain owns — a colour noticed while fixing type — is reported with its owning command, not fixed.
+6. **Sweep.** A change to a shared rule applies everywhere the rule does: walk every route that uses it and report what moved. A partial update is the commonest interface bug.
+7. **Look at it** rendered, before and after, in each theme and at a narrow width; for motion, also with reduced motion on.
+8. **Write back** to `DESIGN.md`: the domain's section if a role or value changed, `## Decisions` for anything moved off the preset (with the user's go-ahead), and strike fixed `## Open issues`.
+9. **Run the guide's `## Checklist`** on what you changed.
+
+**Report:** what was wrong, as a reader would feel it; what changed, by token or component, with the law; what was measured (sizes, ratios, durations); and anything noticed outside the domain, with its command.

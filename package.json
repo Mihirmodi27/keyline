@@ -1,0 +1,36 @@
+{
+  "name": "keyline",
+  "version": "0.1.0",
+  "description": "Interface design laws for coding agents: one skill that reads your codebase, writes a DESIGN.md in your own token names, then critiques, audits and fixes type, colour, layout, depth, motion and product patterns through it.",
+  "keywords": [
+    "design",
+    "design-system",
+    "ui",
+    "typography",
+    "accessibility",
+    "agent-skills",
+    "claude-code",
+    "codex",
+    "cursor",
+    "skills"
+  ],
+  "homepage": "https://github.com/Mihirmodi27/keyline#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Mihirmodi27/keyline.git"
+  },
+  "license": "MIT",
+  "author": "Mihir Modi (https://modimihir.com)",
+  "type": "module",
+  "bin": {
+    "keyline": "bin/keyline.mjs"
+  },
+  "files": [
+    "bin",
+    "plugins",
+    ".claude-plugin"
+  ],
+  "engines": {
+    "node": ">=18"
+  }
+}

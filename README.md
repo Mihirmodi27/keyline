@@ -1,0 +1,92 @@
+# Keyline
+
+Interface design laws for coding agents.
+
+Keyline reads your codebase once and writes a `DESIGN.md` that maps your own token names onto its roles and picks a preset for your reader. From then on your agent critiques, audits and fixes type, colour, layout, depth, motion and product patterns through that file: the same laws on every project, your values on yours.
+
+```sh
+npx keyline install
+```
+
+Then, in your agent:
+
+```
+/keyline init
+```
+
+## Commands
+
+| Command | Does |
+|---|---|
+| `/keyline init` | Scans the codebase, maps its tokens onto roles, picks a preset, writes `DESIGN.md` with the open issues it found |
+| `/keyline sync` | Reconciles `DESIGN.md` with code that has moved since |
+| `/keyline critique` | A designer's read of one screen: what the reader feels first, what's working, the few changes that matter |
+| `/keyline audit` | Every law checked with evidence, per domain, scored 0–4 |
+| `/keyline type` | Type scale, weights, leading, tracking, emphasis, numerals, font loading |
+| `/keyline color` | Tokens by intent, text tiers by measured contrast, status colours, themes |
+| `/keyline layout` | Measure, spacing that groups, radii, line weights, z-index, breakpoints, empty states |
+| `/keyline depth` | Elevation, shadows, edges, scrims, translucent surfaces and their fallbacks |
+| `/keyline motion` | Durations, curves, springs, open and close, reduced motion, scroll |
+| `/keyline patterns` | Labels, buttons, destructive actions, forms, agent UIs, dashboards |
+| `/keyline polish` | All six domains in order, one reviewable pass each |
+
+You don't have to name a command: ask for "tighter spacing" or "a review of the settings page" and the agent picks one.
+
+`critique`, `audit`, `init` and `sync` change no code. The refining commands change only what their domain owns, in your token names, and write decisions back to `DESIGN.md` so the next session starts from them.
+
+## Presets
+
+The laws hold everywhere. A preset sets the dials — how far the type scale climbs, how much colour is spent, how long motion runs — for what your reader is doing:
+
+| Preset | For a reader who is |
+|---|---|
+| `editorial` | Reading: articles, docs, portfolios, changelogs |
+| `product` | Working: dashboards, tools, anything used daily |
+| `expressive` | Being persuaded: landing pages, launches, campaigns |
+| `glass` | Getting [modimihir.com](https://modimihir.com)'s exact system, with drop-in tokens and components |
+
+Mixed projects are normal: `product`, with the marketing routes on `expressive`. Any dial can be moved, and the move is recorded in `DESIGN.md` with its reason.
+
+## Installing
+
+`npx keyline install` asks which agent you use and copies the skill into that agent's folder. Flags answer up front:
+
+```sh
+npx keyline install --tool codex,cursor     # several agents
+npx keyline install --tool claude-code --user   # every project on this machine
+npx keyline update                          # refresh every copy already installed
+```
+
+| Agent | `--tool` | This project | Every project (`--user`) |
+|---|---|---|---|
+| Claude Code | `claude-code` | `.claude/skills` | `~/.claude/skills` |
+| Codex | `codex` | `.agents/skills` | `~/.codex/skills` |
+| Cursor | `cursor` | `.agents/skills` | `~/.cursor/skills` |
+| Gemini CLI | `gemini-cli` | `.agents/skills` | `~/.gemini/skills` |
+| GitHub Copilot | `github-copilot` | `.agents/skills` | `~/.copilot/skills` |
+| OpenCode | `opencode` | `.agents/skills` | `~/.config/opencode/skills` |
+| Windsurf | `windsurf` | `.windsurf/skills` | `~/.codeium/windsurf/skills` |
+| Any agent that reads `.agents/skills` | `agents` | `.agents/skills` | `~/.agents/skills` |
+
+**Claude Code plugin:**
+
+```
+/plugin marketplace add Mihirmodi27/keyline
+/plugin install keyline@keyline
+```
+
+**With the [`skills` CLI](https://github.com/vercel-labs/skills):** `npx skills add Mihirmodi27/keyline --agent claude-code`.
+
+Until the first npm release, run the installer from GitHub: `npx github:Mihirmodi27/keyline install`.
+
+### Coming from interface-skills
+
+Keyline replaces both interface-skills packages: the adaptable set became the commands, and the Glass package became the `glass` preset. `npx keyline install` finds the old skills and offers to remove them, since their descriptions would compete with Keyline's for the same requests. A `DESIGN.md` written by the old setup skill works as it is.
+
+## Requirements
+
+Node 18 or later, for the installer and for the two scripts the skill runs (a token inventory and a contrast checker). Neither needs a dependency, a model or an API key.
+
+## Licence
+
+MIT © Mihir Modi
