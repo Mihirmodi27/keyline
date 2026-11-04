@@ -40,6 +40,8 @@ Hover travel answers nothing either: a card rising under the pointer claims it m
 
 An element tied to a larger change takes its tier: a disclosure chevron runs at `duration.popover` and lands with the panel opening below it. Hover is no exception: a wash across a large card at `duration.micro`'s 80ms looks instant, not smooth, where 200ms in and 250ms out reads as a fade; rows swept in bulk keep the short tier (Dials). `duration.route` is the one tier size doesn't set; law 3 caps it. The numbers are dials; the ordering is not.
 
+**`duration.theme` runs only when the page itself switches theme**, under a class held on the root for the length of the switch. Everyday colour transitions leave out the page background and are suspended during a theme change: otherwise an OS switch by media query, which has no class to hold, cross-fades every control at its own duration while the page around it snaps.
+
 ### 3. Nothing repeated waits on an animation
 
 **Anything a user does many times a session must never wait on motion: feedback starts on the input, every transition can be interrupted, and anything on the path to content is capped.** An animation is watched the first time and endured the fortieth: a tab switch that slides for 300ms is charming once and a tax by lunchtime, and a dialog that ignores clicks until its exit completes turns a double-click into a missed one.
@@ -56,7 +58,7 @@ An element tied to a larger change takes its tier: a disclosure chevron runs at 
 |---|---|---|
 | Subject | The motion *is* the content being looked at — a dissolve between photographs, a chart drawing itself once | It isn't chrome reporting a change; the same component's *state* changes stay on the ladder |
 | Set piece | A greeting, a first-run sequence, a launch moment | Law 15: once a session, blocks nothing |
-| Ambient | A background loop in a hero | Never behind text being read, paused off screen, absent under reduced motion; `expressive` only |
+| Ambient | A background loop in a hero | Never behind text being read, paused off screen, absent under reduced motion; `expressive` only. Where nothing can pause it off screen, it is finite — a few iterations, then rest — or removed |
 
 The test for all three: **would a user see this more than a handful of times a session?** If yes, it's state, and on the ladder.
 
@@ -153,10 +155,10 @@ GPU escalation is for one travelling element with no semantics of its own, never
 | `ease.colour` · `ease.exit` | `ease` · `ease-in` | `ease-out` · `ease-in` | `ease` · `ease-in` |
 | Springs | `snappy` 0.15 / 0.35s, `soft` 0.2 / 0.45s, one `playful` 0.3 / 0.5s | `snappy` 0 / 0.25s, for drag, throw and a re-targeting indicator only | `snappy` 0.2 / 0.4s, `soft` 0.3 / 0.6s, `playful` 0.45 / 0.7s |
 | Reveal-on-scroll | 8px travel, `duration.overlay`, no stagger | none | up to 24px, stagger ≤ 80ms, whole group ≤ 600ms |
-| Press feedback | scale 0.96 on small controls | `surface.pressed` step, no scale | scale 0.92–0.95 |
+| Press feedback | scale 0.96 on small controls | `surface.pressed` step, no scale | scale 0.92–0.95; wider than ≈ 200px, `scale(0.98)` or a 1px translate |
 | Hover on a card or large surface | a wash, 200ms in · 250ms out; no travel | a wash, 200ms in · 250ms out; no travel, no shadow change | a wash, 280ms in · 350ms out; a lift ≤ 4px on primary navigation only |
 | Set pieces | at most one on the site | none | a few, each named |
-| Ambient loops | none | progress indicators, and live-state indicators while the state is live | a hero only, paused off screen |
+| Ambient loops | none | progress indicators, and live-state indicators while the state is live | a hero only, paused off screen; where nothing can pause it, one finite motion — a few iterations, then rest |
 | Sound | absent, or opt-in behind a visible toggle | absent | opt-in, default off, visible toggle |
 
 Springs are Motion's `bounce / duration`.
@@ -186,12 +188,12 @@ Collect evidence, then report:
 - **Curves:** `rg -n "cubic-bezier|ease-in-out|ease:" src`; more distinct beziers than the preset's two or three is a finding, as is an overshooting one on a track with a filter.
 - **Entrances on `ease-in`**, exits on springs: `rg -n "exit=|ease-in" src`.
 - **Opacity inside a spring:** `type: "spring"` with no per-property opacity override.
-- **`transition: all`**, `transition-all`, animated `width|height|top|left|margin`.
+- **`transition: all`**, `transition-all`, animated `width|height|top|left|margin`; a colour transition on the page background outside the theme switch's class.
 - **Reduced motion:** animated components against `useReducedMotion|prefers-reduced-motion|matchMedia` branches; global `animation: none !important`; `scrollIntoView|scrollTo|\.animate\(` with no branch.
 - **Hidden until animated:** `opacity: 0` initial states, reveal classes, `threshold:` above 0, `classList.add` on framework-rendered elements; a missing `<noscript>` reset or print rule.
 - **Scroll:** `addEventListener\("scroll"` without `passive` or rAF, or several per behaviour.
-- **Loops:** `infinite`, `repeat: Infinity`, `setInterval` driving UI.
-- **Hover:** timers never cleared on unmount; hover-only affordances with no `(hover: hover)` gate; `rg -n "hover:-?translate|:hover[^{]*\{[^}]*transform" src` for cards that lift where the preset says wash.
+- **Loops:** `infinite`, `repeat: Infinity`, `setInterval` driving UI; an ambient `infinite` that nothing pauses off screen.
+- **Hover:** timers never cleared on unmount; any hover style, decoration included, outside a `(hover: hover) and (pointer: fine)` gate; `rg -n "hover:-?translate|:hover[^{]*\{[^}]*transform" src` for cards that lift where the preset says wash.
 - **Live indicators:** loops with no paused branch.
 
 Then tab through with reduced motion on, and with JavaScript off, for anything that never appears or appears with no sign it opened. Check hover states on *leave* as well as enter; the leave state is where transition-property mistakes live.
@@ -200,7 +202,7 @@ Report each breach as one line under `## Open issues`, with the law, the evidenc
 
 ## Writing back to DESIGN.md
 
-Under `## Motion`: ladder rows (role, name here, value, used for); curves; springs by character; the reduced-motion policy in a sentence; each off-ladder entry as a project role under `duration.overlay`, with its law 4 class and where it plays; the sound policy, if any.
+Under `## Motion`: ladder rows (role, name here, value, used for); curves; springs by character; the reduced-motion policy in a sentence; each off-ladder entry as a row in the **Named exemptions** table (exemption, values, why — its law 4 class and where it plays), which the detector reads; the sound policy, if any.
 
 Under `## Decisions`, dated, with a reason: any dial moved off the preset (*"`duration.state` 150ms, not 100ms: the ledger's hover rows felt abrupt in testing"*), a set piece added, sound turned on, a law knowingly broken.
 
@@ -212,7 +214,8 @@ Under `## Open issues`: each audit breach, one line with its evidence, removed w
 - [ ] Live indicators morph in place to their action on hover and focus.
 - [ ] `duration.*` tiers strictly ascend; the area changed sets each animation's tier, hover included.
 - [ ] Hover on cards is a wash at the dial's in · out, with no travel unless the preset allows it.
-- [ ] Press lands on `pointerdown` at `duration.instant`; nothing repeated waits; `duration.route` ≤ `duration.overlay`.
+- [ ] Press lands on `pointerdown` at `duration.instant`; anything wider than about 200px presses with `scale(0.98)` or a 1px translate; nothing repeated waits; `duration.route` ≤ `duration.overlay`.
+- [ ] `duration.theme` runs only under the page's own switch class; everyday colour transitions leave out the page background and are suspended while the theme changes.
 - [ ] Each off-ladder duration is classed subject, set piece or ambient in `DESIGN.md`.
 - [ ] One `ease.standard`; colour and opacity on `ease.colour`; no overshoot on a filter or floored property.
 - [ ] Springs are `spring.<character>`, only where things re-target or are grabbed, opacity split out.
@@ -227,5 +230,5 @@ Under `## Open issues`: each audit breach, one line with its evidence, removed w
 - [ ] Set pieces play once a session, gate before first paint, record "seen" on completion, never block the skip link.
 - [ ] Durations, curves and springs match the preset, or a `## Decisions` entry says why not.
 - [ ] Reveal travel, press feedback and route transitions match the preset.
-- [ ] Set pieces and ambient loops are within the preset's allowance.
+- [ ] Set pieces and ambient loops are within the preset's allowance; a loop nothing can pause off screen is finite or gone.
 - [ ] Sound only if the preset allows it, off by default behind a visible, persisted toggle.

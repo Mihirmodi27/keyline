@@ -5,10 +5,13 @@
  *   node contrast.mjs <fg> <bg>                    one pair
  *   node contrast.mjs --ladder <bg> <fg> <fg> …    a text ladder, top tier first
  *   node contrast.mjs --min 3 <fg> <bg>            a different floor (icons, borders, focus)
+ *   node contrast.mjs --over <backdrop> <fg> <bg>  a translucent background, over what's behind it
  *
  * Colours: #rgb, #rgba, #rrggbb, #rrggbbaa, rgb()/rgba(), hsl()/hsla(),
  * oklch(). A translucent foreground is composited over the background first —
  * which is the number that matters, since that's the colour the reader sees.
+ * A translucent background (a glass header, a hover wash, a status tint) needs
+ * --over with the opaque colour behind it; pass the worst one it can sit over.
  *
  * --ladder checks the two things a text ladder has to do at once: every tier
  * clears the floor (4.5:1 unless --min says otherwise), and the tiers stay
@@ -92,9 +95,14 @@ function luminance({ r, g, b }) {
   return 0.2126 * lin(r) + 0.7152 * lin(g) + 0.0722 * lin(b);
 }
 
+let backdrop = null;
+
 function ratio(fgInput, bgInput) {
-  const bg = parse(bgInput);
-  if (bg.a < 1) die(`the background ${bgInput} is translucent — give the opaque colour it sits on`);
+  let bg = parse(bgInput);
+  if (bg.a < 1) {
+    if (!backdrop) die(`the background ${bgInput} is translucent — add --over <the opaque colour behind it>`);
+    bg = over(bg, backdrop);
+  }
   const fg = over(parse(fgInput), bg);
   const [hi, lo] = [luminance(fg), luminance(bg)].sort((a, b) => b - a);
   return (hi + 0.05) / (lo + 0.05);
@@ -108,9 +116,15 @@ let ladder = false;
 const rest = [];
 for (let i = 0; i < argv.length; i++) {
   if (argv[i] === "--min") floor = parseFloat(argv[++i]);
+  else if (argv[i] === "--over") {
+    const b = argv[++i];
+    if (!b) die("--over needs the opaque colour behind the background");
+    backdrop = parse(b);
+    if (backdrop.a < 1) die(`--over ${b} is translucent itself — give the opaque colour at the bottom of the stack`);
+  }
   else if (argv[i] === "--ladder") ladder = true;
   else if (argv[i] === "-h" || argv[i] === "--help") {
-    console.log("contrast.mjs <fg> <bg> | --ladder <bg> <fg>… | --min <n> …");
+    console.log("contrast.mjs <fg> <bg> | --ladder <bg> <fg>… | --min <n> … | --over <backdrop> …");
     process.exit(0);
   } else rest.push(argv[i]);
 }

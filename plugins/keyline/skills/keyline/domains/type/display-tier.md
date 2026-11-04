@@ -49,9 +49,9 @@ From 47px at 375 to 92px at 1280: slope 0.0497 (4.97vw), intercept 28.35px (1.77
 
 The intercept is required: text sized in `vw` alone ignores zoom and fails WCAG 1.4.4. Keep the maximum within about 2.5 × the minimum, or a 200% zoom can't double the size inside the clamp.
 
-**5. If the hero isn't the viewport, use container units.** In a card, split hero or sidebar layout, set `container-type: inline-size` on the hero and use `cqi` for `vw`, against container widths.
+**5. If the hero isn't the viewport, use container units.** In a card, split hero or sidebar layout, set `container-type: inline-size` on the hero and use `cqi` for `vw`, against container widths. In a split hero, derive from the text column, but the display must still clear 1.5 × `type.heading`; if the column can't hold that, widen the text column or stack the hero, rather than shrinking the display.
 
-**6. Check the gap to the title.** At both ends display is at least 1.5 × `type.title`; closer, it reads as "the title got bigger". If the gap is too small, lower the title rather than raising display: display is derived, the title is a choice.
+**6. Check the gap to the title.** At both ends display is at least 1.5 × `type.title`; closer, it reads as "the title got bigger". If the gap is too small, lower the title rather than raising display: display is derived, the title is a choice. On a page whose `h1` is the display — a landing page with no separate title — there is no `type.title`; check display against `type.heading` instead, at least 1.5× at every width.
 
 ### The same headline in three families
 

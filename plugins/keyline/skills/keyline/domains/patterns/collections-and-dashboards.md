@@ -106,7 +106,7 @@ Each bar's summary answers what the reader would open it to check. A search open
 
 ## Dashboards
 
-**The order**: overview (where things stand: a few figures), trends (which way they're moving: one or two charts over a sensible window), action items (what needs the reader: a short list, each item one click from done). Anything that answers none of the three goes — a recent-activity feed is the usual casualty.
+**The order**: overview (where things stand: a few figures), trends (which way they're moving: one or two charts over a sensible window), action items (what needs the reader: a short list, each item one click from done). Anything that answers none of the three goes — a recent-activity feed is the usual casualty, unless the product or its brief requires it; then it stays, built to earn its place (`commands/refine.md`).
 
 **Wireframe first**, in boxes and words, and share it before building. Questions to settle on the wireframe:
 

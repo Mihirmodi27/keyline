@@ -21,7 +21,7 @@ Utility frameworks need telling. In Tailwind v4, `@custom-variant dark (&:where(
 
 ### Theme islands
 
-A region that must stay light in a dark page — an embedded document preview, a print-styled code sample — can't nest `data-theme="light"` if the dark selector matches descendants: the ancestor's match applies all the way down. Re-declare the custom properties and `color-scheme` on its container; since components reference role variables, everything inside re-themes.
+A region that must stay light in a dark page — an embedded document preview, a print-styled code sample — can't nest `data-theme="light"` if the dark selector matches descendants: the ancestor's match applies all the way down. Re-declare the custom properties and `color-scheme` on its container; since components reference role variables, everything inside re-themes. A dark band on a light-only page — a testimonial strip, a closing call to action — is the same island, and `--focus` is among what it re-declares, measured at 3:1 against the band.
 
 ## No flash of wrong theme
 
@@ -79,11 +79,17 @@ export function chooseTheme(t: Theme): void { // the user's action
 
 ```ts
 matchMedia("(prefers-color-scheme: dark)").addEventListener("change", (e) => {
-  if (readChoice() === "system") applyTheme(e.matches ? "dark" : "light");
+  if (readChoice() !== "system") return;
+  // The OS switched, not the reader: no crossfade. Hold transitions off for the
+  // frame the colours change in, or every control's own colour transition
+  // cross-fades half the page (motion law 2; the hold is in motion/patterns.md).
+  root.classList.add("theme-instant");
+  applyTheme(e.matches ? "dark" : "light");
+  requestAnimationFrame(() => requestAnimationFrame(() => root.classList.remove("theme-instant")));
 });
 ```
 
-Following the OS on load and then silently stopping is worse than not offering the option. Which to ship is a dial (`SKILL.md`).
+Following the OS on load and then silently stopping is worse than not offering the option. Which to ship is a dial (the colour guide's theme control).
 
 ## The crossfade on toggle
 
@@ -91,10 +97,10 @@ A universal colour transition, added for the toggle and removed after:
 
 ```css
 @media (prefers-reduced-motion: no-preference) {
-  :root.theme-changing,
-  :root.theme-changing *,
-  :root.theme-changing *::before,
-  :root.theme-changing *::after {
+  :root.theme-transition,
+  :root.theme-transition *,
+  :root.theme-transition *::before,
+  :root.theme-transition *::after {
     transition: background-color var(--duration-theme) var(--ease-colour),
       color var(--duration-theme) var(--ease-colour),
       border-color var(--duration-theme) var(--ease-colour),
@@ -105,9 +111,9 @@ A universal colour transition, added for the toggle and removed after:
 ```
 
 ```ts
-root.classList.add("theme-changing");
+root.classList.add("theme-transition");
 applyTheme(t);
-setTimeout(() => root.classList.remove("theme-changing"), durationTheme + 40);
+setTimeout(() => root.classList.remove("theme-transition"), durationTheme + 40);
 ```
 
 - **Temporary, always.** Left on, every hover, link and row becomes a slow colour fade.

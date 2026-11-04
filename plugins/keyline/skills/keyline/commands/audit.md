@@ -6,7 +6,7 @@ Every law, checked with evidence, per domain — the full inspection `critique` 
 
 **Steps:**
 
-1. **Detector:** `node <keyline>/scripts/check.mjs --json --ignore <prose and example dirs>`. Every finding it returns is evidence already — file, line, law — so start each domain from its findings and spend your reading on what it can't see: hierarchy, grouping, whether a box should exist. Treat a finding as a lead, not a verdict; one you judge wrong goes in the report as such, and gets a `keyline-ignore` comment only if the user agrees.
+1. **Detector:** `node <keyline>/scripts/check.mjs --root <project root> --json --ignore <prose and example dirs>`. Every finding it returns is evidence already — file, line, law — so start each domain from its findings and spend your reading on what it can't see: hierarchy, grouping, whether a box should exist. Treat a finding as a lead, not a verdict; one you judge wrong goes in the report as such, and gets a `keyline-ignore` comment only if the user agrees.
 2. **Inventory:** `node <keyline>/scripts/scan.mjs . --ignore <prose and example dirs>`.
 3. **Contrast:** every text tier, the focus ring (`--min 3`) and status colours, per theme, with `<keyline>/scripts/contrast.mjs`.
 4. **Per domain, in polish order** — type, colour, layout, depth, motion, patterns — run that guide's audit: its searches, then its evidence per law. Render where the guide asks you to look (widths, themes, reduced motion, keyboard).

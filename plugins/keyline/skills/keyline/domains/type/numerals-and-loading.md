@@ -32,7 +32,9 @@ Proportional figures are right in a running sentence, where tabular spacing open
 
 ### Global or scoped
 
-The dial decides: `product` sets tabular on the app shell's root, where nearly every number aligns; `editorial` scopes it to tables, lists, meta lines and anything live, leaving prose proportional; `expressive` sets it on `type.data` only. No aligned or live number is proportional.
+The dial decides: `product` sets tabular on every number, scoped to numeric elements — tables, figures, counters, dates — rather than the root; `editorial` scopes it to tables, lists, meta lines and anything live, leaving prose proportional; `expressive` sets it on `type.data` only. No aligned or live number is proportional.
+
+Scope it even where nearly every number aligns: some families' `tnum` also changes punctuation — Inter's widens the hyphen, so "Sign-ups" opens a gap — and set on the root it disturbs text that has no figures in it.
 
 ### Check the family has it
 
@@ -67,7 +69,7 @@ Load the weights `DESIGN.md` lists and nothing else: five loaded, two used, is t
 
 Preload only what the first frame needs — the text face at `weight.regular` and, in `expressive`, the display weight; preloading everything competes with the page for bandwidth.
 
-Mono for code and paths is a system stack — `ui-monospace, "SF Mono", Menlo, Consolas, monospace` — unless code is the product; every platform ships a good one.
+Mono for code is a system stack — `ui-monospace, "SF Mono", Menlo, Consolas, monospace` — unless code is the product; every platform ships a good one.
 
 ### Swap, with a metric-matched fallback
 

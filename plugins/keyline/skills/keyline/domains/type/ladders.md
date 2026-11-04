@@ -20,24 +20,26 @@ A ratio can sanity-check *gaps* — a heading under about 1.15× the body relies
 
 ## Editorial
 
-Body 17px, the title modestly above it, so the reading is the loudest thing on the page.
+Body 17px, an article's title well above it so the piece visibly starts, and everything inside the article close to the body, so the reading is the loudest thing on the page.
 
 | Role | Size | Leading | Tracking | Weight | Tier | Separates on |
 |---|---|---|---|---|---|---|
-| `type.title` | 24 | 1.25 | −0.02em | strong | `text.primary` | size |
+| `type.title` | 36 | 1.2 | −0.02em | strong | `text.primary` | size |
 | `type.heading` | 20 | 1.3 | −0.015em | strong | `text.primary` | size |
 | `type.subheading` | 17 | 1.4 | 0 | strong | `text.primary` | weight, tight leading, space above |
 | `type.lead` | 17 | 1.85 | 0 | regular | `text.primary` | leading |
 | `type.body` | 17 | 1.7 | 0 | regular | `text.primary` | the baseline |
 | `type.supporting` | 17 | 1.5 | 0 | regular | `text.secondary` | tier, tighter leading |
-| pull quote (project role) | 17 | 1.7 | 0 | regular | `text.primary` | a bar and an indent |
+| pull quote (project role) | 20 | 1.4 | 0 | regular, italic | `text.primary` | a bar and a voice, the reading family's italic |
 | `type.ui` | 15 | 1 / 1.4 | 0 | regular | `text.secondary` | size, curve |
 | `type.meta` | 14 | 1.5 | 0 | regular | `text.tertiary` | size, tier |
 | `type.label` | 13 | 1.3 | 0 | regular | `text.secondary` | size |
 | `type.code` | 15 | 1.6 | 0 | regular, mono | `text.secondary` | family |
 | tooltip (project role under `type.meta`) | 12 | 1 | +0.01em | regular | `text.inverse` | the floor |
 
-Seven sizes above the floor; ceiling 24 ÷ 17 = 1.41. Four roles share 17px, each owning a signal. A subheading and a keyline (if the project has one) both take `weight.strong`: the subheading separates on tight leading and asymmetric space (it belongs to what follows), the keyline on open leading and symmetric space.
+Seven sizes above the floor; ceiling 36 ÷ 17 = 2.12. An index page's title may sit lower, at `type.heading`. Four roles share 17px, each owning a signal. The pull quote may rise to `type.heading`'s size, never above it (law 3), and parts from the heading there on regular weight, the bar and the italic; without a true italic its voice is `weight.strong` instead. A quote at body size is a blockquote, not a pull quote. A subheading and a keyline (if the project has one) both take `weight.strong`: the subheading separates on tight leading and asymmetric space (it belongs to what follows), the keyline on open leading and symmetric space.
+
+An article's navigation, buttons, tables and forms may take a sans `family.ui` when the reading face is a serif: reading and interface are two registers (law 5).
 
 ## Product
 
@@ -52,16 +54,18 @@ Body 14px, chrome at 13. UI and data roles dominate; two weights, with strong at
 | `type.supporting` | 14 | 1.45 | 0 | regular | `text.secondary` | tier |
 | `type.ui` | 13 | 1 / 1.4 | 0 | regular; strong when active | `text.secondary` | size, curve |
 | `type.data` | 13 | 1 | 0 | regular; totals strong | `text.primary` | tabular figures |
-| `type.label` | 12 | 1.3 | 0 | regular | `text.secondary` | tier |
+| `type.label` | 12 | 1.3 | 0 | regular; strong as a field label | `text.secondary` | tier |
 | `type.meta` | 12 | 1.4 | 0 | regular | `text.tertiary` | tier |
 | group label (project role under `type.label`) | 12 | 1.3 | 0, sentence case | regular | `text.tertiary` | a hairline rule beneath |
 | `type.code` | 12.5 | 1.5 | 0 | regular, mono | `text.secondary` | family |
 
-Five sizes plus code; ceiling 20 ÷ 14 = 1.43, and the dial allows up to 22 if a dashboard title needs it. The 12.5 compensates for a family rather than serving a role: monospace runs wide and steps down to fill the same measure. Only a product that shows code has the row; IDs, codes and times otherwise stay in the text face, tabular with a slashed zero.
+Five sizes plus code; ceiling 20 ÷ 14 = 1.43, and the dial allows up to 22 if a dashboard title needs it. The 12.5 compensates for a family rather than serving a role: monospace runs wide and steps down to fill the same measure. The row applies wherever literal code appears; paths, URLs, IDs, hostnames and times stay in the text face, tabular with a slashed zero, unless they are code the reader will type.
 
-Headings from 14px take −0.02em as a role signal (the tracking dial); a figure or title at 24px and over, if the ladder has one, takes −0.04em. `type.ui`, `type.label` and the reading roles stay at 0.
+Headline figures — a stat strip's values, a plan card's price — are data, not a tier (law 3): they sit at `type.title` or one step above it, and their label keeps the lead by position and weight. Headings from 14px take −0.02em as a role signal (the tracking dial); a figure or title at 24px and over, if the ladder has one, takes −0.04em. `type.ui`, `type.label` and the reading roles stay at 0.
 
-Two product rules. A dense table (a ledger, a log) may drop `type.ui` and `type.data` to 12px together, never one alone, or row and figures stop sharing a baseline rhythm. And an app's page title labels where you are; don't raise it to announce a feature. In a header bar it is chrome — the nav's size and weight, 13/500 — while the title of the open record or pane is the heading and takes the heading weight; one page setting its header title at 14/600 reads as a bug.
+A field's label is `type.label` at 12/500; its hint is `type.meta`, the same size in `text.tertiary` at 400. The label leads by weight and tier, not size. A row's second line may be 13px.
+
+Two product rules. A dense table (a ledger, a log) may drop `type.ui` and `type.data` to 12px together, never one alone, or row and figures stop sharing a baseline rhythm. And an app's page title labels where you are; don't raise it to announce a feature. In a header bar it is chrome — the nav's size and weight, 13/500 — while the title of the open record or pane is the heading and takes the heading weight; one page setting its header title at 14/600 reads as a bug. A page uses one or the other: a header bar holding the title at chrome size, or a page that opens with a heading in its content at `type.title` — never both.
 
 ### Three weights: quiet, lifted, heading
 
@@ -73,7 +77,7 @@ The recorded third weight, for a dense screen where most lines share two or thre
 | 16 | — | — | pane, dialog and section headings |
 | 14 | body, descriptions, a board card's title | a list row's title | `type.subheading`; unread row title (the state weight) |
 | 13 | a row's second line, a card's time | nav items, header-bar page title, tabs, buttons, table header labels | — |
-| 12 | timestamps, hints, captions | a group label's count | — |
+| 12 | timestamps, hints, captions | field labels, a group label's count | — |
 
 Its rules: nothing inside a row, card or folder goes above 500 but the state weight; lift by one step, never on two neighbouring lines; every title in a set takes one weight. A board's card titles sit a step lighter than a list's row titles: a board shows many titles at once, and at 500 the whole board reads heavy.
 
@@ -99,7 +103,7 @@ Expect the first pass to be a step too heavy everywhere. Correct it one step at 
   --weight-strong: 500;     /* headings, active tab, column totals, <strong> */
 }
 body { font: var(--weight-regular) var(--text-body)/1.5 var(--font-sans); font-synthesis: none; }
-.data, td, time { font-variant-numeric: tabular-nums; }  /* product: global in the app shell */
+.data, td, time, .figure, .count { font-variant-numeric: tabular-nums; }  /* product: every numeric element, not the root */
 ```
 
 `type.subheading` shares the body size and separates on weight; `type.label` and the group label share the meta size and separate on tier and the group label's rule; `type.data` has no size of its own. The marketing area adds a derived `type.display` and a larger ladder, while `type.ui` and `type.meta` stay identical across the boundary (law 2).
@@ -114,7 +118,7 @@ Body 18px, a wide ladder, and a derived display tier above it all (`display-tier
 |---|---|---|---|---|---|---|
 | `type.display` | derived, fluid | 0.95–1.05 | −0.035em | `weight.display` | `text.primary` | size, family |
 | `type.title` | 28 → 40, fluid | 1.15 | −0.025em | strong | `text.primary` | size |
-| `type.heading` | 28 | 1.2 | −0.02em | strong | `text.primary` | size |
+| `type.heading` | 28 → 36, fluid | 1.2 | −0.02em | strong | `text.primary` | size |
 | `type.subheading` | 21 | 1.3 | −0.01em | strong | `text.primary` | weight |
 | `type.lead` | 21 | 1.55 | 0 | regular | `text.primary` | leading, weight |
 | `type.body` | 18 | 1.6 | 0 | regular | `text.primary` | the baseline |
@@ -125,7 +129,7 @@ Body 18px, a wide ladder, and a derived display tier above it all (`display-tier
 | eyebrow (project role under `type.label`) | 13 | 1.2 | +0.08em, caps | strong | `text.secondary` | case |
 | `type.code` | 16 | 1.6 | 0 | regular, mono | `text.secondary` | family |
 
-Seven sizes above the floor, excluding display; ceiling 40 ÷ 18 = 2.2. Heading and phone title meet at 28 at the narrowest width; the title separates there on position and the space above it, acceptable because it is alone at the top of its page.
+Seven sizes above the floor, excluding display; ceiling 40 ÷ 18 = 2.2. Title and section headings are fluid with display, each via `clamp()` with a `rem` intercept. Heading and phone title meet at 28 at the narrowest width; the title separates there on position and the space above it, acceptable because it is alone at the top of its page. A landing page whose `h1` is the display has no title: display clears 1.5 × the heading at every width — at least 42px on a phone and 54px at full width.
 
 The 21 lead clears law 3 under a 28 heading, not under a 21 subheading; a lead never opens a subsection.
 
@@ -158,7 +162,7 @@ In the 11–16px band a 1px step isn't negligible: perceived difference scales w
 
 ## Viewports
 
-Outside expressive display and title, nothing resizes. A phone held closer roughly cancels its narrower column, so a 17px paragraph reads at a similar apparent size; bumping body up gives four-word lines and a dominant ragged edge.
+Outside expressive display, title and section headings, nothing resizes. A phone held closer roughly cancels its narrower column, so a 17px paragraph reads at a similar apparent size; bumping body up gives four-word lines and a dominant ragged edge.
 
 ## Units
 

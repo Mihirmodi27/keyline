@@ -55,7 +55,7 @@ Space surfaces by contrast against the page, not equal lightness steps, so the r
 | `border.hover` · `mark` | 1.8–2.1 | 0.80 | 0.40 |
 | `border.control` (an input's edge) | ≥ 3 on every surface an input sits on | 0.62 | 0.52 |
 
-Steps land about 0.02 apart in L in light, 0.03 in dark. Light `border.default` may sit lighter than `surface.pressed` if borders should recede further (law 1). Light `surface.raised` may be the page colour with a border; dark must be lighter than the page.
+Steps land about 0.02 apart in L in light, 0.03 in dark. Light `border.default` may sit lighter than `surface.pressed` if borders should recede further (law 1). Light `surface.raised` may be the page colour with a border, or white on a grey page — either way round, so long as every level steps the same way; dark must be lighter than the page.
 
 ## Deriving the accent from a brand hue
 

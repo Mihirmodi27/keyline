@@ -12,7 +12,9 @@ It is written for two readers at once — a person skimming it to learn the syst
 - **Contrast is written down, not implied.** Every text tier carries its measured ratio against the surface it's checked on, per theme. Setup computes them with `scripts/contrast.mjs`.
 - **Leave out what isn't there.** No dark theme, no dark column. No prose, no `lead` row. An empty row reads as a requirement.
 - **Decisions carry a reason and a date.** Anything that moves a dial off its preset, or knowingly breaks a law, goes under `## Decisions`. A command that meets a decision respects it; a command that would break a law without one asks first and then records the answer here.
-- **The decisions log reads as the current state, not a diary.** Each entry is dated and marked by who decided — *user decision* or *client feedback* — newest first. A new decision on a subject replaces the entry it supersedes rather than sitting below it; git history keeps the old one. A session reads the log before changing anything it covers, so a decided value isn't "fixed" back.
+- **Changes a law forced are recorded too.** A change made because of a law that a later session might undo — a white page replacing a grey one, a removed animation — goes under `## Decisions` marked *law*, so it isn't "fixed" back.
+- **The decisions log reads as the current state, not a diary.** Each entry is dated and marked by who decided — *user decision*, *client feedback*, or *law* — newest first. A new decision on a subject replaces the entry it supersedes rather than sitting below it; git history keeps the old one. A session reads the log before changing anything it covers, so a decided value isn't "fixed" back.
+- **The detector reads tables, not prose.** `scripts/check.mjs` takes the preset from the `Preset` row under `## Profile`, durations from every table row under `## Motion` (the duration ladder and the named exemptions), and z-index values from `## Layout` rows whose role starts `z.` or whose `Name here` is a z utility. A value written only in a sentence, or only as `var(--…)`, is invisible to it, so these tables state values.
 - **Findings are not fixes.** Setup lists what violates a law under `## Open issues` and leaves the code alone unless asked. The list is how a later session knows what's known.
 
 ## Template
@@ -45,7 +47,7 @@ Copy this shape. Drop any table or row that doesn't apply; add project roles und
 |---|---|---|---|---|---|---|
 | `type.title` | `text-title` | 20px | 1.25 | −0.02em | 600 | `text.primary` |
 | `type.body` | `text-base` | 15px | 1.6 | 0 | 400 | `text.primary` |
-| ↳ `pull-quote` (project role) | `.pull` | 15px | 1.6 | 0 | 400 | `text.primary` — separated by a 3px rule |
+| ↳ `pull-quote` (project role) | `.pull` | 18px | 1.4 | 0 | 400 italic | `text.primary` — separated by a 3px rule and the italic voice |
 
 **Weights** — `weight.regular` 400, `weight.strong` 600.
 
@@ -67,7 +69,28 @@ Copy this shape. Drop any table or row that doesn't apply; add project roles und
 |---|---|---|
 | `measure.reading` | `max-w-prose` | 65ch (≈ 620px) |
 
-Plus the radius ladder, the z-index ladder, breakpoints, and any forks (places where touch and pointer get different components).
+**Radius ladder**
+
+| Role | Name here | Value |
+|---|---|---|
+| `radius.control` | `rounded-md` | 6px |
+| `radius.card` | `rounded-xl` | 12px |
+
+**z-index ladder** — low to high, rows `z.below`, `z.raised`, `z.popover`, `z.dismiss`, `z.nav`, `z.overlay`, `z.toast`, `z.skip-link` as used.
+
+| Role | Name here | Value |
+|---|---|---|
+| `z.popover` | `z-popover` | 50 |
+| `z.overlay` | `z-overlay` | 80 |
+| `z.toast` | `z-toast` | 90 |
+
+**Breakpoints**
+
+| Role | Name here | Value | What changes |
+|---|---|---|---|
+| `bp.rail` | `lg` | 1024px | The table of contents moves into the margin rail |
+
+Plus any forks (places where touch and pointer get different components).
 
 ## Surfaces
 
@@ -84,6 +107,13 @@ Plus `material.translucent` tiers, if any, and their fallbacks.
 | `duration.state` | `--dur-fast` | 150ms | hover colour, icon swaps |
 | `ease.standard` | `--ease-out` | `cubic-bezier(0.2, 0, 0, 1)` | everything but colour |
 
+**Named exemptions** — motion off the ladder on purpose: set pieces, exits, spring opacity, crossfade pairs.
+
+| Exemption | Values | Why |
+|---|---|---|
+| Greeting | 900ms | Set piece: plays once a session, so it is not state (motion law 4) |
+| Menu exit | 120ms | Closing runs faster than opening |
+
 Plus springs by character, and the reduced-motion policy in one sentence.
 
 ## Patterns
@@ -94,6 +124,7 @@ Plus springs by character, and the reduced-motion policy in one sentence.
 
 - YYYY-MM-DD — Card titles at 500, not 600: they read heavy beside the pane title. (User decision; the type guide dial.)
 - YYYY-MM-DD — Three weights, not two: the billing table needs a middle weight for column totals. (Client feedback; the type guide dial override.)
+- YYYY-MM-DD — Page on white `surface.page`, not the grey `bg-neutral-50`: the text tiers failed against the grey. (Law; the colour guide.)
 
 ## Open issues
 

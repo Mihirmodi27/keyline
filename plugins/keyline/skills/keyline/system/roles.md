@@ -19,7 +19,7 @@ Sizes, leading, tracking and weight all hang off these. Owned by the type guide.
 | Role | Job |
 |---|---|
 | `type.display` | The one oversized moment on a marketing or landing page. Absent in most editorial and product systems |
-| `type.title` | The page's `h1` |
+| `type.title` | The page's `h1`. A page whose `h1` is the display (a landing page with no separate title) has none, and its display is measured against `type.heading` |
 | `type.heading` | Section headings, `h2` |
 | `type.subheading` | `h3` and below |
 | `type.lead` | An opening paragraph set apart from the body |
@@ -28,10 +28,10 @@ Sizes, leading, tracking and weight all hang off these. Owned by the type guide.
 | `type.ui` | Control text: buttons, menu rows, inputs, tabs |
 | `type.label` | Tags, badges, field labels, micro-labels |
 | `type.meta` | Dates, captions, counts, read times, footnotes |
-| `type.code` | Inline and block code |
+| `type.code` | Inline and block code, wherever literal code appears. Paths, URLs, IDs and hostnames stay in the text face unless they are code the reader will type |
 | `type.data` | Numerals that must align — tables, prices, stats. Often `type.ui` or `type.body` plus tabular figures rather than its own size |
 
-Families: `family.text`, `family.display` (only if different), `family.mono`.
+Families: `family.text`, `family.display` (only if different), `family.ui` (only if different — interface text beside a serif reading face), `family.mono`.
 Weights: `weight.regular`, `weight.strong`. Two optional ones, each only where the preset allows it: `weight.medium`, a middle weight for dense UI where a project records a job the other two can't carry, and `weight.display`, the display tier's own weight, never reused below it.
 
 ## Colour
@@ -97,6 +97,7 @@ Owned by the layout guide.
 | `measure.reading` | The width of running text |
 | `measure.wide` | Content that isn't prose but should still align — grids, tables |
 | `measure.app` | An application shell's content area, if there is one |
+| `measure.form` | Forms and settings inside a panel, ≈ 640–760px, so controls stay near their labels |
 | `measure.frame` | The wider frame that the reading column and its rails are both anchored to, so the gap between them holds as the window grows |
 | `measure.rail` | The width of a rail in the outer margin — a table of contents, an aside |
 | `gutter` | Horizontal page padding at the smallest width |
@@ -104,7 +105,7 @@ Owned by the layout guide.
 | `space.group` | Between groups inside a section |
 | `space.section` | Between sections |
 | `space.heading-above` · `space.heading-below` | The asymmetric pair around a heading. Their *ratio* is the rule, not their values |
-| `radius.pill` · `radius.small` · `radius.control` · `radius.card` · `radius.container` | Smallest to outermost. Nested radii obey inner = outer − padding |
+| `radius.pill` · `radius.small` · `radius.control` · `radius.card` · `radius.container` | Smallest to outermost. Concentric corners obey inner = outer − padding; anything away from a corner takes a radius for its size |
 | `hairline.chrome` · `hairline.object` · `rule.emphasis` | Divider weight inside chrome, the edge of an object, and a deliberate heavy rule (a quote bar, a focus ring) |
 | `z.below` · `z.raised` · `z.popover` · `z.dismiss` · `z.nav` · `z.overlay` · `z.toast` · `z.skip-link` | The stacking ladder, low to high. `z.toast` sits over modals, because a notification about a modal's action must not hide behind it |
 | `bp.<name>` | Breakpoints, named for what changes at them, not for devices |
@@ -137,7 +138,7 @@ Owned by the motion guide.
 | `duration.popover` | Something small appearing: a hover card, a menu, a chevron |
 | `duration.overlay` | Something large appearing or collapsing: a sheet, a region, a reveal |
 | `duration.route` | A page transition |
-| `duration.theme` | Every colour on the page changing at once |
+| `duration.theme` | Every colour on the page changing at once — only when the page itself switches theme |
 | `ease.standard` | The one curve almost everything uses |
 | `ease.colour` | For colour-only interpolation, where an overshooting curve would wobble |
 | `ease.exit` · `duration.exit` | Only if exits deliberately use a different curve, or a duration of their own rather than a shorter tier |

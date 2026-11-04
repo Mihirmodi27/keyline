@@ -35,7 +35,7 @@ Both render and CSS shows one, so both stay in the served HTML and the swap cost
 | `(pointer: coarse)` | The primary input is a finger |
 | `(any-hover: hover)` | *Some* input can hover — too permissive for a touchscreen laptop used by finger |
 
-Gate hover behaviour on `(hover: hover) and (pointer: fine)` together, in CSS and in script; a framework's `hover:` utilities may already wrap themselves in a hover media query, but imperative handlers never do.
+Gate every hover style, decoration included, on `(hover: hover) and (pointer: fine)` together, in CSS and in script; a framework's `hover:` utilities may already wrap themselves in a hover media query, but imperative handlers never do.
 
 **Check where you hide, not where you reveal.** A dock that collapses on scroll and expands on hover must never collapse on touch, where nothing brings it back, so bail out of the whole effect and attach no scroll listener:
 
@@ -56,7 +56,7 @@ For every hover behaviour, write down what a touch user gets; "nothing" is a bug
 | A settings panel opened on hover | A row in the menu sheet |
 | Row actions revealed on hover | A persistent overflow button, or a long-press menu |
 | A detail card beside a row | The same card below the row, or on the row's own page |
-| A decorative lift on a card | None — the card is still a link |
+| A decorative lift on a card | None — the card is still a link; the lift is still gated |
 
 ## Breakpoints from content
 

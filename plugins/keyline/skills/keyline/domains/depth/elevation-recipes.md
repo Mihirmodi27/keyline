@@ -143,7 +143,7 @@ const openDialog = () => { opener.current = document.activeElement as HTMLElemen
 
 ## The art panel
 
-Where a product keeps art (`SKILL.md` law 6) it is one inset panel: on a sign-in page, the half beside an unboxed form, from the breakpoint where both fit; phones get the form alone.
+Where a product keeps art (depth law 6) it is one inset panel: on a sign-in page, the half beside an unboxed form, from the breakpoint where both fit; phones get the form alone.
 
 - **Its own surface, not a level.** Inset by the page gutter, at `radius.container`, no shadow: it is part of the page, not above it.
 - **Its theme is scoped.** Art designed for one ground looks wrong on the other, so the panel pins a theme (`data-theme="dark"` on the panel, its tokens re-resolving inside) and reads the same in both.

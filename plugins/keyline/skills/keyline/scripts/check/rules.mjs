@@ -109,7 +109,7 @@ const typeRules = [
         {
           ...first(rare[1]),
           severity: "warning",
-          message: `${uses.size} font weights in use (${ranked.map(([w, l]) => `${w}×${l.length}`).join(", ")}); ${design.preset ? `the ${design.preset} preset allows ${allowed}` : `more than ${allowed} rarely each have a job`}. Every weight needs a job you can name — fold ${rare[0]} into a neighbour, or record why it's needed under ## Decisions.`,
+          message: `${uses.size} font weights in use (${ranked.map(([w, l]) => `${w}×${l.length}`).join(", ")}); ${design.preset ? `the ${design.preset} preset allows ${design.preset === "product" ? "two, and a third only for a recorded job" : allowed}` : `more than ${allowed} rarely each have a job`}. Every weight needs a job you can name — fold ${rare[0]} into a neighbour, or record why it's needed under ## Decisions.`,
         },
       ];
     },

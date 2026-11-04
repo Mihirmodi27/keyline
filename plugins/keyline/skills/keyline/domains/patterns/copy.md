@@ -108,6 +108,16 @@ Never "Successfully …" (the outcome is the message), never an exclamation mark
 > Its 48 tasks, 12 notes and every file attached to them will be deleted for everyone. This can't be undone.
 > [Cancel] [Delete project]
 
+## Calls to action, links and sign-ups
+
+On a landing page or an article the words are most of the interface (law 14):
+
+| Instead of | Write | Why |
+|---|---|---|
+| Get started · beside Start free | Start free · Book a demo | Each call to action names what happens next, so two can't be mistaken for each other |
+| Learn more · Click here | Pricing · Read the case study | Link text names its destination, and still does in a list of links read out of context |
+| An email field labelled only by "you@example.com" | "Email" above the field; "One essay a month. Unsubscribe any time." below it | A placeholder vanishes on typing; the line says what arrives and how often |
+
 ## Numbers in copy
 
 Counts beside a noun agree with it ("1 task", "3 tasks", "No tasks" — never "0 task(s)"). Use the platform's plural rules (`Intl.PluralRules`) once there is more than one language. A count that reports a problem takes its status colour; a plain count stays in ink (the colour guide).

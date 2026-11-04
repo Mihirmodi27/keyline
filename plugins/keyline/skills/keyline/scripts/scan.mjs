@@ -119,9 +119,9 @@ const RULES = [
   ["radius", tw(String.raw`rounded(?:-[trblse]{1,2})?(?:-(none|xs|sm|md|lg|xl|2xl|3xl|full|\[[^\]]+\]))?`), 0, "markup"],
   ["z-index", /z-index\s*:\s*([^;}"'\n]+)/g, 1, "all"],
   ["z-index", tw(String.raw`-?z-(\d+|\[[^\]]+\])`), 0, "markup"],
-  ["shadow", /box-shadow\s*:\s*([^;}\n]+)/g, 1, "all"],
+  ["shadow", /(?<![(\w-])box-shadow\s*:\s*([^;}\n]+)/g, 1, "all"],
   ["shadow", tw(String.raw`shadow(?:-(xs|sm|md|lg|xl|2xl|inner|none|\[[^\]]+\]))?`), 0, "markup"],
-  ["backdrop", /backdrop-filter\s*:\s*([^;}\n]+)/g, 1, "all"],
+  ["backdrop", /(?<![(\w-])backdrop-filter\s*:\s*([^;}\n]+)/g, 1, "all"],
   ["backdrop", tw(String.raw`backdrop-(?:blur|saturate)(?:-[a-z0-9\[\].%]+)?`), 0, "markup"],
   ["max-width", /(?<!\(\s*)max-width\s*:\s*([^;}"'\n]+)/g, 1, "all"],
   ["max-width", tw(String.raw`max-w-([a-z0-9]+|\[[^\]]+\])`), 1, "markup"],
@@ -168,9 +168,10 @@ for (const file of files) {
     }
   }
 
-  for (const m of text.matchAll(/(--[\w-]+)\s*:\s*([^;}]+)/g)) {
-    // Skip the property being *used* inside a value, e.g. `var(--x: …)` never happens,
-    // but `@property --x` blocks and Tailwind's `--tw-*` internals are noise.
+  // A declaration starts after `{`, `;` or whitespace and ends at `;` or `}` — so a BEM
+  // modifier in a selector (`.btn--primary:hover {`) is neither a property nor a value.
+  for (const m of text.matchAll(/(?<=[{;\s])(--[\w-]+)\s*:\s*([^;{}]+)(?=[;}])/g)) {
+    // `@property --x` blocks and Tailwind's `--tw-*` internals are noise.
     if (m[1].startsWith("--tw-")) continue;
     const entry = props.get(m[1]) ?? { values: [], files: new Set() };
     if (entry.values.length < 4 && !entry.values.includes(m[2].trim())) entry.values.push(m[2].trim());

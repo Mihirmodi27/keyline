@@ -24,7 +24,7 @@ These are text widths; add two `gutter`s for the container. A longer line needs 
 
 ### Check the narrowest case
 
-The narrowest measure is the smallest supported viewport minus two `gutter`s — 360 − 2 × 20 = 320px, say. If the longest real `type.title` breaks into four lines there, or a long word overflows, fix the type ladder rather than shrinking the title on phones; a responsive type step usually means one size is too large for the narrowest column. For a word that can't fit (a long compound, a URL), give prose `overflow-wrap: anywhere` rather than letting it widen the page.
+The narrowest measure is the smallest supported viewport minus two `gutter`s — 360 − 2 × 20 = 320px, say. If the longest real `type.title` breaks into four lines there, or a long word overflows, fix the type ladder rather than shrinking the title on phones; a responsive type step usually means one size is too large for the narrowest column. The exception is an editorial article title, which takes its one phone step from the type dials. For a word that can't fit (a long compound, a URL), give prose `overflow-wrap: anywhere` rather than letting it widen the page.
 
 ### Why every template shares it
 
@@ -43,7 +43,7 @@ A working reader needs navigation, content and detail together, so the page is r
 | Region | Width | Collapses |
 |---|---|---|
 | Navigation | 220–264px | Last — to an icon strip, then a menu button |
-| Content | Fills its panel, left-aligned at one `gutter` | Never |
+| Content | Fills its panel, left-aligned at one `gutter` — 16px at the smallest width, 24–32px from tablet up; forms and settings cap at `measure.form`, ≈ 640–760px | Never |
 | Inspector | 320–400px | First — to an overlay sheet on `z.overlay` |
 
 Settings help, onboarding copy, a changelog entry and an empty state's explanation still sit at `measure.reading`; a 1200px-wide paragraph of help text in a settings pane is the most common product failure of law 1. The inspector is detail, so it collapses first; navigation is how the reader leaves, so it stays longest. A centred column inside the content panel wastes the width a working reader opened the window for, and a page that sets its own `max-width` or padding drifts from its neighbours: the shell owns both.
@@ -55,7 +55,7 @@ Top to bottom, every page in the shell has the same parts, so a reader learns on
 | Part | Shape |
 |---|---|
 | Header bar | About 44px; breadcrumb at the start, the page's own actions at the end as quiet ghost buttons; the page title at the nav's size, not a display heading |
-| Stat strip | 3–4 figures under the header, parted by hairlines; each figure filters the table below to what it counts, and shows when it's the active filter |
+| Stat strip | 3–4 figures under the header, parted by hairlines, set at `type.title` or one step above; each figure filters the table below to what it counts, and shows when it's the active filter |
 | Toolbar | Search, then filters as icons with tooltips — a text label on every filter crowds the bar — then the view switch; on touch the filters open as a labelled sheet |
 | Content | The table, board or list, at the panel's full width |
 
@@ -63,13 +63,13 @@ Top to bottom, every page in the shell has the same parts, so a reader learns on
 
 **The group bar.** One shared component: a tinted band about 36px tall holding a chevron, the group's name, its count and an add action, sticky under the header row while its group scrolls. Long administrative tables start with every group closed, each bar carrying a summary ("Admins 3/12 · Members 9/12"); a search opens every group it matches.
 
-**Forms.** The field that decides the rest goes first, at full width — a category before the free text that depends on it.
+**Forms.** A form or settings page caps at `measure.form`, about 640–760px, left-aligned in the panel: at the panel's full width a switch ends up a screen's width from its label. The field that decides the rest goes first, at the form's full width — a category before the free text that depends on it.
 
-**Overviews and dashboards.** Order the sections overview, trends, action items, and cut what nobody acts on — a recent-activity feed is the usual casualty. A long page is fine when the order is right. A scoped overview, one project's, is the global overview's layout over filtered sources, never a second layout, so the two can't disagree. Wireframe a new page type and share it before building: it is cheaper to argue about.
+**Overviews and dashboards.** Order the sections overview, trends, action items, and cut what nobody acts on — a recent-activity feed is the usual casualty, unless the product or its brief requires one. A long page is fine when the order is right. A scoped overview, one project's, is the global overview's layout over filtered sources, never a second layout, so the two can't disagree. Wireframe a new page type and share it before building: it is cheaper to argue about.
 
 ### Expressive — bands with a measure inside
 
-Sections may run to the viewport edge as bands — a colour field, a full-bleed image, a product shot — but the text inside sits at `measure.reading`, or narrower for a short statement. A two-line headline may span the band; the paragraph under it may not.
+Sections may run to the viewport edge as bands — a colour field, a full-bleed image, a product shot — but the text inside sits at `measure.reading`, or narrower for a short statement. A two-line headline may span the band; the paragraph under it may not. Card grids and multi-column text inside a band cap at `measure.wide`, about 1200–1280px; only the band itself and its media run edge to edge, or a three-up grid on a 2560px screen becomes three strips.
 
 ```css
 .band { padding-block: var(--space-section); }
@@ -118,11 +118,11 @@ Ratios cluster between 2:1 and 4:1. A form with `gap: 16px` on everything puts e
 .major-section:first-child { border-top: 0; padding-top: 0; }
 ```
 
-The first section has nothing above it to separate from, so it takes no rule. A short closing block that reads as a coda follows on without one; ruling it off promotes it to a peer and flattens the page. Decide peer or continuation in the layout code beside the sections, so it applies to whichever subset is present, and never expose it as a setting — someone will turn every rule on.
+The first section has nothing above it to separate from, so it takes no rule. A short closing block that reads as a coda follows on without one; ruling it off promotes it to a peer and flattens the page. A band — a logo strip, a stat band — may keep the rules above and below it: they mark it as a band, not a change of subject. Decide peer or continuation in the layout code beside the sections, so it applies to whichever subset is present, and never expose it as a setting — someone will turn every rule on.
 
 ## Page padding and chrome clearance
 
-- **Top space signals a document.** Editorial pages start well below the top edge (80–112px); product content starts close under the page's header bar (16–24px), which already framed it.
+- **Top space signals a document.** Editorial pages start well below the top edge (80–112px, about 48–64px at phone widths); an expressive page without a hero does the same; product content starts close under the page's header bar (16–24px), which already framed it.
 - **Fixed chrome reserves its own clearance.** Under a fixed bottom bar or dock, the page's bottom padding must exceed the bar's height plus its offset on every template whose content can end near the viewport bottom; a page ending in a footer can rely on the footer's padding.
 - **Audit it per template.** The long article ends in a padded footer; the short index without one puts its last item under the bar — the layout bug that most often survives review, because the test page is always a long one.
 
@@ -147,7 +147,8 @@ A fictional freight-tracking app — `product`, docs area `editorial`, Inter at 
   --measure-app: 100%;            /* content fills its panel, left-aligned */
   --shell-nav: 240px;
   --shell-inspector: 360px;
-  --gutter: 16px;
+  --gutter: 16px;                 /* the smallest width; 24px from tablet up */
+  --measure-form: 45rem;          /* 720px — forms and settings in the panel */
 
   --space-tight: 6px;
   --space-group: 16px;

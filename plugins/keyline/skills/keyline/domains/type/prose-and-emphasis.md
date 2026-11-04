@@ -27,7 +27,7 @@ Each block at body size needs a signal the others don't use (law 4). A typical s
 | Lead | `type.lead` | more open leading, more space below | be larger than the heading above it |
 | Keyline | project role under `type.body` | `weight.strong`, symmetric space | appear twice in one section |
 | Dek | `type.supporting` | `text.secondary`, tighter leading | read as the first paragraph |
-| Pull quote | project role under `type.body` | a solid bar and an indent | step down a tier — at body size it just looks de-emphasised |
+| Pull quote | project role between `type.body` and `type.heading` | a solid bar and a voice — the reading family's italic or the display weight | rise above `type.heading` (law 3), or stay at body size, where it is a blockquote |
 | Note | project role under `type.meta` | one size down, `text.tertiary`, a lighter rule | share the quote's rule weight |
 | Caption | `type.meta` | one size down, `text.tertiary` | sit at body size, competing with the next paragraph |
 
@@ -49,7 +49,7 @@ Enforce the discipline at build time: fail on a blank keyline or note, two keyli
 
 ## Quotes
 
-At body size the bar is the whole signal, so it has to be a real one:
+A pull quote may be set up to `type.heading`'s size, never above it (law 3), separated by the bar and a voice — the reading family's italic or the display weight. A quote at body size is a blockquote, not a pull quote: there the bar is the whole signal, so it has to be a real one:
 
 ```css
 .quote { display: flex; gap: var(<space.tight>); }

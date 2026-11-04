@@ -99,7 +99,7 @@ Law 7's dial, decided by whether completion is the news:
 | A long list of ticked checkboxes | A light grey box with an ink tick | An inverted ink or accent block per tick shouts down a long list; the tick's shape carries the state |
 | A switch | Its strong fill, on | A switch has no tick, so the fill is the state |
 
-The second row reverses the first on purpose: it is what the "too grey" product in law 7 changed on its boards. Record which lists take which row under `## Decisions`, so the next audit doesn't "fix" one into the other.
+The second row reverses the first on purpose: it is what the "too grey" product in law 7 changed on its boards. Record which lists take which row under `## Decisions`, so the next audit doesn't "fix" one into the other. Under `expressive`, completion may take a brand colour in any row, counted among its exceptions.
 
 Where the reader *is* stays neutral. A place in the data with one member is different: on a calendar board, today's column may take a filled `accent` with `text.on-accent`, the one time the brand marks a place rather than an action. Record it as `exception.today`; it doesn't make a second.
 
@@ -116,6 +116,7 @@ Where the reader sorts by kind, place or person at a glance, each question gets 
 
 - **Marks only.** The family colours the glyph; the words beside it stay in ink.
 - **No crossing.** A late task's type icon keeps its hue; the status glyph beside it turns. Where a family hue falls near a status hue or the accent, move its lightness or chroma until it can't be read as one, and never reuse a status value.
+- **Muted is fine for people.** When the hues near the accent and the status colours are ruled out and what's left clips — an olive `#686800` — lower the chroma rather than force a saturated hue. Avatars and other "who" marks only need telling apart.
 - **3:1 on every ground, per theme.** A mark the reader needs is a non-text graphic: measure it with `contrast.mjs --min 3` on each surface it sits on (panel, frame, hover, selected) in each theme, and re-pick the family per theme like any accent.
 - **Listed.** Under **Exceptions** in `DESIGN.md`, each family with its question, its members and its marks: "`exception.area.*` — where a record lives. Nav icon, breadcrumb step, page-title icon. Never text, never state."
 
@@ -160,3 +161,11 @@ It is the one planned colour, its jobs set by the dial; law 5 in `SKILL.md` cove
 ## Charts are a different palette
 
 Categorical series colours are neither status nor exception and need their own method (distinguishable in colour-vision deficiency, legible in both themes, ordered). Never borrow status foregrounds: a red line reads as "error" whatever it measures. The one overlap: series that *are* a family's members, such as record types, take that family's hues, since they answer the same question.
+
+| Series | Colour |
+|---|---|
+| One primary series | `accent` — it is what the screen is about, so the brand stays on it |
+| Comparison, previous period, target | Neutral: `mark` or a text tier, dashed or thinner where it shares an axis with the primary |
+| Three or more of equal standing | `chart.series.<n>`, an ordered set, below |
+
+The ordered set: start from the accent hue and step round, each hue at least ~40° from the status hues, alternating lightness so neighbours still part in greyscale and colour-vision deficiency. Every series clears 3:1 on the chart's surface in each theme, re-picked per theme like any accent. Past six or seven, group the tail as "Other" in a neutral; a legend nobody can match isn't a palette. Record the set in `DESIGN.md` `## Colour` with its order.

@@ -31,7 +31,7 @@ For each canonical role in `roles.md`: which of the project's names does that jo
 Five places projects have quietly broken a law:
 
 - **One token doing two jobs.** A grey used for borders and text: a border needs 3:1, text 4.5:1, and one value rarely serves both. Record the coupling as an open issue; don't split it yet.
-- **A job with no token.** Captions at six greys, durations typed inline. Propose a name in the project's style (`design-md.md` says how to detect it) and mark it `proposed`.
+- **A job with no token.** Captions at six greys, durations typed inline. Propose a name in the project's style (`design-md.md` says how to detect it) and mark it `proposed`. Where a whole domain has no tokens — no type tokens, no motion tokens — record that as one open issue, not one per role; that domain's refining pass proposes a full set in the project's style, marked `proposed`.
 - **Roles the list doesn't have.** A `keyline`, a `pull-quote`, a `kicker`: record each as a project role under its nearest canonical parent, with what separates it — size, weight, leading, colour or a rule. If nothing does, that's a finding.
 - **Boxes as the default.** Every section, stat and list in a card, cards inside cards, a bento grid of unlike sections, tinted strips behind labels, uppercase eyebrows, several chip shapes, a second hue that calls for attention (a hue family answering what, where or who under `product` is not one), success colour on done steps where completion isn't the news (a sequence the reader passes through, not a board or queue). Count the boxes per main screen and list each that holds more than one object (depth law 2, layout law 3). If the user has a reference interface they've already approved, screenshot each main screen beside it; the gaps are open issues.
 - **Values on no ladder.** Twenty-three font sizes, fourteen radii. Cluster them by usage, propose the ladder, list the strays that could snap to a neighbour unseen.
@@ -68,7 +68,7 @@ Don't ask what you can find out, and don't ask for approval of the whole mapping
 Follow `system/design-md.md`: the project's names in `Name here`, canonical roles in `Role`, values as the source states them, measured contrast for every text tier, per-theme columns only where themes exist, nothing for roles the project lacks. Then:
 
 - **`## Decisions`** — every dial set differently from the preset, with its reason, or a question mark if unknown.
-- **`## Open issues`** — every law the code breaks, one line each with evidence (a ratio, a count, a file). **Don't fix anything** unless asked; a setup run that also rewrites forty components can't be reviewed.
+- **`## Open issues`** — every law the code breaks, one line each with evidence (a ratio, a count, a file). Before writing them, read the law headings (the `### N.` lines) of each domain guide you cite, so every citation names the right law. **Don't fix anything** unless asked; a setup run that also rewrites forty components can't be reviewed.
 
 Tell the user briefly: the preset and why, how many roles mapped cleanly, what you proposed names for, and the three most important open issues.
 
@@ -80,7 +80,7 @@ With no tokens yet, `presets.md` and each domain guide's `## Dials` section give
 
 ## How the other commands use this file
 
-Each domain command reads `DESIGN.md`, finds its section, and works in the project's names. If the file is missing, it runs steps 1–2 for its own domain, does the task and recommends `/keyline init` — it doesn't refuse. A decision that changes the system — a new role, a moved dial, a law knowingly broken — goes back under `Decisions` — dated, marked user decision or client feedback, newest first, replacing what it supersedes — which is what keeps the file true after the first day.
+Each domain command reads `DESIGN.md`, finds its section, and works in the project's names. If the file is missing, it runs steps 1–2 for its own domain, does the task and recommends `/keyline init` — it doesn't refuse. A decision that changes the system — a new role, a moved dial, a law knowingly broken, a change a law forced that a later session might undo — goes back under `Decisions` — dated, marked user decision, client feedback or law, newest first, replacing what it supersedes — which is what keeps the file true after the first day.
 
 ## Checklist
 

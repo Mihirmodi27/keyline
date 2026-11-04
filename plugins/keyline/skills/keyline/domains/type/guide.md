@@ -21,13 +21,15 @@ Read `DESIGN.md` at the project root: `## Profile` for the preset and any areas 
 
 The ladder has a floor as well as a ceiling. Below the readable floor type is recognised, not read — a two-letter lettermark, card lettering — and nothing a user must read lives there. A base size no role claims (a `body { font-size: 15px }` nothing uses explicitly) is waiting to be used by accident.
 
+Type inside artwork — an illustration or diagram, an SVG or an HTML mock marked `role="img"` — is exempt from the ladder, as colour law 1 exempts colour there; any label in it a reader must read still clears the readable floor.
+
 Cut downward, checking what each remaining step was holding up: removing a 30px Glass article title took three more sizes with it, two of which existed only to sit between it and the body.
 
 → Per-preset ladders, and adding a role without growing one: `domains/type/ladders.md`
 
 ### 2. A scale is only a system if every template is on it
 
-**No template opens a step above the others; a page type with its own hierarchy is opting out of the system, not expressing importance.** Glass articles once opened at 30px with 19px section headings while every index opened at 18px, and a case study felt like a different site. Readers feel the opt-out as inconsistency before they notice sizes; the fix was the site's existing ladder, not a compromise.
+**No template opens off the ladder, and templates of one kind open alike; a page type with its own hierarchy is opting out of the system, not expressing importance.** Glass articles once opened at 30px with 19px section headings while every index opened at 18px, and a case study felt like a different site. Readers feel the opt-out as inconsistency before they notice sizes; the fix was the site's existing ladder, not a compromise. An article may open above an index — its title starts a piece, an index's labels a list (the ceiling dial) — but every article opens at one size, and every index at another.
 
 Areas on another preset are declared by path in `DESIGN.md`, not drifted into. Inside one every template shares its ladder, and roles crossing the boundary — navigation, `type.ui`, `type.meta`, the footer — keep one set of values, so the chrome doesn't change between marketing site and app.
 
@@ -35,9 +37,11 @@ The same holds for one element: a pane title at 14/600 where every other page's 
 
 ### 3. A tier never outranks the heading it sits under
 
-**Nothing inside a section — a lead, a pull quote, a keyline, a stat — may be larger, heavier or louder than the heading that owns it.** A Glass keyline at 17px under a 16px heading read as paragraphs shouting over their titles; an in-body heading larger than the page's title inverts the document. Check role pairs — `type.lead` against `type.heading`, `type.heading` against `type.title` — since a violation only shows where the two meet.
+**Nothing inside a section — a lead, a pull quote, a keyline, a note — may be larger, heavier or louder than the heading that owns it.** A Glass keyline at 17px under a 16px heading read as paragraphs shouting over their titles; an in-body heading larger than the page's title inverts the document. Check role pairs — `type.lead` against `type.heading`, `type.heading` against `type.title` — since a violation only shows where the two meet.
 
 `type.display`, the one role above `type.title`, obeys it too: one loudest moment, nothing under it competing. Two are two pages' worth of hierarchy on one.
+
+A figure that *is* the content of its block — a price on a plan card, a value in a stat strip, a big number — is data, not a tier, and may be larger than its label; the label keeps the lead by position and weight.
 
 In a row or card the rule runs the other way: **its title is the darkest thing in it.** A title greyed to say read or done is outranked by its own metadata, and a list of them reads as all grey; state rides on a dot, a glyph or the state weight (law 5).
 
@@ -67,7 +71,7 @@ Between sizes too, size is the weakest signal in the 11–20px band: a 13 → 14
 
 **Pick weight by what the text is doing there, not how important it feels.** Each size has a quiet weight and a lifted one: lift one step at most, never on two neighbouring lines — a card's time and title both lifted cancel out. Every title in a set takes one weight; a finished card's lighter title reads as a mistake, so the column or a glyph says it.
 
-A second family earns its place with a second register — literal text in a code face, a brand display voice — never because "headings should feel different", which size, weight, leading and tracking handle. A code face for a handful of spans is a system stack, not a download; IDs, codes and times rarely need even that — tabular, slashed-zero figures (law 10) set them apart in the text face.
+A second family earns its place with a second register — literal text in a code face, a brand display voice, interface text beside a serif reading face — never because "headings should feel different", which size, weight, leading and tracking handle. A code face for a handful of spans is a system stack, not a download; IDs, codes and times rarely need even that — tabular, slashed-zero figures (law 10) set them apart in the text face.
 
 Weight is the cheapest second channel for state: colour alone fails WCAG 1.4.1, so an active row takes `weight.strong` *and* `text.primary` — only on states that don't follow the pointer (active, current, selected, not hover), since a weight change alters width and shifts neighbours. **Weight carries one state per product:** if unread rows step up beside their dot, current and selected use a fill, a marker or tier, or the step means nothing.
 
@@ -115,7 +119,7 @@ The mapping covers user-agent styles: `<cite>`, `<blockquote>`, `<b>`, `<th>` an
 
 ### 13. An icon is set to the text beside it
 
-**An icon beside a label takes the label's size and weight, not a size of its own.** 13px text takes a 13–14px icon and a 4–6px gap; a few pixels larger and the icon is read before its word. Stroke follows weight — 1.75 on a 24 grid beside 400–500 text, where 2 looks bold — and retuning beats switching family. Record each role's icon size in its `## Type` row (law 2).
+**An icon beside a label takes the label's size and weight, not a size of its own.** 13px text takes a 13–14px icon and a 4–6px gap; a few pixels larger and the icon is read before its word. The size is the drawn glyph, not the SVG box: on a 24-unit grid with 2 units of padding, a 16px box draws about 13px. Stroke follows weight — 1.75 on a 24 grid beside 400–500 text, where 2 looks bold — and retuning beats switching family. Record each role's icon size in its `## Type` row (law 2).
 
 ## Dials
 
@@ -123,25 +127,25 @@ The mapping covers user-agent styles: `<cite>`, `<blockquote>`, `<b>`, `<th>` an
 |---|---|---|---|
 | `type.body` size | 16–18px | 14px | 17–20px |
 | `type.ui` size | body − 1–2px | 13px (12px in dense tables) | 15–16px |
-| Ceiling: `type.title` ÷ `type.body` | ≤ 1.5 | ≤ 1.6 | ≤ 2.5 |
-| `type.display` | none | none | one per page, derived from the measure; ≥ 1.5 × `type.title` at every width |
+| Ceiling: `type.title` ÷ `type.body` | ≤ 2.25 for an article's or page's title; index and chrome titles may sit lower | ≤ 1.6 | ≤ 2.5 |
+| `type.display` | none | none | one per page, derived from the measure; ≥ 1.5 × `type.title` at every width (× `type.heading` where the display is the `h1`) |
 | Distinct sizes above the floor (excluding display and code) | ≤ 7 | ≤ 7 | ≤ 8 |
 | Readable floor | 12px | 11px | 12px |
 | Weights | 2: `weight.regular`, `weight.strong` | 2: `weight.regular` 400, `weight.strong` at 500; a third (600, headings) only for a recorded job | 2 for text, plus `weight.display` |
-| Families | one, plus a system-stack mono | one; IDs and codes in its tabular, slashed-zero figures; mono only if code is the product | up to two (`family.display`), plus mono |
+| Families | one for reading, plus a system-stack mono; a second for interface text (navigation, buttons, tables, forms) when the reading face is a serif | one; `type.code` wherever literal code appears; paths, URLs, IDs and hostnames in the text face's tabular, slashed-zero figures unless they are code the reader will type | up to two (`family.display`), plus mono |
 | Leading, reading | 1.6–1.75 | 1.45–1.55 | 1.5–1.65 |
 | Leading, headings | 1.2–1.3 | 1.25–1.35 | title 1.1–1.2; display 0.95–1.05 |
 | Leading, multi-line UI | 1.4 | 1.3–1.4 | 1.4 |
 | Tracking at the top of the ladder | −0.02em | −0.02em on every heading from 14px | display −0.03 to −0.045em |
 | Uppercase labels | none | none: sentence case everywhere, separated by tier and a rule | eyebrows, +0.06–0.1em |
 | Italic | true italic, if the family ships one, for `em` and titles of works | none: `em` → `text.secondary` | true italic allowed as a display voice |
-| Numerals | tabular wherever numbers align or update; proportional in prose | tabular globally; slashed zero on IDs and codes | proportional in display, tabular in data |
-| Responsive sizes | none | none | display and title fluid via `clamp()` |
+| Numerals | tabular wherever numbers align or update; proportional in prose | tabular on every number, scoped to numeric elements (tables, figures, counters, dates), not the root; slashed zero on IDs and codes | proportional in display, tabular in data |
+| Responsive sizes | the article title only: one smaller step on phones | none | display, title and section headings fluid via `clamp()` with a `rem` intercept |
 | Unit | `rem` | `rem` | `rem` (fluid values with a `rem` intercept) |
 
-**Ceiling.** The ratio, not the pixel value, carries character: an editorial title modestly above body keeps the reading loudest. Raising it costs more than one size, as every tier between wants a step; record any raise with the role that needed it.
+**Ceiling.** The ratio, not the pixel value, carries character. Editorial keeps the reading the loudest thing on the page, but an article's title has to read as the start of the piece, so the ceiling allows it: an 18px body takes a title near 40px. Everything inside the article stays close to the body. Index pages and chrome titles may sit lower, still on the ladder (law 2): a page listing pieces isn't opening one. The `glass` preset keeps its own lower ceiling by decision (`glass/type/guide.md`). Raising a ceiling costs more than one size, as every tier between wants a step; record any raise with the role that needed it.
 
-**Display.** Derived from the headline and the column, not body × ratio; within 1.5× of `type.title` it is a big title, not a tier. → Derivation, bounds, leading, tracking and weight: `domains/type/display-tier.md`
+**Display.** Derived from the headline and the column, not body × ratio; within 1.5× of `type.title` it is a big title, not a tier. On a page whose `h1` is the display — a landing page with no separate title — there is no `type.title`, and display is measured against `type.heading`: at least 1.5× at every width. → Derivation, bounds, leading, tracking and weight: `domains/type/display-tier.md`
 
 **Weights.** Product runs two, with `weight.strong` at 500 rather than 600: on a dense screen headings are found by size, tracking and tier, and a 600 heading forces a middle weight for tabs, totals and labels to hold their own against it — how a product ends up with three weights and a noisy page. Keep strong at 500 and the active tab, the column total and the row title all take it. A third weight needs a job the two can't carry, recorded in `DESIGN.md`; it costs a font file and a check that every weight still has exactly one job. Expressive's `weight.display` can go *lighter* than regular (`domains/type/display-tier.md`).
 
@@ -155,15 +159,19 @@ The commonest recorded third is 600 for headings on a dense screen, where 500 is
 
 **Uppercase labels.** Capitals are a texture; a page of them is signage. Uppercase eyebrows over every section and column are what a template looks like, so product sets labels in sentence case and separates a group label from the same-size rows beneath it by tier (`text.tertiary`) and a hairline rule, not case. Expressive may use capitals for an eyebrow, tracked positive (law 7); editorial doesn't need them. Product's sentence case rules out Title Case too, generated strings included — field names, column headers, dialog titles, toasts; acronyms and proper nouns stay as written.
 
+**Families.** Reading and interface are two registers (law 5). With a sans reading face one family carries both; with a serif, navigation, buttons, tables and forms may take a second, interface family (`family.ui`), so a serif doesn't set the chrome.
+
+**Numerals.** Product sets tabular on every number but scopes it to numeric elements, not the root: some families' `tnum` also changes punctuation, and set globally it widens the hyphen in "Sign-ups".
+
 **Italic.** The Glass preset's ban is about its family, whose italic fights the letterforms, not about italic. Editorial with a good true italic should use it; product rarely has reading copy long enough to need one, and saves a file.
 
-**Responsive sizes.** In editorial and product a responsive step is a symptom of a size too large for the narrowest measure: fix the ladder, not a breakpoint, and on a phone fix the measure or leading (`domains/type/ladders.md`). Expressive display is the exception, derived from a column that changes. One step holds under every preset: inputs are 16px on narrow, touch-first widths, since iOS Safari zooms into a smaller field on focus — never `maximum-scale=1`, which takes zoom from every reader.
+**Responsive sizes.** In editorial and product a responsive step is a symptom of a size too large for the narrowest measure: fix the ladder, not a breakpoint, and on a phone fix the measure or leading (`domains/type/ladders.md`). The one editorial exception is the article title, which the higher ceiling makes large enough to wrap to four lines at 320px: it takes one smaller step on phones, and nothing else moves. Expressive is the exception: display is derived from a column that changes, and title and section headings scale with it, each via `clamp()` with a `rem` intercept, so the steps between them hold at every width. One step holds under every preset: inputs are 16px on narrow, touch-first widths, since iOS Safari zooms into a smaller field on focus — never `maximum-scale=1`, which takes zoom from every reader.
 
 **Unit.** `rem` respects a user's root font size; `px` doesn't, and the Glass preset uses it to protect 1px relationships in its small band, relying on browser zoom. Either is defensible; mixing them is not. Never size text in `vw` alone — it ignores zoom, failing WCAG 1.4.4.
 
 ## Building it for a project
 
-1. **Read the reader and the family.** The preset sets the dials; the family adjusts them. Note its x-height (a large one reads bigger, so body can sit a pixel lower), true italic, `tnum`, `opsz` axis and weights. Record `family.text`; `family.display` only if the preset allows and a register needs it.
+1. **Read the reader and the family.** The preset sets the dials; the family adjusts them. Note its x-height (a large one reads bigger, so body can sit a pixel lower), true italic, `tnum`, `opsz` axis and weights. Record `family.text`; `family.display` only if the preset allows and a register needs it; `family.ui` only beside a serif reading face.
 2. **List the roles the project has, not the ones this guide lists** — canonical and project roles (a `keyline`, a `kicker`, a `stat`) found in the templates. No instance, no row.
 3. **Fix body first, then the ceiling** (`type.body` from dial and family, `type.title` within the ratio); everything else sits between them and the floor.
 4. **Place the other roles, reusing sizes** with different leading, weight or tier; a new size only when no unused axis is left, naming the sizes it sits between.
@@ -239,5 +247,5 @@ Write back whenever the ladder changes shape — a role, size, weight or family 
 - [ ] After a type change, every route swept rendered; no raw sizes left.
 - [ ] Nothing a user must read sits below the readable floor.
 - [ ] Dials match the preset: body size, ceiling ratio, weight and family counts, leading ranges, tracking at the top.
-- [ ] Display derived from the measure, clamped with a `rem` intercept; no text sized in `vw` alone.
+- [ ] Display derived from the measure; every fluid size clamped with a `rem` intercept; no text sized in `vw` alone.
 - [ ] Italic, case (generated labels included), numeral defaults and the unit match the preset or a recorded decision.

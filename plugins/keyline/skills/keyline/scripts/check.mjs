@@ -38,7 +38,8 @@ Options:
   --all               don't cap repeated findings in the report
   --ignore <path>     leave out a path (repeatable), e.g. prose or fixtures
   --rule <id[,id…]>   run only these rules (repeatable)
-  --root <dir>        where DESIGN.md and package.json live (default: .)
+  --root <dir>        the project: paths are read from here, and DESIGN.md and
+                      package.json found here (default: .)
   --rules             list the rules and exit
   -h, --help          this`;
 
@@ -155,7 +156,9 @@ function suppressed(facts, f) {
 export function check({ root = ".", paths = ["."], ignores = [], rules = null } = {}) {
   const absRoot = resolve(root);
   const files = collect(absRoot, paths.map((p) => resolve(absRoot, p)), ignores);
-  const design = readDesign(absRoot);
+  // DESIGN.md lives at the project root. Checking one folder with no --root, look in it too.
+  let design = readDesign(absRoot);
+  if (!design.found && paths.length === 1 && existsSync(resolve(absRoot, paths[0], "DESIGN.md"))) design = readDesign(resolve(absRoot, paths[0]));
   const facts = gather(absRoot, files);
   const findings = [];
   for (const rule of RULES) {
@@ -167,7 +170,7 @@ export function check({ root = ".", paths = ["."], ignores = [], rules = null } 
   }
   const order = { error: 0, warning: 1, info: 2 };
   findings.sort((a, b) => a.file.localeCompare(b.file) || a.line - b.line || order[a.severity] - order[b.severity]);
-  return { files: files.length, design, findings };
+  return { files: files.length, design, findings, rules };
 }
 
 /* ── Report ─────────────────────────────────────────────────────────────── */
@@ -218,7 +221,8 @@ function human(result, { all, color }) {
   out.push("");
   out.push(DOMAINS.map((dm) => `${dm} ${s.byDomain[dm]}`).join(dim(" · ")));
   const total = result.findings.length;
-  out.push(total === 0 ? paint("32", "✓ nothing the detector can see — run /keyline critique for what it can't") : `${s.error ? sev.error(`✖ ${s.error} error${s.error === 1 ? "" : "s"}`) : "✓ no errors"}, ${s.warning} warning${s.warning === 1 ? "" : "s"}, ${s.info} info`);
+  const scope = result.rules ? ` in ${result.rules.join(", ")}` : "";
+  out.push(total === 0 ? paint("32", `✓ nothing the detector can see${scope} — run /keyline critique for what it can't`) : `${s.error ? sev.error(`✖ ${s.error} error${s.error === 1 ? "" : "s"}`) : "✓ no errors"}, ${s.warning} warning${s.warning === 1 ? "" : "s"}, ${s.info} info`);
   return out.join("\n");
 }
 

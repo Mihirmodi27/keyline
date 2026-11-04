@@ -66,8 +66,8 @@ A worked check: chrome tint `rgb(250 250 250 / 0.72)`, light-theme ladder `text.
 At 95% the dark composite becomes `#eeeeee`: `text.secondary` 7.5:1, `text.tertiary` 4.55:1 — passing, just. Hence the defensive tier for anything below `text.primary` over arbitrary content.
 
 ```sh
-# composite first, then check the ladder against the worst composite
-node <keyline>/scripts/contrast.mjs --ladder "#b4b4b4" "#16161a" "#4b4b52" "#6b6b73"
+# --over composites the tint over the backdrop, then checks the ladder on the result (#b4b4b4)
+node <keyline>/scripts/contrast.mjs --over "#000" --ladder "rgba(250,250,250,0.72)" "#16161a" "#4b4b52" "#6b6b73"
 ```
 
 Record the ratio against the worst composite in `DESIGN.md`, naming the backdrop.

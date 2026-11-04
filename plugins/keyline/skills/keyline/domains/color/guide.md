@@ -22,7 +22,11 @@ Indexed by lightness (`gray-100` lightest, `gray-900` darkest), every pick is a 
 - **Intent can beat monotonicity.** A border sits *beside* content and must stay quieter than a pressed surface, which sits *under* it, so in light the border step may legitimately be lighter — in the Glass preset, `gray-400` (border) is lighter than `gray-300` (pressed).
 - **"I need something between two steps" is a misdiagnosis.** The element has a different job from the one assumed; if no role fits, it's a new role, named and recorded — not an inline hex.
 
-The allowed literals: colours inside illustration or SVG artwork, and multi-layer values built once as a shared constant (law 10).
+The allowed literals:
+
+- **Illustration.** Colours inside an image, SVG artwork, or an HTML or SVG product mock or diagram marked `role="img"`. Text in it that a reader is meant to read still clears 4.5:1 against what is behind it.
+- **Third-party marks.** Logos and provider marks — Google's, Slack's, a calendar provider's dot — keep their own colours. They are marks, not interface hues, and count against neither the one accent nor the exceptions (law 7).
+- **Multi-layer values** built once as a shared constant (law 10).
 
 ### 2. Text tiers are their own tokens, never border steps
 
@@ -36,7 +40,7 @@ Dark mode hides this — the same indices sit far lighter on near-black, so ever
 
 **Every text tier clears 4.5:1 against the worst surface it actually lands on, in the worst theme, and each tier is measurably below the one above it.**
 
-- **Computed, not estimated.** Use `<keyline>/scripts/contrast.mjs` (`--ladder <surface> <tier> <tier> …`, top tier first), which composites translucent colours first — the number the reader sees.
+- **Computed, not estimated.** Use `<keyline>/scripts/contrast.mjs` (`--ladder <surface> <tier> <tier> …`, top tier first), which composites translucent colours first — the number the reader sees. Where the surface itself is translucent — a wash over a surface, a glass header over an image — `--over <backdrop>` composites it over the backdrop before the text is measured: `node <keyline>/scripts/contrast.mjs --over "#0b1220" --ladder "rgba(250,250,250,0.82)" "#16161a" "#4b4b52"`.
 - **The worst surface, not the page.** Tertiary text may pass on `surface.page` and fail on `surface.hover`, `surface.subtle` or `surface.selected`; measure on the surface leaving least contrast — the darkest in light, the lightest in dark.
 - **Strictly descending, with a step you can see.** Above 4.5:1 the tiers crowd into a narrow band, and it's easy to pass WCAG and lose the hierarchy — tiers at 5.1 and 4.9 are one tier with two names. `--ladder` flags a tier not below the one above; the minimum *size* of the step is a dial.
 
@@ -64,6 +68,8 @@ a:focus-visible { outline-offset: 3px; } /* ragged inline edges need more room *
 
 Focus may share a token with `accent` but may not sit beside it: an accent ring round an accent button on an accent-tinted row is invisible exactly where it's needed. If the accent is everywhere, the ring gets a different colour or a double ring (page-colour inner, focus-colour outer). Status colours keep out of the focus hue for the same reason.
 
+A dark band on a light-only page — a testimonial strip, a closing call to action — is a local theme: `focus` is overridden inside it, like its surfaces and text, and measured against the band.
+
 ### 6. Colour never carries a signal alone
 
 **Every state or status expressed in colour is also expressed in something that survives without colour — an icon, a word, a weight, a rule, a marker, a position.**
@@ -86,9 +92,11 @@ Only the edge, the icon or the glyph takes the colour, never the text inside: a 
 
 **One hue acts, and colour points at what still needs a person.** The accent's jobs — primary action, focus, "your turn" — share one hue, and it marks one action per view. A second highlight hue beside it (a teal next to a blue) splits one meaning in two, and readers start asking which colour means what; whatever wanted it goes to a status pair, a neutral marker or weight. A hue family is not a highlight: it sits on marks and asks nothing of the reader. Where the reader *is*, the current nav item or step, is neutral, a grey pill or a rule: it is position, not a call to act. A place in the data with one member, today's column on a calendar, may be a written exception.
 
-**Success has one job; whether finishing is that job is a dial.** Ask whether completion is the news. In a sequence the reader passes through — setup steps, passed checks, a wizard — it isn't: done is an ink check on a neutral circle, because a column of green ticks outshouts the one item still pending, and success is kept for an outcome the reader must notice, approved or released. On a board or list people open to see what got done, it is: done takes `status.success` on a filled check whose shape already says done, while what's late takes warning or danger so the eye still finds what needs a person.
+**A chart's primary series may take the accent hue:** it is what the screen is about, not a second highlight. Comparison and previous-period series are neutral; three or more series use the chart palette in `status-and-exceptions.md`.
 
-→ Hue families, figures, done states, live and AI marks, destructive rows: `domains/color/status-and-exceptions.md`
+**Success has one job; whether finishing is that job is a dial.** Ask whether completion is the news. In a sequence the reader passes through — setup steps, passed checks, a wizard — it isn't: under editorial and product, done is an ink check on a neutral circle, because a column of green ticks outshouts the one item still pending, and success is kept for an outcome the reader must notice, approved or released. On a board or list people open to see what got done, it is: done takes `status.success` on a filled check whose shape already says done, while what's late takes warning or danger so the eye still finds what needs a person. Expressive may colour completion per brand, sequences included, counted among its exceptions.
+
+→ Hue families, figures, done states, charts, live and AI marks, destructive rows: `domains/color/status-and-exceptions.md`
 
 ### 8. A theme is a re-pick, not a reuse
 
@@ -98,7 +106,7 @@ Only the edge, the icon or the glyph takes the colour, never the text inside: a 
 - **Small marks, against every ground.** Area colours shared across themes fell to 1.8:1 on a light frame. A mark the reader needs clears 3:1 on every ground it sits on — panel, frame, hover row — in each theme.
 - **Gradients move every stop.** The darkest stop can sit a few points above a dark page and vanish down half its length; lightening only that stop compresses the ramp until it isn't one gradient. Move every stop by roughly the same amount.
 - **Near-black, not black.** Dark `surface.page` sits a little above `#000`: pure black gives shadows nothing to sit on and glares against light text. Light `text.primary` is near-black too: pure black on white halates at small sizes.
-- **"Raised" flips direction.** In light it is darker than or equal to the page, with an edge; in dark, *lighter*. Dark fills are tinted, not darkened, so they don't punch a hole in the page.
+- **"Raised" is ordered, and in dark it is lighter.** In light, a grey page with white raised surfaces and a white page with grey ones are both fine, each with an edge; what's required is that every level steps the same way from the one below. In dark, raised is always *lighter*. Dark fills are tinted, not darkened, so they don't punch a hole in the page. Whether there are cards at all is layout law 3's call, not the palette's.
 - **Not a mechanical inversion,** which puts every gap in the wrong place. Space each theme's surfaces by contrast against *its own* page, so hover and pressed read as the same steps in both, with a large jump between the last edge step and the lowest text tier.
 
 ### 9. One mechanism sets the theme, before first paint
@@ -126,14 +134,14 @@ A build-time token (a Sass variable, an inlined JS constant, a static theme obje
 | What the accent does | Focus, and nothing else | Primary action, focus, selection | Brand surfaces, action, focus |
 | Chromatic exceptions beyond accent and status | ≤ 1 | None by default; a hue family per question the reader can't answer at a glance (what, where, who), plus one-member exceptions — each listed | ≤ 4, each named |
 | Hues that call for action | 1, the accent | 1, the accent | Brand hues, each placed by rule |
-| Completed states | Uncoloured | `status.success` where completion is the news; uncoloured in a sequence passed through | Per brand, still counted |
+| Completed states | Uncoloured | `status.success` where completion is the news; uncoloured in a sequence passed through | Uncoloured, or per brand, sequences included, counted among the exceptions |
 | Current location | Uncoloured | Uncoloured | Per brand, still counted |
 | Link colour | Text colour, underlined | `accent` | `accent` or a brand hue, underlined in prose |
 | Text tiers, `text.primary` to `text.tertiary` | 3–5 | 3 | 3–4 |
 | Minimum step between adjacent tiers (ratio of ratios) | 1.15× | 1.4× | 1.25× |
 | `text.tertiary` target on its worst surface | ≥ 4.6:1 | ≥ 4.8:1 | ≥ 4.6:1 |
 | Status palette | Only if something reports state | `danger`, `warning`, `success`, `info` — required | As needed |
-| Theme control | Light and dark, two-state | Light, dark and system | One theme allowed; if two, two-state |
+| Theme control | Light and dark, following the device; a toggle optional, two-state if added | Light and dark, following the device; a toggle optional, light, dark and system if added | One theme allowed; if two, following the device, a toggle optional, two-state if added |
 | Dark `surface.page` lightness (OKLCH L) | 0.14–0.18 | 0.17–0.21 | 0.12–0.18 |
 
 **Palette and neutral chroma.** Near-monochrome makes the accent and the one exception loud by default, but every state must then be carried by something other than colour (law 6). Tinted greys tie to the brand, but past about 0.015 chroma they read as colour, and a tinted `text.tertiary` beside a status foreground can look like a status.
@@ -146,7 +154,7 @@ A build-time token (a Sass variable, an inlined JS constant, a static theme obje
 
 **Tiers, step and tertiary target.** More tiers give prose finer emphasis, but each must clear the floor, so every extra one shrinks the steps; a light theme rarely fits more than five. A product has fewer, more distinct tiers, told apart at a glance across a dense table, and a wider margin above 4.5:1 to absorb the surfaces the floor wasn't measured on (hover, selected, zebra rows).
 
-**Theme control.** Two states are predictable; "system" changes the page when the OS crosses sunset, surprising someone who chose from the page's menu. Three follow the OS for those who want it, and cost a live listener.
+**Theme control.** Following the device needs no control and no head script (law 9). A toggle, where one is wanted: two states are predictable; "system" changes the page when the OS crosses sunset, surprising someone who chose from the page's menu. Three follow the OS for those who want it, and cost a live listener.
 
 **Dark page lightness.** Lower is more dramatic but leaves less room below the raised steps; a product's dark theme stacks panels, so its page sits higher.
 
@@ -155,7 +163,7 @@ A build-time token (a Sass variable, an inlined JS constant, a static theme obje
 1. **List the jobs.** From `roles.md`, keep the colour roles this project has and strike the rest — no dark theme, no dark column; no status, no status rows. Add project roles under their nearest parent.
 2. **Choose the neutral:** a hue (the brand's, or none) and a chroma from the dial, in OKLCH.
 3. **Fix the ends, per theme:** `surface.page` and `text.primary` near-white and near-black in light, the dial's dark lightness and a light grey in dark.
-4. **Place surfaces and lines** (`surface.raised`, `surface.hover`, `surface.pressed`, `surface.subtle`, `border.default`, `border.hover`) as small steps down from the page in light, up in dark, spaced by contrast against it; what must be seen (an input's edge, an icon, the focus ring) clears 3:1.
+4. **Place surfaces and lines** (`surface.raised`, `surface.hover`, `surface.pressed`, `surface.subtle`, `border.default`, `border.hover`) as small steps down from the page in light (or `surface.raised` a step up, white on a grey page), up in dark, spaced by contrast against it; what must be seen (an input's edge, an icon, the focus ring) clears 3:1.
 5. **Solve the text tiers from contrast targets** (tertiary at the dial's target, the rest at least the minimum step apart) on each tier's worst surface; verify per theme with `contrast.mjs --ladder`.
 6. **Derive the accent from the brand hue**, per theme: `text.on-accent` at 4.5:1 and `focus` at 3:1 on every surface; then its hover and `surface.selected` tint, re-measuring the lowest text tier on that tint.
 7. **Status pairs**, if the preset needs them; **exceptions and hue families**, each passing law 7, every mark at 3:1 on its grounds.
@@ -177,7 +185,7 @@ Collect evidence, then measure. The greps assume CSS, Tailwind or CSS-in-JS; ada
 | Solid borders on translucent surfaces | `backdrop-filter` elements, then their border values | 4 |
 | Lost focus | `outline:\s*(none\|0)`, `:focus\b` without `-visible`, `ring-0` | 5 |
 | Colour-only status | error or success styling with no icon or message; nav active by colour alone | 6 |
-| Uncounted colour | each hue outside accent, focus and status, and its job | 7 |
+| Uncounted colour | each hue outside accent, focus and status, and its job; third-party marks and `role="img"` illustration aside | 7 |
 | A second action hue; done coloured against the dial | two hues on buttons, links or "needs you" markers; success colour on passed steps, checks or the current nav item | 7 |
 | A hue doing two jobs | a type or area hue on state or text; danger red on a live or recording state; status colour on a plain count or a zero | 7 |
 | Reused accents and half-moved gradients | some gradient stops re-declared per theme, not all; single-value accents | 8 |

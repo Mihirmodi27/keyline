@@ -130,7 +130,7 @@ No `translate`, no shadow change, one named property; the bundle stays where the
 
 ## Press
 
-`transform: scale(<press>)` on `:active`, `transition-duration: 0` in and `duration.state` back out, on `pointerdown`, not `click`. In `product`, prefer the `surface.pressed` step: a toolbar of twenty shrinking buttons is noise.
+`transform: scale(<press>)` on `:active`, `transition-duration: 0` in and `duration.state` back out, on `pointerdown`, not `click`. In `product`, prefer the `surface.pressed` step: a toolbar of twenty shrinking buttons is noise. Anything wider than about 200px presses with `scale(0.98)` or a 1px `translate` instead: at 0.92–0.95 a full-width button loses about 15px and reads as collapsing, not pressed.
 
 ## Live indicators
 
@@ -170,7 +170,18 @@ setTimeout(() => root.classList.remove("theme-transition"), THEME_MS + 40);
 }
 ```
 
-The `!important` beats each component's own transition for that window; removing the class stops it poisoning everything after. The theme mechanism and flash-free first paint belong to the colour guide.
+The `!important` beats each component's own transition for that window; removing the class stops it poisoning everything after. `duration.theme` runs only under this class, when the page itself switches.
+
+A theme that follows the OS by media query changes with no toggle to hook, and every control carrying its own colour transition fades at its own duration while the page around it snaps. So everyday colour transitions never include the page background, and a theme change suspends them: listen for the query's `change` and hold a class for one frame.
+
+```ts
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => {
+  root.classList.add("theme-instant");   /* :root.theme-instant * { transition: none !important; } */
+  requestAnimationFrame(() => requestAnimationFrame(() => root.classList.remove("theme-instant")));
+});
+```
+
+The theme mechanism and flash-free first paint belong to the colour guide.
 
 ## Sound, if the preset allows it
 

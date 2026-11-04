@@ -83,7 +83,7 @@ On a working page the reader returns to daily, the view and span are remembered 
 
 ### 12. A dashboard is overview, trends and action items, from one pipeline
 
-**A dashboard answers three questions in order — where things stand (overview), which way they're moving (trends), what needs the reader (action items) — and drops anything nobody acts on.** A recent-activity feed nobody clicks is a column of noise next to the items that need a decision. **Wireframe it first and share the wireframe**: arguing about boxes is cheaper than arguing about a built page. A long page is fine; a page that hides what needs action to stay short is not. **A scoped overview runs the global overview's pipeline with its sources filtered**, never a parallel query, so the two can't disagree. Figures under a header can double as the table's filters (stat rows: layout law 3; figure colours: the colour guide).
+**A dashboard answers three questions in order — where things stand (overview), which way they're moving (trends), what needs the reader (action items) — and drops anything nobody acts on.** A recent-activity feed nobody clicks is a column of noise next to the items that need a decision. **Wireframe it first and share the wireframe**: arguing about boxes is cheaper than arguing about a built page. A long page is fine; a page that hides what needs action to stay short is not. **A scoped overview runs the global overview's pipeline with its sources filtered**, never a parallel query, so the two can't disagree. Figures under a header can double as the table's filters (stat rows: layout law 3; figure colours: the colour guide). A panel the product or its brief requires stays; make it earn its place, don't cut it (`commands/refine.md`).
 
 ### 13. A form leads with the field that decides the rest
 
@@ -92,6 +92,12 @@ On a working page the reader returns to daily, the view and span are remembered 
 **A sign-in screen is a form with nothing else**: unboxed in its own column of about 360px — title, one muted line, fields, one brand button — with an art panel taking the other half from a wide breakpoint, and the form alone on a phone. List the auth routes as an `expressive` area in `DESIGN.md`'s `## Profile`, since that is the only place the art may move; elsewhere it holds one still frame (the panel: the depth guide's art-panel recipe; its motion: the motion guide's ambient class; 16px inputs on phones: the type guide).
 
 → The confirmation dialog, undo toasts, field anatomy and the sign-in layout in code: `domains/patterns/actions-and-forms.md`
+
+### 14. Every element keeps the promise its form makes
+
+**What an element looks like says what it does, and it does that: a play icon opens a video, a link goes somewhere, and anything that doesn't act doesn't react.** Landing pages and articles are where these promises break, because they are built to look a certain way before anyone decides what each piece does, and a reader who clicks a dead logo or a silent play icon stops trusting the rest. A logo that isn't a link takes no hover state; an email address is a `mailto:` link; "Copy link" is a button, not a link to the page already open; link text names its destination ("Pricing", not "Learn more"). A call to action names what happens next — "Start free", "Book a demo" — so two on one page can't be mistaken for each other, as "Get started" beside "Start free" can. A subscribe or sign-up field has a visible label and says what will arrive and how often.
+
+→ Calls to action, link text and sign-up lines: `domains/patterns/copy.md`
 
 ## Dials
 
@@ -120,7 +126,7 @@ Most product feedback is one step: "one step lighter", "25% smaller", "to 16px".
 
 1. **Make the change asked, at the size asked.** Move one step on the existing ladder; don't re-pick the system. "Make it 25% smaller" keeps the count per row unless more per row was asked for.
 2. **After any change to a shared rule, sweep the product** — every route, every component on that rule — **and report what moved.** Partial updates are the commonest bug: some screens took the new value, some didn't. Ask before calling a page done, and never "fix" a page the owner has said is theirs.
-3. **Record the decision** under `## Decisions`, dated and marked user decision or client feedback, newest first, replacing whatever it supersedes (format: `system/design-md.md`).
+3. **Record the decision** under `## Decisions`, dated and marked user decision, client feedback or law, newest first, replacing whatever it supersedes (format: `system/design-md.md`).
 4. **Study reference products for how information is structured, not how it looks**: where icons are and aren't, where tags appear, how tables are built, what is boxed and what isn't, what aligns with what.
 5. **Wireframe a new page type before building it**, and share the wireframe.
 6. **Review on a preview harness**: the real app on mock data, every route reachable without a backend, so a whole-product sweep or audit takes minutes.
@@ -144,13 +150,14 @@ Most product feedback is one step: "one step lighter", "25% smaller", "to 16px".
 | 11 | Moves awaiting the server; silent rollbacks; optimistic sends or payments | Mutation and its failure path |
 | 12 | Panels nobody acts on; scoped views with their own query | Panel; the two queries |
 | 13 | Free text before the field that decides it; errors added beside hints; several primary buttons | Form, field order |
+| 14 | Play icons with no video; hover on logos that aren't links; plain-text email addresses; copy controls built as links; "Learn more", "Click here", "Get started" beside a second call to action; sign-up fields with a placeholder for a label or no line on what arrives | Element, and what it promises against what it does |
 
 Click through every flow once with the keyboard alone, and once with the network throttled to failure. Report one line per finding with its evidence under `## Open issues`, and fix nothing unless asked.
 
 ## Writing back to DESIGN.md
 
 - **`## Patterns`**: the product's nouns, one per kind of thing; the second-line formula; the destructive items and the proof each needs; the shortcut map; which pages remember their view and which default wins; the agent-step conventions.
-- **Decisions**, dated, marked by who decided, with the reason: any dial moved off the preset, or a law knowingly broken.
+- **Decisions**, dated, marked by who decided, with the reason: any dial moved off the preset, a law knowingly broken, or a change a law forced that a later session might undo (marked *law*).
 - **Open issues** for every law the code breaks, with evidence, removed when the fix lands.
 
 ## Checklist
@@ -168,5 +175,6 @@ Click through every flow once with the keyboard alone, and once with the network
 - [ ] Moves are optimistic with a visible rollback; sends, payments and deletes are not.
 - [ ] Dashboards run overview, trends, action items, wireframed first, scoped views on the global pipeline.
 - [ ] Forms lead with the deciding field; errors replace hints; sign-in is a form alone in its column, its route an `expressive` area if the art moves.
+- [ ] Every element does what its form promises: play icons play, inert logos don't react, email addresses are `mailto:` links, copy controls are buttons, calls to action and link text name what happens next, sign-up fields are labelled and say what arrives and how often.
 - [ ] Feedback was applied at the size asked, swept product-wide, reported, and recorded as a dated decision.
 - [ ] Dials match the preset, or the difference is under `## Decisions`.

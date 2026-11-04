@@ -4,7 +4,7 @@ Fit Keyline to this project: find out once what it calls things, who it's for an
 
 **Read:** `system/guide.md`, then `system/roles.md`, `system/presets.md` and `system/design-md.md`. `system/detection.md` when the scan leaves you unsure where a stack keeps its tokens.
 
-**Steps:** follow `system/guide.md` from step 1 to step 5 — scan, map by usage, measure contrast, choose the preset from the reader, ask at most four questions, write the file.
+**Steps:** follow `system/guide.md` from step 1 to step 5 — scan, map by usage, measure contrast, choose the preset from the reader, ask at most four questions, write the file. Before writing `## Open issues`, read the law headings (the `### N.` lines) of each domain guide you cite, so every citation names the right law.
 
 - **`DESIGN.md` already exists:** this is `/keyline sync`, not a rewrite. Say so and run that instead.
 - **A new project with no interface yet:** there is nothing to scan. Ask what the product is and who reads it, propose a preset, and write `## Profile` with the preset's defaults from each domain guide's `## Dials`, marked as defaults. Generate tokens only if asked (`system/guide.md` §6).

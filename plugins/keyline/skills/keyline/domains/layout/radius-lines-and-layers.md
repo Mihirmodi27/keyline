@@ -2,7 +2,7 @@
 
 ## The nesting rule, worked through
 
-**Inner radius = outer radius − the gap between their edges.** Only then do the two curves share a centre; any other value makes the corners visibly disagree.
+**Inner radius = outer radius − the gap between their edges, at concentric corners.** Only then do the two curves share a centre; any other value makes the corners visibly disagree. The rule binds only an inner corner tucked inside the outer one's curve, inset by less than the outer radius. Inset that far or further, or set away from the corners, an element shares no centre with its container and takes the ladder's radius for its own size — never a square corner produced by the subtraction.
 
 | Nesting | Outer | Gap | Inner | Note |
 |---|---|---|---|---|
@@ -11,7 +11,8 @@
 | A sheet holding text rows | 16px | 6px | 10px → snap to 12px | 2px on a 44px row is invisible |
 | A search input holding a chip | 8px | 3px | 5px → snap to 4px | |
 | A card with a flush image | 12px | 0 | 12px, or clip with `overflow: hidden` | Zero gap, same radius |
-| A 4px chip holding a checkbox inset 4px | 4px | 4px | 0 | Square, not "a little rounding" |
+| A padded card holding an icon tile | 12px | 16px | `radius.control` for a 32px tile | Inset past the outer radius: not concentric, sized by the ladder |
+| A search field holding a `kbd` hint | 8px | 8px | `radius.small` | Not concentric; square would read as a different system |
 
 **Snap within 2px, follow exactly above that.** The ladder is worth more than 1–2px of exactness, which below about 8px the eye barely resolves; a mismatch of 4px or more is what people notice without naming.
 
@@ -35,7 +36,7 @@ Derive the ladder from the nestings, and write the subtraction into the token so
 | `radius.card` | 12px | 8–10px | 20px | 0 |
 | `radius.container` | 16px | 12–16px | 28px | 0 |
 
-Product's controls run smallest, since dense rows of them sit close together. Its cards and containers may go as round as editorial's: with content unboxed (`SKILL.md` law 3) the few cards don't tile edge to edge, which is where large radii leave triangular gaps — one more reason not to build a mosaic of panels. Pick the low end where cards sit side by side, the high end where one card sits on open page. Expressive may go either way, but never mixes round and square components or keeps four near-identical radii that are really one.
+Product's controls run smallest, since dense rows of them sit close together. Its cards and containers may go as round as editorial's: with content unboxed (layout law 3) the few cards don't tile edge to edge, which is where large radii leave triangular gaps — one more reason not to build a mosaic of panels. Pick the low end where cards sit side by side, the high end where one card sits on open page. Expressive may go either way, but never mixes round and square components or keeps four near-identical radii that are really one.
 
 **Radius scales with size, not importance**, and sub-proportionally: a 400px panel gets a larger radius than a 40px button because it is larger, but a proportional one reads as a lozenge. **`radius.pill` is for things with no top and bottom** — tags, dots, toggles, progress tracks. A paragraph in a pill-ended card collides with the curve.
 
