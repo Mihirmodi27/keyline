@@ -31,12 +31,12 @@ Derive the ladder from the nestings, and write the subtraction into the token so
 | Role | editorial | product | expressive (round) | expressive (sharp) |
 |---|---|---|---|---|
 | `radius.pill` | full | full | full | full, or 0 |
-| `radius.small` | 4px | 2–4px | 8px | 0 |
-| `radius.control` | 8px | 4–6px | 12px | 0 |
-| `radius.card` | 12px | 8–10px | 20px | 0 |
-| `radius.container` | 16px | 12–16px | 28px | 0 |
+| `radius.small` | 4px | 4–6px | 8px | 0 |
+| `radius.control` | 8px | 8px | 12px | 0 |
+| `radius.card` | 12px | 12px | 20px | 0 |
+| `radius.container` | 16px | 16px | 28px | 0 |
 
-Product's controls run smallest, since dense rows of them sit close together. Its cards and containers may go as round as editorial's: with content unboxed (layout law 3) the few cards don't tile edge to edge, which is where large radii leave triangular gaps — one more reason not to build a mosaic of panels. Pick the low end where cards sit side by side, the high end where one card sits on open page. Expressive may go either way, but never mixes round and square components or keeps four near-identical radii that are really one.
+Product used to run smaller (6px controls, 8px cards), and in review that read as boxy and dated beside current apps. It now matches editorial: with content unboxed (layout law 3), the few cards don't tile edge to edge, which is where large radii leave triangular gaps (one more reason not to build a mosaic of panels). Both draw the corner as a light superellipse (below). An existing design's radii are the floor when improving it: a pass never sharpens corners, and moves one only to satisfy the nesting law. Expressive may go either way, but never mixes round and square components or keeps four near-identical radii that are really one.
 
 **Radius scales with size, not importance**, and sub-proportionally: a 400px panel gets a larger radius than a 40px button because it is larger, but a proportional one reads as a lozenge. **`radius.pill` is for things with no top and bottom** — tags, dots, toggles, progress tracks. A paragraph in a pill-ended card collides with the curve.
 
@@ -46,9 +46,10 @@ A superellipse eases curvature into the straight edge where a quarter-circle `bo
 
 ```css
 *, *::before, *::after { corner-shape: superellipse(1.5); }
+.pill, .avatar, .dot { corner-shape: round; } /* full radii: a squircle here just swells */
 ```
 
-`superellipse(k)` uses the exponent 2^k: 1 is an ordinary round corner, 2 a full squircle, 1.5 about halfway — craft rather than effect. It is a dial — circular is right for product, any shape works if applied globally — and progressive enhancement: unsupported browsers draw normal rounding, so nothing may depend on it.
+`superellipse(k)` uses the exponent 2^k: 1 is an ordinary round corner, 2 a full squircle, 1.5 about halfway — craft rather than effect. Editorial and product use 1.5 by default, which keeps a round system feeling current; expressive may use any shape if it's applied globally. Pills and circles keep `round`. It is progressive enhancement: unsupported browsers draw normal rounding at the same radius, so nothing may depend on it.
 
 ## Line weights by job
 

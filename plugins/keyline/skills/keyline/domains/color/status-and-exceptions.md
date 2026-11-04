@@ -63,7 +63,7 @@ Name the carrier for each status and interactive state:
 | A work item's state | A glyph whose shape moves with the work: empty ring, dashed ring, half, three-quarters, filled check; a cross for cancelled or failed, a "!" for blocked |
 | Priority | Bars, filled from one to three |
 | A toast | The same, plus `role="status"` or `role="alert"` so it is announced |
-| The current nav item | A marker, a rule, a fill or a weight — and `aria-current` |
+| The current nav item | Its tinted pill (the shape carries it), a marker, a rule or a weight — and `aria-current` |
 | A selected row | `surface.selected` *and* a check, a rule or a bar at the edge |
 | A disabled control | Reduced contrast *and* no hover or pointer, plus `disabled` or `aria-disabled` |
 
@@ -101,7 +101,7 @@ Law 7's dial, decided by whether completion is the news:
 
 The second row reverses the first on purpose: it is what the "too grey" product in law 7 changed on its boards. Record which lists take which row under `## Decisions`, so the next audit doesn't "fix" one into the other. Under `expressive`, completion may take a brand colour in any row, counted among its exceptions.
 
-Where the reader *is* stays neutral. A place in the data with one member is different: on a calendar board, today's column may take a filled `accent` with `text.on-accent`, the one time the brand marks a place rather than an action. Record it as `exception.today`; it doesn't make a second.
+Where the reader *is* in the interface (the current nav item or tab) takes the accent tint under product and expressive and stays neutral under editorial and glass (colour law 7). A place in the data with one member is different: on a calendar board, today's column may take a filled `accent` with `text.on-accent`, the one time the brand marks a place rather than an action. Record it as `exception.today`; it doesn't make a second.
 
 ## Hue families: colour with a job
 
@@ -116,7 +116,8 @@ Where the reader sorts by kind, place or person at a glance, each question gets 
 
 - **Marks only.** The family colours the glyph; the words beside it stay in ink.
 - **No crossing.** A late task's type icon keeps its hue; the status glyph beside it turns. Where a family hue falls near a status hue or the accent, move its lightness or chroma until it can't be read as one, and never reuse a status value.
-- **Muted is fine for people.** When the hues near the accent and the status colours are ruled out and what's left clips — an olive `#686800` — lower the chroma rather than force a saturated hue. Avatars and other "who" marks only need telling apart.
+- **A brand avatar is not a family.** If the design gives every avatar the brand's colour or gradient, keep it: one shared treatment is identity, and it reads as the product. A person family is for when the reader must tell people apart at a glance, and it is added on top of the brand, never swapped in for it.
+- **Muted is fine for people.** When a person family is needed and the hues near the accent and the status colours are ruled out, leaving one that clips (an olive `#686800`), lower the chroma rather than force a saturated hue. Avatars and other "who" marks only need telling apart.
 - **3:1 on every ground, per theme.** A mark the reader needs is a non-text graphic: measure it with `contrast.mjs --min 3` on each surface it sits on (panel, frame, hover, selected) in each theme, and re-pick the family per theme like any accent.
 - **Listed.** Under **Exceptions** in `DESIGN.md`, each family with its question, its members and its marks: "`exception.area.*` — where a record lives. Nav icon, breadcrumb step, page-title icon. Never text, never state."
 
@@ -125,6 +126,8 @@ Where the reader sorts by kind, place or person at a glance, each question gets 
 ### The test
 
 **Content, or the interface speaking about it?** An offer ("the short version?"), a way in, a warning before the reader begins is a category the eye is entitled to find quickly, and most pages have very few. The Glass preset's "short version" panel is the interface asking whether you want three lines instead of three thousand words; its colour is a gradient edge and a single accent mark, and the summary inside stays in the page's ink.
+
+This test is for colour being added. Colour the design already spends on a job stays (colour law 7), so the test is never a reason to strip it.
 
 Reasons that can't spread name a category with one member: "it's the only offer on the page", "it's the one call to action in the flow", "it's the live indicator, and only one thing is ever live". Reasons that can, and will: "it's important", "it's new", "it's premium", "it's the brand colour", "the page felt grey".
 

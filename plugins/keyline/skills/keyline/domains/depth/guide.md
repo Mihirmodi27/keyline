@@ -149,7 +149,7 @@ Reduced transparency needs both halves, an opaque surface *and* no filter: filte
 | Dark surface lift per level (OKLCH L) | +0.05 | +0.04 | +0.06 |
 | Scrim (black-toward-ground opacity, light / dark) | 32% / 56% | 40% / 60% | 48% / 64%, brand-tinted allowed |
 | Scrim blur | None | None | ≤ 8px, never animated |
-| Corner shape | Round; `superellipse(1.5)` as enhancement | Round | Round or `superellipse(1.5–2)` |
+| Corner shape | Round; `superellipse(1.5)` as enhancement | Round; `superellipse(1.5)` as enhancement | Round or `superellipse(1.5–2)` |
 | Gradient strokes and glows | At most one, as the colour system's exception | None | Allowed, each named for its job |
 
 **Translucency.** Moving up a preset trades contrast certainty, a fallback path and a filter pass per surface for atmosphere. Fluent, daily product readers gain nothing from atmosphere and lose a lot to a header dimming to mid-grey over a data table. Editorial allows it on chrome because seeing the page being read scroll under keeps the reader oriented. Product's one opening is art: its backdrop is drawn, still and carries no text, so the material costs no contrast, and keeping it there is what lets the rest of the product stay opaque.

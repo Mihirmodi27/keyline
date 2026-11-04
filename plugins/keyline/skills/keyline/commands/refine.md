@@ -16,5 +16,6 @@
 
 - **The brief wins over the preset.** An element the product or its brief requires stays, even where a dial or a law would cut it — a dashboard's activity feed, a top bar the product has. The pass changes how it's built, not whether it exists.
 - **Improving is not restructuring.** Improving an existing screen doesn't move its navigation or add features — a collapsible icon rail, a theme toggle, a new view. Those go under `## Open issues` unless the user asks for them.
+- **Improving keeps what the design already chose.** Its brand colour and gradients stay wherever they do a job, and its corners stay at least as round as they were. A dial describes a new system, so an existing design is never greyed or sharpened to fit one. Only a law removes something, and the report names it. When a pass would make the screen plainer than it was, check whether a law actually asked for that.
 
 **Report:** what was wrong, as a reader would feel it; what changed, by token or component, with the law; what was measured (sizes, ratios, durations); and anything noticed outside the domain, with its command.

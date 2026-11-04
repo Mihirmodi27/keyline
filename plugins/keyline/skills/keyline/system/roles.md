@@ -62,7 +62,7 @@ A project may slot extra tiers between secondary and tertiary (the Glass preset 
 | `surface.raised` | A component's own surface — a card, an input, a menu |
 | `surface.hover` | That surface, hovered |
 | `surface.pressed` | That surface, pressed or active |
-| `surface.selected` | A persistent selected state — distinct from hover |
+| `surface.selected` | A persistent selected state, distinct from hover. Under product and expressive, the accent at about 25% over its surface, carrying `accent.ink` at 4.5:1 |
 | `surface.floating` · `surface.overlay` | A floating or modal level's own surface, where it differs from `surface.raised` — usually only in dark themes, where elevation is shown by lightening |
 | `surface.inverse` | Tooltips, toasts, solid-filled chrome |
 

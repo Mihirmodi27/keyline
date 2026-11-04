@@ -145,8 +145,8 @@ A negative layer needs an `isolation: isolate` parent, and **a `transform`, `fil
 | Tables and group labels | No frame; label over a rule | One shared frame with a tinted header row; one tinted, sticky group bar | No frame; label over a rule |
 | Stats | One hairline-parted row | A strip under the page header whose figures filter the table; figures at `type.title` or one step above | One row; figures may run large |
 | Page top space | 80–112px; ≈ 48–64px at phone widths | 16–24px under the page's header bar | Set by the hero; without one, as editorial |
-| Radius: `small` / `control` / `card` / `container` | 4 / 8 / 12 / 16px | 2–4 / 4–6 / 8–10 / 12–16px | Either 0 throughout, or 8 / 12 / 20 / 28px |
-| Corner shape | Circular, or a light superellipse | Circular | Any, applied globally |
+| Radius: `small` / `control` / `card` / `container` | 4 / 8 / 12 / 16px | 4–6 / 8 / 12 / 16px | Either 0 throughout, or 8 / 12 / 20 / 28px |
+| Corner shape | `superellipse(1.5)` as enhancement | `superellipse(1.5)` as enhancement | Any, applied globally; `superellipse(1.5–2)` when round |
 | `hairline.chrome` / `hairline.object` / `rule.emphasis` | 0.5 / 1 / 2px | 0.5 / 0.5 / 2px, divider a colour step lighter | 1 / 1–2 / 3–4px |
 | Breakpoints | 2–3, on the window; the third where the header's links stop fitting | 3, on containers | 3–4, on the window |
 | Rail appears at | `measure.reading` + 2 × (rail + gap) + gutters ≈ 1200–1280px | Always a region; collapses at `bp.shell` | Rarely has rails |
@@ -162,7 +162,7 @@ The `glass` preset takes its values from `glass/layout/`.
 
 **Tables and group labels.** Editorial tables share a text column's edge, so a frame only adds a box. A product panel has no column to align to: tables run full width beside toolbars and figures, so a frame says where the data stops, and a reader scrolling hundreds of rows in collapsible groups needs the group's name and its controls in view. What both keep is law 3: one table style and one group-label style, used identically everywhere.
 
-**Radius.** A sharp system (0 throughout) is a legitimate expressive character that satisfies the nesting law trivially; what costs is mixing a round button into a square card.
+**Radius.** A sharp system (0 throughout) is a legitimate expressive character that satisfies the nesting law trivially; what costs is mixing a round button into a square card. Round systems read modern through a soft corner: an 8px control and 12px card, drawn as a light superellipse (a squircle) where the browser supports `corner-shape`, and a plain round corner of the same radius where it doesn't. When improving an existing design, its radii are the floor: keep them, and change one only to satisfy the nesting law.
 
 **Hairlines.** A `0.5px` border is one device pixel on 2× screens and rounds up to 1px on 1×, so it never vanishes. Product draws every structural line at 0.5px, because a dense screen is mostly rows and a 1px rule on each reads heavy; editorial keeps a 1px object edge for the few objects it has.
 
