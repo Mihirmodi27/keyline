@@ -1,0 +1,77 @@
+{
+  "preset": "editorial",
+  "steps": [
+    {
+      "domain": "type",
+      "summary": "One reading family on a five-size ladder, so the article is the loudest thing on the page instead of the headline.",
+      "changes": [
+        { "what": "The article title comes down to sit modestly above the body text", "law": "type dials: ceiling (title ÷ body ≤ 1.5)", "before": "60px bold at 1440px wide (clamp 34–60px), 3.0× the body", "after": "26px semibold, 1.44× the body", "selector": ".article-title" },
+        { "what": "Font sizes on the page collapse to a short ladder", "law": "type law 1", "before": "21 distinct sizes (10–60px, three of them fluid)", "after": "5 sizes: 26, 21, 18, 16, 14px", "selector": ":root" },
+        { "what": "Two weights instead of four", "law": "type law 5", "before": "400, 500, 600, 700", "after": "400 and 600", "selector": ":root" },
+        { "what": "One typeface for reading and interface; code uses the system monospace", "law": "type dials: families", "before": "3 families, 9 font styles downloaded (Inter, Source Serif 4, JetBrains Mono)", "after": "1 family, 2 weights downloaded (Source Serif 4)", "selector": "head > link[rel=stylesheet]" },
+        { "what": "Body text sized for a 70-character line", "law": "type dials: body size", "before": "20px", "after": "18px at 1.7 leading", "selector": ".prose" },
+        { "what": "Small uppercase labels become sentence case", "law": "type dials: uppercase labels", "before": "6 tracked uppercase labels (Share, On this page, Written by, table head, code language, footer columns)", "after": "0", "selector": ".toc__title, .share__label, thead th, .author-card__eyebrow, .footer-col__title, .code__lang" },
+        { "what": "The pull quote and drop cap no longer outshout the section headings", "law": "type law 3", "before": "Pull quote 32px italic; drop cap 4.1em (≈90px)", "after": "Pull quote 18px roman with a 2px bar; no drop cap", "selector": ".pullquote p, .prose .lead" },
+        { "what": "Table figures line up: units move to the row label", "law": "type law 10", "before": "\"18 ms\", \"4 h 10 m\" in the cells", "after": "\"Read latency, p50 (ms)\" over bare tabular figures", "selector": "tbody th" }
+      ]
+    },
+    {
+      "domain": "color",
+      "summary": "Near-monochrome: orange is kept for the keyboard focus ring and the logo, and every grey is measured for contrast.",
+      "changes": [
+        { "what": "Orange stops decorating the article", "law": "color law 7", "before": "Accent on 11 jobs: kicker, drop cap, bullets, quote bar, callout, card meta, links, tag/TOC/button hovers, progress bar", "after": "Accent on focus only (plus the logo's dot)", "selector": ":focus-visible" },
+        { "what": "Captions on tinted ground become readable", "law": "color law 3", "before": "#6a707b on #f3f1ec — 4.41:1 (fails)", "after": "#6b6964 on #f3f1ed — 4.86:1", "selector": "--muted" },
+        { "what": "Subscribe button text is legible", "law": "color law 8", "before": "#fff on #e8590c — 3.58:1 (fails)", "after": "#171613 on #e9e8e5 — 14.77:1", "selector": ".subscribe .btn" },
+        { "what": "The footer email field has an edge you can see", "law": "color law 2", "before": "#2c323d border on #11151c — 1.42:1", "after": "#73716e on #171613 — 3.72:1", "selector": ".subscribe input" },
+        { "what": "Green 'improvement' chips removed from the results table", "law": "color law 7", "before": "5 green pills (#137a4a on #e5f4ec)", "after": "0 — figures in the table's own ink", "selector": ".delta" },
+        { "what": "Code comments readable on the dark code block", "law": "color law 3", "before": "#6b7b92 on #0f1724 — 4.17:1 (fails)", "after": "#a09e9a on #171613 — 6.77:1", "selector": ".tk-c" },
+        { "what": "Greys share one warm hue instead of mixing warm and cool", "law": "color dials: neutral chroma", "before": "Two hues (85° surfaces, 264° text), OKLCH chroma up to 0.0225", "after": "One hue (85°), chroma ≤ 0.008", "selector": ":root" }
+      ]
+    },
+    {
+      "domain": "layout",
+      "summary": "One reading column that the headline, body and captions share, with the table and labels unboxed and the side rails kept on small screens.",
+      "changes": [
+        { "what": "Narrower reading column", "law": "layout law 1", "before": "680px (≈ 81 characters a line)", "after": "588px (70 characters, measured)", "selector": "--measure" },
+        { "what": "The headline block lines up with the text below it", "law": "layout law 1", "before": "Centred at 860px over a left-aligned 680px body", "after": "Left-aligned on the same 588px column", "selector": ".article-head" },
+        { "what": "The results table loses its box", "law": "layout law 3", "before": "Bordered, shadowed card with a tinted caption band", "after": "No frame; first column flush with the text, 0.5px row rules", "selector": ".table-wrap" },
+        { "what": "One chip shape", "law": "layout law 3", "before": "4 shapes (kicker pill, tags, delta pills, careers badge)", "after": "1 shape shared by tags and the careers badge", "selector": ".tags a, .pill" },
+        { "what": "Radii come from a ladder", "law": "layout law 5", "before": "14, 18 and 20px picked per component", "after": "12px cards, 16px cover, 4/8px small", "selector": "--radius" },
+        { "what": "Contents and share links survive narrow screens", "law": "layout law 4", "before": "Both rails hidden below 1180px", "after": "Contents become a disclosure above the lead; share icons move below the article", "selector": ".toc-inline, .share" },
+        { "what": "Site navigation stays on phones", "law": "layout law 8", "before": "Hidden below 960px", "after": "A scrolling second row below 700px", "selector": ".site-nav" },
+        { "what": "Headings sit closer to their text than to the text above", "law": "layout law 2", "before": "72px above / 21px below (3.4:1)", "after": "48px above / 12px below (4:1)", "selector": ".prose h2" }
+      ]
+    },
+    {
+      "domain": "depth",
+      "summary": "Everything sits flat on the page; only the sticky header floats, and its frosted glass now stays legible over the dark cover.",
+      "changes": [
+        { "what": "Drop shadows removed from things that don't float", "law": "depth law 1", "before": "Shadow on 5 surfaces (cover, code, table, author card, card hover)", "after": "0", "selector": "--shadow" },
+        { "what": "The author bio is no longer a card", "law": "depth law 2", "before": "Bordered, shadowed card holding 6 items", "after": "Unboxed below the tags", "selector": ".author-card" },
+        { "what": "The callout becomes a ruled note", "law": "depth law 2", "before": "Tinted, bordered, rounded box", "after": "1px rule on its leading edge, no fill", "selector": ".callout" },
+        { "what": "Header nav text stays readable while the dark cover scrolls under it", "law": "depth law 10", "before": "82% tint, blur 14px — grey nav text 3.26:1 over the cover (fails)", "after": "95% tint, blur 24px, saturate 1.7 — 4.76:1", "selector": ".site-header" },
+        { "what": "The frosted header has fallbacks", "law": "depth law 15", "before": "0 fallbacks", "after": "4: opaque baseline in @supports, reduced transparency, high contrast, forced colours", "selector": ".site-header" }
+      ]
+    },
+    {
+      "domain": "motion",
+      "summary": "Motion only where something changes: the looping cover animation and hover lifts go, and hovers become short colour washes.",
+      "changes": [
+        { "what": "The cover diagram stops looping", "law": "motion law 1", "before": "5 packets on endless loops (1.4–3.6s)", "after": "Packets drawn still, mid-route", "selector": ".cv-packets" },
+        { "what": "Related-post cards wash instead of lifting", "law": "motion dials: hover on a card", "before": "3px lift + shadow, 200ms", "after": "Background wash, 200ms in · 250ms out, no travel", "selector": ".post-card" },
+        { "what": "The 'All posts' arrow no longer nudges on hover", "law": "motion law 1", "before": "3px slide, 200ms", "after": "Still", "selector": ".link-arrow span" },
+        { "what": "Button press is a quick squeeze on pointer-down", "law": "motion law 3", "before": "1px drop over 150ms", "after": "scale(0.96), instant", "selector": ".btn:active" },
+        { "what": "Durations come from a named ladder", "law": "motion law 2", "before": "0.15s and 0.2s typed in 7 places", "after": "Tokens: 100 / 150 / 200 / 250ms", "selector": "--duration-state" }
+      ]
+    },
+    {
+      "domain": "patterns",
+      "summary": "The newsletter field gets a visible label and its promise as a hint below it; every other label already said what it does.",
+      "changes": [
+        { "what": "The email field is labelled on screen", "law": "patterns law 13", "before": "Label hidden; only an example address as placeholder", "after": "\"Email address\" above the field", "selector": ".subscribe__label" },
+        { "what": "The field's hint sits under it and is read with it", "law": "patterns law 13", "before": "\"One email a fortnight, no tracking pixels.\" in the paragraph above", "after": "Under the field, linked by aria-describedby", "selector": ".subscribe__hint" },
+        { "what": "An empty submit is caught", "law": "patterns law 13", "before": "Empty email submitted silently", "after": "required, so the browser asks for an address", "selector": "#email" }
+      ]
+    }
+  ]
+}

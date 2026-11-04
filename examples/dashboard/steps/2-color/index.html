@@ -1,0 +1,353 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Overview · Lumen</title>
+  <meta name="color-scheme" content="light dark">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <defs>
+      <symbol id="i-overview" viewBox="0 0 20 20"><rect x="3" y="3" width="6" height="6" rx="1.5"/><rect x="11" y="3" width="6" height="6" rx="1.5"/><rect x="3" y="11" width="6" height="6" rx="1.5"/><rect x="11" y="11" width="6" height="6" rx="1.5"/></symbol>
+      <symbol id="i-events" viewBox="0 0 20 20"><path d="M2.5 10h3l2-5.5 4 11 2-5.5h4"/></symbol>
+      <symbol id="i-funnels" viewBox="0 0 20 20"><path d="M3 4h14l-5 6v5l-4 2v-7z"/></symbol>
+      <symbol id="i-retention" viewBox="0 0 20 20"><path d="M16 10a6 6 0 1 1-1.8-4.3"/><path d="M16.5 3v3.5H13"/></symbol>
+      <symbol id="i-users" viewBox="0 0 20 20"><circle cx="8" cy="7" r="3"/><path d="M2.5 16.5c.6-2.8 2.8-4.5 5.5-4.5s4.9 1.7 5.5 4.5"/><path d="M13 4.2a3 3 0 0 1 0 5.6M15 12.4c1.3.7 2.2 2.2 2.5 4.1"/></symbol>
+      <symbol id="i-settings" viewBox="0 0 20 20"><circle cx="10" cy="10" r="2.5"/><path d="M10 2.5v2M10 15.5v2M2.5 10h2M15.5 10h2M4.7 4.7l1.4 1.4M13.9 13.9l1.4 1.4M4.7 15.3l1.4-1.4M13.9 6.1l1.4-1.4"/></symbol>
+      <symbol id="i-search" viewBox="0 0 20 20"><circle cx="9" cy="9" r="5.5"/><path d="m13.2 13.2 3.8 3.8"/></symbol>
+      <symbol id="i-calendar" viewBox="0 0 20 20"><rect x="3" y="4.5" width="14" height="12.5" rx="2"/><path d="M3 8.5h14M7 2.5v4M13 2.5v4"/></symbol>
+      <symbol id="i-chevron" viewBox="0 0 20 20"><path d="m6 8 4 4 4-4"/></symbol>
+      <symbol id="i-chevrons" viewBox="0 0 20 20"><path d="m7 7.5 3-3 3 3M7 12.5l3 3 3-3"/></symbol>
+      <symbol id="i-up" viewBox="0 0 12 12"><path d="M6 9.5v-7M3 5.5l3-3 3 3"/></symbol>
+      <symbol id="i-down" viewBox="0 0 12 12"><path d="M6 2.5v7M3 6.5l3 3 3-3"/></symbol>
+      <symbol id="i-menu" viewBox="0 0 20 20"><path d="M3 6h14M3 10h14M3 14h14"/></symbol>
+      <symbol id="i-plus" viewBox="0 0 20 20"><path d="M10 4v12M4 10h12"/></symbol>
+      <symbol id="i-bell" viewBox="0 0 20 20"><path d="M5 8a5 5 0 0 1 10 0c0 4 1.5 5.5 1.5 5.5h-13S5 12 5 8z"/><path d="M8.3 16.5a1.8 1.8 0 0 0 3.4 0"/></symbol>
+      <symbol id="i-bolt" viewBox="0 0 20 20"><path d="M11 2.5 4.5 11H10l-1 6.5L15.5 9H10z"/></symbol>
+      <symbol id="i-mail" viewBox="0 0 20 20"><rect x="2.5" y="4.5" width="15" height="11" rx="2"/><path d="m3 5.5 7 5.5 7-5.5"/></symbol>
+      <symbol id="i-alert" viewBox="0 0 20 20"><path d="M10 3 2.5 16.5h15z"/><path d="M10 8.5v3.5M10 14.2v.1"/></symbol>
+      <symbol id="i-code" viewBox="0 0 20 20"><path d="m7 6-4 4 4 4M13 6l4 4-4 4"/></symbol>
+    </defs>
+  </svg>
+
+  <div class="app">
+    <aside class="sidebar" id="sidebar" aria-label="Primary">
+      <div class="brand">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 28 28"><defs><linearGradient id="brandFill" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7b7bff"/><stop offset="1" stop-color="#4a48d8"/></linearGradient></defs><rect width="28" height="28" rx="8" fill="url(#brandFill)"/><g transform="translate(5 5) scale(0.75)" stroke="#ffffff" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="5" fill="#ffffff" stroke="none"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1 7 17M17 7l2.1-2.1"/></g></svg>
+        </span>
+        <span class="brand-name">Lumen</span>
+      </div>
+
+      <button class="workspace" type="button" aria-label="Switch workspace">
+        <span class="ws-avatar" aria-hidden="true">F</span>
+        <span class="ws-text">
+          <span class="ws-name">Fieldnote</span>
+          <span class="ws-plan">Growth plan · 6 seats</span>
+        </span>
+        <svg class="icon ws-chevron" aria-hidden="true"><use href="#i-chevrons"/></svg>
+      </button>
+
+      <nav class="nav">
+        <p class="nav-label">Analytics</p>
+        <ul>
+          <li><a href="#" class="nav-link is-active" aria-current="page"><svg class="icon" aria-hidden="true"><use href="#i-overview"/></svg>Overview</a></li>
+          <li><a href="#" class="nav-link"><svg class="icon" aria-hidden="true"><use href="#i-events"/></svg>Events<span class="nav-count">142</span></a></li>
+          <li><a href="#" class="nav-link"><svg class="icon" aria-hidden="true"><use href="#i-funnels"/></svg>Funnels</a></li>
+          <li><a href="#" class="nav-link"><svg class="icon" aria-hidden="true"><use href="#i-retention"/></svg>Retention</a></li>
+          <li><a href="#" class="nav-link"><svg class="icon" aria-hidden="true"><use href="#i-users"/></svg>Users</a></li>
+        </ul>
+        <p class="nav-label">Workspace</p>
+        <ul>
+          <li><a href="#" class="nav-link"><svg class="icon" aria-hidden="true"><use href="#i-settings"/></svg>Settings</a></li>
+        </ul>
+      </nav>
+
+      <div class="sidebar-foot">
+        <div class="usage">
+          <div class="usage-row"><span>Events this month</span><span class="num">1.62M / 2M</span></div>
+          <div class="usage-bar"><span style="width:81%"></span></div>
+          <a href="#" class="usage-link">Upgrade plan</a>
+        </div>
+        <div class="me">
+          <span class="avatar av-1" aria-hidden="true">PR</span>
+          <span class="me-text"><span class="me-name">Priya Raman</span><span class="me-mail">priya@fieldnote.io</span></span>
+        </div>
+      </div>
+    </aside>
+    <div class="scrim" id="scrim" hidden></div>
+
+    <div class="main">
+      <header class="topbar">
+        <div class="title-group">
+          <button class="icon-btn menu-btn" id="menuBtn" type="button" aria-label="Open navigation" aria-controls="sidebar" aria-expanded="false">
+            <svg class="icon" aria-hidden="true"><use href="#i-menu"/></svg>
+          </button>
+          <div>
+            <p class="crumb">Fieldnote <span aria-hidden="true">/</span> app.fieldnote.io</p>
+            <h1>Overview</h1>
+          </div>
+        </div>
+
+        <div class="toolbar">
+          <label class="search">
+            <svg class="icon" aria-hidden="true"><use href="#i-search"/></svg>
+            <input type="search" placeholder="Search pages, events, users…" aria-label="Search">
+            <kbd>⌘K</kbd>
+          </label>
+
+          <div class="range" id="range">
+            <button class="range-btn" id="rangeBtn" type="button" aria-haspopup="listbox" aria-expanded="false">
+              <svg class="icon" aria-hidden="true"><use href="#i-calendar"/></svg>
+              <span class="range-label" id="rangeLabel">Last 30 days</span>
+              <span class="range-dates">Oct 6 – Nov 4, 2026</span>
+              <svg class="icon chev" aria-hidden="true"><use href="#i-chevron"/></svg>
+            </button>
+            <ul class="range-menu" id="rangeMenu" role="listbox" aria-label="Date range" hidden>
+              <li role="option" tabindex="-1" data-label="Today">Today</li>
+              <li role="option" tabindex="-1" data-label="Last 7 days">Last 7 days</li>
+              <li role="option" tabindex="-1" data-label="Last 30 days" aria-selected="true">Last 30 days</li>
+              <li role="option" tabindex="-1" data-label="Last 90 days">Last 90 days</li>
+              <li role="option" tabindex="-1" data-label="Year to date">Year to date</li>
+              <li class="sep" role="separator"></li>
+              <li role="option" tabindex="-1" data-label="Custom range">Custom range…</li>
+            </ul>
+          </div>
+
+          <button class="icon-btn" type="button" aria-label="Notifications">
+            <svg class="icon" aria-hidden="true"><use href="#i-bell"/></svg>
+            <span class="dot" aria-hidden="true"></span>
+          </button>
+        </div>
+      </header>
+
+      <main class="content">
+        <section class="metrics" aria-label="Headline metrics">
+          <article class="metric">
+            <h2 class="metric-label">Visitors</h2>
+            <p class="metric-value num">43,264</p>
+            <p class="metric-foot">
+              <span class="delta up"><svg aria-hidden="true"><use href="#i-up"/></svg>17.5%</span>
+              <span class="muted">vs 36,818 prior 30 days</span>
+            </p>
+          </article>
+          <article class="metric">
+            <h2 class="metric-label">Sign-ups</h2>
+            <p class="metric-value num">1,152</p>
+            <p class="metric-foot">
+              <span class="delta up"><svg aria-hidden="true"><use href="#i-up"/></svg>11.7%</span>
+              <span class="muted">vs 1,031 prior 30 days</span>
+            </p>
+          </article>
+          <article class="metric">
+            <h2 class="metric-label">Conversion rate</h2>
+            <p class="metric-value num">2.66%</p>
+            <p class="metric-foot">
+              <span class="delta down"><svg aria-hidden="true"><use href="#i-down"/></svg>0.14 pts</span>
+              <span class="muted">vs 2.80% prior 30 days</span>
+            </p>
+          </article>
+          <article class="metric">
+            <h2 class="metric-label">Revenue</h2>
+            <p class="metric-value num">$18,940</p>
+            <p class="metric-foot">
+              <span class="delta up"><svg aria-hidden="true"><use href="#i-up"/></svg>16.8%</span>
+              <span class="muted">vs $16,210 prior 30 days</span>
+            </p>
+          </article>
+        </section>
+
+        <div class="grid">
+          <section class="card chart-card" aria-labelledby="chartTitle">
+            <div class="card-head">
+              <div>
+                <h2 id="chartTitle" class="card-title">Daily visitors</h2>
+                <p class="card-sub">Unique visitors per day, last 30 days</p>
+              </div>
+              <ul class="legend">
+                <li><span class="swatch swatch-current"></span>This period</li>
+                <li><span class="swatch swatch-prev"></span>Previous period</li>
+              </ul>
+            </div>
+
+            <div class="chart" id="chart">
+              <div class="y-axis" aria-hidden="true">
+                <span style="bottom:100%">2.5k</span>
+                <span style="bottom:80%">2k</span>
+                <span style="bottom:60%">1.5k</span>
+                <span style="bottom:40%">1k</span>
+                <span style="bottom:20%">500</span>
+                <span style="bottom:0%">0</span>
+              </div>
+              <div class="plot" id="plot">
+                <div class="gridlines" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+                <svg class="lines" viewBox="0 0 1000 250" preserveAspectRatio="none" role="img" aria-label="Line chart of daily visitors from October 6 to November 4, 2026, rising from about 1,300 to 1,821 a day, with a peak of 2,011 on October 23. Weekends dip to around 1,000.">
+                  <defs>
+                    <linearGradient id="fill" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0" stop-color="var(--text)" stop-opacity=".08"/>
+                      <stop offset="1" stop-color="var(--text)" stop-opacity="0"/>
+                    </linearGradient>
+                  </defs>
+                  <path class="area" fill="url(#fill)" d="M0 118.4C17.24 118.4 17.24 110.8 34.48 110.8C51.72 110.8 51.72 111.6 68.97 111.6C86.21 111.6 86.21 119.5 103.45 119.5C120.69 119.5 120.69 155.4 137.93 155.4C155.17 155.4 155.17 154 172.41 154C189.66 154 189.66 108.2 206.9 108.2C224.14 108.2 224.14 112.9 241.38 112.9C258.62 112.9 258.62 101.2 275.86 101.2C293.1 101.2 293.1 100.9 310.34 100.9C327.58 100.9 327.58 91.1 344.83 91.1C362.07 91.1 362.07 136.3 379.31 136.3C396.55 136.3 396.55 146.2 413.79 146.2C431.03 146.2 431.03 101 448.28 101C465.52 101 465.52 102.4 482.76 102.4C500 102.4 500 91 517.24 91C534.48 91 534.48 91.6 551.72 91.6C568.97 91.6 568.97 48.9 586.21 48.9C603.45 48.9 603.45 131.8 620.69 131.8C637.93 131.8 637.93 136.7 655.17 136.7C672.41 136.7 672.41 88.1 689.66 88.1C706.9 88.1 706.9 78.9 724.14 78.9C741.38 78.9 741.38 90.2 758.62 90.2C775.86 90.2 775.86 82.3 793.1 82.3C810.35 82.3 810.35 76 827.59 76C844.83 76 844.83 119.4 862.07 119.4C879.31 119.4 879.31 128.1 896.55 128.1C913.79 128.1 913.79 85.7 931.03 85.7C948.27 85.7 948.27 87.1 965.52 87.1C982.76 87.1 982.76 67.9 1000 67.9L1000 250L0 250Z"/>
+                  <path class="line-prev" d="M0 130.3C17.24 130.3 17.24 130.9 34.48 130.9C51.72 130.9 51.72 125.9 68.97 125.9C86.21 125.9 86.21 123.1 103.45 123.1C120.69 123.1 120.69 159.1 137.93 159.1C155.17 159.1 155.17 162.4 172.41 162.4C189.66 162.4 189.66 116.4 206.9 116.4C224.14 116.4 224.14 125.1 241.38 125.1C258.62 125.1 258.62 113.3 275.86 113.3C293.1 113.3 293.1 121.3 310.34 121.3C327.58 121.3 327.58 126.2 344.83 126.2C362.07 126.2 362.07 157.7 379.31 157.7C396.55 157.7 396.55 159.2 413.79 159.2C431.03 159.2 431.03 112.2 448.28 112.2C465.52 112.2 465.52 115.3 482.76 115.3C500 115.3 500 118.1 517.24 118.1C534.48 118.1 534.48 122.5 551.72 122.5C568.97 122.5 568.97 119.6 586.21 119.6C603.45 119.6 603.45 153.1 620.69 153.1C637.93 153.1 637.93 150.8 655.17 150.8C672.41 150.8 672.41 116.3 689.66 116.3C706.9 116.3 706.9 109.2 724.14 109.2C741.38 109.2 741.38 110.6 758.62 110.6C775.86 110.6 775.86 105 793.1 105C810.35 105 810.35 114.2 827.59 114.2C844.83 114.2 844.83 153.9 862.07 153.9C879.31 153.9 879.31 145.7 896.55 145.7C913.79 145.7 913.79 109 931.03 109C948.27 109 948.27 105.4 965.52 105.4C982.76 105.4 982.76 106.4 1000 106.4"/>
+                  <path class="line" d="M0 118.4C17.24 118.4 17.24 110.8 34.48 110.8C51.72 110.8 51.72 111.6 68.97 111.6C86.21 111.6 86.21 119.5 103.45 119.5C120.69 119.5 120.69 155.4 137.93 155.4C155.17 155.4 155.17 154 172.41 154C189.66 154 189.66 108.2 206.9 108.2C224.14 108.2 224.14 112.9 241.38 112.9C258.62 112.9 258.62 101.2 275.86 101.2C293.1 101.2 293.1 100.9 310.34 100.9C327.58 100.9 327.58 91.1 344.83 91.1C362.07 91.1 362.07 136.3 379.31 136.3C396.55 136.3 396.55 146.2 413.79 146.2C431.03 146.2 431.03 101 448.28 101C465.52 101 465.52 102.4 482.76 102.4C500 102.4 500 91 517.24 91C534.48 91 534.48 91.6 551.72 91.6C568.97 91.6 568.97 48.9 586.21 48.9C603.45 48.9 603.45 131.8 620.69 131.8C637.93 131.8 637.93 136.7 655.17 136.7C672.41 136.7 672.41 88.1 689.66 88.1C706.9 88.1 706.9 78.9 724.14 78.9C741.38 78.9 741.38 90.2 758.62 90.2C775.86 90.2 775.86 82.3 793.1 82.3C810.35 82.3 810.35 76 827.59 76C844.83 76 844.83 119.4 862.07 119.4C879.31 119.4 879.31 128.1 896.55 128.1C913.79 128.1 913.79 85.7 931.03 85.7C948.27 85.7 948.27 87.1 965.52 87.1C982.76 87.1 982.76 67.9 1000 67.9"/>
+                </svg>
+                <div class="annotation" style="left:58.62%;top:19.56%" aria-hidden="true">
+                  <span class="annotation-dot"></span>
+                  <span class="annotation-label">Changelog: Funnels 2.0</span>
+                </div>
+                <div class="hover" id="hover" aria-hidden="true">
+                  <span class="hover-line"></span>
+                  <span class="hover-dot"></span>
+                </div>
+                <div class="tooltip" id="tooltip" role="status" aria-live="polite"></div>
+              </div>
+              <div class="x-axis" aria-hidden="true">
+                <span style="left:0%">Oct 6</span>
+                <span style="left:24.14%">Oct 13</span>
+                <span style="left:48.28%">Oct 20</span>
+                <span style="left:72.41%">Oct 27</span>
+                <span style="left:96.55%">Nov 3</span>
+              </div>
+            </div>
+
+            <dl class="chart-stats">
+              <div><dt>Daily average</dt><dd class="num">1,442</dd></div>
+              <div><dt>Best day</dt><dd class="num">2,011 <span class="muted">Fri, Oct 23</span></dd></div>
+              <div><dt>Weekday / weekend</dt><dd class="num">1,561 <span class="muted">/ 1,115</span></dd></div>
+            </dl>
+          </section>
+
+          <section class="card activity-card" aria-labelledby="activityTitle">
+            <div class="card-head">
+              <div>
+                <h2 id="activityTitle" class="card-title">Recent activity</h2>
+                <p class="card-sub">Your team and your tracking</p>
+              </div>
+              <a href="#" class="link">View all</a>
+            </div>
+            <ol class="feed">
+              <li class="feed-item">
+                <span class="avatar av-1" aria-hidden="true">PR</span>
+                <div class="feed-body">
+                  <p><strong>Priya Raman</strong> created the funnel <a href="#">Trial → Paid (Q4)</a></p>
+                  <time datetime="2026-11-04T10:48">12 min ago</time>
+                </div>
+              </li>
+              <li class="feed-item">
+                <span class="feed-icon fi-grey" aria-hidden="true"><svg class="icon"><use href="#i-bolt"/></svg></span>
+                <div class="feed-body">
+                  <p><strong>Spike detected</strong> · 64 sign-ups in the last hour, 3.1× the usual rate</p>
+                  <time datetime="2026-11-04T10:02">58 min ago</time>
+                </div>
+              </li>
+              <li class="feed-item">
+                <span class="avatar av-2" aria-hidden="true">MB</span>
+                <div class="feed-body">
+                  <p><strong>Marco Bellini</strong> invited <strong>jonas@fieldnote.io</strong> as a viewer</p>
+                  <time datetime="2026-11-04T08:31">2 h ago</time>
+                </div>
+              </li>
+              <li class="feed-item">
+                <span class="feed-icon fi-grey" aria-hidden="true"><svg class="icon"><use href="#i-mail"/></svg></span>
+                <div class="feed-body">
+                  <p><strong>Weekly digest</strong> sent to 6 teammates</p>
+                  <time datetime="2026-11-02T09:00">Mon, 9:00</time>
+                </div>
+              </li>
+              <li class="feed-item">
+                <span class="feed-icon fi-red" aria-hidden="true"><svg class="icon"><use href="#i-alert"/></svg></span>
+                <div class="feed-body">
+                  <p><strong>Alert</strong> · Bounce rate on <code>/blog/event-tracking-without-cookies</code> passed 60%</p>
+                  <time datetime="2026-11-01T17:14">Sun, 17:14</time>
+                </div>
+              </li>
+              <li class="feed-item">
+                <span class="avatar av-3" aria-hidden="true">DO</span>
+                <div class="feed-body">
+                  <p><strong>Dana Okafor</strong> saved the cohort <a href="#">October trials</a> to Retention</p>
+                  <time datetime="2026-10-31T14:20">Oct 31</time>
+                </div>
+              </li>
+              <li class="feed-item">
+                <span class="feed-icon fi-grey" aria-hidden="true"><svg class="icon"><use href="#i-code"/></svg></span>
+                <div class="feed-body">
+                  <p><strong>Tracking snippet v2.4</strong> detected on <code>docs.fieldnote.io</code></p>
+                  <time datetime="2026-10-30T11:05">Oct 30</time>
+                </div>
+              </li>
+            </ol>
+          </section>
+
+          <section class="card table-card" aria-labelledby="pagesTitle">
+            <div class="card-head">
+              <div>
+                <h2 id="pagesTitle" class="card-title">Top pages</h2>
+                <p class="card-sub">By views, last 30 days</p>
+              </div>
+              <a href="#" class="link">All pages</a>
+            </div>
+            <div class="table-wrap">
+              <table class="pages">
+                <thead>
+                  <tr>
+                    <th scope="col">Path</th>
+                    <th scope="col" class="r" aria-sort="descending">Views</th>
+                    <th scope="col" class="r">Unique visitors</th>
+                    <th scope="col" class="r">Avg. time</th>
+                    <th scope="col" class="r">Bounce rate</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><span class="path">/</span><span class="bar" style="--w:100%"></span></td>
+                    <td class="r num">18,402</td><td class="r num">12,915</td><td class="r num">0:42</td>
+                    <td class="r num">48.2%</td>
+                  </tr>
+                  <tr>
+                    <td><span class="path">/pricing</span><span class="bar" style="--w:53.6%"></span></td>
+                    <td class="r num">9,871</td><td class="r num">7,204</td><td class="r num">1:36</td>
+                    <td class="r num">31.5%</td>
+                  </tr>
+                  <tr>
+                    <td><span class="path">/docs/getting-started</span><span class="bar" style="--w:35.5%"></span></td>
+                    <td class="r num">6,530</td><td class="r num">4,118</td><td class="r num">3:12</td>
+                    <td class="r num">22.8%</td>
+                  </tr>
+                  <tr>
+                    <td><span class="path">/blog/event-tracking-without-cookies</span><span class="bar" style="--w:28.3%"></span></td>
+                    <td class="r num">5,214</td><td class="r num">4,870</td><td class="r num">4:05</td>
+                    <td class="r num"><span class="flag"><svg aria-hidden="true"><use href="#i-alert"/></svg>61.3%<span class="sr-only"> — above the 60% alert threshold</span></span></td>
+                  </tr>
+                  <tr>
+                    <td><span class="path">/features/funnels</span><span class="bar" style="--w:21.5%"></span></td>
+                    <td class="r num">3,962</td><td class="r num">2,977</td><td class="r num">1:18</td>
+                    <td class="r num">35.4%</td>
+                  </tr>
+                  <tr>
+                    <td><span class="path">/signup</span><span class="bar" style="--w:18.5%"></span></td>
+                    <td class="r num">3,410</td><td class="r num">3,026</td><td class="r num">0:58</td>
+                    <td class="r num">18.9%</td>
+                  </tr>
+                  <tr>
+                    <td><span class="path">/changelog</span><span class="bar" style="--w:11.7%"></span></td>
+                    <td class="r num">2,145</td><td class="r num">1,602</td><td class="r num">1:04</td>
+                    <td class="r num">40.7%</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script src="script.js" defer></script>
+</body>
+</html>

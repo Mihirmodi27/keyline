@@ -1,0 +1,382 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Account settings · Northwind</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+
+  <div class="shell">
+    <aside class="shell-nav" id="shell-nav" aria-label="Northwind">
+      <div class="shell-nav__head">
+        <a class="brand" href="#" aria-label="Northwind home">
+        <svg class="brand__mark" viewBox="0 0 32 32" aria-hidden="true">
+          <rect width="32" height="32" rx="8" fill="currentColor"/>
+          <path d="M9 22.5 16 8l7 14.5-7-3.6-7 3.6Z" fill="#fff"/>
+          <path d="M16 8v10.9l7 3.6L16 8Z" fill="#fff" opacity=".55"/>
+        </svg>
+        <span class="brand__name">Northwind</span>
+      </a>
+        <button class="icon-btn" type="button" aria-label="Notifications, 3 unread">
+          <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 3a4.5 4.5 0 0 0-4.5 4.5v2.8L4 13h12l-1.5-2.7V7.5A4.5 4.5 0 0 0 10 3Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M8.2 15.5a1.9 1.9 0 0 0 3.6 0" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+          <span class="dot" aria-hidden="true"></span>
+        </button>
+      </div>
+
+      <label class="search">
+          <svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="9" cy="9" r="5.5" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="m13.2 13.2 3.3 3.3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+          <span class="visually-hidden">Search</span>
+          <input type="search" placeholder="Search Northwind">
+          <kbd>⌘K</kbd>
+        </label>
+
+      <nav class="appnav" aria-label="Primary">
+        <ul>
+          <li><a href="#">Projects</a></li>
+          <li><a href="#">My tasks</a></li>
+          <li><a href="#">Inbox</a></li>
+          <li><a href="#">Reports</a></li>
+        </ul>
+      </nav>
+
+      <nav class="sidenav" aria-labelledby="settings-nav-title">
+        <p class="nav-group" id="settings-nav-title">Settings</p>
+        <ul>
+          <li><a href="#profile" class="is-active" aria-current="true">
+            <svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="7" r="3.2" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M4 16.5c.9-2.8 3.2-4.3 6-4.3s5.1 1.5 6 4.3" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+            Profile</a></li>
+          <li><a href="#notifications">
+            <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 3a4.5 4.5 0 0 0-4.5 4.5v2.8L4 13h12l-1.5-2.7V7.5A4.5 4.5 0 0 0 10 3Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M8.2 15.5a1.9 1.9 0 0 0 3.6 0" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+            Notifications</a></li>
+          <li><a href="#password">
+            <svg viewBox="0 0 20 20" aria-hidden="true"><rect x="4" y="9" width="12" height="8" rx="2" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M7 9V6.5a3 3 0 0 1 6 0V9" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>
+            Password</a></li>
+          <li><a href="#connections">
+            <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M8.5 11.5a3 3 0 0 0 4.2 0l2.6-2.6a3 3 0 0 0-4.2-4.2l-.8.8M11.5 8.5a3 3 0 0 0-4.2 0l-2.6 2.6a3 3 0 0 0 4.2 4.2l.8-.8" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+            Connected accounts</a></li>
+          <li><a href="#danger" class="sidenav__danger">
+            <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 3.5 17 16H3l7-12.5Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M10 8.5v3.2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="10" cy="13.8" r=".9" fill="currentColor"/></svg>
+            Danger zone</a></li>
+        </ul>
+      </nav>
+
+      <div class="shell-nav__foot">
+        <div class="plan">
+          <p class="plan__name">Team plan</p>
+          <p class="plan__meta">Halcyon Studio · 14 of 20 seats</p>
+          <div class="meter" role="img" aria-label="14 of 20 seats used"><span style="width:70%"></span></div>
+        </div>
+        <div class="account">
+          <span class="avatar avatar--sm" aria-hidden="true">PA</span>
+          <span class="account__name">Priya Anand</span>
+        </div>
+      </div>
+    </aside>
+    <div class="shell-scrim" data-nav-close hidden></div>
+
+    <div class="shell-main">
+      <header class="pagebar">
+        <button class="icon-btn pagebar__menu" type="button" aria-label="Open navigation" aria-controls="shell-nav" aria-expanded="false" data-nav-toggle>
+          <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3.5 6h13M3.5 10h13M3.5 14h13" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+        </button>
+        <nav class="crumbs" aria-label="Breadcrumb">
+          <ol>
+            <li><a href="#">Settings</a></li>
+            <li><span aria-current="page">Account</span></li>
+          </ol>
+        </nav>
+      </header>
+
+    <main id="main" class="content">
+      <header class="page-head">
+        <h1>Account settings</h1>
+        <p>Manage your profile, how Northwind reaches you, and the services linked to your account.</p>
+      </header>
+
+      <!-- Profile -->
+      <section class="section" id="profile" aria-labelledby="profile-title">
+        <form class="js-form" novalidate data-form="profile">
+          <div class="section__head">
+            <h2 id="profile-title">Profile</h2>
+            <p>This is how teammates see you across projects, comments and mentions.</p>
+          </div>
+
+          <div class="section__body">
+            <div class="photo">
+              <span class="avatar avatar--lg" id="avatar" aria-hidden="true">PA</span>
+              <div class="photo__text">
+                <p class="photo__label">Profile photo</p>
+                <p class="hint">PNG or JPG, at least 256 × 256 px. Up to 4 MB.</p>
+                <div class="photo__actions">
+                  <label class="btn btn--secondary btn--sm">
+                    <input type="file" accept="image/png,image/jpeg" class="visually-hidden" id="photo-input">
+                    Upload photo
+                  </label>
+                  <button type="button" class="btn btn--ghost btn--sm" id="photo-remove">Remove</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="grid">
+              <div class="field">
+                <label for="full-name">Full name</label>
+                <input id="full-name" name="fullName" type="text" autocomplete="name" value="Priya Anand" required>
+              </div>
+
+              <div class="field field--invalid">
+                <label for="email">Email address</label>
+                <div class="input-wrap">
+                  <input id="email" name="email" type="email" autocomplete="email" value="priya.anand@halcyon" required aria-invalid="true" aria-describedby="email-msg">
+                  <svg class="input-icon" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="7" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M10 6.5v4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="10" cy="13.3" r=".9" fill="currentColor"/></svg>
+                </div>
+                <p class="msg" id="email-msg">Enter a valid email address, like name@company.com.</p>
+              </div>
+
+              <div class="field">
+                <label for="job-title">Job title <span class="optional">Optional</span></label>
+                <input id="job-title" name="jobTitle" type="text" autocomplete="organization-title" value="Senior Product Designer">
+              </div>
+
+              <div class="field">
+                <label for="timezone">Time zone</label>
+                <div class="select-wrap">
+                  <select id="timezone" name="timezone" aria-describedby="tz-msg">
+                    <option value="America/Los_Angeles">(GMT−08:00) Los Angeles</option>
+                    <option value="America/Denver">(GMT−07:00) Denver</option>
+                    <option value="America/Chicago">(GMT−06:00) Chicago</option>
+                    <option value="America/New_York">(GMT−05:00) New York</option>
+                    <option value="Europe/London">(GMT+00:00) London</option>
+                    <option value="Europe/Berlin" selected>(GMT+01:00) Berlin</option>
+                    <option value="Asia/Kolkata">(GMT+05:30) Bengaluru</option>
+                    <option value="Asia/Singapore">(GMT+08:00) Singapore</option>
+                    <option value="Asia/Tokyo">(GMT+09:00) Tokyo</option>
+                    <option value="Australia/Sydney">(GMT+11:00) Sydney</option>
+                  </select>
+                  <svg viewBox="0 0 20 20" aria-hidden="true"><path d="m6 8 4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </div>
+                <p class="hint" id="tz-msg">Due dates and reminders use this time zone.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="section__foot">
+            <p class="status" role="status" aria-live="polite"></p>
+            <button type="reset" class="btn btn--ghost">Cancel</button>
+            <button type="submit" class="btn btn--primary">Save profile</button>
+          </div>
+        </form>
+      </section>
+
+      <!-- Notifications -->
+      <section class="section" id="notifications" aria-labelledby="notif-title">
+        <form class="js-form" data-form="notifications">
+          <div class="section__head">
+            <h2 id="notif-title">Notifications</h2>
+            <p>Choose what Northwind tells you about, and where.</p>
+          </div>
+
+          <div class="section__body section__body--flush">
+            <table class="prefs">
+              <thead>
+                <tr>
+                  <th scope="col">Activity</th>
+                  <th scope="col" class="prefs__col">Email</th>
+                  <th scope="col" class="prefs__col">Push</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th scope="row">
+                    <span class="prefs__name">Mentions</span>
+                    <span class="hint">When someone @mentions you in a task or comment.</span>
+                  </th>
+                  <td><label class="toggle"><input type="checkbox" checked><span class="toggle__track" aria-hidden="true"></span><span class="visually-hidden">Email for mentions</span></label></td>
+                  <td><label class="toggle"><input type="checkbox" checked><span class="toggle__track" aria-hidden="true"></span><span class="visually-hidden">Push for mentions</span></label></td>
+                </tr>
+                <tr>
+                  <th scope="row">
+                    <span class="prefs__name">Comments</span>
+                    <span class="hint">New replies on tasks you created or follow.</span>
+                  </th>
+                  <td><label class="toggle"><input type="checkbox"><span class="toggle__track" aria-hidden="true"></span><span class="visually-hidden">Email for comments</span></label></td>
+                  <td><label class="toggle"><input type="checkbox" checked><span class="toggle__track" aria-hidden="true"></span><span class="visually-hidden">Push for comments</span></label></td>
+                </tr>
+                <tr>
+                  <th scope="row">
+                    <span class="prefs__name">Task assignments</span>
+                    <span class="hint">When a task is assigned to you or its due date changes.</span>
+                  </th>
+                  <td><label class="toggle"><input type="checkbox" checked><span class="toggle__track" aria-hidden="true"></span><span class="visually-hidden">Email for task assignments</span></label></td>
+                  <td><label class="toggle"><input type="checkbox" checked><span class="toggle__track" aria-hidden="true"></span><span class="visually-hidden">Push for task assignments</span></label></td>
+                </tr>
+                <tr>
+                  <th scope="row">
+                    <span class="prefs__name">Weekly summary</span>
+                    <span class="hint">A Monday digest of what moved, what slipped and what’s due.</span>
+                  </th>
+                  <td><label class="toggle"><input type="checkbox" checked><span class="toggle__track" aria-hidden="true"></span><span class="visually-hidden">Email for weekly summary</span></label></td>
+                  <td><label class="toggle"><input type="checkbox"><span class="toggle__track" aria-hidden="true"></span><span class="visually-hidden">Push for weekly summary</span></label></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="section__foot">
+            <p class="status" role="status" aria-live="polite"></p>
+            <button type="submit" class="btn btn--primary">Save preferences</button>
+          </div>
+        </form>
+      </section>
+
+      <!-- Password -->
+      <section class="section" id="password" aria-labelledby="pw-title">
+        <form class="js-form" novalidate data-form="password">
+          <div class="section__head">
+            <h2 id="pw-title">Password</h2>
+            <p>Last changed 4 months ago. You’ll stay signed in on this device.</p>
+          </div>
+
+          <div class="section__body">
+            <div class="stack">
+              <div class="field">
+                <label for="pw-current">Current password</label>
+                <input id="pw-current" name="current" type="password" autocomplete="current-password" required>
+                <p class="msg" id="pw-current-msg"></p>
+              </div>
+
+              <div class="field">
+                <label for="pw-new">New password</label>
+                <div class="input-wrap">
+                  <input id="pw-new" name="new" type="password" autocomplete="new-password" required aria-describedby="pw-rules">
+                  <button type="button" class="reveal" data-reveal="pw-new" aria-label="Show password">Show</button>
+                </div>
+                <div class="strength" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+                <ul class="rules" id="pw-rules">
+                  <li data-rule="length">At least 12 characters</li>
+                  <li data-rule="case">Upper and lower case letters</li>
+                  <li data-rule="number">At least one number or symbol</li>
+                </ul>
+              </div>
+
+              <div class="field">
+                <label for="pw-confirm">Confirm new password</label>
+                <input id="pw-confirm" name="confirm" type="password" autocomplete="new-password" required aria-describedby="pw-confirm-msg">
+                <p class="msg" id="pw-confirm-msg"></p>
+              </div>
+            </div>
+          </div>
+
+          <div class="section__foot">
+            <a class="link" href="#">Forgot your password?</a>
+            <p class="status" role="status" aria-live="polite"></p>
+            <button type="submit" class="btn btn--primary">Update password</button>
+          </div>
+        </form>
+      </section>
+
+      <!-- Connected accounts -->
+      <section class="section" id="connections" aria-labelledby="conn-title">
+        <div class="section__head">
+          <h2 id="conn-title">Connected accounts</h2>
+          <p>Sign in faster and bring files, code and conversations into your projects.</p>
+        </div>
+
+        <ul class="section__body section__body--flush connections">
+          <li class="connection" data-connected="true">
+            <span class="connection__logo">
+              <svg viewBox="0 0 48 48" aria-hidden="true">
+                <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+                <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+                <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
+                <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+              </svg>
+            </span>
+            <div class="connection__text">
+              <p class="connection__name">Google <span class="badge badge--ok">Connected</span></p>
+              <p class="hint">Signed in as priya.anand@halcyonstudio.com · Calendar and Drive</p>
+            </div>
+            <button type="button" class="btn btn--secondary btn--sm js-connect" data-service="Google">Disconnect</button>
+          </li>
+
+          <li class="connection" data-connected="true">
+            <span class="connection__logo connection__logo--github">
+              <svg viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>
+            </span>
+            <div class="connection__text">
+              <p class="connection__name">GitHub <span class="badge badge--ok">Connected</span></p>
+              <p class="hint">@priya-anand · Links pull requests to tasks in 3 repositories</p>
+            </div>
+            <button type="button" class="btn btn--secondary btn--sm js-connect" data-service="GitHub">Disconnect</button>
+          </li>
+
+          <li class="connection" data-connected="false">
+            <span class="connection__logo">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <rect x="6.5" y="2" width="4" height="8.5" rx="2" fill="#36C5F0"/>
+                <rect x="2" y="6.5" width="4" height="4" rx="2" fill="#36C5F0"/>
+                <rect x="13.5" y="6.5" width="8.5" height="4" rx="2" fill="#2EB67D"/>
+                <rect x="13.5" y="2" width="4" height="4" rx="2" fill="#2EB67D"/>
+                <rect x="13.5" y="13.5" width="4" height="8.5" rx="2" fill="#ECB22E"/>
+                <rect x="18" y="13.5" width="4" height="4" rx="2" fill="#ECB22E"/>
+                <rect x="2" y="13.5" width="8.5" height="4" rx="2" fill="#E01E5A"/>
+                <rect x="6.5" y="18" width="4" height="4" rx="2" fill="#E01E5A"/>
+              </svg>
+            </span>
+            <div class="connection__text">
+              <p class="connection__name">Slack <span class="badge">Not connected</span></p>
+              <p class="hint">Get notifications in Slack and create tasks from messages.</p>
+            </div>
+            <button type="button" class="btn btn--primary btn--sm js-connect" data-service="Slack">Connect</button>
+          </li>
+        </ul>
+      </section>
+
+      <!-- Danger zone -->
+      <section class="section section--danger" id="danger" aria-labelledby="danger-title">
+        <div class="section__head">
+          <h2 id="danger-title">Danger zone</h2>
+          <p>These actions are permanent and can’t be undone.</p>
+        </div>
+        <div class="section__body danger-row">
+          <div>
+            <p class="danger-row__title">Delete account</p>
+            <p class="hint">Removes your profile, personal tasks and comments. Projects you own in Halcyon Studio will be transferred to a workspace admin. <a class="link" href="#">Export your data</a> first.</p>
+          </div>
+          <button type="button" class="btn btn--danger" id="delete-open">Delete account</button>
+        </div>
+      </section>
+
+      <p class="footnote">Northwind · Workspace ID nw-48213 · <a class="link" href="#">Privacy</a> · <a class="link" href="#">Help centre</a></p>
+    </main>
+    </div>
+  </div>
+
+  <dialog class="modal" id="delete-dialog" aria-labelledby="delete-title">
+    <form method="dialog" class="modal__inner" id="delete-form">
+      <span class="modal__icon" aria-hidden="true">
+        <svg viewBox="0 0 20 20"><path d="M10 3.5 17 16H3l7-12.5Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M10 8.5v3.2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="10" cy="13.8" r=".9" fill="currentColor"/></svg>
+      </span>
+      <h2 id="delete-title">Delete your account?</h2>
+      <p>This permanently deletes <strong>Priya Anand</strong> and signs you out of every device. Type <strong>delete my account</strong> to confirm.</p>
+      <div class="field">
+        <label for="delete-confirm" class="visually-hidden">Type delete my account</label>
+        <input id="delete-confirm" type="text" autocomplete="off" spellcheck="false" placeholder="delete my account">
+      </div>
+      <div class="modal__actions">
+        <button value="cancel" class="btn btn--ghost" formnovalidate>Cancel</button>
+        <button value="confirm" class="btn btn--danger-solid" id="delete-confirm-btn" disabled>Delete account</button>
+      </div>
+    </form>
+  </dialog>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="script.js"></script>
+</body>
+</html>

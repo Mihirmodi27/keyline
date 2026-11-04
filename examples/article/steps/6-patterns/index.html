@@ -1,0 +1,408 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>What we learned moving 40 million shipments to a new database · Field Notes</title>
+  <meta name="description" content="Eighteen months, one dual-write layer and zero minutes of downtime: how Halden's platform team moved its shipment store from sharded MySQL to PostgreSQL.">
+  <meta name="color-scheme" content="light dark">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="progress" aria-hidden="true"></div>
+  <a class="skip" href="#main">Skip to article</a>
+
+  <header class="site-header">
+    <div class="site-header__inner">
+      <a class="brand" href="#" aria-label="Field Notes, Halden engineering blog">
+        <svg class="brand__mark" viewBox="0 0 32 32" aria-hidden="true">
+          <rect width="32" height="32" rx="8" fill="currentColor"/>
+          <path d="M9 21.5V10.5h8.5M9 16h6.5" fill="none" stroke="var(--bg)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="22.5" cy="20.5" r="2.6" fill="var(--accent)"/>
+        </svg>
+        <span class="brand__text">Field Notes <span class="brand__by">by Halden</span></span>
+      </a>
+      <nav class="site-nav" aria-label="Primary">
+        <a href="#">Engineering</a>
+        <a href="#" aria-current="page">Data</a>
+        <a href="#">Infrastructure</a>
+        <a href="#">Mobile</a>
+        <a href="#">Culture</a>
+      </nav>
+      <div class="site-header__actions">
+        <a class="icon-btn" href="#" aria-label="Search">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4 4"/></svg>
+        </a>
+        <a class="btn btn--primary" href="#subscribe">Subscribe</a>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <article class="article">
+      <header class="article-head">
+        <a class="kicker" href="#">Data Platform</a>
+        <h1 class="article-title">What we learned moving 40&nbsp;million shipments to a new database</h1>
+        <p class="article-dek">Eighteen months, one dual-write layer and zero minutes of downtime. How we moved Halden’s shipment store from sixteen MySQL shards to PostgreSQL, and the things we’d do differently next time.</p>
+        <div class="byline">
+          <span class="avatar avatar--md" aria-hidden="true">PR</span>
+          <div class="byline__text">
+            <a class="byline__name" href="#author">Priya Raman</a>
+            <span class="byline__meta">
+              <time datetime="2026-10-21">21 October 2026</time>
+              <span class="dot" aria-hidden="true">·</span>
+              <span>9 min read</span>
+            </span>
+          </div>
+        </div>
+      </header>
+
+      <figure class="cover">
+        <svg class="cover__art" viewBox="0 0 1200 520" role="img" aria-labelledby="cover-title">
+          <title id="cover-title">Diagram: sixteen MySQL shards feeding through a dual-write bridge into one PostgreSQL database partitioned by month</title>
+          <defs>
+            <linearGradient id="cv-bg" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#0D1828"/>
+              <stop offset="1" stop-color="#172B45"/>
+            </linearGradient>
+            <pattern id="cv-dots" width="24" height="24" patternUnits="userSpaceOnUse">
+              <circle cx="2" cy="2" r="1.2" fill="#ffffff" opacity=".07"/>
+            </pattern>
+            <radialGradient id="cv-glow" cx=".5" cy=".5" r=".5">
+              <stop offset="0" stop-color="#FF7A2F" stop-opacity=".35"/>
+              <stop offset="1" stop-color="#FF7A2F" stop-opacity="0"/>
+            </radialGradient>
+            <linearGradient id="cv-route" x1="0" x2="1">
+              <stop offset="0" stop-color="#5B8CC9" stop-opacity=".35"/>
+              <stop offset="1" stop-color="#FF7A2F"/>
+            </linearGradient>
+          </defs>
+          <rect width="1200" height="520" fill="url(#cv-bg)"/>
+          <rect width="1200" height="520" fill="url(#cv-dots)"/>
+          <circle cx="600" cy="262" r="220" fill="url(#cv-glow)"/>
+
+          <!-- shards -->
+          <g fill="#20395A" stroke="#3C5F8C" stroke-width="1.5">
+            <rect x="160" y="140" width="44" height="44" rx="9"/><rect x="220" y="140" width="44" height="44" rx="9"/><rect x="280" y="140" width="44" height="44" rx="9" fill="#5A2E1E" stroke="#FF7A2F"/><rect x="340" y="140" width="44" height="44" rx="9"/>
+            <rect x="160" y="200" width="44" height="44" rx="9"/><rect x="220" y="200" width="44" height="44" rx="9"/><rect x="280" y="200" width="44" height="44" rx="9"/><rect x="340" y="200" width="44" height="44" rx="9"/>
+            <rect x="160" y="260" width="44" height="44" rx="9" fill="#5A2E1E" stroke="#FF7A2F"/><rect x="220" y="260" width="44" height="44" rx="9"/><rect x="280" y="260" width="44" height="44" rx="9"/><rect x="340" y="260" width="44" height="44" rx="9"/>
+            <rect x="160" y="320" width="44" height="44" rx="9"/><rect x="220" y="320" width="44" height="44" rx="9" fill="#5A2E1E" stroke="#FF7A2F"/><rect x="280" y="320" width="44" height="44" rx="9"/><rect x="340" y="320" width="44" height="44" rx="9"/>
+          </g>
+
+          <!-- routes -->
+          <g fill="none" stroke="url(#cv-route)" stroke-width="2" stroke-linecap="round">
+            <path id="r1" d="M392 162 C 470 162, 470 262, 536 262"/>
+            <path id="r2" d="M392 222 C 460 222, 470 262, 536 262"/>
+            <path id="r3" d="M392 282 C 460 282, 470 262, 536 262"/>
+            <path id="r4" d="M392 342 C 470 342, 470 262, 536 262"/>
+          </g>
+          <path id="r5" d="M664 262 L 776 262" fill="none" stroke="#FF7A2F" stroke-width="3" stroke-linecap="round"/>
+
+          <!-- bridge -->
+          <rect x="536" y="226" width="128" height="72" rx="16" fill="#0D1828" stroke="#FF7A2F" stroke-width="2"/>
+          <text x="600" y="258" text-anchor="middle" class="cv-label cv-label--strong">Bridge</text>
+          <text x="600" y="278" text-anchor="middle" class="cv-label cv-label--small">dual write</text>
+
+          <!-- postgres -->
+          <rect x="784" y="128" width="272" height="268" rx="20" fill="#13253D" stroke="#3C5F8C" stroke-width="1.5"/>
+          <g class="cv-label cv-label--small">
+            <rect x="808" y="156" width="224" height="30" rx="7" fill="#FF7A2F"/>
+            <text x="822" y="176" fill="#1A0D05">2026‑10 · hot</text>
+            <rect x="808" y="194" width="224" height="30" rx="7" fill="#2A4A73"/>
+            <text x="822" y="214">2026‑09</text>
+            <rect x="808" y="232" width="224" height="30" rx="7" fill="#24405F"/>
+            <text x="822" y="252">2026‑08</text>
+            <rect x="808" y="270" width="224" height="30" rx="7" fill="#1F3753"/>
+            <text x="822" y="290">2026‑07</text>
+            <rect x="808" y="308" width="224" height="30" rx="7" fill="#1B3049"/>
+            <text x="822" y="328">2026‑06</text>
+            <rect x="808" y="346" width="224" height="26" rx="7" fill="#182B42"/>
+            <text x="822" y="364" opacity=".6">… 108 more</text>
+          </g>
+
+          <text x="272" y="408" text-anchor="middle" class="cv-label">MySQL · 16 shards</text>
+          <text x="920" y="432" text-anchor="middle" class="cv-label">PostgreSQL · monthly partitions</text>
+
+          <g class="cv-packets" fill="#FFB27F">
+            <circle r="4" cx="463" cy="204.5"/>
+            <circle r="4" cx="440.6" cy="277.7"/>
+            <circle r="4" cx="479.3" cy="290.2"/>
+            <circle r="4" cx="488.6" cy="253.4"/>
+            <circle r="5" cx="720" cy="262" fill="#FF7A2F"/>
+          </g>
+        </svg>
+        <figcaption>Before and after: customer-keyed shards (hot ones in orange) became one database partitioned by month.</figcaption>
+      </figure>
+
+      <div class="article-layout">
+        <aside class="share" aria-label="Share this article">
+          <span class="share__label">Share</span>
+          <a class="icon-btn" href="#" aria-label="Copy link">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 14a4 4 0 0 0 5.66 0l3-3a4 4 0 0 0-5.66-5.66l-1.2 1.2"/><path d="M14 10a4 4 0 0 0-5.66 0l-3 3a4 4 0 0 0 5.66 5.66l1.2-1.2"/></svg>
+          </a>
+          <a class="icon-btn" href="#" aria-label="Share on LinkedIn">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="3"/><path d="M8 10.5V16M8 7.9v.1M11.5 16v-5.5M11.5 13c0-1.6 1-2.6 2.4-2.6 1.4 0 2.1.9 2.1 2.6V16"/></svg>
+          </a>
+          <a class="icon-btn" href="#" aria-label="Share by email">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5.5" width="17" height="13" rx="2.5"/><path d="m4.5 7 7.5 6 7.5-6"/></svg>
+          </a>
+        </aside>
+
+        <div class="prose">
+          <details class="toc-inline">
+            <summary>On this page</summary>
+            <ol>
+              <li><a href="#why">Why we left a database that mostly worked</a></li>
+              <li><a href="#plan">Dual writes first, reads later</a></li>
+              <li><a href="#backfill">Backfilling without waking anyone up</a></li>
+              <li><a href="#numbers">What the numbers said</a></li>
+              <li><a href="#cutover">The cutover</a></li>
+              <li><a href="#differently">What we’d do differently</a></li>
+            </ol>
+          </details>
+          <p class="lead">Every parcel that moves through Halden’s network leaves a trail: a label printed in a depot in Leeds, a scan on a conveyor in Rotterdam, a signature on a doorstep in Lyon. For nine years that trail lived in a sharded MySQL cluster we called Manifest. In March we switched its last shard off. Forty million shipments, 1.3 billion scan events and every customs document we have ever generated now live in PostgreSQL.</p>
+          <p>Nobody outside the platform team noticed the switch, which was the point. This post covers how we got there, what the numbers looked like afterwards, and the mistakes we’d rather you didn’t repeat.</p>
+
+          <h2 id="why">Why we left a database that mostly worked</h2>
+          <p>Manifest wasn’t broken. It was sixteen shards keyed on customer ID, a pattern that made sense in 2017, when our largest customer shipped a few thousand parcels a day. By 2025 three customers accounted for 38% of all volume. Their shards ran hot while the rest idled, and rebalancing meant a weekend of manual work under a change freeze nobody enjoyed.</p>
+          <p>The deeper problem was the questions we wanted to ask. Operations wanted answers across customers — which lanes are running late this week, which depots are falling behind — and every one of those questions became a fan-out across sixteen databases, stitched together in application code. Our nightly reporting job took over four hours and failed about once a week.</p>
+          <p>We set three requirements for whatever came next:</p>
+          <ul>
+            <li><strong>No downtime.</strong> Depots scan around the clock, and a missed scan is a lost parcel until someone goes looking for it.</li>
+            <li><strong>No big-bang cutover.</strong> We wanted to move one customer at a time, and to be able to move them back.</li>
+            <li><strong>Cross-customer queries in seconds.</strong> Without putting a separate warehouse in the critical path.</li>
+          </ul>
+          <p>We evaluated a distributed SQL database and managed PostgreSQL with declarative partitioning. Postgres won on familiarity: half the team had run it in production before, and its tooling — <code>pg_stat_statements</code>, logical replication, a decade of war stories — meant fewer unknowns at 3&nbsp;a.m.</p>
+
+          <h2 id="plan">Dual writes first, reads later</h2>
+          <p>The migration had four phases, and each customer moved through them independently, behind a flag in our config service.</p>
+          <p>First, <strong>dual writes</strong>. Every write to Manifest was mirrored to Postgres through a thin repository layer we called Bridge. MySQL stayed the source of truth; if the Postgres write failed, we logged it and carried on rather than failing the request. That kept the blast radius small, but it also meant Postgres was allowed to drift, which is why the later phases existed.</p>
+          <p>Second, <strong>backfill</strong>: historical rows copied across in batches, oldest first. Third, <strong>shadow reads</strong>: for a sample of requests, Bridge read from both databases, returned the MySQL result and compared the two in the background. Fourth, <strong>the flip</strong>: Postgres became the source of truth and MySQL the mirror, until we were confident enough to stop writing to it at all.</p>
+
+          <figure class="pullquote">
+            <blockquote>
+              <p>The backfill was never the hard part. The hard part was proving, row by row, that the two databases agreed.</p>
+            </blockquote>
+            <figcaption>Tomás Ferreira, engineering manager, Platform Data</figcaption>
+          </figure>
+
+          <h2 id="backfill">Backfilling without waking anyone up</h2>
+          <p>Our first backfill script used <code>OFFSET</code> pagination and got slower with every batch, until a single page took longer than our replica-lag alarm allowed. The version that shipped walks the primary key, upserts into Postgres, and only overwrites a row when the copy is newer than whatever dual writes have already put there.</p>
+
+          <figure class="code">
+            <figcaption class="code__bar">
+              <span class="code__file">backfill.py</span>
+              <span class="code__lang">Python</span>
+            </figcaption>
+<pre><code><span class="tk-k">def</span> <span class="tk-f">backfill</span>(batch_size<span class="tk-o">=</span><span class="tk-n">5_000</span>, start_id<span class="tk-o">=</span><span class="tk-n">0</span>):
+    cursor <span class="tk-o">=</span> checkpoint.load() <span class="tk-k">or</span> start_id
+    <span class="tk-k">while</span> <span class="tk-k">True</span>:
+        rows <span class="tk-o">=</span> mysql.fetch(
+            <span class="tk-s">"SELECT * FROM shipments WHERE id &gt; %s ORDER BY id LIMIT %s"</span>,
+            (cursor, batch_size),
+        )
+        <span class="tk-k">if not</span> rows:
+            <span class="tk-k">break</span>
+
+        <span class="tk-c"># Never clobber a row that dual writes have already updated.</span>
+        <span class="tk-k">with</span> pg.transaction():
+            pg.copy_upsert(<span class="tk-s">"shipments"</span>, rows,
+                           conflict<span class="tk-o">=</span><span class="tk-s">"id"</span>,
+                           only_if_newer<span class="tk-o">=</span><span class="tk-s">"updated_at"</span>)
+
+        cursor <span class="tk-o">=</span> rows[<span class="tk-o">-</span><span class="tk-n">1</span>][<span class="tk-s">"id"</span>]
+        checkpoint.save(cursor)
+        throttle.wait_for_replica_lag(max_seconds<span class="tk-o">=</span><span class="tk-n">2</span>)</code></pre>
+          </figure>
+
+          <p>Two details mattered more than we expected. The checkpoint meant we could kill the job at any moment — for a deploy, for a busy Monday — and resume without re-reading anything. The throttle, which pauses whenever MySQL replica lag passes two seconds, meant the backfill never competed with depot traffic. It ran for eleven days. Nobody was paged.</p>
+
+          <h2 id="numbers">What the numbers said</h2>
+          <p>Shadow reads ran for six weeks across every customer. In that time we compared 212 million read pairs and found 9,400 mismatches, almost all from a single bug: MySQL was truncating timestamps to the second while Postgres kept microseconds, so “latest scan” queries disagreed whenever two scans landed in the same second. The fix was one line. Finding it without shadow reads would have taken a customer complaint.</p>
+          <p>Once every customer was on Postgres, we compared a month of production traffic against the last month on MySQL.</p>
+
+          <figure class="table-wrap">
+            <table>
+              <caption>Production metrics, 30 days before and after the final cutover</caption>
+              <thead>
+                <tr>
+                  <th scope="col">Metric</th>
+                  <th scope="col" class="num">MySQL</th>
+                  <th scope="col" class="num">PostgreSQL</th>
+                  <th scope="col" class="num">Change</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><th scope="row">Read latency, p50 (ms)</th><td class="num">18</td><td class="num">6</td><td class="num"><span class="delta">−67%</span></td></tr>
+                <tr><th scope="row">Read latency, p99 (ms)</th><td class="num">240</td><td class="num">41</td><td class="num"><span class="delta">−83%</span></td></tr>
+                <tr><th scope="row">Storage on disk (TB)</th><td class="num">6.1</td><td class="num">3.4</td><td class="num"><span class="delta">−44%</span></td></tr>
+                <tr><th scope="row">Nightly report runtime (min)</th><td class="num">250</td><td class="num">38</td><td class="num"><span class="delta">−85%</span></td></tr>
+                <tr><th scope="row">On-call pages per month</th><td class="num">23</td><td class="num">4</td><td class="num"><span class="delta">−83%</span></td></tr>
+              </tbody>
+            </table>
+          </figure>
+
+          <p>Most of the latency gain comes from partitioning by month rather than sharding by customer. Nearly every query touches only the last few weeks of data, and those partitions sit comfortably in memory. Storage shrank because we dropped five years of denormalised columns that only existed to avoid cross-shard joins.</p>
+
+          <h2 id="cutover">The cutover</h2>
+          <p>The final flip, for our largest customer, happened on a Tuesday at 10:40, the quietest window in our weekly scan volume. It cost four seconds of elevated write latency and one Slack message.</p>
+
+          <aside class="callout" role="note">
+            <svg class="callout__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5 3.5 19h17L12 3.5Z"/><path d="M12 10v4M12 16.6v.1"/></svg>
+            <div>
+              <p class="callout__title">Keep the way back open</p>
+              <p>For thirty days after each customer flipped, Bridge kept writing to MySQL as a mirror. We used that rollback path twice — once for a missing index, once for a connection pool sized for the old shards — and both times it took under a minute. If your plan doesn’t include rehearsing the rollback, it isn’t a plan yet.</p>
+            </div>
+          </aside>
+
+          <h2 id="differently">What we’d do differently</h2>
+          <p>Eighteen months is a long time, and some of it was avoidable. If we started again tomorrow, we would:</p>
+          <ul>
+            <li><strong>Build shadow reads before dual writes.</strong> Comparison tooling found more bugs than any test suite, and we wanted it from day one.</li>
+            <li><strong>Normalise timestamps at the boundary.</strong> Decide on precision and time zone once, in Bridge, instead of discovering three conventions in production.</li>
+            <li><strong>Move the smallest customer first, not the friendliest.</strong> Our first migration was a large customer who volunteered, which made every early mistake expensive.</li>
+            <li><strong>Budget for the long tail.</strong> The last 5% of queries — ad-hoc reports, a forgotten cron job in finance — took a quarter of the total time.</li>
+          </ul>
+          <p>Manifest’s last shard was decommissioned on 4 March. We kept a snapshot, labelled it, and haven’t needed it. The next post in this series covers how we rebuilt the nightly report on the new partitions, and why it now finishes before most of the team has made coffee.</p>
+
+          <ul class="tags" aria-label="Tags">
+            <li><a href="#">PostgreSQL</a></li>
+            <li><a href="#">MySQL</a></li>
+            <li><a href="#">Migrations</a></li>
+            <li><a href="#">Reliability</a></li>
+            <li><a href="#">Data Platform</a></li>
+          </ul>
+
+          <section class="author-card" id="author" aria-labelledby="author-name">
+            <span class="avatar avatar--lg" aria-hidden="true">PR</span>
+            <div>
+              <p class="author-card__eyebrow">Written by</p>
+              <h2 class="author-card__name" id="author-name">Priya Raman</h2>
+              <p class="author-card__role">Staff Engineer, Platform Data</p>
+              <p class="author-card__bio">Priya works on storage, replication and the occasional 3&nbsp;a.m. page. Before Halden she built payment ledgers at a fintech in Berlin. She is happiest when a migration is boring.</p>
+              <div class="author-card__links">
+                <a href="#">More from Priya</a>
+                <a href="#">GitHub</a>
+                <a href="#">Mastodon</a>
+              </div>
+            </div>
+          </section>
+        </div>
+
+        <nav class="toc" aria-label="On this page">
+          <p class="toc__title">On this page</p>
+          <ol>
+            <li><a href="#why">Why we left a database that mostly worked</a></li>
+            <li><a href="#plan">Dual writes first, reads later</a></li>
+            <li><a href="#backfill">Backfilling without waking anyone up</a></li>
+            <li><a href="#numbers">What the numbers said</a></li>
+            <li><a href="#cutover">The cutover</a></li>
+            <li><a href="#differently">What we’d do differently</a></li>
+          </ol>
+        </nav>
+      </div>
+    </article>
+
+    <section class="related" aria-labelledby="related-title">
+      <div class="related__inner">
+        <div class="related__head">
+          <h2 id="related-title">Keep reading</h2>
+          <a class="link-arrow" href="#">All posts <span aria-hidden="true">→</span></a>
+        </div>
+        <div class="related__grid">
+          <a class="post-card" href="#">
+            <div class="post-card__art post-card__art--routes" aria-hidden="true">
+              <svg viewBox="0 0 320 180" preserveAspectRatio="xMidYMid slice">
+                <path d="M20 150 C 90 150, 80 60, 160 60 S 250 120, 300 30" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-dasharray="2 9"/>
+                <path d="M30 40 C 110 40, 140 140, 290 140" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" opacity=".45"/>
+                <circle cx="20" cy="150" r="7" fill="currentColor"/><circle cx="300" cy="30" r="7" fill="currentColor"/><circle cx="160" cy="60" r="5" fill="currentColor"/>
+              </svg>
+            </div>
+            <div class="post-card__body">
+              <p class="post-card__meta">Optimisation · 12 min read</p>
+              <h3>Routing 9,000 vans before sunrise: inside our dispatch solver</h3>
+              <p class="post-card__author"><span class="avatar avatar--sm" aria-hidden="true">JO</span> Jonas Okafor</p>
+            </div>
+          </a>
+          <a class="post-card" href="#">
+            <div class="post-card__art post-card__art--events" aria-hidden="true">
+              <svg viewBox="0 0 320 180" preserveAspectRatio="xMidYMid slice">
+                <line x1="24" y1="90" x2="296" y2="90" stroke="currentColor" stroke-width="2" opacity=".4"/>
+                <circle cx="48" cy="90" r="8" fill="currentColor"/><circle cx="104" cy="90" r="8" fill="currentColor"/><circle cx="160" cy="90" r="8" fill="currentColor"/>
+                <circle cx="216" cy="90" r="8" fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="3 3"/>
+                <circle cx="272" cy="90" r="11" fill="currentColor"/>
+                <path d="M216 76 C 230 40, 262 40, 272 72" fill="none" stroke="currentColor" stroke-width="2"/>
+              </svg>
+            </div>
+            <div class="post-card__body">
+              <p class="post-card__meta">Reliability · 7 min read</p>
+              <h3>The scan event that arrived three days late</h3>
+              <p class="post-card__author"><span class="avatar avatar--sm" aria-hidden="true">ML</span> Mei Lin</p>
+            </div>
+          </a>
+          <a class="post-card" href="#">
+            <div class="post-card__art post-card__art--offline" aria-hidden="true">
+              <svg viewBox="0 0 320 180" preserveAspectRatio="xMidYMid slice">
+                <rect x="112" y="30" width="96" height="124" rx="14" fill="none" stroke="currentColor" stroke-width="3"/>
+                <rect x="126" y="48" width="68" height="10" rx="3" fill="currentColor" opacity=".5"/>
+                <rect x="126" y="66" width="52" height="10" rx="3" fill="currentColor" opacity=".35"/>
+                <rect x="126" y="84" width="60" height="10" rx="3" fill="currentColor" opacity=".35"/>
+                <path d="M228 60 q 18 18 0 36 M244 48 q 30 30 0 60" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" opacity=".45"/>
+                <path d="M236 44 l 20 72" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div class="post-card__body">
+              <p class="post-card__meta">Mobile · 8 min read</p>
+              <h3>Why our depot tablets run offline-first</h3>
+              <p class="post-card__author"><span class="avatar avatar--sm" aria-hidden="true">SA</span> Sara Achterberg</p>
+            </div>
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer" id="subscribe">
+    <div class="site-footer__inner">
+      <div class="footer-brand">
+        <a class="brand" href="#">
+          <svg class="brand__mark" viewBox="0 0 32 32" aria-hidden="true">
+            <rect width="32" height="32" rx="8" fill="currentColor"/>
+            <path d="M9 21.5V10.5h8.5M9 16h6.5" fill="none" stroke="var(--footer-bg)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="22.5" cy="20.5" r="2.6" fill="var(--accent)"/>
+          </svg>
+          <span class="brand__text">Field Notes</span>
+        </a>
+        <p>Stories from the people who build Halden’s logistics platform.</p>
+        <form class="subscribe" action="#" onsubmit="return false">
+          <label class="subscribe__label" for="email">Email address</label>
+          <div class="subscribe__row">
+            <input id="email" type="email" autocomplete="email" required aria-describedby="email-hint">
+            <button class="btn btn--primary" type="submit">Subscribe</button>
+          </div>
+          <p class="subscribe__hint" id="email-hint">One email a fortnight, no tracking pixels.</p>
+        </form>
+      </div>
+      <nav class="footer-col" aria-label="Topics">
+        <p class="footer-col__title">Topics</p>
+        <a href="#">Engineering</a><a href="#">Data</a><a href="#">Infrastructure</a><a href="#">Mobile</a><a href="#">Culture</a>
+      </nav>
+      <nav class="footer-col" aria-label="Halden">
+        <p class="footer-col__title">Halden</p>
+        <a href="#">About us</a><a href="#">Careers <span class="pill">14 open</span></a><a href="#">Open source</a><a href="#">Status</a>
+      </nav>
+      <nav class="footer-col" aria-label="Follow">
+        <p class="footer-col__title">Follow</p>
+        <a href="#">RSS feed</a><a href="#">GitHub</a><a href="#">LinkedIn</a><a href="#">Mastodon</a>
+      </nav>
+    </div>
+    <div class="site-footer__base">
+      <p>© 2026 Halden Logistics B.V. · Rotterdam</p>
+      <p><a href="#">Privacy</a> · <a href="#">Imprint</a></p>
+    </div>
+  </footer>
+</body>
+</html>
