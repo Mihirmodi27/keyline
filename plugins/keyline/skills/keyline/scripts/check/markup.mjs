@@ -135,5 +135,15 @@ export function readMarkup(source, ext) {
     labels.push({ element: m[1], text: m[2].replace(/\s+/g, " ").trim(), line: at(m.index + m[0].indexOf(m[2])) });
   }
 
-  return { text, classLists, css, inline, labels };
+  // Navigation blocks: how many links each writes out, and whether it groups them.
+  // Links rendered from an array (`items.map`) are invisible here, so the count is a floor.
+  const navs = [];
+  for (const m of text.matchAll(/<nav\b[^>]*>([\s\S]*?)<\/nav>/g)) {
+    const body = m[1];
+    const links = (body.match(/<(?:a|Link|NavLink)\b/g) ?? []).length;
+    const grouped = /<details\b|<h[2-6]\b|role\s*=\s*["']group|<section\b|<fieldset\b/.test(body) || (body.match(/<ul\b/g) ?? []).length > 1;
+    navs.push({ line: at(m.index), links, grouped });
+  }
+
+  return { text, classLists, css, inline, labels, navs };
 }

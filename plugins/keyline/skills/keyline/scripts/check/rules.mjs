@@ -316,6 +316,59 @@ const layoutRules = [
     },
   },
   {
+    id: "layout/target-size",
+    domain: "layout",
+    law: "layout law 13",
+    title: "Target smaller than 24px",
+    check(facts) {
+      const out = [];
+      const MIN = 24;
+      // Tailwind: a button or link whose resting height and width both come in under 24px.
+      // With border-box sizing, padding doesn't grow a fixed size; a positioned pseudo-element does.
+      for (const list of facts.classLists) {
+        if (!/^<(button|Button|IconButton|a|Link|NavLink)\b|role\s*=\s*["']button/.test(list.tag || "")) continue;
+        const resting = list.tokens.filter((t) => t.variants.length === 0);
+        const size = (prefixes) => {
+          for (const t of resting) {
+            const m = t.base.match(new RegExp(`^(?:${prefixes})-(\\d*\\.?\\d+|\\[(\\d*\\.?\\d+)px\\]|px)$`));
+            if (!m) continue;
+            return m[1] === "px" ? 1 : m[2] !== undefined ? parseFloat(m[2]) : parseFloat(m[1]) * 4;
+          }
+          return null;
+        };
+        const h = size("size|h");
+        const w = size("size|w");
+        const grown = list.tokens.some((t) => t.variants.some((v) => v === "before" || v === "after") && /^-?inset/.test(t.base));
+        if (h === null || w === null || grown) continue;
+        if (Math.max(h, size("min-h") ?? 0) < MIN && Math.max(w, size("min-w") ?? 0) < MIN) {
+          out.push({ file: list.file, line: list.line, severity: "warning", message: `A ${w}×${h}px target is hard to hit (Fitts's law). Give it at least 24×24px of hit area — 44px on touch — by sizing the control and keeping the icon small, or by insetting a \`before:\` pseudo-element past its edges.` });
+        }
+      }
+      // CSS: a rule for a button or link that fixes both dimensions under 24px.
+      const INTERACTIVE = /(^|[\s,>+~(])(button|a)(?![\w-])|\[role=["']?button|\.[\w-]*(btn|button)(?![\w-])/i;
+      const px = (v) => {
+        const m = (v ?? "").trim().match(/^(\d*\.?\d+)px$/);
+        return m ? parseFloat(m[1]) : null;
+      };
+      const pseudoGrown = new Set(facts.decls.filter((d) => /::?(before|after)/.test(d.selector) && /^inset/.test(d.prop)).map((d) => d.selector.replace(/::?(before|after).*$/, "").trim()));
+      const seenBlocks = new Set();
+      for (const d of facts.decls) {
+        if (!d.block || seenBlocks.has(d.block) || d.inline || !INTERACTIVE.test(d.selector) || /::?(before|after)|:hover|:active|:focus/.test(d.selector)) continue;
+        seenBlocks.add(d.block);
+        const get = (...props) => d.block.decls.find((x) => props.includes(x.prop));
+        const hd = get("height", "block-size");
+        const wd = get("width", "inline-size");
+        if (!hd || !wd) continue;
+        const h = Math.max(px(hd.value) ?? Infinity, px(get("min-height", "min-block-size")?.value) ?? 0);
+        const w = Math.max(px(wd.value) ?? Infinity, px(get("min-width", "min-inline-size")?.value) ?? 0);
+        if (h < MIN && w < MIN && !pseudoGrown.has(d.selector.trim())) {
+          out.push({ file: d.file, line: hd.line, severity: "warning", message: `\`${d.selector.trim()}\` is a ${w}×${h}px target, hard to hit (Fitts's law). Give it at least 24×24px of hit area — 44px on touch — or inset a \`::before\` past its edges to grow the target without growing the drawing.` });
+        }
+      }
+      return out;
+    },
+  },
+  {
     id: "layout/skip-link",
     domain: "layout",
     law: "layout law 12",
@@ -490,6 +543,17 @@ const patternRules = [
         }
       }
       return out;
+    },
+  },
+  {
+    id: "patterns/nav-count",
+    domain: "patterns",
+    law: "patterns law 8",
+    title: "Long navigation with no groups",
+    check(facts) {
+      return facts.navs
+        .filter((n) => n.links > 9 && !n.grouped)
+        .map((n) => ({ file: n.file, line: n.line, severity: "info", message: `This navigation writes out ${n.links} links in one flat run. Every option shown taxes the choice the reader came to make (Hick's law), and a flat run past a handful reads as noise (Miller's law): put the primary destinations first and group or disclose the rest.` }));
     },
   },
 ];

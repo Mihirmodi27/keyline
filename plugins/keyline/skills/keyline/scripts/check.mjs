@@ -53,7 +53,7 @@ const ROOT_LAYOUTS = [
 /** Gather everything the rules look at, across every file. */
 export function gather(root, files) {
   const facts = {
-    decls: [], atRules: [], classLists: [], classes: [], labels: [], zoomLocks: [], jsDurations: [],
+    decls: [], atRules: [], classLists: [], classes: [], labels: [], navs: [], zoomLocks: [], jsDurations: [],
     project: { focusVisible: false, focusWithin: false, backdropSupports: false, reducedTransparency: false, reducedMotion: false, animation: null, selfHostedFonts: null, lightningCss: false, rootLayout: null, skipLink: false },
     sources: new Map(),
   };
@@ -82,6 +82,7 @@ export function gather(root, files) {
         for (const t of list.tokens) facts.classes.push({ ...t, file: f.rel });
       }
       facts.labels.push(...m.labels.map((l) => ({ ...l, file: f.rel })));
+      facts.navs.push(...m.navs.map((n) => ({ ...n, file: f.rel })));
       const at = lineIndex(m.text);
       for (const z of m.text.matchAll(/maximum-scale\s*=\s*1(?:\.0)?\b|user-scalable\s*=\s*(?:no|0)\b|maximumScale\s*:\s*1\b|userScalable\s*:\s*false\b/g)) facts.zoomLocks.push({ file: f.rel, line: at(z.index) });
       if (MOTION_IMPORT.test(m.text)) {

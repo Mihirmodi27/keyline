@@ -31,7 +31,7 @@ Boundaries: how a label or figure is set is the type guide's; what colour danger
 
 ### 3. Destructive and session-ending actions look alike, and come last
 
-**Every action that destroys data or ends the session — delete, remove, clear, revoke, sign out — takes one treatment and one place: set apart at the end of its menu, after a divider, with no icon.** Position and treatment are recognised before words are read; when delete has a bin, clear has none and sign out sits mid-menu, the reader learns three severities that don't exist. The colour is ground, not decoration (the colour guide). Such an action is never the default focus, never beside the item clicked most, and never the primary button of a dialog that isn't about it. The reverse holds too: **nothing that isn't destructive borrows its look** — a recording or live state is not danger.
+**Every action that destroys data or ends the session — delete, remove, clear, revoke, sign out — takes one treatment and one place: set apart at the end of its menu, after a divider, with no icon.** Position and treatment are recognised before words are read; when delete has a bin, clear has none and sign out sits mid-menu, the reader learns three severities that don't exist. This is **similarity** at work — things that look alike are read as one kind — and **serial position**: the first and last items of a list are the ones remembered, so the end of a menu is a place readers learn to find, and to avoid. The colour is ground, not decoration (the colour guide). Such an action is never the default focus, never beside the item clicked most, and never the primary button of a dialog that isn't about it. The reverse holds too: **nothing that isn't destructive borrows its look** — a recording or live state is not danger.
 
 ### 4. A confirmation says what is lost, in the system's own dialog
 
@@ -65,6 +65,8 @@ The conversation carries no avatar per message: the reader's turns sit right-ali
 
 **A launcher offers only the choices the task has, and a toolbar or a long list holds back what isn't needed every time.** Every option on the path of the most frequent action is something to read before starting: a record launcher asks one question with two answers — which project, or a personal note — not a form. Toolbar filters are icons with tooltips, not a text label on every control. A long admin list groups into collapsed bars, closed by default, each with a summary ("Admins 3 · Members 9"), and a search opens every group it matches.
 
+**Hick's law** is why: the time to choose grows with the number of choices, so every option shown up front taxes the choice the reader came to make. **Progressive disclosure** is the cure — the common path visible, the rest one step away (layout law 11 keeps it in the markup). **Miller's law** says why grouping helps: people hold only a few chunks in mind at once, so a flat run of a dozen nav items or a 16-digit code reads as noise, where three groups of four, or `4242 4242 4242 4242`, read at a glance. Chunk long lists and long strings; don't treat "seven" as a cap that cuts what the product needs.
+
 ### 9. An empty state offers the first action
 
 **Where the user's own data is empty, say in one line what goes here and offer the one action that creates the first item — never "No items found."** "No … found" reports a failure and sends the reader looking for the create button elsewhere. Empty because filtered is a different state: name the filter and offer to clear it. Owner-curated collections don't get an empty state at all; they disappear (layout law 10).
@@ -97,7 +99,33 @@ On a working page the reader returns to daily, the view and span are remembered 
 
 **What an element looks like says what it does, and it does that: a play icon opens a video, a link goes somewhere, and anything that doesn't act doesn't react.** Landing pages and articles are where these promises break, because they are built to look a certain way before anyone decides what each piece does, and a reader who clicks a dead logo or a silent play icon stops trusting the rest. A logo that isn't a link takes no hover state; an email address is a `mailto:` link; "Copy link" is a button, not a link to the page already open; link text names its destination ("Pricing", not "Learn more"). A call to action names what happens next — "Start free", "Book a demo" — so two on one page can't be mistaken for each other, as "Get started" beside "Start free" can. A subscribe or sign-up field has a visible label and says what will arrive and how often.
 
+**Conventions are promises too** (Jakob's law): readers spend most of their time in other products and arrive expecting those to hold here. The logo goes home, search sits behind ⌘K or a magnifier, the account is at the end of the navigation, a link is underlined or obviously a link. Break a convention only for a gain the reader will feel on first use, and never for novelty alone.
+
 → Calls to action, link text and sign-up lines: `domains/patterns/copy.md`
+
+### 15. Every action answers at once, and anything slow says what it's doing
+
+**An input is acknowledged within 100ms — a press state, a toggle flipping, a row moving — and any result that takes longer than about 400ms shows what is happening in the place it was asked for.** Under 400ms (the Doherty threshold) the reader and the product keep pace and attention holds; past it, people start to wonder whether the click took, and click again. So the acknowledgement is instant and local (press feedback is the motion guide's), the slow part runs in the background where it can (law 11), and the wait is honest where it can't:
+
+- **Past ≈ 400ms**, the control says it's working — "Saving…" in the button's own label, the button held at its width.
+- **Past ≈ 1s**, the region that will change shows its shape — a skeleton of the rows coming, not a centred spinner over a blank page.
+- **Past ≈ 10s**, progress is determinate — a count, a step, a bar — with a way to cancel or leave and be told when it's done.
+
+**The loop closes where it opened**: the result appears where the action was taken, and what changed is visible without reading a toast. A save that succeeds silently, a filter that applies off screen, or an error reported in a corner the reader isn't looking at breaks the loop, and readers repeat the action to find out what happened.
+
+### 16. Input is forgiving, and the product does the remembering
+
+**Accept what people type in any reasonable form and store one canonical form; show choices rather than ask for things from memory; and let the product carry the complexity the reader would otherwise carry.** Three laws meet here:
+
+- **Postel's law** — be liberal in what you accept. A phone number with spaces, a date as "12 Mar", an email with a trailing space or capitals, a pasted card number with dashes: all are valid input, normalised on blur, never rejected for format. Errors are for what's actually wrong, and say how to fix it.
+- **Recognition over recall** — seeing beats remembering. Recent and frequent items lead a picker; a command palette lists what it can do before the reader types; labels stay visible above fields (a placeholder that vanishes on typing is recall); a filter shows its current value, not just its name.
+- **Tesler's law** — every task carries some complexity that can't be removed, only moved. Move it into the product: default to the likely answer, infer what can be inferred (the country from the postcode, the time zone from the device), and never ask for what the product already knows.
+
+### 17. A flow shows how near the end is, and the end is designed
+
+**A task of several steps shows where the reader is and how much is left, and its last screen is built as carefully as its first.** People speed up as a goal comes into view (the goal-gradient effect), so a visible "Step 2 of 3" or a checklist with items already ticked pulls them through, where an unmarked sequence of screens feels endless; count a step the reader has already done — the account they just made — as progress. **An experience is remembered by its most intense moment and its end** (the peak-end rule), not its average: a smooth setup that ends on a blank dashboard, or a purchase that ends on "Success", is remembered as flat. The end says what happened in the product's nouns, shows the result, and offers the next action; a failure at the peak — a payment declined, an upload lost — gets the most careful copy in the product, never a code.
+
+→ Pending states, skeletons, forgiving inputs and progress in code: `domains/patterns/actions-and-forms.md`
 
 ## Dials
 
@@ -150,7 +178,10 @@ Most product feedback is one step: "one step lighter", "25% smaller", "to 16px".
 | 11 | Moves awaiting the server; silent rollbacks; optimistic sends or payments | Mutation and its failure path |
 | 12 | Panels nobody acts on; scoped views with their own query | Panel; the two queries |
 | 13 | Free text before the field that decides it; errors added beside hints; several primary buttons | Form, field order |
-| 14 | Play icons with no video; hover on logos that aren't links; plain-text email addresses; copy controls built as links; "Learn more", "Click here", "Get started" beside a second call to action; sign-up fields with a placeholder for a label or no line on what arrives | Element, and what it promises against what it does |
+| 14 | Play icons with no video; hover on logos that aren't links; plain-text email addresses; copy controls built as links; "Learn more", "Click here", "Get started" beside a second call to action; sign-up fields with a placeholder for a label or no line on what arrives; conventions broken for novelty — a logo that doesn't go home, search hidden in a menu | Element, and what it promises against what it does |
+| 15 | Async actions with no pending label; centred spinners over blank regions; long jobs with no progress or cancel; results shown away from where they were asked for; silent saves | Action, its wait, and what the reader sees meanwhile |
+| 16 | Inputs that reject spaces, dashes, case or a trailing space; placeholders as labels; pickers with no recent items; questions the product could answer itself | Field, the input it rejects or the question it needn't ask |
+| 17 | Multi-step flows with no position or count; a last screen that says only "Success" or "Done"; failure copy with a code and no next step | Flow, step, and its end state |
 
 Click through every flow once with the keyboard alone, and once with the network throttled to failure. Report one line per finding with its evidence under `## Open issues`, and fix nothing unless asked.
 
@@ -176,5 +207,10 @@ Click through every flow once with the keyboard alone, and once with the network
 - [ ] Dashboards run overview, trends, action items, wireframed first, scoped views on the global pipeline.
 - [ ] Forms lead with the deciding field; errors replace hints; sign-in is a form alone in its column, its route an `expressive` area if the art moves.
 - [ ] Every element does what its form promises: play icons play, inert logos don't react, email addresses are `mailto:` links, copy controls are buttons, calls to action and link text name what happens next, sign-up fields are labelled and say what arrives and how often.
+- [ ] Conventions readers know from other products hold, unless breaking one is a gain felt on first use.
+- [ ] Every input is acknowledged at once; past ≈ 400ms the control says it's working, past ≈ 1s the region shows its shape, past ≈ 10s progress is determinate and cancellable; results appear where they were asked for.
+- [ ] Inputs accept any reasonable form and normalise it; labels stay visible; pickers lead with recent items; the product never asks for what it already knows.
+- [ ] Multi-step flows show position and what's left; the last screen names what happened, shows it and offers the next action; failures at the peak get the most careful copy.
+- [ ] Long lists and long strings are chunked; launchers and toolbars show the common path and disclose the rest.
 - [ ] Feedback was applied at the size asked, swept product-wide, reported, and recorded as a dated decision.
 - [ ] Dials match the preset, or the difference is under `## Decisions`.

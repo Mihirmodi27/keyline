@@ -100,7 +100,9 @@ Owned by the layout guide.
 | `measure.form` | Forms and settings inside a panel, ≈ 640–760px, so controls stay near their labels |
 | `measure.frame` | The wider frame that the reading column and its rails are both anchored to, so the gap between them holds as the window grows |
 | `measure.rail` | The width of a rail in the outer margin — a table of contents, an aside |
-| `gutter` | Horizontal page padding at the smallest width |
+| `gutter` | Horizontal page padding at the smallest width (Material's *margin*) |
+| `grid.columns` · `space.column` | A column grid's count per breakpoint, and the gap between columns (Material's *gutter*). Product and expressive only, and only where unlike blocks sit side by side |
+| `target.min` | The smallest hit area a control may have: 24px under a fine pointer, 44px on touch |
 | `space.tight` | Inside a group — a label and its value, items in a list |
 | `space.group` | Between groups inside a section |
 | `space.section` | Between sections |

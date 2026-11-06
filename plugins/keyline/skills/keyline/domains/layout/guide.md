@@ -25,6 +25,8 @@ Non-prose content — an image wall, a data table or a diagram at `measure.wide`
 
 **The gap inside a group must be visibly smaller than the gap around it, so a heading sits closer to what it introduces than to what came before.** With equal margins it belongs to neither neighbour. The ratio `space.heading-above : space.heading-below` matters more than the values: **between 2:1 and 5:1.** Below 2:1 the grouping is ambiguous; above 5:1 the group looks marooned. The Glass preset runs 44px above a prose heading and 12px below, about 3.7:1; the same shape holds at every scale.
 
+This is the law of **proximity**: things near each other are read as one group before anything else about them is seen, so a gap that doesn't match the grouping overrides every other cue.
+
 **Symmetric spacing is right only between peers.** **A rule marks a change of subject, not every boundary** — the Glass home page rules off its three substantial sections and lets the two that read as a coda follow on — or the page flattens into equal slabs. A band — a logo strip, a stat band — may keep the rules that mark it as a band. That judgement lives in the layout code beside the sections, never in a setting someone can switch on everywhere. Spacing values come from roles — `space.tight`, `space.group`, `space.section`, the heading pair — on one base unit, with half-steps where a ratio needs them; a one-off `margin-top: 37px` is either a missing role or a mistake, and review should be able to tell which.
 
 **Clutter is a spacing problem before it is a colour or type one.** A screen that reads as cluttered or "randomly padded" has gaps that don't group: fix the gaps, the padding and the order of tiers first, and only then touch colour or weight. Inside a card the tiers part by space — the meta line, `space.tight`, the title, `space.group`, the details — not by rules.
@@ -34,6 +36,8 @@ Non-prose content — an image wall, a data table or a diagram at `measure.wide`
 ### 3. Sections stack; a mosaic of boxes is not a layout
 
 **A page is its sections stacked in reading order — or a content column beside a rail — each opened by its heading. A grid of cards is for a collection of like objects, never for arranging a page's unlike sections.** A bento mosaic sizes each box to fill the mosaic rather than fit its content, turns reading order into a puzzle, and gives every region its own edge, padding and radius (depth law 2). The layout pass decides whether something is boxed; the depth pass confirms it and builds the surfaces that remain. Figures are the commonest case: a set of stats is one row, each figure over its label, parted by vertical hairlines, not a tile per figure; the row wraps and stacks cleanly where tiles become a column of boxes. Where the figures count what the table below holds, they are also its filter. Boxed figures are a decision to record, and the boxes stay quiet: no hover lift, no icon tile, no more padding above than beside.
+
+**Common region is real, and a box is its last resort.** A shared boundary does make things read as one group, and strongly enough to beat proximity — which is why boxing everything erases the grouping it was meant to show. Reach for the quietest device that holds the group: space first (law 2), then a tint behind it or a hairline round it, and a card only when the group is one object the reader acts on (depth law 2).
 
 The quiet devices carry the rest, one job each, and **each has one style across the product** — two table styles or two group-label styles read as two products stitched together. Which style is a dial:
 
@@ -130,6 +134,12 @@ A negative layer needs an `isolation: isolate` parent, and **a `transform`, `fil
 - `aria-current` on the active row, `aria-pressed` on toggles, `aria-expanded` and `aria-controls` on disclosure and menu triggers; decorative spans `aria-hidden`; in-page links as real anchors with the handler layered on top.
 - Print is a presentation: chrome hidden and every scroll-revealed element forced visible, or the page prints blank.
 
+### 13. A target is as big as the pointer needs, and placed where the pointer already is
+
+**Every control has a hit area of at least 24 × 24px under a fine pointer and 44 × 44px on touch, and the action used most sits closest to where the reader's attention already is.** Fitts's law: the time to hit a target grows with its distance and shrinks with its size, so a 16px icon button in a corner costs a reach and a correction every time it's used. **The hit area is not the drawing**: an icon stays 16px while padding or a `::before` inset grows the target round it, so size never has to be bought with visual weight. Adjacent targets on touch keep at least 8px between their hit areas, or the larger finger presses both.
+
+Distance is the other half. A menu opens where it was clicked; a dialog's primary button sits where the eye finishes the dialog; a row's actions sit on the row, not in a toolbar across the screen. **The edges of the screen are infinitely deep for a mouse** — a pointer can't overshoot them — which is why the dock and the menu bar live there, and why a destructive action never takes the corner where a hurried flick lands (patterns law 3). Below a phone width, the frequent actions move within thumb reach, at the bottom, not into a top corner.
+
 ## Dials
 
 | Dial | editorial | product | expressive |
@@ -139,6 +149,8 @@ A negative layer needs an `isolation: isolate` parent, and **a `transform`, `fil
 | `measure.wide` | ≈ 1.5 × `measure.reading` | = `measure.app` | Card grids and multi-column text cap at ≈ 1200–1280px; only full-bleed bands and media run edge to edge |
 | `measure.app` | — | Content fills its panel, left-aligned; forms and settings cap at `measure.form`, ≈ 640–760px; nav 220–264px; inspector 320–400px | — |
 | `gutter` (smallest width) | 24–32px | 16px, growing to 24–32px from tablet up | 20–24px |
+| Column grid: `grid.columns` / `space.column` | None — the measure is the grid | 4 / 8 / 12 on the content panel, measured on the container; 16px, 24px from tablet up | 4 / 8 / 12 on the window for card grids and section layouts; 16px, 24px from tablet up; prose still at the measure |
+| `target.min`, fine pointer / touch | 24 / 44px | 24 / 44px | 24 / 48px |
 | `space.tight` / `space.group` / `space.section` | 8 / 16–24 / 48–72px | 4–8 / 12–16 / 24–32px | 8–12 / 24–32 / 96–160px |
 | Heading pair ratio, above : below | 3:1–4:1 | 2:1–3:1 | 3:1–5:1 |
 | Rules between sections | Only at a change of subject | Headings and space separate sections; hairlines between rows and under table heads; no panel round a section | Surface or colour bands; rules rare, bar those that mark a band |
@@ -168,6 +180,16 @@ The `glass` preset takes its values from `glass/layout/`.
 
 **Breakpoints.** A single-column site needs two: where the column becomes padding-limited, and where a rail fits. A header with many links needs a third, where they stop fitting on one line, or between the two it has nowhere to go.
 
+**The column grid.** A page of unlike things side by side — a dashboard's panels, a landing page's feature rows, a card collection beside filters — needs a shared set of edges, or every block picks its own width and nothing lines up. A column grid supplies them: columns, the gaps between them (`space.column`), and the page's outer padding (`gutter`; Material calls this the *margin*, and its *gutter* is our `space.column`). The usual counts are 4 columns on a phone, 8 on a tablet and 12 above, with the gap at 16px growing to 24px. **Material's thresholds — 600, 905 and 1240px — are a starting point, not the law**: move each to where this content actually stops fitting, and name it for what changes (law 8). Past the widest step the content stops growing, capped at `measure.wide`, and the outer padding takes the extra width rather than the columns stretching across a 2560px screen.
+
+The grid is a set of edges to align to, not a set of boxes. A block spans whole columns and nothing starts inside a column gap; the gap is part of the spacing system, on the base unit like every other value. **Editorial has no column grid**: one reading column is its own grid, and a 12-column grid behind a single measure only adds numbers. Column count is arrangement, so it changes at breakpoints; item size is a separate decision (law 8). In a product shell the grid lives inside the content panel and is measured on that container, so opening the sidebar drops a step rather than squeezing twelve columns into a narrowed panel.
+
+```css
+.grid { display: grid; grid-template-columns: repeat(var(--grid-columns), minmax(0, 1fr)); gap: var(--space-column); }
+@container panel (min-width: 600px) { .grid { --grid-columns: 8; --space-column: 24px; } }
+@container panel (min-width: 905px) { .grid { --grid-columns: 12; } }
+```
+
 ## Building it for a project
 
 1. **Read the preset and the areas.** A `product` app with `app/(docs)/** → editorial` gets a shell for the app and a single column for the docs, sharing one `measure.reading`.
@@ -179,6 +201,8 @@ The `glass` preset takes its values from `glass/layout/`.
 7. **Assign the three line jobs** per the preset, drawn as borders; no divider outranks its object's edge, and a frame matches the dividers inside it.
 8. **Write the z ladder** from law 7, dropping unused rungs and keeping the gaps.
 9. **List the forks and the gates**: which components ship twice and why; which collections are owner-curated (gated) and which are user data (empty states).
+10. **Under product or expressive, set the column grid** if the pages place unlike blocks side by side: column counts per step, `space.column`, and each breakpoint moved to where the content stops fitting. Skip it for a single reading column.
+11. **Size every target**: icon buttons, close buttons, row actions and chips that act get the dial's hit area, grown by padding or a pseudo-element rather than a bigger icon.
 
 → Worked example (*Manifest*, a fictional `product` app with `editorial` docs) and its Tailwind and JS-theme forms: `domains/layout/measure-and-rhythm.md`
 
@@ -200,6 +224,8 @@ Start from the setup scan's frequencies for measures, spacing, radii, z-index an
 | 10 | "No … yet" on owner-curated collections; user-data empty states with no action | Route or component, and which case |
 | 11 | Disclosure content rendered conditionally; collapsed content without `inert` | Component, and what's missing from the HTML |
 | 12 | Skip link and `id="main"`; unlabelled `<nav>`; heading levels chosen for size; anchors without `scroll-margin-top`; no print reset for hidden reveals | Per template |
+| 13 | Icon, close and row-action buttons under 24px (44px on touch) with no padding or pseudo-element growing the hit area; touch targets closer than 8px; frequent actions far from what they act on; destructive actions in a corner | Element, drawn size, hit size |
+| Dials | Blocks side by side that share no edges; a 12-column grid behind a single reading column; columns stretching past `measure.wide` | Page, and the edges that don't line up |
 
 In a browser, resize from 320px to 2560px watching the rail gap, tab through collapsed disclosures, and run find-in-page on a closed one. Report one line per finding with its evidence — a ratio, a count, a file — under `## Open issues`, and fix nothing unless asked.
 
@@ -240,4 +266,6 @@ In a browser, resize from 320px to 2560px watching the rail gap, tab through col
 - [ ] Grids look deliberate at 1, 2 and n items.
 - [ ] Collapsed disclosures keep their content in the HTML, with `inert` and `aria-hidden`, or use `<details>`; closed groups show a summary and open to a matching search.
 - [ ] Skip link by transform with `id="main"`; every `<nav>` labelled; heading levels follow structure; anchors carry `scroll-margin-top`; print forces reveals visible.
+- [ ] Every control's hit area is at least 24px (44px on touch), grown by padding or a pseudo-element, not a bigger icon; touch targets sit 8px apart; frequent actions sit on what they act on.
+- [ ] Product and expressive pages that place unlike blocks side by side share a column grid; its breakpoints sit where the content stops fitting; columns stop at `measure.wide`; editorial has none.
 - [ ] Dials (`measure.reading`, spacing density, heading ratio, radius ladder, hairline weights, breakpoint count) match the preset, or the difference is under `## Decisions`.

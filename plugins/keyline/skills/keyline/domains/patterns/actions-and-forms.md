@@ -154,3 +154,51 @@ The deciding field is full width because it is the one question every reader ans
 - **Errors**: field errors replace hints; "Wrong email or password" is a form-level line, never a field error that tells an attacker which half was right.
 - **Password managers** need `autocomplete="email"` / `"current-password"` / `"new-password"` and real `<form>` submission.
 - The panel's build and theme scope are the depth guide's art-panel recipe (`domains/depth/elevation-recipes.md`); its motion is the motion guide's ambient class, with a still frame under reduced motion; inputs at 16px on phones, so the browser doesn't zoom, are the type guide.
+
+## Pending states by how long the wait is
+
+| Wait | The reader sees | Where |
+|---|---|---|
+| Under 100ms | The control's own press state | On the control |
+| ≈ 400ms – 1s | The label turns to its progressive form ("Save" → "Saving…"), width held, the control disabled against a second press | In the button |
+| 1s – 10s | A skeleton of what's coming: the rows, the panel's shape, never a centred spinner over a blank region | In the region that will change |
+| Over 10s | Determinate progress — "Importing 340 of 1,200" — with Cancel, and a notice when it's done if the reader has left | In the region, then a toast off screen |
+
+Show the pending state only once the threshold passes, so a fast response never flashes it:
+
+```tsx
+function usePending(pending: boolean, after = 400) {
+  const [shown, setShown] = useState(false);
+  useEffect(() => {
+    if (!pending) return setShown(false);
+    const t = setTimeout(() => setShown(true), after);
+    return () => clearTimeout(t);
+  }, [pending, after]);
+  return shown;
+}
+
+// <button disabled={saving} style={{ minWidth }}>{usePending(saving) ? "Saving…" : "Save"}</button>
+```
+
+A skeleton, once shown, stays for at least ≈ 300ms, or a response that lands just after the threshold makes the region flicker twice.
+
+## Forgiving inputs
+
+Normalise on blur and on submit, and keep what was typed visible until then:
+
+| Field | Accept | Store |
+|---|---|---|
+| Email | Capitals, leading and trailing spaces | Trimmed, domain lower-cased |
+| Phone | Spaces, dashes, brackets, a leading `+` or `00` | E.164 (`+447700900123`) |
+| Card, IBAN, codes | Spaces and dashes, pasted in any grouping | Digits only; displayed back in groups of four |
+| Date | "12 Mar", "12/3", "tomorrow", a picker | ISO date; displayed in the reader's locale |
+| Amount | "1,200", "1200.00", a currency symbol | A number in minor units |
+
+`inputmode` and `autocomplete` do half the work — `inputmode="numeric"` for codes, `"email"`, `"tel"` — so the right keyboard arrives and the browser fills what it knows. An error names the fix ("Add the year"), not the rule broken ("Invalid format").
+
+## Progress through a flow, and its end
+
+- **Show position and what's left**: "Step 2 of 3" or a short list of named steps, the current one marked, earlier ones ticked and revisitable.
+- **Start with credit**: a setup checklist opens with the step the reader just finished already ticked.
+- **No step counter for one screen**, and none that changes length mid-flow; if a branch adds steps, show the new count when the branch is chosen.
+- **The end state** names what happened in the product's nouns ("Riverside project created"), shows the thing itself or a link to it, and offers the next action ("Invite your team"). It is a screen, not a toast that leaves the reader on the last form.
