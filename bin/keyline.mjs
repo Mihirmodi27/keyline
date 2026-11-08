@@ -6,6 +6,7 @@
  *   npx trykeyline install --tool codex,cursor  answers up front
  *   npx trykeyline install --user               for every project on this machine
  *   npx trykeyline update                       refresh every copy already installed
+ *   npx trykeyline guard --install              check each UI file as the agent writes it
  *
  * Keyline is one skill folder. Each coding agent reads skills from its own
  * folder: Claude Code and Windsurf have their own; Codex, Cursor, Gemini CLI,
@@ -84,6 +85,9 @@ const USAGE = `Keyline ${version} — interface design laws for coding agents.
   npx trykeyline update  [options]   refresh every copy already installed
   npx trykeyline check  [paths…]     the laws that can be checked without a model
                                      (--json, --strict; see npx trykeyline check --help)
+  npx trykeyline guard --install     check each UI file as the agent writes it, and
+                                     hand what's found straight back to it
+                                     (--pre-commit for any agent; see npx trykeyline guard --help)
   npx trykeyline tools               list the agents it installs for
 
 Options:
@@ -117,6 +121,11 @@ const argv = process.argv.slice(2);
 if (argv[0] === "check") {
   const { run } = await import(new URL("../plugins/keyline/skills/keyline/scripts/check.mjs", import.meta.url));
   process.exit(run(argv.slice(1)));
+}
+// `guard` wires the live guard (bin/guard.mjs) into an agent's hooks or git's.
+if (argv[0] === "guard") {
+  const { guardCommand } = await import("./guard.mjs");
+  process.exit(await guardCommand(argv.slice(1)));
 }
 const command = argv[0] && !argv[0].startsWith("-") ? argv.shift() : null;
 let dir = null;

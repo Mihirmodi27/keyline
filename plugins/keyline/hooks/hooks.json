@@ -1,0 +1,17 @@
+{
+  "description": "Keyline's live guard: checks each UI file Claude edits against the project's DESIGN.md and hands the findings back so they're fixed right away.",
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/skills/keyline/scripts/guard.mjs\"",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  }
+}

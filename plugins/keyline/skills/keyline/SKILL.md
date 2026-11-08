@@ -46,6 +46,17 @@ Paths in these files are relative to this skill's folder. In shell commands it i
 - **Write back.** A decision that changes the system — a new role, a moved dial, a law knowingly broken — goes into `DESIGN.md`, so the next session starts from it. Fixed issues come off `## Open issues`.
 - **Look at the result.** When the project can be rendered, render it after a change and look at both themes, a narrow width, and reduced motion where they apply. Code that reads right can still look wrong.
 
+## When the guard speaks
+
+Keyline may run as a live guard: after you edit a UI file, a hook checks that file with `check.mjs` and adds a note beside the tool result that starts **`Keyline guard:`**, listing errors and warnings as `file:line severity rule (law): message`. That note is Keyline's detector, not the user, and it's about the edit you just made. Before moving on:
+
+- **Fix each finding now**, in the project's own tokens — the message names the fix. Errors first. Fixing means changing the code, not adding an ignore comment.
+- **A deliberate exception** — a decision recorded in `DESIGN.md`, or a case the rule can't see — gets `keyline-ignore <rule>: <reason>` in a comment on that line, with a real reason. Say which you ignored and why.
+- **A finding outside your task** (the file was already like that): fix it if it's small and in what you touched; otherwise mention it and leave it.
+- **Don't argue with it in a loop.** If a fix brings the same finding back twice, stop, say what you tried, and move on.
+
+The guard is off when `KEYLINE_GUARD=off` is set or `DESIGN.md` has a `| Guard | off |` row under `## Profile`; don't turn it off yourself unless the user asks.
+
 ## Where things are
 
 | Folder | Holds |
@@ -54,4 +65,4 @@ Paths in these files are relative to this skill's folder. In shell commands it i
 | `system/` | Setup: the canonical `roles.md`, the four `presets.md`, the `design-md.md` format, `detection.md` for each stack |
 | `domains/<domain>/` | Each domain's `guide.md` — laws, dials per preset, building, auditing, checklist — and its deeper references |
 | `glass/<domain>/` | The `glass` preset: modimihir.com's exact values, with drop-in tokens and components in `assets/` |
-| `scripts/` | `check.mjs` (the detector: 24 mechanical laws, `--json`, exit codes for CI), `scan.mjs` (token and value inventory) and `contrast.mjs` (measured contrast, translucency composited). Node 18+, no dependencies |
+| `scripts/` | `check.mjs` (the detector: 24 mechanical laws, `--json`, `--staged`, `--changed`, exit codes for CI), `guard.mjs` (the detector as a post-edit and pre-commit hook), `scan.mjs` (token and value inventory) and `contrast.mjs` (measured contrast, translucency composited). Node 18+, no dependencies |

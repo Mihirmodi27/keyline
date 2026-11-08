@@ -52,11 +52,51 @@ It reads CSS, Tailwind classes, inline styles, `<style>` blocks and CSS-in-JS, i
 
 Silence a line with a `keyline-ignore` comment on it or the line above, naming the rule if you like (`/* keyline-ignore type/uppercase */`); a whole file with `keyline-ignore-file`. Leave out paths with `--ignore src/content`.
 
-In CI:
+In CI, or on just what a branch changed:
 
 ```yaml
 - run: npx trykeyline check
+- run: npx trykeyline check --changed origin/main
 ```
+
+`--staged` checks only the files staged in git, and `--changed [base]` only the files changed since `base` (default `HEAD`), committed or not. Verdicts that depend on the whole project — whether anything reads `prefers-reduced-motion`, whether focus is styled anywhere — still come from the whole project.
+
+## Live guard
+
+The detector can also run while the agent writes. After every edit to a UI file — CSS, Sass, TSX, JSX, Vue, Svelte, Astro, HTML, or a `.ts` file holding styles or markup — Keyline checks that one file against your `DESIGN.md` and hands the errors and warnings straight back to the agent: up to eight, worst first, each with its line, rule, law and fix. The agent fixes them before it moves on, so slop never reaches a review. A clean file says nothing.
+
+**Claude Code plugin:** on already. The plugin carries a `PostToolUse` hook on Edit, Write and MultiEdit.
+
+**Claude Code, installed with npx:**
+
+```sh
+npx trykeyline guard --install
+```
+
+adds the same hook to `.claude/settings.json` (commit it, and the whole team gets it). `npx trykeyline guard --uninstall` takes it out.
+
+**Codex:** `npx trykeyline guard --install --tool codex` adds a `PostToolUse` hook to `.codex/hooks.json`; Codex asks you to trust the project's `.codex/` folder before it runs it. It reads the files out of `apply_patch`'s patch. Built to Codex's hook docs, but not yet run against a live Codex.
+
+**Any agent, through git:**
+
+```sh
+npx trykeyline guard --pre-commit
+```
+
+adds a pre-commit hook that checks the staged UI files and stops the commit on errors (warnings are shown, not fatal). It goes beside a hook that's already there, not over it. This is the guard for Cursor, Windsurf, Copilot, OpenCode and the rest; the agent sees the failure when it commits.
+
+Why not a post-edit hook for the others: Cursor's `afterFileEdit` hook names the file but can't send anything back to the agent, and its `postToolUse` hook, which can, doesn't document where an edited file's path is. Gemini CLI documents an `AfterTool` hook that could, but Google retired Gemini CLI for Antigravity CLI in June 2026. The guard script reads both payload shapes, so wiring either is a small change once it's documented.
+
+**Turning it off:**
+
+| For | Do |
+|---|---|
+| A session or a commit | `KEYLINE_GUARD=off` in the environment |
+| The project | A `\| Guard \| off \|` row under `## Profile` in `DESIGN.md` |
+| One file | A `keyline-ignore-file` comment in it |
+| One line | A `keyline-ignore <rule>: <reason>` comment on it |
+
+The guard never blocks an edit: a file it can't read, a payload it doesn't understand, or a bug of its own means silence, not a failed tool call.
 
 ## Presets
 

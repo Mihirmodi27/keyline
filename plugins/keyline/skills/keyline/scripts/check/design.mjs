@@ -1,7 +1,8 @@
 /**
  * What the detector takes from DESIGN.md: the preset (which turns some rules on
- * or off), the motion ladder and the z-index ladder. Everything else in the
- * file is for the agent; the detector only needs what changes a verdict.
+ * or off), the motion ladder, the z-index ladder, and whether the live guard
+ * runs (`| Guard | off |` under ## Profile). Everything else in the file is for
+ * the agent; the detector only needs what changes a verdict.
  */
 import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
@@ -15,7 +16,7 @@ function section(md, heading) {
 
 export function readDesign(root) {
   const name = existsSync(root) ? readdirSync(root).find((f) => f.toLowerCase() === "design.md") : null;
-  if (!name) return { found: false, preset: null, durations: null, roles: new Map(), zLadder: null };
+  if (!name) return { found: false, preset: null, durations: null, roles: new Map(), zLadder: null, guard: true };
   const md = readFileSync(join(root, name), "utf8");
   const headingLine = (h) => {
     const i = md.search(new RegExp(`^##\\s+${h}\\b`, "mi"));
@@ -55,8 +56,13 @@ export function readDesign(root) {
     for (const c of cells.slice(1)) for (const m of c.matchAll(/(?<![\w.#-])(-?\d+)(?![\w.%])/g)) zLadder.add(Number(m[1]));
   }
 
+  // `| Guard | off |` under ## Profile turns the live guard off for this project.
+  const guardRow = profile.split("\n").find((l) => /^\|\s*Guard\s*\|/i.test(l)) ?? "";
+  const guard = !/\b(off|no|false|disabled?)\b/i.test(guardRow.split("|").slice(2).join("|"));
+
   return {
     found: true,
+    guard,
     file: name,
     lines: { motion: headingLine("Motion"), layout: headingLine("Layout") },
     preset,
