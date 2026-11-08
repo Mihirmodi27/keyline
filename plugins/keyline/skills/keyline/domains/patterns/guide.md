@@ -35,13 +35,13 @@ Boundaries: how a label or figure is set is the type guide's; what colour danger
 
 ### 4. A confirmation says what is lost, in the system's own dialog
 
-**A confirmation states in plain words what will be lost, uses the product's standard dialog, and asks for proof of intent in proportion to the loss.** A one-off with a red icon circle and red heading reads as something other than the product asking (depth law 1). Proportion:
+**A confirmation states in plain words what will be lost, uses the product's standard dialog, and asks for proof of intent in proportion to the loss.** The dialog is the system's own (depth law 1). Proportion:
 
 - **Reversible** — no dialog; do it, and offer Undo in the toast.
 - **Irreversible, one item** — a dialog whose button repeats the verb.
 - **Irreversible and large** — a project, an account, a workspace — "Type DELETE to confirm", compared case-insensitively, the input focused on open (not Cancel), the action disabled until it matches, "Deleting…" while it runs, and the dialog held open until it succeeds or says why it failed.
 
-**One pattern everywhere**: deleting a project and deleting an account read the same. On close, focus returns to what opened it — a row, a menu item — which the dialog must be told, since it wasn't opened by its own trigger.
+**One pattern everywhere**: deleting a project and deleting an account read the same. On close, focus goes back to what opened it (depth law 12).
 
 ### 5. An agent's work is shown step by step, and approved where it happens
 
@@ -53,7 +53,7 @@ The conversation carries no avatar per message: the reader's turns sit right-ali
 
 **A streaming state — a live transcript, an answer being generated — shows committed text in ink and the phrase still forming muted, with a caret; keeps the newest line in view under a top fade; and lets the reader scroll back without being dragged down.** Words that may still change shouldn't look final; ink that rewrites itself reads as a glitch. Follow the bottom while the reader is there; once they scroll up, stop following and offer "Jump to latest". Screen readers hear committed segments only.
 
-**Paused means still**: the motion that stood for live stops (the motion guide), and the paused state offers what the reader wants next — the text so far, Copy, Resume. One "working now" signal per screen, and a live control turns into its action on hover and focus (level bars become a Stop square), so stopping is where the reader is already looking.
+**Paused means still** (motion law 1), and the paused state offers what the reader wants next — the text so far, Copy, Resume. One "working now" signal per screen; how a live control turns into Stop is the motion guide's.
 
 → Tool-call cards, inline approvals, conversation layout, follow-the-bottom and announcing: `domains/patterns/agents-and-live-states.md`
 
@@ -63,7 +63,7 @@ The conversation carries no avatar per message: the reader's turns sit right-ali
 
 ### 8. Few choices up front; the rest one step away
 
-**A launcher offers only the choices the task has, and a toolbar or a long list holds back what isn't needed every time.** Every option on the path of the most frequent action is something to read before starting: a record launcher asks one question with two answers — which project, or a personal note — not a form. Toolbar filters are icons with tooltips, not a text label on every control. A long admin list groups into collapsed bars, closed by default, each with a summary ("Admins 3 · Members 9"), and a search opens every group it matches.
+**A launcher offers only the choices the task has, and a toolbar or a long list holds back what isn't needed every time.** Every option on the path of the most frequent action is something to read before starting: a record launcher asks one question with two answers — which project, or a personal note — not a form. Toolbar filters are icons with tooltips, not a text label on every control. A long admin list groups into collapsed bars, closed by default, each with a summary of what the reader would open it to check ("Admins · 3 of 12 with access"), and a search opens every group it matches.
 
 **Hick's law** is why: the time to choose grows with the number of choices, so every option shown up front taxes the choice the reader came to make. **Progressive disclosure** is the cure — the common path visible, the rest one step away (layout law 11 keeps it in the markup). **Miller's law** says why grouping helps: people hold only a few chunks in mind at once, so a flat run of a dozen nav items or a 16-digit code reads as noise, where three groups of four, or `4242 4242 4242 4242`, read at a glance. Chunk long lists and long strings; don't treat "seven" as a cap that cuts what the product needs.
 
@@ -75,7 +75,7 @@ The conversation carries no avatar per message: the reader's turns sit right-ali
 
 **Items that move through stages get a board whose columns run in the order work moves, each headed by its status glyph; items placed in time get a week board with Week, 3 days and Day spans; the list stays as the second view of the same items.** The board makes the state of the work the layout; a list makes it a column to sort by. Both share data, filters and rows (layout law 8).
 
-On a working page the reader returns to daily, the view and span are remembered per page, with the switch visible in the page header, and the default wins where it is the point (folders open on folders) — layout law 9 owns the rule; list each page under `## Patterns`. Status changes by drag (law 11) and by the keyboard path (law 7).
+Whether the view and span are remembered is layout law 9; list each page that remembers under `## Patterns`. Status changes by drag (law 11) and by the keyboard path (law 7).
 
 ### 11. A move happens now and rolls back visibly
 
@@ -152,9 +152,9 @@ The `glass` preset carries no pattern dials; take them from the preset nearest t
 
 Most product feedback is one step: "one step lighter", "25% smaller", "to 16px". The craft is making exactly that change, everywhere it applies, and writing it down.
 
-1. **Make the change asked, at the size asked.** Move one step on the existing ladder; don't re-pick the system. "Make it 25% smaller" keeps the count per row unless more per row was asked for.
+1. **Make the change asked, at the size asked.** Move one step on the existing ladder; don't re-pick the system. The count per row stays unless more per row was asked for.
 2. **After any change to a shared rule, sweep the product** — every route, every component on that rule — **and report what moved.** Partial updates are the commonest bug: some screens took the new value, some didn't. Ask before calling a page done, and never "fix" a page the owner has said is theirs.
-3. **Record the decision** under `## Decisions`, dated and marked user decision, client feedback or law, newest first, replacing whatever it supersedes (format: `system/design-md.md`).
+3. **Record the decision** under `## Decisions` (format: `system/design-md.md`).
 4. **Study reference products for how information is structured, not how it looks**: where icons are and aren't, where tags appear, how tables are built, what is boxed and what isn't, what aligns with what.
 5. **Wireframe a new page type before building it**, and share the wireframe.
 6. **Review on a preview harness**: the real app on mock data, every route reachable without a backend, so a whole-product sweep or audit takes minutes.

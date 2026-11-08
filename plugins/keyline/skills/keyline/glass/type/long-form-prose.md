@@ -1,6 +1,6 @@
 # Long-form prose
 
-How the reading half is set. Prose is the one place a reader holds a paragraph in view for seconds at a time, so it gets looser leading and spacing than anything else on the site — inside the *same* 640px measure, at the *same* two sizes.
+How Glass sets the reading half: looser leading and spacing than anything else on the site, inside the *same* 640px measure, at the *same* two sizes. The blocks, their axes and the rules they keep are in `domains/type/prose-and-emphasis.md`; this file holds Glass's values and code.
 
 ## The container sets the register
 
@@ -8,13 +8,13 @@ How the reading half is set. Prose is the one place a reader holds a paragraph i
 <div className="text-[14px] leading-[1.75] text-gray-1000">
 ```
 
-One wrapper carries size, leading and colour; blocks inherit and override only what differs. Prose body is 14/1.75: a UI paragraph's size, noticeably more open (1.75 vs 1.55).
+Prose body is 14/1.75: a UI paragraph's size, noticeably more open (1.75 vs 1.55).
 
 Why 1.75: a 576px text column at 14px holds roughly 85–95 characters a line, past comfortable, and long lines need more leading for the eye to find the next line's start. A shorter measure could pull it back toward 1.6.
 
 ## The reading column is two sizes
 
-16 for headings, 14 for everything a reader reads. Below the headings size does no work, so the blocks sharing 14px separate on other axes, each a *different* one or they collide:
+16 for headings, 14 for everything a reader reads. The blocks sharing 14px each own a different signal (domain law 4):
 
 | Block | Size | The signal |
 |---|---|---|
@@ -24,31 +24,25 @@ Why 1.75: a 576px text column at 14px holds roughly 85–95 characters a line, p
 | Pull quote | 14 | a 3px rounded bar and a 16px indent |
 | Note | 13 | a 1px rule, the faint tier, and a step down in size |
 
-No two rows share a mechanism, so a sixth block type needs an unused axis first.
+## Keyline and note
 
-## Two block types worth stealing
+Both came from one diagnosis: a body of writing that was 114 paragraphs and almost nothing else. What each is for, and the build check that keeps them honest: `domains/type/prose-and-emphasis.md`, **Two block types worth having**.
 
-Neither is standard. Both came from one diagnosis: a body of writing that was 114 paragraphs and almost nothing else. Not too much content — **one texture.**
-
-**`keyline` — the one sentence a section is for.** Body size, weight 500, `my-9`. Authored by promoting a sentence out of a paragraph and deleting it there, which is the discipline that makes it work: *a section that gains a keyline gets shorter.* One per section, never two.
+**`keyline`** — body size, weight 500, `my-9`.
 
 ```tsx
 case "keyline":
   return <p className="reveal my-9 text-[14px] font-medium leading-[1.6] text-gray-1000">…</p>;
 ```
 
-**`note` — an aside set outside the argument.** A caveat, a scope limit, a piece of provenance. 13px, faint tier, a 1px left rule and 16px of indent.
+**`note`** — 13px, faint tier, a 1px left rule and 16px of indent.
 
 ```tsx
 case "note":
   return <p className="reveal my-7 border-l border-gray-alpha-300 pl-4 text-[13px] leading-[1.6] text-faint">…</p>;
 ```
 
-The value is what the type does to the writing: once qualifications have somewhere to go, the flow stops carrying ones it doesn't need.
-
-**The two rules must differ unmistakably.** The note's is 1px and the quote's 3px, with the type inside four steps apart; two indented rules on one page will otherwise be mistaken for each other.
-
-**If you add block types, validate them.** The content check here fails the build on a blank keyline or note, two keylines in one section, or a keyline swollen back into the paragraph it came from. A type that needs authoring discipline needs it enforced somewhere.
+The note's rule is 1px and the quote's 3px, with the type inside four steps apart, so the two indented rules can't be mistaken for each other.
 
 ## Block spacing
 
@@ -63,7 +57,7 @@ The value is what the type does to the writing: once qualifications have somewhe
 | Figure | `my-9` (36px) | |
 | List | `mb-6`, items `space-y-2` | Matches paragraph spacing so a list reads as one block. |
 
-**The asymmetry is the important part.** A heading with equal space above and below floats between two sections and belongs to neither; 40px above and 12px below, ~3.3:1, makes the heading and the paragraph beneath it one unit. The keyline is symmetric *because* it's a standalone claim, not an introduction.
+The heading's 40 above and 12 below, ~3.3:1, is the domain's asymmetric heading space; the keyline is its symmetric exception.
 
 ## Headings inside prose
 
@@ -84,23 +78,17 @@ It matches a page-level section heading and the detail page's own `<h1>`: three 
 </blockquote>
 ```
 
-The type matches the body around it, so **the bar is the entire signal**, which is why it's a real one. It used to be a 2px `gray-alpha-300` border, ten percent black, near invisible on a white page — survivable while the quote was also two steps larger than the body, not once the size step went.
+The type matches the body around it, so the bar is the entire signal: the 2px `gray-alpha-300` border it replaced is domain law 4's example of auditing what's left after a signal goes. Why a flex child with no vertical margin: `domains/type/prose-and-emphasis.md`, **Quotes**.
 
-**When you remove one signal, audit the ones you left in.** A decoration riding beside a size step was usually decorative in the literal sense, and now has to carry the whole distinction.
-
-- **A flex child, not a `border-left`.** A border can't be rounded on its own, and a squared-off 3px bar reads as a table rule rather than a quotation.
 - **`bg-gray-500`, from the grey ramp, not the alpha ramp.** It's a decorative mark on an opaque surface — see the Glass colour guide (`glass/color/guide.md`) on why decorative marks stay on the solid ramp.
-- **No vertical margin on the bar**, so flex's default `stretch` runs it the full height of the quote, citation included.
 
 Still absent: italic (globally disabled), quotation marks, background, colour step. Stepping the quote *down* to secondary, as earlier versions did, at body size just makes a de-emphasised paragraph.
 
-The citation goes quieter and explicitly kills the browser's italic:
+The citation goes quieter and explicitly kills the browser's italic (domain law 9):
 
 ```tsx
 <cite className="mt-2 block text-[13px] not-italic text-quiet">— {cite}</cite>
 ```
-
-`not-italic` is required because `<cite>` and `<blockquote>` carry UA italics that the global `em, i { font-style: normal }` rule doesn't cover.
 
 ## Figures
 
@@ -117,7 +105,7 @@ The citation goes quieter and explicitly kills the browser's italic:
 
 The aspect ratio sits on a wrapper so the box is reserved before the image loads. `ring-1` rather than a border, so the outline stays out of the box model and the corner radius stays exact.
 
-**The caption is the point of the figure, not a label on it**: what the thing was for, and which constraint shaped it. At the note/meta tier (13px, faint) it reads as apparatus; at body size it competes with the paragraph after it.
+**The caption is the point of the figure, not a label on it**: what the thing was for, and which constraint shaped it. It sits at the note/meta tier (13px, faint).
 
 ## Lists
 
@@ -125,9 +113,7 @@ The aspect ratio sits on a wrapper so the box is reserved before the image loads
 <ul className="mb-6 list-disc space-y-2 pl-5 marker:text-gray-500">
 ```
 
-The `marker:` variant is the detail worth stealing. A default bullet inherits the text colour, so at primary it's a row of dark dots pulling the eye down the left edge; at the quiet tier markers read as structure. Same for `list-decimal` — a quiet number is still legible.
-
-`space-y-2` (8px) between items against `mb-6` (24px) below: items relate more to each other than to the next paragraph, the heading asymmetry again.
+The `marker:` variant puts the domain's quiet marker (`domains/type/prose-and-emphasis.md`, **Lists**) on `gray-500`; the same goes for `list-decimal`.
 
 ## Hand-rolled bullets in UI context
 
@@ -146,9 +132,7 @@ A 3px dot at the quiet tier, offset `mt-[9px]` onto the first line's optical cen
 
 ## Emphasis in prose
 
-`**strong**` → weight 500 + primary colour, `*em*` → muted colour, no slant. In a 14/1.75 paragraph a 700 bold is a dark blot the eye lands on before the sentence; at 500 it registers on the second pass, where it belongs.
-
-**`<strong>` and the keyline are the same weight at the same size**, so a bolded clause can read as a keyline that failed to get its own line. Keep strong emphasis to a few words; anything longer wants to *be* a keyline.
+The mapping is §5 of `glass/type/guide.md`. **`<strong>` and the keyline are the same weight at the same size**, so a bolded clause can read as a keyline that failed to get its own line; keep it to a few words (domain law 9).
 
 ## Reveal on scroll
 
@@ -160,9 +144,7 @@ Every block carries `reveal`, so paragraphs fade up one by one as they enter the
 <p className="mt-2 text-[14px] leading-[1.55] text-muted">{dek}</p>
 ```
 
-Body size, muted, tighter leading. It was 17px, the ladder's one odd number, sitting between a 30px title and 16px prose; with both gone it separates on colour and leading alone.
-
-Muted keeps it from competing with the title; the tighter leading (1.55, against the body's 1.75 and the lead's 1.9) keeps it from reading as the first paragraph. **The dek and the lead are adjacent, at the same size, told apart only by leading and colour** — the tightest pairing in the system, and the first to check if a page starts to look undifferentiated.
+Body size, muted, tighter leading. It was 17px, the ladder's one odd number, sitting between a 30px title and 16px prose; with both gone it separates on colour and leading alone: 1.55, against the body's 1.75 and the lead's 1.9. Dek and lead are the domain's tightest pairing; check them first.
 
 ## Cover art and the measure
 

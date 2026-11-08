@@ -1,16 +1,14 @@
 # Theming
 
-## Why a data attribute, not `prefers-color-scheme`
+Glass's theme switch, persistence and crossfade, with the values it ships. The mechanism, the head script's four requirements, persistence, `color-scheme`, two states or three, and theme islands are in `domains/color/theming-mechanics.md`; this file holds what Glass does and why.
+
+## A data attribute, not `prefers-color-scheme`
 
 ```css
 @custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
 ```
 
-Tailwind v4 drives `dark:` off the OS media query by default, which is fine until a theme toggle makes the media query and the user's explicit choice two sources of truth. `data-theme` on `<html>` makes the toggle authoritative. Seed it from `prefers-color-scheme` on a first visit if you want the OS to matter; just don't let the media query be the *mechanism*.
-
-The `&:where(…)` wrapper keeps specificity at zero, so a `dark:` utility doesn't outrank an unprefixed one merely by carrying an attribute selector.
-
-The selector matches the element and its descendants (`[data-theme="dark"] *`), so a nested `data-theme="light"` island doesn't fully work: the ancestor's dark match still applies below it. For a permanently-light region inside a dark page (an embedded document preview, say), re-declare the custom properties on that container instead of nesting the attribute.
+Tailwind v4 drives `dark:` off the OS media query by default; Glass has a toggle, so `data-theme` on `<html>` is the mechanism (domain law 9). For a permanently-light region inside a dark page, re-declare the custom properties on its container rather than nesting the attribute (`domains/color/theming-mechanics.md`, **Theme islands**).
 
 ## No flash of wrong theme
 
@@ -29,16 +27,7 @@ The selector matches the element and its descendants (`[data-theme="dark"] *`), 
 </head>
 ```
 
-Four requirements, all load-bearing:
-
-- **Inline.** An external script is a network round trip, and the page paints during it.
-- **Blocking.** No `async`, no `defer`, no `type="module"` (which defers implicitly): it must run before the first paint.
-- **Before the stylesheet**, so the attribute is set when the CSS applies.
-- **In `try/catch`.** `localStorage` throws in Safari private browsing and under some cookie policies, and an uncaught throw here blocks every later script.
-
-This duplicates a few lines of your theme module. Accept it, and leave a comment in each place pointing at the other: the alternative is a full-page white flash on every load for every dark-mode user, the most noticeable bug a themed site can have.
-
-In SSR frameworks, render the attribute server-side from a cookie, which removes the flash entirely. `localStorage` isn't readable on the server, so a cookie is the only way into the initial HTML.
+Inline, blocking, before the stylesheet, in `try/catch`; it duplicates a few lines of the theme module, with a comment in each place pointing at the other (`domains/color/theming-mechanics.md`, **No flash of wrong theme**).
 
 ## Persistence and the crossfade
 
@@ -71,15 +60,9 @@ export function setThemeChoice(choice: ThemeChoice): void {
 }
 ```
 
-Three functions for three callers — `getThemeChoice` for initial React state, `applyTheme` for the DOM write, `setThemeChoice` for the user action — which is what lets the toggle animate while the initial paint doesn't.
-
-**Every `localStorage` access is wrapped.** Reads return a default; writes fail silently. A preference that doesn't persist is a minor annoyance; a thrown exception is a broken page.
-
-**The comparison is `=== "dark"`, not a parse.** Anything unrecognised — a stale value, a corrupted entry, a value from an older version of the site — falls through to light.
+Three functions for three callers — `getThemeChoice` for initial React state, `applyTheme` for the DOM write, `setThemeChoice` for the user action (`domains/color/theming-mechanics.md`, **Persistence**). The comparison is `=== "dark"`, so anything unrecognised falls through to light.
 
 ### The 440ms class
-
-The crossfade is a universal colour transition, added for one interaction and then removed:
 
 ```css
 @media (prefers-reduced-motion: no-preference) {
@@ -93,17 +76,11 @@ The crossfade is a universal colour transition, added for one interaction and th
 }
 ```
 
-**Why temporary.** Left in the stylesheet, this rule applies to every hover on the site: every link, nav icon and row becomes a 400ms colour fade, and the interface goes sluggish. It lives for 440ms (400ms plus a 40ms margin so nothing is cut off), during the one interaction that needs it.
+Why it's temporary, `!important`, inside `no-preference` and lists the pseudo-elements: `domains/color/theming-mechanics.md`, **The crossfade on toggle**. Glass's values:
 
-**Why `!important`.** For those 440ms it has to beat every component's own `transition-colors duration-150`; without it, components fade at their own speed and the crossfade fragments.
-
-**Why plain `ease`, not the house curve.** The house easing overshoots. Overshoot on a position reads as momentum; on a colour it sends the background past its target and back — a wobble in the light. Colour has no mass.
-
-**Why 400ms.** The longest duration in the system, for its largest change: every surface, text colour, border, icon fill and shadow at once.
-
-**Why inside `no-preference`.** Opt-in, not opt-out: reduced-motion users still get the theme change, instantly.
-
-**Why `::before` and `::after`.** `*` doesn't match pseudo-elements, so decorative elements built with them would snap while everything else fades.
+- **440ms**: 400ms plus a 40ms margin so nothing is cut off. For those 440ms it has to beat every component's own `transition-colors duration-150`.
+- **400ms**: the longest duration in the system, for its largest change — every surface, text colour, border, icon fill and shadow at once.
+- **Plain `ease`, not the house curve.** The house easing overshoots, and on a colour that sends the background past its target and back — a wobble in the light.
 
 ## `color-scheme`
 
@@ -112,43 +89,15 @@ The crossfade is a universal colour transition, added for one interaction and th
 :root[data-theme="dark"] { color-scheme: dark; }
 ```
 
-Not decorative. It re-tints the UA-rendered surfaces your CSS can't reach:
+What it re-tints, and the white scrollbar track that shows it's missing: `domains/color/theming-mechanics.md`, **`color-scheme`**.
 
-- Scrollbar tracks and thumbs
-- Form control chrome (checkboxes, radios, select arrows, date pickers)
-- The default canvas colour, before your CSS loads
-- `<input>` autofill backgrounds
-- Text selection defaults
+## Two states, not three
 
-Skip it and the telltale is a white scrollbar track on a black page, which reads as broken dark mode more than almost anything.
-
-## Two states or three?
-
-The reference implementation ships **two** explicit modes, Light and Dark, with Light as the default. No "System."
-
-For two: a theme control should be predictable, and "System" changes the theme when the OS crosses a sunset threshold, which surprises someone who picked it from the site's own menu. Two `aria-pressed` buttons are also simpler to build and explain than a tri-state. For three: following the OS is the more considerate first visit, and some users want the site to follow their day. With three, the shape is:
-
-```ts
-type ThemeChoice = "light" | "dark" | "system";
-
-function resolve(choice: ThemeChoice): "light" | "dark" {
-  if (choice !== "system") return choice;
-  return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
-}
-```
-
-You then owe two things: the head script must resolve `system` too (so it needs the `matchMedia` call inline), and a live listener must keep the page following the OS *while open*:
-
-```ts
-window.matchMedia("(prefers-color-scheme: dark)")
-  .addEventListener("change", () => { if (getThemeChoice() === "system") applyTheme(resolve("system")); });
-```
-
-Skipping the listener is the common bug: the theme follows the OS on load and then stops, which is worse than not offering the option.
+The reference implementation ships **two** explicit modes, Light and Dark, with Light as the default. No "System": a theme control should be predictable, and "System" changes the theme when the OS crosses a sunset threshold, which surprises someone who picked it from the site's own menu. Two `aria-pressed` buttons are also simpler to build and explain than a tri-state. What three would cost — the head script resolving `system`, and a live listener — is in `domains/color/theming-mechanics.md`, **Two states or three**.
 
 ## Where `dark:` variants are still needed
 
-Because the tokens re-tint, most components need no theme branching. The exceptions:
+Most components need no theme branching; the test for when one does is in `domains/color/theming-mechanics.md`. Glass's cases:
 
 **Multi-layer shadows.** A shadow whose *structure* changes between themes (the inset highlight weakening while the ambient shadows strengthen 10×) can't live in one colour token. Extract it to a shared constant:
 
@@ -161,5 +110,3 @@ const SHADOW =
 **Ring/border colours as alpha of a specific hue.** `ring-black/[0.06] dark:ring-white/[0.08]` encodes what the alpha ramp does, where the utility won't take a token. Prefer `gray-alpha-*` where you can; use the pair where you can't.
 
 **Anything two-toned by design.** The frosted folder pocket uses `border-white/60 dark:border-white/[0.08]`: a bright top edge that must nearly vanish on dark, where it would read as a glowing line.
-
-The test: **can this be one token whose value changes?** If yes, make it a token. If it needs a different *structure* per theme, it needs a variant.

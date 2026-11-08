@@ -55,17 +55,17 @@ Top to bottom, every page in the shell has the same parts, so a reader learns on
 | Part | Shape |
 |---|---|
 | Header bar | About 44px; breadcrumb at the start, the page's own actions at the end as quiet ghost buttons; the page title at the nav's size, not a display heading |
-| Stat strip | 3–4 figures under the header, parted by hairlines, set at `type.title` or one step above; each figure filters the table below to what it counts, and shows when it's the active filter |
+| Stat strip | The figures under the header (patterns law 12 picks which), parted by hairlines, at the type guide's figure size; each filters the table below to what it counts, and shows when it's the active filter |
 | Toolbar | Search, then filters as icons with tooltips — a text label on every filter crowds the bar — then the view switch; on touch the filters open as a labelled sheet |
 | Content | The table, board or list, at the panel's full width |
 
 **The table.** One shared component on every page: `radius.card` in a hairline frame, a tinted header row with `text.primary` labels, rows around 44px, hairlines between rows only (no column rules), a hover wash. A table that doesn't use it is a second table style.
 
-**The group bar.** One shared component: a tinted band about 36px tall holding a chevron, the group's name, its count and an add action, sticky under the header row while its group scrolls. Long administrative tables start with every group closed, each bar carrying a summary ("Admins 3/12 · Members 9/12"); a search opens every group it matches.
+**The group bar.** One shared component: a tinted band about 36px tall holding a chevron, the group's name, its count and an add action, sticky under the header row while its group scrolls. How long lists open, summarise and search is patterns law 8.
 
 **Forms.** A form or settings page caps at `measure.form`, about 640–760px, left-aligned in the panel: at the panel's full width a switch ends up a screen's width from its label. The field that decides the rest goes first, at the form's full width — a category before the free text that depends on it.
 
-**Overviews and dashboards.** Order the sections overview, trends, action items, and cut what nobody acts on — a recent-activity feed is the usual casualty, unless the product or its brief requires one. A long page is fine when the order is right. A scoped overview, one project's, is the global overview's layout over filtered sources, never a second layout, so the two can't disagree. Wireframe a new page type and share it before building: it is cheaper to argue about.
+**Overviews and dashboards.** What a dashboard holds and in what order is patterns law 12; on the page, each of its sections is parted from the next by a full-bleed hairline (layout law 3).
 
 ### Expressive — bands with a measure inside
 
@@ -107,7 +107,18 @@ Ratios cluster between 2:1 and 4:1. A form with `gap: 16px` on everything puts e
 
 ## Section rhythm
 
-**Peers get symmetric padding**: sections on a home page or a dashboard are siblings, so each gets the same top and bottom space. **A change of subject gets asymmetry and, sometimes, a rule**, with more space above the rule than below, because the content below belongs to the heading that follows:
+Layout law 3's table picks each boundary's divider; this is how each is built. **Peers get symmetric space**: sections on a dashboard or an admin page are siblings, so each gets the same space above and below its divider. **A change of subject gets asymmetry**, with more space above the rule than below, because the content below belongs to the heading that follows.
+
+Peer sections of a working page — a full-bleed hairline, none after the last:
+
+```css
+.section { margin-inline: calc(var(--gutter) * -1); padding: var(--space-section) var(--gutter); }
+.section:not(:last-child) { border-bottom: var(--hairline-chrome) solid var(--border-divider); }
+```
+
+The negative margin lets the line reach the panel's edges while the content keeps its gutter; a line that stops at the gutter reads as a rule under one section rather than a boundary between two.
+
+A change of subject in a reading column — a measure-wide rule, the first section without one:
 
 ```css
 .major-section {
@@ -118,7 +129,15 @@ Ratios cluster between 2:1 and 4:1. A form with `gap: 16px` on everything puts e
 .major-section:first-child { border-top: 0; padding-top: 0; }
 ```
 
-The first section has nothing above it to separate from, so it takes no rule. A short closing block that reads as a coda follows on without one; ruling it off promotes it to a peer and flattens the page. A band — a logo strip, a stat band — may keep the rules above and below it: they mark it as a band, not a change of subject. Decide peer or continuation in the layout code beside the sections, so it applies to whichever subset is present, and never expose it as a setting — someone will turn every rule on.
+A settings group — a panel with its own save:
+
+```css
+.settings-group { border: var(--hairline-object) solid var(--border-default); border-radius: var(--radius-card); padding: var(--space-group); }
+.settings-group + .settings-group { margin-top: var(--space-group); }
+.settings-group > .row + .row { border-top: var(--hairline-chrome) solid var(--border-divider); }
+```
+
+In prose, a short closing block that reads as a coda follows on without a rule; ruling it off promotes it to a peer. A band — a logo strip, a stat band — keeps the edges that mark it as a band. **Decide the kind of each boundary in the layout code beside the sections**, so it applies to whichever subset is present, and never expose it as a setting: someone will switch every rule on, or every rule off.
 
 ## Page padding and chrome clearance
 

@@ -27,17 +27,31 @@ Non-prose content — an image wall, a data table or a diagram at `measure.wide`
 
 This is the law of **proximity**: things near each other are read as one group before anything else about them is seen, so a gap that doesn't match the grouping overrides every other cue.
 
-**Symmetric spacing is right only between peers.** **A rule marks a change of subject, not every boundary** — the Glass home page rules off its three substantial sections and lets the two that read as a coda follow on — or the page flattens into equal slabs. A band — a logo strip, a stat band — may keep the rules that mark it as a band. That judgement lives in the layout code beside the sections, never in a setting someone can switch on everywhere. Spacing values come from roles — `space.tight`, `space.group`, `space.section`, the heading pair — on one base unit, with half-steps where a ratio needs them; a one-off `margin-top: 37px` is either a missing role or a mistake, and review should be able to tell which.
+**Symmetric spacing is right only between peers.** Whether the gap between two sections is enough on its own, or needs a line or a panel, is law 3. Spacing values come from roles — `space.tight`, `space.group`, `space.section`, the heading pair — on one base unit, with half-steps where a ratio needs them; a one-off `margin-top: 37px` is either a missing role or a mistake, and review should be able to tell which.
 
 **Clutter is a spacing problem before it is a colour or type one.** A screen that reads as cluttered or "randomly padded" has gaps that don't group: fix the gaps, the padding and the order of tiers first, and only then touch colour or weight. Inside a card the tiers part by space — the meta line, `space.tight`, the title, `space.group`, the details — not by rules.
 
 → Spacing ladders per preset, section rhythm, page padding and chrome clearance, viewport units: `domains/layout/measure-and-rhythm.md`
 
-### 3. Sections stack; a mosaic of boxes is not a layout
+### 3. Sections stack, and every boundary between them can be seen
 
-**A page is its sections stacked in reading order — or a content column beside a rail — each opened by its heading. A grid of cards is for a collection of like objects, never for arranging a page's unlike sections.** A bento mosaic sizes each box to fill the mosaic rather than fit its content, turns reading order into a puzzle, and gives every region its own edge, padding and radius (depth law 2). The layout pass decides whether something is boxed; the depth pass confirms it and builds the surfaces that remain. Figures are the commonest case: a set of stats is one row, each figure over its label, parted by vertical hairlines, not a tile per figure; the row wraps and stacks cleanly where tiles become a column of boxes. Where the figures count what the table below holds, they are also its filter. Boxed figures are a decision to record, and the boxes stay quiet: no hover lift, no icon tile, no more padding above than beside.
+**A page is its sections stacked in reading order — or a content column beside a rail — each opened by its heading, and the reader can see where one ends and the next begins without reading. A grid of cards is for a collection of like objects, never for arranging a page's unlike sections.** A bento mosaic sizes each box to fill the mosaic rather than fit its content, turns reading order into a puzzle, and gives every region its own edge, padding and radius. Unboxing that mosaic is half the fix; the other half is putting back a boundary, or the sections run together into one long scroll of equal weight.
 
-**Common region is real, and a box is its last resort.** A shared boundary does make things read as one group, and strongly enough to beat proximity — which is why boxing everything erases the grouping it was meant to show. Reach for the quietest device that holds the group: space first (law 2), then a tint behind it or a hairline round it, and a card only when the group is one object the reader acts on (depth law 2).
+**What divides two sections is chosen by what they hold**, from this table — the one place Keyline decides whether a region is boxed (the depth guide builds whatever surface it gets):
+
+| The sections | The divider |
+|---|---|
+| Peer regions of a working page — a dashboard's overview, trends and action items; an admin page's bands; a record's detail groups | A full-bleed hairline (`hairline.chrome` in `border.divider`) between each, running to the panel's edges, with `space.section` above and below; none after the last |
+| Unlike regions within one section — a chart over the table it summarises, content beside its rail | A hairline between them: horizontal, or vertical and centred in the gap beside a rail |
+| Prose sections in a reading column — an article, docs, an essay | Space and the heading pair (law 2); a measure-wide rule only at a change of subject — an appendix, the author block, related reading — never at every heading |
+| Groups of settings or form fields that save or reset together | A panel each: a hairline frame at `radius.card`, no shadow, its title and one line of description at the top, its save action inside it |
+| A landing page's sections | Space at the section gap; a section of another kind — a logo strip, a testimonial, the closing call to action — becomes a full-bleed tinted band, and the band's edges are the divider |
+| Sections on a tinted page ground — a dashboard whose page is `surface.subtle` with its regions as surfaces on it | Each region is a surface (`elevation.flat` or `raised` on `surface.raised`, depth law 1); the ground between them is the divider, so no lines |
+| Items in a collection | Hairlines between rows, or a grid of like cards — not a section boundary |
+
+**An existing design's divider stays.** Improving a design whose sections are panels keeps the panels and makes them quieter — one edge, nothing boxed inside, no shadow on what doesn't float — rather than unboxing it into a page that runs together. **One device per kind of boundary across the product** (similarity): lines between some peer sections and space between others reads as unfinished. **The test is a squint**: blur a screenshot until the text goes, and each section should still read as its own block. Where two run together, move one device up — space, then a line, then a band or a panel — and where the page reads as stripes or a stack of boxes, move one down.
+
+**Common region is real, which is why boxes are scarce.** A shared boundary makes things read as one group strongly enough to beat proximity, so boxing every region erases the grouping it was meant to show. Inside a section, the quietest device that holds a group wins: space (law 2), then a tint or a hairline, and a card only for one object the reader acts on (depth law 2). Figures are the commonest case: a set of stats is one row, each figure over its label, parted by vertical hairlines, not a tile per figure; the row wraps and stacks cleanly where tiles become a column of boxes. Where the figures count what the table below holds, they are also its filter. Boxed figures are a decision to record, and the boxes stay quiet: no hover lift, no icon tile, no more padding above than beside.
 
 The quiet devices carry the rest, one job each, and **each has one style across the product** — two table styles or two group-label styles read as two products stitched together. Which style is a dial:
 
@@ -97,7 +111,7 @@ The law binds concentric corners only: an inner corner tucked inside the outer o
 | `z.raised` | 10 | A hovered or focused item |
 | `z.below` | −10 | A highlight behind content |
 
-A negative layer needs an `isolation: isolate` parent, and **a `transform`, `filter`, `perspective`, `contain` or `will-change` on an ancestor traps `position: fixed` descendants inside it** — check every ancestor before reaching for a higher number.
+A negative layer needs an `isolation: isolate` parent, and **a `transform`, `filter`, `backdrop-filter`, `perspective`, `contain` or `will-change` on an ancestor traps `position: fixed` descendants inside it** — check every ancestor before reaching for a higher number.
 
 → Radius ladders and hairline weights per preset, nesting worked through, stacking-context techniques: `domains/layout/radius-lines-and-layers.md`
 
@@ -109,19 +123,19 @@ A negative layer needs an `isolation: isolate` parent, and **a `transform`, `fil
 
 ### 9. A view choice is about the thing, so it doesn't persist by default
 
-**When the reader can switch between presentations of one collection, the choice resets on arrival unless you can name why it shouldn't, and the switch carries the reader's position across.** Persist preferences about the *reader* — theme, sound, motion, density — not about a *thing*, or readers land in a mode picked weeks ago for another collection and don't remember choosing it; the Glass galleries open on the wall every time, because the whole collection is what you want on arrival. A product's saved view — a board grouped by assignee, a filtered table — is the legitimate exception: persist it as a named, visible thing and record the decision, never as a toggle that silently turns sticky. So is board or list on a working page the reader returns to daily: persist it per page, the switch always visible in the page header, and let the default win where the default is the point. A second view shows how the collection moves — a board whose columns run in the order work moves, a week board for work in time — with the list as the other. On the switch, open the incoming view on the item nearest the viewport centre; leaving a grid at item 60 and arriving at item 1 is worse than not switching.
+**When the reader can switch between presentations of one collection, the choice resets on arrival unless you can name why it shouldn't, and the switch carries the reader's position across.** Persist preferences about the *reader* — theme, sound, motion, density — not about a *thing*, or readers land in a mode picked weeks ago for another collection and don't remember choosing it; the Glass galleries open on the wall every time, because the whole collection is what you want on arrival. A product's saved view — a board grouped by assignee, a filtered table — is the legitimate exception: persist it as a named, visible thing and record the decision, never as a toggle that silently turns sticky. So is board or list on a working page the reader returns to daily: persist it per page, the switch always visible in the page header, and let the default win where the default is the point. Which second view a collection gets is patterns law 10. On the switch, open the incoming view on the item nearest the viewport centre; leaving a grid at item 60 and arriving at item 1 is worse than not switching.
 
-### 10. Owner-curated content disappears when empty; user data gets an empty state that teaches
+### 10. Owner-curated content disappears when empty
 
-**When a collection the site's owner curates is empty, its route, navigation entry, section and any divider around it all go — derived from one flag. When the data is the user's own, the empty state is the feature's first screen and must teach it.**
+**When a collection the site's owner curates is empty, its route, navigation entry, section and any divider around it all go — derived from one flag.** When the data is the user's own, the reader can act, so it gets an empty state instead (patterns law 9).
 
-"No posts yet" on a portfolio publishes an absence to visitors who can do nothing about it: an admission, not information. Navigation, router, section list, sitemap and metadata all read the one flag, because which routes exist is content, not routing; sections are filtered before dividers are placed, and an emptied route redirects somewhere real, not to a 404. An empty inbox is the opposite: the user can act, so say what goes here and why, and offer the one action that creates the first item. **"Empty because new" and "empty because filtered" are different states**: the filtered one names the filter and offers to clear it. At every count the layout looks deliberate: one or two items in a three-up grid stay item-sized, not stretched.
+"No posts yet" on a portfolio publishes an absence to visitors who can do nothing about it: an admission, not information. Navigation, router, section list, sitemap and metadata all read the one flag, because which routes exist is content, not routing; sections are filtered before dividers are placed, and an emptied route redirects somewhere real, not to a 404. At every count the layout looks deliberate: one or two items in a three-up grid stay item-sized, not stretched.
 
 → Forks and the touch audit, container breakpoints, reader-chosen views and which a collection gets, gating code for route tables and file-based routers, empty-state anatomy: `domains/layout/forks-gating-and-disclosures.md`
 
 ### 11. A disclosure hides its content; it doesn't unmount it
 
-**Collapsed content stays in the served markup — a native `<details>`, or animated to zero height with `inert` and `aria-hidden` — and is unmounted only when it is genuinely expensive or genuinely absent**, because content that exists only after a click is lost to crawlers, find-in-page and text export. `inert` makes keeping it safe: without it, collapsed content is still tabbable and announced, so a keyboard user tabs into invisible prose and a screen reader reads a section shown as closed. `aria-hidden` alongside covers engines without `inert`; `display: none` can't be animated, so it's no answer where the close is. Prefer `<details>` wherever the animation allows. A menu's wrapper stays mounted while its panel unmounts, so `aria-controls` always resolves. A collapsed group's bar carries a summary of what it holds, so closed isn't blind, and a search opens every group it matches.
+**Collapsed content stays in the served markup — a native `<details>`, or animated to zero height with `inert` and `aria-hidden` — and is unmounted only when it is genuinely expensive or genuinely absent**, because content that exists only after a click is lost to crawlers, find-in-page and text export. `inert` makes keeping it safe: without it, collapsed content is still tabbable and announced, so a keyboard user tabs into invisible prose and a screen reader reads a section shown as closed. `aria-hidden` alongside covers engines without `inert`; `display: none` can't be animated, so it's no answer where the close is. Prefer `<details>` wherever the animation allows. A menu's wrapper stays mounted while its panel unmounts, so `aria-controls` always resolves. A collapsed group's bar carries a summary and opens to a search (patterns law 8).
 
 ### 12. Structure is accessibility, and it's decided with the layout
 
@@ -132,7 +146,7 @@ A negative layer needs an `isolation: isolate` parent, and **a `transform`, `fil
 - **Heading levels follow structure, not size.** Two headings at one size can legitimately be `h3` and `h4`; never pick a level for its default style.
 - `scroll-margin-top` on every anchor target, matched to the scroll spy's reading line, or a jump lands above the line and the contents highlights the previous section.
 - `aria-current` on the active row, `aria-pressed` on toggles, `aria-expanded` and `aria-controls` on disclosure and menu triggers; decorative spans `aria-hidden`; in-page links as real anchors with the handler layered on top.
-- Print is a presentation: chrome hidden and every scroll-revealed element forced visible, or the page prints blank.
+- Print is a presentation: chrome hidden; scroll-revealed content forced visible per motion law 11.
 
 ### 13. A target is as big as the pointer needs, and placed where the pointer already is
 
@@ -153,16 +167,15 @@ Distance is the other half. A menu opens where it was clicked; a dialog's primar
 | `target.min`, fine pointer / touch | 24 / 44px | 24 / 44px | 24 / 48px |
 | `space.tight` / `space.group` / `space.section` | 8 / 16–24 / 48–72px | 4–8 / 12–16 / 24–32px | 8–12 / 24–32 / 96–160px |
 | Heading pair ratio, above : below | 3:1–4:1 | 2:1–3:1 | 3:1–5:1 |
-| Rules between sections | Only at a change of subject | Headings and space separate sections; hairlines between rows and under table heads; no panel round a section | Surface or colour bands; rules rare, bar those that mark a band |
+| Section divider values (law 3's table picks the device) | Rule 1px, measure-wide; `space.section` 48–72px either side | Hairline 0.5px, full-bleed; `space.section` 32px either side; settings panels in a 0.5px frame | Bands full-bleed, tint one step off the page; rules, where used, 1px |
 | Tables and group labels | No frame; label over a rule | One shared frame with a tinted header row; one tinted, sticky group bar | No frame; label over a rule |
-| Stats | One hairline-parted row | A strip under the page header whose figures filter the table; figures at `type.title` or one step above | One row; figures may run large |
+| Stats | One hairline-parted row | A strip under the page header whose figures filter the table | One row |
 | Page top space | 80–112px; ≈ 48–64px at phone widths | 16–24px under the page's header bar | Set by the hero; without one, as editorial |
 | Radius: `small` / `control` / `card` / `container` | 4 / 8 / 12 / 16px | 4–6 / 8 / 12 / 16px | Either 0 throughout, or 8 / 12 / 20 / 28px |
 | Corner shape | `superellipse(1.5)` as enhancement | `superellipse(1.5)` as enhancement | Any, applied globally; `superellipse(1.5–2)` when round |
 | `hairline.chrome` / `hairline.object` / `rule.emphasis` | 0.5 / 1 / 2px | 0.5 / 0.5 / 2px, divider a colour step lighter | 1 / 1–2 / 3–4px |
 | Breakpoints | 2–3, on the window; the third where the header's links stop fitting | 3, on containers | 3–4, on the window |
 | Rail appears at | `measure.reading` + 2 × (rail + gap) + gutters ≈ 1200–1280px | Always a region; collapses at `bp.shell` | Rarely has rails |
-| Rungs on the z ladder | ≈ 7 | 8–9 (adds toasts, stacked modals) | ≈ 7 |
 
 The `glass` preset takes its values from `glass/layout/`.
 
@@ -196,7 +209,7 @@ The grid is a set of edges to align to, not a set of boxes. A block spans whole 
 2. **Set the measure from the type**: a character count from the dials for `family.text` at `type.body`, resolved to a width by measuring the font (a 16px sans averages about 8px per character, so 70 characters ≈ 560px) or in `ch`, which runs wider than an average letter. Check it at the narrowest viewport minus two `gutter`s with the project's longest `type.title`.
 3. **Derive the frame.** With a rail, `measure.frame` = `measure.reading` + 2 × (`measure.rail` + gap) + 2 × `gutter`, and `bp.rail` is that width; for a shell, set the region widths and where the inspector, then the nav, collapses.
 4. **Build spacing from ratios**: the base (4px) and `space.section`, the heading pair at the preset's ratio, then `space.tight` and `space.group` so every group's inner gap is at most half its outer one.
-5. **Stack the sections**: each a heading and its content on the page, figures in hairline-parted rows; list the things that are single objects, which alone get a card (the depth guide). Pick the one table style and the one group-label style for the preset.
+5. **Stack the sections and pick each boundary's divider** from law 3's table, one device per kind of boundary — or the one the existing design already uses: each a heading and its content, figures in hairline-parted rows; list the things that are single objects, which alone get a card (the depth guide). Pick the one table style and the one group-label style for the preset.
 6. **Build the radius ladder inward** from `radius.container` through every concentric nesting (container → control → avatar), subtracting padding and snapping; anything inset past the outer radius takes the rung for its size. **Set the corner shape** from the dial in the same step: under editorial and product, `corner-shape: superellipse(1.5)` on everything, with pills and circles kept `round` (the snippet in `radius-lines-and-layers.md`). It costs one rule and is what makes rounded corners read as squircles rather than boxes.
 7. **Assign the three line jobs** per the preset, drawn as borders; no divider outranks its object's edge, and a frame matches the dividers inside it.
 8. **Write the z ladder** from law 7, dropping unused rungs and keeping the gaps.
@@ -214,14 +227,14 @@ Start from the setup scan's frequencies for measures, spacing, radii, z-index an
 |---|---|---|
 | 1 | Distinct `max-width` / `max-w-*` on prose templates; prose in full-width containers; product pages setting their own width or outer padding | Measures by route |
 | 2 | Headings with equal margins or a ratio under 2:1; one-off spacing values; rules parting a card's tiers | Ratio per heading style; strays with counts |
-| 3 | Card grids arranging unlike sections; a tile per stat, or stat boxes that lift or hold icon tiles; tinted strips that aren't group controls; more than one table or group-label style, or the preset's other one; boxed tab rows; more than one chip shape | Per screen: each box and what it holds; table, group-label and chip styles with counts |
+| 3 | Sections that run together under a squint, or a page of stripes and boxes; peer sections divided by more than one device; card grids arranging unlike sections; existing panels unboxed; a tile per stat, or stat boxes that lift or hold icon tiles; tinted strips that aren't group controls; more than one table or group-label style, or the preset's other one; boxed tab rows; more than one chip shape | Per screen: each box and what it holds; table, group-label and chip styles with counts |
 | 4 | Viewport-positioned sticky elements; `100vh`; sticky panels without `overflow-y`; fixed bottom chrome | File and line; pages ending under the chrome |
 | 5 | Rounded elements in a rounded element's corner; square inner corners where the inset passed the outer radius | Outer, padding, inner, mismatch |
 | 6 | Border widths by job; dividers stronger than their object's edge; frames heavier than their dividers; half-pixel lines drawn as boxes; `<hr>` without a border reset | Counts per weight; offenders |
 | 7 | Every `z-index` / `z-*` literal | Sorted values and what each holds; catchers above menus; overlays above the skip link; transformed ancestors of fixed elements |
 | 8 | `onMouseEnter`/`:hover` with no touch path; `any-hover`; hide-on-scroll without a capability check; window media queries on components inside a resizable panel | Each behaviour's touch equivalent, or "none"; panes that clip with the sidebar open |
 | 9 | View toggles written to storage | Key, what it controls, any reason |
-| 10 | "No … yet" on owner-curated collections; user-data empty states with no action | Route or component, and which case |
+| 10 | "No … yet" on owner-curated collections; grids that stretch one or two items | Route or component |
 | 11 | Disclosure content rendered conditionally; collapsed content without `inert` | Component, and what's missing from the HTML |
 | 12 | Skip link and `id="main"`; unlabelled `<nav>`; heading levels chosen for size; anchors without `scroll-margin-top`; no print reset for hidden reveals | Per template |
 | 13 | Icon, close and row-action buttons under 24px (44px on touch) with no padding or pseudo-element growing the hit area; touch targets closer than 8px; frequent actions far from what they act on; destructive actions in a corner | Element, drawn size, hit size |
@@ -244,10 +257,10 @@ In a browser, resize from 320px to 2560px watching the rail gap, tab through col
 - [ ] The narrowest measure fits the longest `type.title` without a responsive type step — except an editorial article title's one phone step (type dials).
 - [ ] Headings sit closer to what follows than what precedes: `space.heading-above : space.heading-below` between 2:1 and 5:1.
 - [ ] Clutter is fixed with gaps, padding and tier order before colour or type; a card's tiers part by space.
-- [ ] Symmetric spacing only between peers; rules only at a change of subject, or round a band that keeps them.
+- [ ] Symmetric spacing only between peers.
 - [ ] Every spacing value is a role on the base unit; strays are listed.
-- [ ] Sections stack in reading order, each opened by its heading; card grids only for collections of like objects; no bento mosaic.
-- [ ] Stats sit in one row parted by hairlines (product: a strip that filters its table, figures at `type.title` or one step above; any boxes stay quiet); tabs are text on a shared hairline.
+- [ ] Sections stack in reading order, each opened by its heading, and each boundary takes law 3's divider for what it holds — one device per kind across the product, an existing design's panels kept; every section survives the squint test; card grids only for collections of like objects; no bento mosaic.
+- [ ] Stats sit in one row parted by hairlines (product: a strip that filters its table; any boxes stay quiet); tabs are text on a shared hairline.
 - [ ] One table style and one group-label style, the preset's: unframed with labels over a rule, or one shared frame with one sticky group bar.
 - [ ] One chip shape per size across the product.
 - [ ] Product: one navigation surface — a sidebar holding every destination, no top bar repeating it; every page under its own header bar, which is not navigation; an existing app's navigation surface kept unless a restructure is asked for, and shell features it lacks listed, not added; pages fill the panel, forms and settings cap at `measure.form`, and no page sets its own width or padding.
@@ -262,10 +275,10 @@ In a browser, resize from 320px to 2560px watching the rail gap, tab through col
 - [ ] Breakpoints are named for what changes, and measured on the container inside a shell; resizing keeps the column count unless asked; every hover style, decoration included, is gated on `(hover: hover) and (pointer: fine)`.
 - [ ] No affordance hides where it can't come back; every informative hover has a touch path.
 - [ ] View choices reset on arrival unless a recorded decision says otherwise; switching keeps the reader's place.
-- [ ] Empty owner-curated collections lose route, nav entry, section and divider; user data gets an empty state with its first action.
+- [ ] Empty owner-curated collections lose route, nav entry, section and divider (user-data empty states: patterns law 9).
 - [ ] Grids look deliberate at 1, 2 and n items.
 - [ ] Collapsed disclosures keep their content in the HTML, with `inert` and `aria-hidden`, or use `<details>`; closed groups show a summary and open to a matching search.
-- [ ] Skip link by transform with `id="main"`; every `<nav>` labelled; heading levels follow structure; anchors carry `scroll-margin-top`; print forces reveals visible.
+- [ ] Skip link by transform with `id="main"`; every `<nav>` labelled; heading levels follow structure; anchors carry `scroll-margin-top`; print hides chrome.
 - [ ] Every control's hit area is at least 24px (44px on touch), grown by padding or a pseudo-element, not a bigger icon; touch targets sit 8px apart; frequent actions sit on what they act on.
 - [ ] Product and expressive pages that place unlike blocks side by side share a column grid; its breakpoints sit where the content stops fitting; columns stop at `measure.wide`; editorial has none.
 - [ ] Dials (`measure.reading`, spacing density, heading ratio, radius ladder, hairline weights, breakpoint count) match the preset, or the difference is under `## Decisions`.

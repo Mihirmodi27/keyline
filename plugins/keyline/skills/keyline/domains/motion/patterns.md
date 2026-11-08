@@ -37,7 +37,7 @@ Six details, each a bug without it:
 
 A tooltip rides the same state on one axis: an outer element animates `x` to the item's centre; an inner one is statically `translate: -50% 0`. A plain coordinate animates cleanly; `calc(centre - 50%)` asks the library to interpolate mixed units.
 
-**Current versus hovered.** The current item's static surface drops while the group is hovered, so the travelling highlight owns the surface; two at once make the selection ambiguous. The current item keeps `text.primary` throughout, so its place is never lost.
+**Current versus hovered.** The current item's static surface drops while the group is hovered, so the travelling highlight owns the surface; two at once make the selection ambiguous. The current item keeps its label colour (colour law 7) throughout, so its place is never lost.
 
 ## Layout switches and page-level shared elements
 
@@ -101,7 +101,7 @@ The filled state is a second layer over the outline, at the same coordinates, cr
 @media (prefers-reduced-motion: reduce) { .icon .fill, .icon .detail { transition: none; } }
 ```
 
-Where the solid shape would swallow an interior line, knock it out with a mask rather than deleting it: the silhouette in white (fill and stroke, matching the outline exactly), the interior lines in black at the outline's stroke width. A solid chip or weight step chosen instead of fill follows the same rule: one treatment, one meaning.
+Where the solid shape would swallow an interior line, knock it out with a mask rather than deleting it: the silhouette in white (fill and stroke, matching the outline exactly), the interior lines in black at the outline's stroke width. A solid chip chosen instead of fill follows the same rule: one treatment, one meaning.
 
 ## Hover intent
 
@@ -170,13 +170,15 @@ setTimeout(() => root.classList.remove("theme-transition"), THEME_MS + 40);
 }
 ```
 
-The `!important` beats each component's own transition for that window; removing the class stops it poisoning everything after. `duration.theme` runs only under this class, when the page itself switches.
+The `!important` beats each component's own transition for that window; removing the class stops it poisoning everything after. Pseudo-elements are listed because `*` doesn't match them, and decoration built with them would snap. The curve is `ease.colour`, never one that overshoots: an overshooting colour passes its target and returns. `duration.theme` runs only under this class, when the page itself switches.
 
 A theme that follows the OS by media query changes with no toggle to hook, and every control carrying its own colour transition fades at its own duration while the page around it snaps. So everyday colour transitions never include the page background, and a theme change suspends them: listen for the query's `change` and hold a class for one frame.
 
 ```ts
-matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => {
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change", (e) => {
+  if (readChoice() !== "system") return;   // the reader chose a theme: the OS doesn't override it
   root.classList.add("theme-instant");   /* :root.theme-instant * { transition: none !important; } */
+  applyTheme(e.matches ? "dark" : "light");
   requestAnimationFrame(() => requestAnimationFrame(() => root.classList.remove("theme-instant")));
 });
 ```

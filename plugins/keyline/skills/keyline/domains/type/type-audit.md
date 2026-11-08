@@ -1,6 +1,6 @@
 # Type audit and sweeps
 
-The static audit in `SKILL.md` finds values in source. This file checks what renders, and sweeps a product after a type decision so no instance is left on the old value.
+The type guide's *Auditing existing code* and the detector find values in source. This file checks what renders, and sweeps a product after a type decision so no instance is left on the old value.
 
 ## Why source isn't enough
 
@@ -85,6 +85,6 @@ After any change to a role — a size, a weight step, a tracking value:
 1. **Change the token, not the instances.** If the change needs instance edits, those instances weren't on the role; migrate them first.
 2. **Grep for the old value** in the role's raw forms (`font-semibold`, `text-[14px]`, `font-weight: 600`) and decide each hit.
 3. **Run the rendered inventory on every route**, not the route the change was asked about.
-4. **Check the generated strings** for case while you're there: field names, column headers, tool labels, dialog titles and toasts that arrive in Title Case from a schema or a config.
+4. **Check the generated strings** for case while you're there (patterns law 1): field names, column headers, tool labels, dialog titles and toasts that arrive in Title Case from a schema or a config.
    `rg -n "(label|title|header|name):\s*['\"][A-Z][a-z]+ [A-Z][a-z]+" src`
 5. **Report what moved**, by role and by page, and anything left on the old value with its reason, so the change can be checked rather than trusted.

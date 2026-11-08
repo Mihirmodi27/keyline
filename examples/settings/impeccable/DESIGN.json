@@ -1,0 +1,76 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-06T15:45:00Z",
+  "title": "Design System: Northwind",
+  "extensions": {
+    "colorMeta": {
+      "primary": { "role": "primary", "displayName": "Northwind Indigo", "canonical": "oklch(0.52 0.19 268)", "tonalRamp": ["oklch(0.25 0.1 268)", "oklch(0.35 0.14 268)", "oklch(0.46 0.18 268)", "oklch(0.52 0.19 268)", "oklch(0.62 0.16 268)", "oklch(0.74 0.12 268)", "oklch(0.86 0.06 268)", "oklch(0.955 0.025 268)"] },
+      "canvas": { "role": "neutral", "displayName": "Canvas", "canonical": "oklch(0.975 0.004 265)", "tonalRamp": ["oklch(0.165 0.008 265)", "oklch(0.205 0.01 265)", "oklch(0.3 0.012 265)", "oklch(0.44 0.03 265)", "oklch(0.535 0.03 265)", "oklch(0.64 0.02 265)", "oklch(0.925 0.007 265)", "oklch(0.975 0.004 265)"] },
+      "control-edge": { "role": "neutral", "displayName": "Control Edge", "canonical": "oklch(0.64 0.02 265)" },
+      "success": { "role": "semantic", "displayName": "Success", "canonical": "oklch(0.5 0.12 155)" },
+      "warning": { "role": "semantic", "displayName": "Warning", "canonical": "oklch(0.53 0.13 55)" },
+      "danger": { "role": "semantic", "displayName": "Danger", "canonical": "oklch(0.55 0.2 29)" }
+    },
+    "typographyMeta": {
+      "headline": { "displayName": "Headline", "purpose": "Page title only." },
+      "title": { "displayName": "Title", "purpose": "Section titles." },
+      "body": { "displayName": "Body", "purpose": "Descriptions and values, max 60ch." },
+      "label": { "displayName": "Label", "purpose": "Field labels and row names." },
+      "caption": { "displayName": "Caption", "purpose": "Hints, messages, status, badges, column heads; 14px on phones." }
+    },
+    "shadows": [
+      { "name": "knob", "value": "0 1px 2px oklch(0.22 0.03 265 / 0.25)", "purpose": "Toggle knob." },
+      { "name": "float", "value": "0 1px 2px oklch(0.22 0.03 265 / 0.06), 0 16px 40px -12px oklch(0.22 0.03 265 / 0.22)", "purpose": "Dialog and toast only." }
+    ],
+    "motion": [
+      { "name": "ease-out", "value": "cubic-bezier(0.25, 1, 0.5, 1)", "purpose": "Every transition." },
+      { "name": "dur-fast", "value": "150ms", "purpose": "Colour and border changes." },
+      { "name": "dur", "value": "200ms", "purpose": "Toggles, dialog, toast, strength meter." }
+    ],
+    "breakpoints": [
+      { "name": "tablet", "value": "1080px" },
+      { "name": "phone", "value": "760px" }
+    ]
+  },
+  "components": [
+    { "name": "Primary Button", "kind": "button", "refersTo": "button-primary", "description": "The one save action in each section footer.", "html": "<button class=\"ds-btn-primary\">Save profile</button>", "css": ".ds-btn-primary { height: 38px; padding: 0 16px; border: 1px solid transparent; border-radius: 8px; background: oklch(0.52 0.19 268); color: oklch(0.99 0.004 268); font: 600 14px Inter, system-ui, sans-serif; cursor: pointer; transition: background-color 150ms cubic-bezier(0.25,1,0.5,1); } .ds-btn-primary:hover { background: oklch(0.46 0.18 268); } .ds-btn-primary:focus-visible { outline: 2px solid oklch(0.52 0.19 268); outline-offset: 2px; } .ds-btn-primary:active { transform: translateY(1px); }" },
+    { "name": "Secondary Button", "kind": "button", "refersTo": "button-secondary", "description": "Upload, Disconnect and other non-primary actions.", "html": "<button class=\"ds-btn-secondary\">Disconnect</button>", "css": ".ds-btn-secondary { height: 32px; padding: 0 12px; border: 1px solid oklch(0.64 0.02 265); border-radius: 8px; background: oklch(0.995 0.002 265); color: oklch(0.22 0.03 265); font: 600 13px Inter, system-ui, sans-serif; cursor: pointer; transition: background-color 150ms cubic-bezier(0.25,1,0.5,1), border-color 150ms cubic-bezier(0.25,1,0.5,1); } .ds-btn-secondary:hover { background: oklch(0.982 0.003 265); border-color: oklch(0.535 0.03 265); } .ds-btn-secondary:focus-visible { outline: 2px solid oklch(0.52 0.19 268); outline-offset: 2px; }" },
+    { "name": "Danger Button", "kind": "button", "refersTo": "button-danger", "description": "Opens the delete confirmation.", "html": "<button class=\"ds-btn-danger\">Delete account</button>", "css": ".ds-btn-danger { height: 38px; padding: 0 16px; border: 1px solid oklch(0.85 0.06 25); border-radius: 8px; background: oklch(0.995 0.002 265); color: oklch(0.5 0.18 27); font: 600 14px Inter, system-ui, sans-serif; cursor: pointer; } .ds-btn-danger:hover { background: oklch(0.97 0.015 25); border-color: oklch(0.55 0.2 29); } .ds-btn-danger:focus-visible { outline: 2px solid oklch(0.52 0.19 268); outline-offset: 2px; }" },
+    { "name": "Text Input", "kind": "input", "refersTo": "input", "description": "All text, email and password fields.", "html": "<input class=\"ds-input\" value=\"Priya Anand\">", "css": ".ds-input { width: 280px; height: 40px; padding: 0 12px; border: 1px solid oklch(0.64 0.02 265); border-radius: 8px; background: oklch(0.995 0.002 265); color: oklch(0.22 0.03 265); font: 400 14px Inter, system-ui, sans-serif; transition: border-color 150ms cubic-bezier(0.25,1,0.5,1), box-shadow 150ms cubic-bezier(0.25,1,0.5,1); } .ds-input:hover { border-color: oklch(0.535 0.03 265); } .ds-input:focus { outline: none; border-color: oklch(0.52 0.19 268); box-shadow: 0 0 0 3px oklch(0.52 0.19 268 / 0.3); }" },
+    { "name": "Toggle", "kind": "custom", "refersTo": "toggle", "description": "Email and push notification switches.", "html": "<label class=\"ds-toggle\"><input type=\"checkbox\" checked><span></span></label>", "css": ".ds-toggle { position: relative; display: inline-flex; cursor: pointer; } .ds-toggle input { position: absolute; opacity: 0; inset: 0; margin: 0; } .ds-toggle span { width: 38px; height: 22px; border-radius: 999px; background: oklch(0.64 0.02 265); position: relative; transition: background-color 200ms cubic-bezier(0.25,1,0.5,1); } .ds-toggle span::after { content: ''; position: absolute; top: 2px; left: 2px; width: 18px; height: 18px; border-radius: 50%; background: oklch(0.99 0.004 268); box-shadow: 0 1px 2px oklch(0.22 0.03 265 / 0.25); transition: transform 200ms cubic-bezier(0.25,1,0.5,1); } .ds-toggle input:checked + span { background: oklch(0.52 0.19 268); } .ds-toggle input:checked + span::after { transform: translateX(16px); } .ds-toggle input:focus-visible + span { outline: 2px solid oklch(0.52 0.19 268); outline-offset: 2px; }" },
+    { "name": "Section Nav", "kind": "nav", "refersTo": "nav", "description": "Sticky settings section navigation.", "html": "<nav class=\"ds-nav\"><a class=\"is-active\" href=\"#\">Profile</a><a href=\"#\">Notifications</a><a href=\"#\">Password</a></nav>", "css": ".ds-nav { display: grid; gap: 2px; width: 220px; font: 500 14px Inter, system-ui, sans-serif; } .ds-nav a { padding: 8px 12px; border-radius: 8px; color: oklch(0.44 0.03 265); text-decoration: none; transition: background-color 150ms cubic-bezier(0.25,1,0.5,1); } .ds-nav a:hover { background: oklch(0.982 0.003 265); color: oklch(0.22 0.03 265); } .ds-nav a.is-active { background: oklch(0.955 0.025 268); color: oklch(0.22 0.03 265); } .ds-nav a:focus-visible { outline: 2px solid oklch(0.52 0.19 268); outline-offset: 2px; }" },
+    { "name": "Connected Badge", "kind": "chip", "refersTo": "badge-success", "description": "Connection status beside a provider name.", "html": "<span class=\"ds-badge\">Connected</span>", "css": ".ds-badge { display: inline-flex; align-items: center; gap: 5px; padding: 0 8px; line-height: 20px; border-radius: 999px; background: oklch(0.965 0.03 155); color: oklch(0.5 0.12 155); font: 500 13px Inter, system-ui, sans-serif; } .ds-badge::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }" }
+  ],
+  "narrative": {
+    "northStar": "The Quiet Control Panel",
+    "overview": "Northwind's settings are a control panel a person visits for one errand and leaves. The system is a cool neutral field tinted toward the accent hue, with a single indigo accent reserved for actions, selection and focus.",
+    "keyCharacteristics": [
+      "One accent, used for primary actions, current selection, focus and \"on\" toggles only.",
+      "Each settings section is one form with its own footer and one save action.",
+      "Validation, saving and connection states are explicit, consistent and never colour-only.",
+      "Flat at rest: panels are hairline-bordered, only floating layers cast shadows.",
+      "One sans family (Inter) carries everything."
+    ],
+    "rules": [
+      { "name": "The One Voice Rule", "body": "Indigo appears only where the user can act or where something is selected or focused. It is never decoration.", "section": "colors" },
+      { "name": "The 3:1 Edge Rule", "body": "Anything the user types into or toggles has an edge of at least 3:1 against its background. Hairlines are for grouping, not for controls.", "section": "colors" },
+      { "name": "The No Shouting Rule", "body": "No uppercase tracked overlines. Column heads and the sidebar heading are sentence-case captions.", "section": "typography" },
+      { "name": "The Flat-At-Rest Rule", "body": "If it does not float, it does not cast a shadow.", "section": "elevation" }
+    ],
+    "dos": [
+      "Do keep indigo for actions, selection and focus only.",
+      "Do give every section exactly one primary save action in its footer.",
+      "Do show unsaved, saving, saved and invalid states in the footer status and at the field, never by colour alone.",
+      "Do keep control edges at 3:1 or better and text at 4.5:1 or better in both themes.",
+      "Do use the token scales; no raw hex, no off-scale spacing."
+    ],
+    "donts": [
+      "Don't build a generic SaaS admin template: every block a shadowed card, gradients on avatars, glassy headers, badges and pills everywhere.",
+      "Don't add strangeness without purpose: over-decorated buttons, mismatched form controls, gratuitous motion, invented affordances for standard tasks.",
+      "Don't leave it unclear which save button covers which fields, or whether anything saved.",
+      "Don't nest boxes inside panels (logo tiles, ringed avatars, boxed sidebar widgets).",
+      "Don't use a side-stripe border as an accent on any panel or alert.",
+      "Don't use uppercase tracked labels or weights outside 400/500/600."
+    ]
+  }
+}

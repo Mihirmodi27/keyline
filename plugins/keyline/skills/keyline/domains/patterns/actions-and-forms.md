@@ -90,7 +90,7 @@ export function ConfirmDestroy({ open, onOpenChange, title, consequence, word = 
 - **The input takes focus, not Cancel.** The typed word is the guard; focusing it saves a click without weakening it.
 - **Case-insensitive**, trimmed: the reader proves intent, not typing accuracy.
 - **Held open while pending**: Escape and the scrim do nothing until it settles, so a failure has somewhere to be reported.
-- **Focus returns to what opened it.** A dialog opened from a row's menu has no trigger of its own for the primitive to fall back to; pass the row or the menu's button explicitly, or focus lands on `<body>` and a keyboard user starts again from the top. If the row no longer exists, return focus to the list.
+- **Focus returns to what opened it**, the row's neighbour if the row is gone — depth law 12, with the code in `domains/depth/elevation-recipes.md`.
 
 ## Undo instead of confirm
 
@@ -146,7 +146,7 @@ The deciding field is full width because it is the one question every reader ans
 | Region | Holds |
 |---|---|
 | Form column, about 360px, unboxed | Title ("Sign in"), one muted line, fields, the one brand button, the secondary path as a link ("Create an account") |
-| Art panel, from a wide breakpoint | An inset panel on the other half — generative or illustrative, scoped to one theme so it looks the same in either; moving only if the auth routes are an `expressive` area in `## Profile`, otherwise one still frame |
+| Art panel, from a wide breakpoint | The depth guide's art panel on the other half (`domains/depth/elevation-recipes.md`); moving only if the auth routes are an `expressive` area in `## Profile`, otherwise one still frame |
 | Phone | The form alone; the art is decoration and goes first |
 
 - **No card around the form.** The page is the surface; a card on an otherwise empty page is a box around nothing.

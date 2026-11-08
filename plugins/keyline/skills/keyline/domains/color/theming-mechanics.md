@@ -77,52 +77,13 @@ export function chooseTheme(t: Theme): void { // the user's action
 1. The head script resolves `system` too, with `matchMedia` inline, and a `readChoice()` returning the stored three-way choice sits beside `readTheme()`, which returns the resolved theme.
 2. A live listener, so the page follows the OS *while it's open*:
 
-```ts
-matchMedia("(prefers-color-scheme: dark)").addEventListener("change", (e) => {
-  if (readChoice() !== "system") return;
-  // The OS switched, not the reader: no crossfade. Hold transitions off for the
-  // frame the colours change in, or every control's own colour transition
-  // cross-fades half the page (motion law 2; the hold is in motion/patterns.md).
-  root.classList.add("theme-instant");
-  applyTheme(e.matches ? "dark" : "light");
-  requestAnimationFrame(() => requestAnimationFrame(() => root.classList.remove("theme-instant")));
-});
-```
+The listener, and the transition hold it needs so an OS switch doesn't cross-fade, are in `domains/motion/patterns.md` (*Theme cross-fade*).
 
 Following the OS on load and then silently stopping is worse than not offering the option. Which to ship is a dial (the colour guide's theme control).
 
 ## The crossfade on toggle
 
-A universal colour transition, added for the toggle and removed after:
-
-```css
-@media (prefers-reduced-motion: no-preference) {
-  :root.theme-transition,
-  :root.theme-transition *,
-  :root.theme-transition *::before,
-  :root.theme-transition *::after {
-    transition: background-color var(--duration-theme) var(--ease-colour),
-      color var(--duration-theme) var(--ease-colour),
-      border-color var(--duration-theme) var(--ease-colour),
-      fill var(--duration-theme) var(--ease-colour),
-      stroke var(--duration-theme) var(--ease-colour) !important;
-  }
-}
-```
-
-```ts
-root.classList.add("theme-transition");
-applyTheme(t);
-setTimeout(() => root.classList.remove("theme-transition"), durationTheme + 40);
-```
-
-- **Temporary, always.** Left on, every hover, link and row becomes a slow colour fade.
-- **`!important`**, to beat each component's own colour transition, or the crossfade fragments.
-- **Pseudo-elements listed**: `*` doesn't match them, and decoration built with them would snap.
-- **`ease.colour`, not the standard curve**, if that overshoots: an overshooting colour passes its target and returns. Colour has no mass.
-- **Inside `no-preference`**, so reduced-motion users get the change instantly.
-
-`duration.theme` and `ease.colour` belong to the motion guide.
+A reader's toggle cross-fades and an OS switch doesn't; the CSS, the timing and the reduced-motion branch are motion's (`domains/motion/patterns.md`, *Theme cross-fade*), since `duration.theme` and `ease.colour` are its tokens. Call it around `applyTheme`.
 
 ## `color-scheme`
 

@@ -108,4 +108,4 @@ function useFollowBottom(el: HTMLElement | null, deps: unknown[]) {
 | Stopped | The full text, final | Copy, and whatever the product does next with it |
 | Failed | What was captured, kept | Retry, and the captured text never lost |
 
-**Paused means still**: any motion that represented "live" stops or holds low (the motion guide); only a progress indicator for work genuinely under way keeps moving. A live state is not danger, so it doesn't take the destructive colour; a small live dot is enough (the colour guide).
+What moves while live and stops while paused is motion law 1; what colour a live state takes is the colour guide's *Live is not danger*.

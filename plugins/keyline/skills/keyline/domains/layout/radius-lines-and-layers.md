@@ -93,22 +93,11 @@ Two resets that cause visible bugs:
 - An `<hr>` carries a UA border: give it `border: 0` before a `background` and `block-size`, or it draws the browser's line and yours a few pixels apart.
 - A divider that is rhythm rather than structure gets `aria-hidden`; an `<hr>` announces itself as a separator.
 
-On translucent or unknown backdrops every line uses `border.layered`; a solid border on glass reads as a frame pasted on top. the colour guide owns its value, the depth guide the material it sits on.
+On translucent or unknown backdrops every line uses `border.layered` (colour law 4).
 
-## The z-index ladder per preset
+## The z-index ladder
 
-Every preset shares the rungs; only product adds toasts.
-
-| Role | Rung | Holds |
-|---|---|---|
-| `z.skip-link` | 100 | Above everything, modals included |
-| `z.toast` (proposed) | 70 (product only) | Toasts, above a modal so a save confirmation is never hidden |
-| `z.overlay` | 60 | Modals, sheets, once-a-session overlays |
-| `z.nav` | 50 | Fixed navigation, the app shell's header |
-| `z.dismiss` | 40 | The navigation's tap-outside catchers — over the page, under the nav |
-| `z.popover` | 20 | Menus, hover cards, dropdowns |
-| `z.raised` | 10 | A hovered or focused item |
-| `z.below` | −10 | A highlight behind its siblings, inside `isolation: isolate` |
+The rungs and their defaults are layout law 7's table; every preset shares them. What follows is how they hold up in code.
 
 Ordered by permanence, gaps of ten. A stacked modal (a confirm over a dialog) needs no new rung: rendered later in the same portal, it stacks by document order. **Portals make the ladder global**: inside a card, a menu is trapped by every stacking context above it whatever its number, so overlays, menus escaping a scroll container, and toasts render into a root-level portal.
 

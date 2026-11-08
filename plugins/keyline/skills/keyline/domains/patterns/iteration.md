@@ -35,7 +35,7 @@ Card title weight 600 → 500 (role `type.card-title`):
 
 ## The decision log
 
-Every decision goes under `## Decisions` in `DESIGN.md` — newest first, dated, marked by who decided, with the reason. A new decision on a subject replaces the old entry; git history keeps what it replaced. The format is `system/design-md.md`.
+Every decision goes under `## Decisions` in `DESIGN.md`, in the format `system/design-md.md` sets.
 
 ```markdown
 - 2026-10-28 — Card titles at 500, not 600: "unnecessarily heavy" next to the pane title. (User decision.)

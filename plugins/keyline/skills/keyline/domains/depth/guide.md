@@ -25,21 +25,19 @@ A level is also one component. Every dialog is the system's dialog, a destructiv
 
 The ladder has only the rungs this project uses; the dial lists the most a preset may have. The Glass preset's fourth translucent tier, for "a menu over a surface you already know", never found a user. A dead rung is worse than an absent one: the next person assumes it is load-bearing.
 
-### 2. Content sits on the page; a card is for one object
+### 2. A card is one object, and never holds another card
 
-**Sections, lists, tables and figures sit on the page, unboxed; a card — a surface with its own edge — is reserved for one object the reader acts on or takes in whole, and a card never holds another card.** A box says "this is a thing". Put one round every section, stat and list and every region claims to be a thing, so none is; each nesting adds an edge, a padding and a radius, and a screen built of boxes in boxes reads as a template however good its type. The grouping a box pretends to provide is space's job (the layout guide), and a heading with a hairline under it does it better. Whether something is boxed is decided in the layout pass (layout law 3); this pass confirms it and builds whatever surfaces remain.
+**A card — a surface with its own edge — is reserved for one object the reader acts on or takes in whole, and a card never holds another card.** A box says "this is a thing". Put one round every section, stat and list and every region claims to be a thing, so none is; each nesting adds an edge, a padding and a radius, and a screen built of boxes in boxes reads as a template however good its type. **Which regions get a surface at all is decided once, in layout law 3's table** — peer sections take a line, a settings group takes a panel, regions on a tinted ground are surfaces, an existing design's panels stay. This law builds what that table gives a surface, and keeps everything else off one.
 
-In order of preference:
+- **One object** — a decision awaiting approval, a document, a side rail — is a card. A rail with two topics is one card in two parts, parted by a divider; several items of one kind (three pending approvals) share one card the same way, not a card each.
+- **A section panel** (from layout law 3) is `elevation.flat`: an edge and no shadow, because it doesn't float. Nothing inside it is boxed again: its rows part by `border.divider`.
+- **A note** — an aside or caveat — takes a hairline rule on its leading edge, not a tinted box.
 
-1. **Unboxed** — a heading row, then the content straight on `surface.page` (when the cards were white on a grey page, the page takes the cards' white: unboxing removes the boxes, not the brightness): rows parted by `border.divider`, figures by vertical hairlines, never an edge round a group of unlike content. A data table is one object, so under `product` it may take one hairline frame and a tinted header row.
-2. **A card** — one object: a decision awaiting approval, a document, a side rail. A rail with two topics is one card in two parts, parted by a divider; several items of one kind (three pending approvals) share one card the same way, not a card each.
-3. **A note** — an aside or caveat takes a hairline rule on its leading edge, not a tinted box.
-
-A tinted strip behind a group label, a bordered callout and a tile per figure are boxes by other names. The test: take the edge away. If the grouping still reads from space and the heading, the edge was decoration; if it no longer reads as one object, it wasn't a card's job either — fix the spacing. Then check the measure: columns of text left under about 45 characters a line want fewer columns (layout law 1).
+A tinted strip behind a group label, a bordered callout and a tile per figure are boxes by other names. The test: take the edge away. If the object still reads as one thing from space and its heading, the edge was decoration. Then check the measure: columns of text left under about 45 characters a line want fewer columns (layout law 1).
 
 ### 3. Depth needs an edge as well as a shadow
 
-**Any surface above `elevation.flat` has an edge that says where it ends, not only a shadow that says it is above.** A shadow is a soft gradient and cannot draw a boundary; without an edge the outline is mush, worst in dark themes, where shadows have almost no headroom. The edge is `border.default` on an opaque surface; on a translucent one or any backdrop it doesn't control, the translucent `border.layered`, since a solid grey edge there reads as a pasted-on frame. Where the preset draws the edge as a half-pixel ring at the head of the shadow stack (Dials), it is still the edge: `prefers-contrast: more` swaps in a real 1px border, whose whole job there is a boundary you can find.
+**Any surface above `elevation.flat` has an edge that says where it ends, not only a shadow that says it is above.** A shadow is a soft gradient and cannot draw a boundary; without an edge the outline is mush, worst in dark themes, where shadows have almost no headroom. The edge is `border.default` on an opaque surface; on a translucent one or any backdrop it doesn't control, the translucent `border.layered` (colour law 4). Where the preset draws the edge as a half-pixel ring at the head of the shadow stack (Dials), it is still the edge: `prefers-contrast: more` swaps in a real 1px border, whose whole job there is a boundary you can find.
 
 `forced-colors` drops every `box-shadow` but keeps the edge, so a surface designed with no visible edge still carries `1px solid transparent`, painted in the system text colour. `elevation.flat` has no shadow: an edge or a surface step, never a faint shadow posing as a border.
 
@@ -53,7 +51,7 @@ Nobody spots a `0.04` that became `0.05` in one of five copies, so **a layered s
 
 ### 5. Dark themes lift surfaces by lightening them
 
-**In a dark theme each level above the page is lighter than the one beneath it; the shadow is a secondary cue.** Raised means more contrast against the page. Light-theme raised surfaces may sit a step either side of it — white cards on a grey page, grey panels on a white one — so long as every level steps the same way, and whether there are cards at all is layout law 3's call; dark-theme ones are always lighter, because a black shadow on a near-black page has nowhere to go, and strengthening shadows alone leaves every level looking like the page. The dark shadow is its own per-theme recipe — drop layers at roughly ten times the opacity, the highlight at a fraction of its strength — and the page is never `#000`, which gives shadows nothing to sit on. Hence the Glass preset's dark chrome tint, lighter than its dark page, and shadow opacities of 2–6% in light, 30–60% in dark.
+**In a dark theme each level above the page is lighter than the one beneath it; the shadow is a secondary cue.** Raised means more contrast against the page. Light-theme raised surfaces may sit a step either side of it — white cards on a grey page, grey panels on a white one — so long as every level steps the same way, and whether there are cards at all is layout law 3's call; dark-theme ones are always lighter, because a black shadow on a near-black page has nowhere to go, and strengthening shadows alone leaves every level looking like the page. The dark shadow is its own per-theme recipe — drop layers far stronger, at the dial's dark peak, the highlight at a fraction of its strength — and the page is never `#000` (colour law 8). Hence the Glass preset's dark chrome tint, lighter than its dark page, and shadow opacities of 2–6% in light, 30–60% in dark.
 
 ### 6. Translucency has to be earned, and usually isn't
 
@@ -121,7 +119,7 @@ Modal also hands back what it took: **on close, focus returns to whatever opened
 
 ### 15. Every material has its fallbacks, and they come last
 
-**Each material ships an opaque baseline, then the material inside `@supports`, then its `prefers-reduced-transparency`, `prefers-contrast: more` and `forced-colors` rules — after every theme block that sets the same properties.** The order is the law: opaque first makes the non-supporting path the default, and so the tested one; preferences re-declare the same properties at the same specificity, so a reduced-transparency block above the dark-theme block wins in one theme only.
+**Each material ships an opaque baseline, then the material inside `@supports`, then its `prefers-reduced-transparency`, `prefers-contrast: more` and `forced-colors` rules — after every theme block that sets the same properties.** The order is the law: opaque first makes the non-supporting path the default, and so the tested one; why preferences go after every theme block is colour law 10.
 
 Reduced transparency needs both halves, an opaque surface *and* no filter: filter only leaves a thin tint over live content, tint only still pays for the blur. High contrast promotes the edge to a real border and leaves the surface alone; forced colours needs law 3's edge. Read the *compiled* CSS: a prefixing pipeline may treat a hand-written `-webkit-backdrop-filter` for Safari as a duplicate and drop the standard property Firefox needs — as the Glass preset's own advice did to the site it documents.
 
@@ -135,7 +133,7 @@ Reduced transparency needs both halves, an opaque surface *and* no filter: filte
 
 | Dial | editorial | product | expressive |
 |---|---|---|---|
-| Content by default | Unboxed | Unboxed; a card only for one object | Unboxed; a card for one object or a named brand object |
+| What gets a surface | Layout law 3's table; a card only for one object | Layout law 3's table; a card only for one object | Layout law 3's table; a card for one object or a named brand object |
 | Cards nested in cards | Never | Never | Never |
 | Translucency | Chrome only (a sticky header, a dock), or none | None on chrome or content — hairlines and opaque surfaces do the work; art only | Brand material, each use named |
 | Translucent tiers | ≤ 2 (chrome, defensive) | Soften, on art only | ≤ 3 |
@@ -149,7 +147,6 @@ Reduced transparency needs both halves, an opaque surface *and* no filter: filte
 | Dark surface lift per level (OKLCH L) | +0.05 | +0.04 | +0.06 |
 | Scrim (black-toward-ground opacity, light / dark) | 32% / 56% | 40% / 60% | 48% / 64%, brand-tinted allowed |
 | Scrim blur | None | None | ≤ 8px, never animated |
-| Corner shape | Round; `superellipse(1.5)` as enhancement | Round; `superellipse(1.5)` as enhancement | Round or `superellipse(1.5–2)` |
 | Gradient strokes and glows | At most one, as the colour system's exception | None | Allowed, each named for its job |
 
 **Translucency.** Moving up a preset trades contrast certainty, a fallback path and a filter pass per surface for atmosphere. Fluent, daily product readers gain nothing from atmosphere and lose a lot to a header dimming to mid-grey over a data table. Editorial allows it on chrome because seeing the page being read scroll under keeps the reader oriented. Product's one opening is art: its backdrop is drawn, still and carries no text, so the material costs no contrast, and keeping it there is what lets the rest of the product stay opaque.
@@ -162,14 +159,14 @@ Reduced transparency needs both halves, an opaque surface *and* no filter: filte
 
 **Shadow strength.** Stronger shadows buy separation on busy screens at the cost of calm; past a point the eye reads a shadow as a shape. In every preset, if you can point at the shadow as a shadow, it's one step too strong for editorial.
 
-**Corner shape.** A superellipse curves continuously into the edge, softer than a circular corner of the same radius; a full squircle makes small elements look swollen. As progressive enhancement, unsupported browsers round normally and nothing may depend on it.
+Radii and corner shape are the layout guide's (layout law 5 and its dials).
 
 ## Building it for a project
 
 **1. Classify every real component**, not a hypothetical list:
 
 ```
-One object the reader acts on or takes in whole?         no  → unboxed on the page (law 2). Stop.
+One object, or a region layout law 3 gives a surface?    no  → on the page, divided as layout law 3 says. Stop.
 Scrolls with its neighbours, part of the page flow?      → elevation.flat. Edge or surface step. Stop.
 Picked up, dragged, or stuck while content passes under? → elevation.raised
 Summoned over content, dismissed on its own?             → elevation.floating  (no scrim)
@@ -231,7 +228,7 @@ One line per finding in `## Open issues`, with evidence: *"`.search-popover` has
 
 ## Checklist
 
-- [ ] Sections, lists, tables and figures sit on the page; a card holds exactly one object, and no card holds a card. A `product` data table may take one hairline frame and a tinted header row.
+- [ ] Only what layout law 3's table gives a surface has one; a card holds exactly one object, and no card holds a card; section panels are flat, with nothing boxed inside.
 - [ ] Several objects of one kind, or a rail's topics, share one card parted by dividers; asides are a ruled note, not a tinted box.
 - [ ] Each surface on one `elevation.*` level, chosen by what it does, bundle and `z.*` included.
 - [ ] No borrowed parts: a lifted hover or drag moves the whole bundle, layer included.
@@ -256,4 +253,3 @@ One line per finding in `## Open issues`, with evidence: *"`.search-popover` has
 - [ ] Closed filtered surfaces unmount; no animated blur; nothing filtered over video.
 - [ ] Translucency, tier count and on-screen budget match the dials.
 - [ ] Level count, shadow strength, dark lift and scrim match the dials, or a decision says why.
-- [ ] Corner shape matches the dial; nothing depends on `corner-shape` support.

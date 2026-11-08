@@ -1,10 +1,10 @@
 # UI sound
 
-The most optional thing in the system, and the one to be most careful with: done badly, unexpected sound is why someone closes the tab; done well, it's a second feedback channel costing no visual space. This is "if you're going to do it, here's how", not a recommendation.
+The most optional thing in the system: "if you're going to do it, here's how", not a recommendation. Whether a preset allows sound, and the rules for arming, hover, dense surfaces and mute, are in `domains/motion/patterns.md`, sound; this file is glass's synthesis and the decisions behind it.
 
 ## Synthesise, don't ship files
 
-The whole sound design is ~100 lines of Web Audio, no assets: two sounds, generated on demand. No network request, no decode latency (so the sound is simultaneous with the interaction), and tuning is editing numbers, not re-exporting audio.
+The whole sound design is ~100 lines of Web Audio, no assets: two sounds, generated on demand. Tuning is editing numbers, not re-exporting audio.
 
 ## The "tok"
 
@@ -93,7 +93,7 @@ if (!c || c.state !== "running") return;
 
 That's a feature, not a workaround: a page you've merely scrolled past makes no sound. Fail silently; never surface an error for this.
 
-### Arm it on every gesture the browser accepts, not just the one you expect
+### Arm it on every activation gesture
 
 ```ts
 const UNLOCK_EVENTS = ["pointerdown", "keydown", "touchstart"] as const;
@@ -106,15 +106,7 @@ for (const type of UNLOCK_EVENTS) {
 }
 ```
 
-The reference implementation shipped `pointerdown` alone for months. Two failures, neither exotic:
-
-**Hover is not activation, in any engine.** A reader who only moves the mouse across the dock hears nothing, with no later gesture to recover from — *the hover was the interaction*. It hid because testers click something within seconds.
-
-**Keyboard-only readers never heard the site.** Enter on a focused link dispatches `click`, not `pointerdown`, so the context was still suspended when the click asked to play, on every screen. `keydown` is the fix that matters most: the affected group is the one least able to work around it.
-
-**`wheel` is deliberately absent.** Scrolling is activation in no engine, so it unlocks nothing and only moves the silence somewhere harder to find.
-
-**Enumerate the activation gestures, not the gesture your own hands make**; an unlock list with one entry is probably wrong.
+The reference implementation shipped `pointerdown` alone for months. A reader who only moved the mouse across the dock heard nothing — *the hover was the interaction* — which hid because testers click something within seconds; and keyboard-only readers never heard the site. `keydown` is the fix that matters most: the affected group is the one least able to work around it.
 
 ## Delegation, not per-element wiring
 
@@ -136,7 +128,7 @@ document.addEventListener("pointerover", onOver);
 document.addEventListener("click", onClick);
 ```
 
-- **`pointerType !== "mouse"` bails out.** A touch `pointerover` fires on tap just before the click, so without it every tap plays both sounds 15ms apart, like a stutter.
+- **`pointerType !== "mouse"` bails out**, or every tap plays both sounds 15ms apart, like a stutter.
 - **`lastHover` deduplication.** `pointerover` fires for descendants too, so an icon *inside* a button would re-trigger without the identity check.
 - **`closest(SELECTOR)`** covers anything interactive, including elements added later, with no per-component wiring. `summary` is in it because a `<details>` disclosure is a real control that should feel like one.
 
@@ -148,7 +140,7 @@ document.addEventListener("click", onClick);
 if (el && !el.closest("[data-quiet-hover]")) playHover();
 ```
 
-One attribute on the container quiets the subtree on hover while clicks stay audible. It's a rate limit, not "this surface is unimportant": feedback stops being feedback at around three ticks a second, which a grid of thumbnails passes trivially.
+One attribute on the container quiets the subtree on hover while clicks stay audible. It's a rate limit, not "this surface is unimportant".
 
 ## Sound as a phrase
 
@@ -172,7 +164,7 @@ export const playLanding = () => tok(587, 0.26, 0.16);
 - **Quieter than a click** (0.06 against 0.13). Five notes inside a second should read as a flutter, not a drum fill.
 - **The landing note resolves *downward*.** It sits a fifth below where the run started and is the only accented note. Landing above the run sounds like one more step, not an ending.
 
-It's still a set piece, not a texture — once a session. See §14 of the SKILL.md.
+It's still a set piece, not a texture — once a session. See §14 of `glass/motion/guide.md`.
 
 ## Mute, and persistence
 
@@ -185,12 +177,7 @@ export function setMuted(value: boolean): void {
 }
 ```
 
-Non-negotiable if you ship sound:
-
-1. **A visible, discoverable mute control.** Here it sits in the nav's settings box beside the theme toggle, with an `aria-pressed` state and a label.
-2. **The preference persists.** Someone who muted once should never hear it again.
-3. **Reading the preference never throws.** `localStorage` is unavailable in some privacy modes; wrap every access.
-4. **Mute is checked at the top of playback**, not at the listener, so it takes effect instantly for in-flight interactions.
+The mute control sits in the nav's settings box beside the theme toggle, with an `aria-pressed` state and a label.
 
 ## Should the default be on?
 
@@ -200,6 +187,6 @@ Arguable. On a personal site where sound is part of the character, on is defensi
 
 **Haptics.** `navigator.vibrate()` isn't implemented: Safari on iOS lacks it, so it would fire only on Android, and a feedback channel on one platform is worse than none. If you add it, keep it under 10ms and tie it to the same mute preference.
 
-**Sounds for anything but hover, click and the one greeting phrase** — no navigation, reveal or error sounds. Two sounds is a texture; five is a soundtrack. The riffle earns its place by playing once per tab.
+**Sounds for anything but hover, click and the one greeting phrase** — no navigation, reveal or error sounds. The riffle earns its place by playing once per tab.
 
 **Pitch variation** by element type or position. It turns an ambient texture into something the user starts trying to interpret.

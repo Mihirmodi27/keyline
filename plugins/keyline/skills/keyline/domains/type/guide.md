@@ -73,7 +73,7 @@ Between sizes too, size is the weakest signal in the 11–20px band: a 13 → 14
 
 A second family earns its place with a second register — literal text in a code face, a brand display voice, interface text beside a serif reading face — never because "headings should feel different", which size, weight, leading and tracking handle. A code face for a handful of spans is a system stack, not a download; IDs, codes and times rarely need even that — tabular, slashed-zero figures (law 10) set them apart in the text face.
 
-Weight is the cheapest second channel for state: colour alone fails WCAG 1.4.1, so an active row takes `weight.strong` *and* `text.primary` — only on states that don't follow the pointer (active, current, selected, not hover), since a weight change alters width and shifts neighbours. **Weight carries one state per product:** if unread rows step up beside their dot, current and selected use a fill, a marker or tier, or the step means nothing.
+Weight is the cheapest second channel for state: colour alone fails WCAG 1.4.1, so an active row adds `weight.strong` to the colour colour law 7 gives it — only on states that don't follow the pointer (active, current, selected, not hover), since a weight change alters width and shifts neighbours. **Weight carries one state per product:** if unread rows step up beside their dot, current and selected use a fill, a marker or tier, or the step means nothing.
 
 ### 6. Leading follows the job
 
@@ -157,7 +157,7 @@ The commonest recorded third is 600 for headings on a dense screen, where 500 is
 
 **Readable floor.** Product can go to 11px because its reader is fluent and glancing — a column header, a unit, a keyboard hint; editorial and expressive readers are not, and an 11px caption goes unread.
 
-**Uppercase labels.** Capitals are a texture; a page of them is signage. Uppercase eyebrows over every section and column are what a template looks like, so product sets labels in sentence case and separates a group label from the same-size rows beneath it by tier (`text.tertiary`) and a hairline rule, not case. Expressive may use capitals for an eyebrow, tracked positive (law 7); editorial doesn't need them. Product's sentence case rules out Title Case too, generated strings included — field names, column headers, dialog titles, toasts; acronyms and proper nouns stay as written.
+**Uppercase labels.** Capitals are a texture; a page of them is signage. Uppercase eyebrows over every section and column are what a template looks like, so product separates a group label from the same-size rows beneath it by tier (`text.tertiary`) and layout law 3's group device — a rule in editorial, the group bar in product — not by case. Expressive may use capitals for an eyebrow, tracked positive (law 7); editorial doesn't need them. Sentence case in the words themselves, generated strings included, is patterns law 1.
 
 **Families.** Reading and interface are two registers (law 5). With a sans reading face one family carries both; with a serif, navigation, buttons, tables and forms may take a second, interface family (`family.ui`), so a serif doesn't set the chrome.
 
@@ -216,7 +216,7 @@ Evidence per law:
 
 Report one line per finding, with evidence, in `DESIGN.md` `## Open issues`: *"`type.lead` (`.intro`) is 20px under an 18px `type.heading` on `app/blog/[slug]` — outranks its heading."* Don't fix while auditing unless asked.
 
-**Sweep after every type decision.** The commonest type bug is the partial update — some instances on the new weight, some on the old — which raw sizes hide from grep. Walk every route rendered against the `## Type` table, migrate raw sizes to role tokens, and report what moved. → `domains/type/type-audit.md`
+**Sweep after every type decision** (the sweep: `domains/patterns/iteration.md`). Raw sizes hide a partial type update from grep, so walk every route rendered against the `## Type` table and migrate raw sizes to role tokens as you go. → `domains/type/type-audit.md`
 
 ## Writing back to DESIGN.md
 

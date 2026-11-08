@@ -1,28 +1,24 @@
 # Measure and rhythm
 
-## Deriving the measure
+Glass's values for layout laws 1–3; the derivations and reasons every preset shares are in `domains/layout/measure-and-rhythm.md`.
 
-```css
-.col { max-width: 640px; margin: 0 auto; padding: 0 32px; }
-```
+## The measure
 
-640px outer, 32px padding each side → **576px of text**.
+`.col` (§1 of the guide) is 640px outer with 32px padding each side → **576px of text**.
 
-At 16px prose that's roughly 75–85 characters per line. The usual comfortable range is 45–75; 576px sits at its top on purpose — long lines are efficient once the reader is committed, and 1.75 leading compensates for the longer return sweep. At 14px UI copy the column holds ~85–95 characters, which is fine because that text is scanned, not read.
+At 16px prose that's roughly 75–85 characters per line, at the top of the comfortable range on purpose: long lines are efficient once the reader is committed, and 1.75 leading compensates for the longer return sweep. At 14px UI copy the column holds ~85–95 characters, which is fine because that text is scanned, not read.
 
 The padding does double duty: on a 375px phone the column is `375 − 64 = 311px`, and on desktop the 32px keeps text off the edge of a maximised window.
 
-That 311px once forced a responsive type step (a 30px title wrapping to three lines) until an 18px type ceiling removed it. **The narrowest measure you ship constrains the type scale, and it's usually cheaper to satisfy it in the scale than with a breakpoint.**
+That 311px once forced a responsive type step (a 30px title wrapping to three lines) until an 18px type ceiling removed it: layout law 1's narrowest-measure check, settled in the scale.
 
 640px also equals Tailwind's `sm` breakpoint — convenient, not meaningful: below it the column is padding-limited, so the two coincide naturally.
 
-## Why every page shares it
-
-For **positional continuity** (§1 of the guide): home-page role summary → `/experience`, writing index → article, any summary/detail pair keeps its text still. A page at a different width breaks the effect for every transition into or out of it.
+The summary and detail pairs it keeps still: home-page role summary → `/experience`, writing index → article.
 
 ## What's allowed outside the column
 
-**Non-text content.** The image galleries are a full-bleed CSS-columns masonry on a grey field with 4px gaps. A masonry grid has no reading measure; confining it to 640px would only make the images small.
+**Non-text content.** The image galleries are a full-bleed CSS-columns masonry on a grey field with 4px gaps; confining it to 640px would only make the images small.
 
 ```tsx
 <main className="min-h-[100dvh] bg-gray-100 p-1 pb-28">
@@ -31,11 +27,7 @@ For **positional continuity** (§1 of the guide): home-page role summary → `/e
 
 Note `columns-3` then `sm:columns-4`: fewer columns on a phone, more on desktop — against the mobile-first instinct for grids, and right here because the tiles are photographs.
 
-**Rails, anchored to a wider frame.** See §2 of the guide.
-
-**Fixed chrome.** The nav strip spans the viewport for centring.
-
-**Not allowed outside:** an article's cover image. Kept to the measure, the page reads as one block from title to last paragraph; bled full-width, it becomes a banner *above* the article.
+**Rails**, anchored to a wider frame (§2 of the guide), and **fixed chrome**: the nav strip spans the viewport for centring.
 
 ## Dividers at column width
 
@@ -49,11 +41,7 @@ export function Divider() {
 }
 ```
 
-Reusing `.col` makes it exactly as wide as the text it separates — the content, not the page, which is what a single-column reading layout means.
-
-`border-0` before `h-[0.5px] bg-…`: an `<hr>` carries a UA border, so without the reset you get the browser's line *and* yours, 2–3px apart.
-
-`aria-hidden` on the wrapper: an `<hr>` is announced as a separator, and a purely rhythmic divider between sections isn't semantic structure.
+Reusing `.col` makes it exactly as wide as the text it separates. The `<hr>` reset and `aria-hidden` are layout law 6's; the half-pixel box is a gap the site still has (`glass/layout/radius-and-elevation.md`).
 
 `my-3` (12px) on top of the sections' own `py-9` (36px) → 48px between the content of adjacent sections, the hairline centred in it.
 
@@ -86,20 +74,13 @@ The values in heaviest use are `2.5`, `3.5`, `9`, `11` — the half-steps and od
 
 ## Asymmetry, in detail
 
-**The gap inside a group must be visibly smaller than the gap around it.**
+Layout law 2 at glass's values, beyond the guide's table (§3):
 
 | Relationship | Inner | Outer | Ratio |
 |---|---|---|---|
-| Prose heading → its paragraph | 12px | 44px | 3.7:1 |
-| List items → next block | 8px | 24px | 3:1 |
-| Bio paragraphs → the links | 16px | 32px | 2:1 |
 | Role title → its description | 2px | 6px | 3:1 |
 | Case study title → body | 6px | 20px (between cards) | 3.3:1 |
 | Capability heading → body | 8px | 32px (between capabilities) | 4:1 |
-
-Ratios cluster between 2:1 and 4:1. Below 2:1 the grouping is ambiguous; above ~5:1 the group starts to feel marooned.
-
-The commonest failure, a heading with symmetric margins, floats between two sections so the reader can't tell which it heads — the difference between a page you can skim and one you can't.
 
 ## Section rhythm
 
@@ -109,17 +90,13 @@ The commonest failure, a heading with symmetric margins, floats between two sect
 <section className="py-9">   {/* 36px symmetric */}
 ```
 
-Symmetric: home sections are siblings.
-
 **Long pages — hierarchy.**
 
 ```tsx
 <section className="mt-16 border-t border-gray-alpha-300 pt-10">
 ```
 
-64px above the rule, 40px below: the rule marks a change of subject, and the content below belongs to the heading after it.
-
-The first section on such a page uses `mt-14` (56px) with no rule — there's nothing above it to separate from.
+64px above the rule, 40px below. The first section on such a page uses `mt-14` (56px) with no rule — there's nothing above it to separate from.
 
 ## Not every boundary gets a rule
 
@@ -133,9 +110,7 @@ const SECTIONS = {
 };
 ```
 
-Work, Experience and Life are the substantial blocks and get separated. Watching and Socials read as a **coda** to Life, so they follow without a rule.
-
-It lives in layout code, not config, because it's a judgement about rhythm, not a preference: as a setting it invites turning every rule on, flattening five sections into equal slabs. The pattern holds for whichever sections are present, so it's a design decision, not a hardcoded list.
+Glass's divider decision (layout law 3): Work, Experience and Life are the substantial blocks and get separated; Watching and Socials read as a **coda** to Life, so they follow without a rule. The flag lives in layout code beside the sections, never in config (`domains/layout/measure-and-rhythm.md`, section rhythm).
 
 ## Page padding
 
@@ -149,13 +124,11 @@ className="pt-28 pb-14 sm:pt-20 sm:pb-11"   // hero
 
 **Bottom padding accounts for the fixed dock.** `pb-28` (112px) on pages whose content can end near the viewport bottom, so the last line is never under the nav. A page ending in a footer can use less, because the footer's own `pb-28` covers it.
 
-Audit this page by page under fixed bottom chrome — the commonest "looks fine on my long page" bug.
-
 ## `dvh` over `vh`
+
+Anything sized to the viewport uses `dvh` (`domains/layout/measure-and-rhythm.md`, viewport units):
 
 ```tsx
 className="min-h-[100dvh]"
 className="max-h-[calc(100dvh-11rem)]"
 ```
-
-On mobile, `vh` ignores browser chrome, so a `100vh` element extends under the address bar and its bottom is unreachable; `dvh` tracks the visible area. Use it for anything sized to the viewport — `svh`/`lvh` only when you specifically want the always-visible or always-maximal height.

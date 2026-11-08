@@ -1,6 +1,6 @@
 # Translucent materials
 
-Only for presets that allow translucency, and surfaces that passed the decision flow in `SKILL.md`.
+Only for presets that allow translucency, and surfaces that passed the decision flow in `domains/depth/guide.md` (*Building it for a project*).
 
 ## What convinces
 

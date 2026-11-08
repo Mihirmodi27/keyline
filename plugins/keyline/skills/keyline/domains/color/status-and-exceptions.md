@@ -23,7 +23,7 @@ In `DESIGN.md`: `status.danger.fg` and `status.danger.bg`, one row each, per the
 
 ### Destructive actions take red ground, not red decoration
 
-In a menu, a destructive item is a `status.danger.bg` row at rest and `status.danger.solid` with white text when highlighted. A red icon and red label on a neutral row is decoration, the coloured paragraph again, and reads as a one-off. It takes no icon: the verb and its place, set apart at the end of the menu, carry it without colour. Every destructive or session-ending item (delete, clear, sign out) takes this one treatment, so the reader learns it once.
+In a menu, a destructive item is a `status.danger.bg` row at rest and `status.danger.solid` with white text when highlighted. A red icon and red label on a neutral row is decoration, the coloured paragraph again, and reads as a one-off. Its icon, place and the items that take it are patterns law 3.
 
 ## Figures take colour only while they report
 
@@ -159,7 +159,7 @@ A red brand and a red danger, or a green brand and a green success, read as each
 
 ### The accent is not an exception
 
-It is the one planned colour, its jobs set by the dial; law 5 in `SKILL.md` covers the ring it can hide when over-spent.
+It is the one planned colour, its jobs set by the dial; colour law 5 covers the ring it can hide when over-spent.
 
 ## Charts are a different palette
 

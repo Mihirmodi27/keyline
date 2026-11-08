@@ -1,0 +1,430 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Tandem: meeting times that work in every time zone</title>
+  <meta name="description" content="Tandem finds the meeting time that works for everyone on a remote team, across every time zone, without the back-and-forth." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Inter+Tight:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="#" aria-label="Tandem home">
+        <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true">
+          <circle cx="12" cy="16" r="9" fill="none" stroke="currentColor" stroke-width="3" />
+          <circle cx="20" cy="16" r="9" fill="none" stroke="var(--accent)" stroke-width="3" />
+        </svg>
+        <span>Tandem</span>
+      </a>
+      <nav class="nav" aria-label="Primary">
+        <a href="#features">Features</a>
+        <a href="#how">How it works</a>
+        <a href="#pricing">Pricing</a>
+        <a href="#faq">FAQ</a>
+      </nav>
+      <div class="header-actions">
+        <a class="link-quiet" href="#">Sign in</a>
+        <a class="btn btn-primary btn-sm" href="#pricing">Start free</a>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <!-- Hero -->
+    <section class="hero">
+      <div class="container hero-grid">
+        <div class="hero-copy">
+          <p class="pill"><span class="pill-dot" aria-hidden="true"></span>New: fair rotation for recurring meetings</p>
+          <h1>Find the hour that works for everyone.</h1>
+          <p class="lead">Tandem reads your team’s calendars and working hours across every time zone, then suggests the meeting time that costs nobody their evening. No spreadsheets, no “does 4pm your time work?” threads.</p>
+          <div class="cta-row">
+            <a class="btn btn-primary btn-lg" href="#pricing">Start free</a>
+            <a class="btn btn-ghost btn-lg" href="#how">
+              <svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="8.5" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8.25 6.75v6.5L13.5 10z" fill="currentColor"/></svg>
+              See how it works
+            </a>
+          </div>
+          <p class="fine">Free for teams up to 5. No credit card needed.</p>
+        </div>
+
+        <!-- Product visual -->
+        <div class="product" aria-label="Tandem app preview: four teammates across Austin, Toronto, London and Lagos, with 15:00 UTC highlighted as the one hour inside everyone’s working day" role="img">
+          <div class="window">
+            <div class="window-bar">
+              <span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>
+              <span class="window-title">Design sync · 30 min</span>
+              <span class="window-chip">Wed 4 Nov</span>
+            </div>
+
+            <div class="planner">
+              <div class="planner-head">
+                <span class="planner-label">Teammate</span>
+                <div class="hours-scale">
+                  <span>11</span><span>12</span><span>13</span><span>14</span><span class="is-best">15</span><span>16</span><span>17</span><span>18</span><span>19</span><span>20</span><span>21</span><span>22</span>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="who"><span class="avatar a1">MR</span><span><b>Maya R.</b><small>Austin · UTC−6</small></span></div>
+                <div class="cells">
+                  <i class="n">5</i><i class="n">6</i><i class="e">7</i><i class="e">8</i><i class="w best">9</i><i class="w">10</i><i class="w">11</i><i class="w">12</i><i class="w">13</i><i class="w">14</i><i class="w">15</i><i class="w">16</i>
+                </div>
+              </div>
+              <div class="row">
+                <div class="who"><span class="avatar a2">DK</span><span><b>Dev K.</b><small>Toronto · UTC−5</small></span></div>
+                <div class="cells">
+                  <i class="n">6</i><i class="e">7</i><i class="e">8</i><i class="w">9</i><i class="w best">10</i><i class="w">11</i><i class="w">12</i><i class="w">13</i><i class="w">14</i><i class="w">15</i><i class="w">16</i><i class="e">17</i>
+                </div>
+              </div>
+              <div class="row">
+                <div class="who"><span class="avatar a3">PS</span><span><b>Priya S.</b><small>London · UTC+0</small></span></div>
+                <div class="cells">
+                  <i class="w">11</i><i class="w">12</i><i class="w">13</i><i class="w">14</i><i class="w best">15</i><i class="w">16</i><i class="e">17</i><i class="e">18</i><i class="e">19</i><i class="n">20</i><i class="n">21</i><i class="n">22</i>
+                </div>
+              </div>
+              <div class="row">
+                <div class="who"><span class="avatar a4">TA</span><span><b>Tobi A.</b><small>Lagos · UTC+1</small></span></div>
+                <div class="cells">
+                  <i class="w">12</i><i class="w">13</i><i class="w">14</i><i class="w">15</i><i class="w best">16</i><i class="e">17</i><i class="e">18</i><i class="e">19</i><i class="n">20</i><i class="n">21</i><i class="n">22</i><i class="n">23</i>
+                </div>
+              </div>
+
+              <div class="legend" aria-hidden="true">
+                <span><i class="sw w"></i>Working hours</span>
+                <span><i class="sw e"></i>Flexible</span>
+                <span><i class="sw n"></i>Off</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="suggest" aria-hidden="true">
+            <div class="suggest-top">
+              <span class="suggest-badge">
+                <svg viewBox="0 0 16 16"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </span>
+              <span>
+                <b>Best time found</b>
+                <small>15:00 UTC · 4 of 4 in hours</small>
+              </span>
+              <span class="suggest-btn">Send invite</span>
+            </div>
+            <ul class="suggest-list">
+              <li><span>Maya</span><span>9:00 am</span></li>
+              <li><span>Dev</span><span>10:00 am</span></li>
+              <li><span>Priya</span><span>3:00 pm</span></li>
+              <li><span>Tobi</span><span>4:00 pm</span></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Logos -->
+    <section class="logos" aria-label="Customers">
+      <div class="container">
+        <p class="logos-title">Trusted by 2,400+ distributed teams</p>
+        <ul class="logo-row">
+          <li>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l10 18H2z" fill="currentColor"/></svg>
+            <span>Kestrel</span>
+          </li>
+          <li>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2.5"/><circle cx="12" cy="12" r="4" fill="currentColor"/></svg>
+            <span>Orbitly</span>
+          </li>
+          <li>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="8" height="8" rx="2" fill="currentColor"/><rect x="13" y="13" width="8" height="8" rx="2" fill="currentColor"/><rect x="13" y="3" width="8" height="8" rx="2" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+            <span>Parcelwise</span>
+          </li>
+          <li>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 18c3-8 6-12 9-12s6 4 9 12" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>
+            <span>Fieldnote</span>
+          </li>
+          <li>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h16v4H8v12H4z" fill="currentColor"/><rect x="12" y="12" width="8" height="8" fill="currentColor"/></svg>
+            <span>Lumenworks</span>
+          </li>
+          <li>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 14c4-6 6-6 10 0s6 6 10 0" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>
+            <span>Harborline</span>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- Features -->
+    <section class="section" id="features">
+      <div class="container features-layout">
+        <div class="section-head">
+          <h2>Everything a team spread across the map needs to meet well</h2>
+          <p class="section-sub">Tandem does the arithmetic, respects people’s evenings and keeps the schedule fair as your team grows.</p>
+        </div>
+
+        <ul class="features">
+          <li class="feature">
+            <h3><span class="icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><circle cx="9" cy="12" r="6"/><circle cx="15" cy="12" r="6"/></svg>
+            </span>Overlap finder</h3>
+            <p>See every teammate’s working day on one timeline, and the hours where they overlap, ranked from best to worst.</p>
+          </li>
+          <li class="feature">
+            <h3><span class="icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M4 12a8 8 0 0 1 14-5.3M20 12a8 8 0 0 1-14 5.3"/><path d="M18 3v4h-4M6 21v-4h4"/></svg>
+            </span>Fair rotation</h3>
+            <p>For recurring meetings, Tandem rotates the early and late slots so the same people aren’t always on at 7am.</p>
+          </li>
+          <li class="feature">
+            <h3><span class="icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg>
+            </span>Two-way calendar sync</h3>
+            <p>Works with Google Calendar, Outlook and iCloud. Busy blocks stay private: Tandem only ever sees free or busy.</p>
+          </li>
+          <li class="feature">
+            <h3><span class="icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg>
+            </span>Working hours and holidays</h3>
+            <p>Each person sets their own hours and focus blocks. Public holidays in 120 countries are added automatically.</p>
+          </li>
+          <li class="feature">
+            <h3><span class="icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M4 5.5h16v10H9l-5 4z"/><path d="M8.5 10.5h7"/></svg>
+            </span>Polls in Slack and Teams</h3>
+            <p>Share the top three times as a one-tap poll in the channel. Tandem books the winner the moment everyone’s voted.</p>
+          </li>
+          <li class="feature">
+            <h3><span class="icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><rect x="3.5" y="6" width="12" height="12" rx="2.5"/><path d="M15.5 10.5l5-3v9l-5-3"/></svg>
+            </span>Async when there’s no overlap</h3>
+            <p>When nobody’s hours meet, Tandem says so and suggests a recorded update with a reply window instead.</p>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- How it works -->
+    <section class="section section-tint" id="how">
+      <div class="container">
+        <div class="section-head">
+          <h2>From “when are you free?” to booked in a minute</h2>
+        </div>
+
+        <ol class="steps">
+          <li class="step">
+            <span class="step-num" aria-hidden="true">01</span>
+            <h3>Connect your calendar</h3>
+            <p>Sign in with Google or Microsoft. Tandem picks up your time zone and suggests working hours you can adjust.</p>
+            <div class="step-visual" aria-hidden="true">
+              <span class="chip"><i class="g"></i>Google Calendar</span>
+              <span class="chip"><i class="o"></i>Outlook</span>
+              <span class="chip ok">Connected</span>
+            </div>
+          </li>
+          <li class="step">
+            <span class="step-num" aria-hidden="true">02</span>
+            <h3>Choose who needs to be there</h3>
+            <p>Add people or a whole team, mark who’s required and who’s optional, and set how long the meeting runs.</p>
+            <div class="step-visual" aria-hidden="true">
+              <span class="stack"><span class="avatar a1">MR</span><span class="avatar a2">DK</span><span class="avatar a3">PS</span><span class="avatar a4">TA</span></span>
+              <span class="chip">30 min</span>
+            </div>
+          </li>
+          <li class="step">
+            <span class="step-num" aria-hidden="true">03</span>
+            <h3>Send the best time</h3>
+            <p>Pick from ranked suggestions and send. Everyone gets the invite in their own local time, with the right video link.</p>
+            <div class="step-visual" aria-hidden="true">
+              <span class="chip accent">Wed · 15:00 UTC</span>
+              <span class="chip ok">Invite sent</span>
+            </div>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section class="section section-dark" aria-labelledby="t-title">
+      <div class="container">
+        <div class="section-head">
+          <h2 id="t-title">Teams in 60 countries stopped doing time-zone maths</h2>
+        </div>
+
+        <div class="quotes">
+          <figure class="quote">
+            <blockquote>“We have engineers in Lisbon, Manila and Denver. Before Tandem our standup was a 40-message Slack thread every quarter. Now it just gets booked.”</blockquote>
+            <figcaption>
+              <span class="avatar a2">LC</span>
+              <span><b>Lena Castellanos</b><small>Head of Engineering, Orbitly</small></span>
+            </figcaption>
+          </figure>
+          <figure class="quote">
+            <blockquote>“Fair rotation was the feature I didn’t know I needed. Our Sydney team used to take every 6am call. Now it’s shared, and people noticed.”</blockquote>
+            <figcaption>
+              <span class="avatar a3">JO</span>
+              <span><b>James Okafor</b><small>COO, Parcelwise</small></span>
+            </figcaption>
+          </figure>
+          <figure class="quote">
+            <blockquote>“I schedule customer calls across nine time zones a week. Tandem cut the time I spend on it from a few hours to about ten minutes.”</blockquote>
+            <figcaption>
+              <span class="avatar a1">HN</span>
+              <span><b>Hana Nakamura</b><small>Customer Success Lead, Kestrel</small></span>
+            </figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <!-- Pricing -->
+    <section class="section" id="pricing">
+      <div class="container">
+        <div class="section-head">
+          <h2>Simple pricing that grows with your team</h2>
+          <p class="section-sub">Start free. Upgrade when you need more people, more calendars or more control.</p>
+        </div>
+
+        <div class="plans">
+          <article class="plan">
+            <h3>Free</h3>
+            <p class="plan-desc">For small teams getting started.</p>
+            <p class="price"><span class="amount">$0</span><span class="per">forever</span></p>
+            <a class="btn btn-ghost btn-block" href="#">Start free</a>
+            <ul class="checks">
+              <li>Up to 5 members</li>
+              <li>1 connected calendar each</li>
+              <li>Overlap finder</li>
+              <li>Working hours and holidays</li>
+            </ul>
+          </article>
+
+          <article class="plan plan-featured">
+            <span class="plan-tag">Most popular</span>
+            <h3>Team</h3>
+            <p class="plan-desc">For growing teams that meet every week.</p>
+            <p class="price"><span class="amount">$8</span><span class="per">per user / month</span></p>
+            <a class="btn btn-primary btn-block" href="#">Start 14-day trial</a>
+            <ul class="checks">
+              <li>Unlimited members</li>
+              <li>Unlimited calendars</li>
+              <li>Fair rotation for recurring meetings</li>
+              <li>Slack and Teams polls</li>
+              <li>Zoom, Meet and Teams links</li>
+            </ul>
+          </article>
+
+          <article class="plan">
+            <h3>Business</h3>
+            <p class="plan-desc">For organisations with admin and security needs.</p>
+            <p class="price"><span class="amount">$16</span><span class="per">per user / month</span></p>
+            <a class="btn btn-ghost btn-block" href="#">Talk to sales</a>
+            <ul class="checks">
+              <li>Everything in Team</li>
+              <li>SAML SSO and SCIM</li>
+              <li>Admin controls and audit log</li>
+              <li>Meeting-load analytics</li>
+              <li>Priority support with an SLA</li>
+            </ul>
+          </article>
+        </div>
+        <p class="plans-note">Prices in USD, billed monthly. Save 20% with annual billing.</p>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="section section-tint" id="faq">
+      <div class="container faq-grid">
+        <div class="section-head">
+          <h2>Questions, answered</h2>
+          <p class="section-sub">Can’t find what you’re looking for? Email <a href="#">hello@tandem.app</a> and a person will reply within a day.</p>
+        </div>
+
+        <div class="faq">
+          <details>
+            <summary>Can Tandem see what’s in my calendar events?</summary>
+            <p>No. Tandem only reads free and busy status. Event titles, descriptions and attendees stay private, and you can disconnect a calendar at any time.</p>
+          </details>
+          <details>
+            <summary>What happens when daylight saving time changes?</summary>
+            <p>Tandem tracks every time zone’s daylight saving rules. Recurring meetings are checked before each change, and you’re warned if a slot is about to fall outside someone’s working hours.</p>
+          </details>
+          <details>
+            <summary>Do guests outside my team need an account?</summary>
+            <p>No. Guests can share their availability through a link without signing up, and they receive a normal calendar invite.</p>
+          </details>
+          <details>
+            <summary>How does fair rotation decide who takes the early slot?</summary>
+            <p>Tandem keeps a running score of out-of-hours meetings for each person and picks the slot that keeps those scores even over time. You can see the score and override any suggestion.</p>
+          </details>
+          <details>
+            <summary>Can I switch plans or cancel later?</summary>
+            <p>Yes. You can upgrade, downgrade or cancel from settings at any time. When you downgrade, you keep your history and settings.</p>
+          </details>
+          <details>
+            <summary>Do you offer discounts for nonprofits and education?</summary>
+            <p>Yes, 50% off Team and Business for registered nonprofits and schools. Get in touch with a link to your organisation.</p>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- Final CTA -->
+    <section class="final">
+      <div class="container">
+        <div class="final-card">
+          <h2>Your next meeting is one click away</h2>
+          <p>Set up Tandem in two minutes and find the time that works for everyone, wherever they are.</p>
+          <div class="cta-row cta-center">
+            <a class="btn btn-light btn-lg" href="#">Start free</a>
+            <a class="btn btn-outline-light btn-lg" href="#">Talk to sales</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-grid">
+      <div class="footer-brand">
+        <a class="brand" href="#" aria-label="Tandem home">
+          <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true">
+            <circle cx="12" cy="16" r="9" fill="none" stroke="currentColor" stroke-width="3" />
+            <circle cx="20" cy="16" r="9" fill="none" stroke="var(--accent)" stroke-width="3" />
+          </svg>
+          <span>Tandem</span>
+        </a>
+        <p>Meeting times that work in every time zone.</p>
+      </div>
+      <nav aria-label="Product">
+        <h2 class="footer-title">Product</h2>
+        <a href="#features">Features</a>
+        <a href="#pricing">Pricing</a>
+        <a href="#">Integrations</a>
+        <a href="#">Changelog</a>
+      </nav>
+      <nav aria-label="Company">
+        <h2 class="footer-title">Company</h2>
+        <a href="#">About</a>
+        <a href="#">Careers</a>
+        <a href="#">Blog</a>
+        <a href="#">Contact</a>
+      </nav>
+      <nav aria-label="Resources">
+        <h2 class="footer-title">Resources</h2>
+        <a href="#">Help centre</a>
+        <a href="#">Time zone guide</a>
+        <a href="#">Status</a>
+        <a href="#">Security</a>
+      </nav>
+    </div>
+    <div class="container footer-bottom">
+      <p>© 2026 Tandem Labs Ltd.</p>
+      <p><a href="#">Privacy</a><a href="#">Terms</a><a href="#">Cookies</a></p>
+    </div>
+  </footer>
+</body>
+</html>

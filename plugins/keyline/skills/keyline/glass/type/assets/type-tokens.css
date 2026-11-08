@@ -13,7 +13,7 @@
      (next/font, fontaine, or a hand-tuned @font-face with size-adjust). The
      system faces after it are belt and braces for a request that never lands.
      A bare `display: swap` without metric matching is a reflow under the
-     reader's eye — see §7 of the SKILL.md. */
+     reader's eye — see §7 of glass/type/guide.md. */
   --font-sans: var(--font-archivo), system-ui, -apple-system, "Helvetica Neue", sans-serif;
 
   /* Code, commands and paths. System stack on purpose — a second webfont for

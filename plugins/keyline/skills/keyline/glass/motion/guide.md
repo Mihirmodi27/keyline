@@ -1,12 +1,12 @@
-# Glass Motion
+# Glass motion
 
-> **Glass preset.** This is the motion system running on [modimihir.com](https://modimihir.com), with its real values, meant to be copied whole. It leads when `DESIGN.md` names the `glass` preset; under any other preset, `domains/motion/guide.md` leads and this guide is only a worked example.
+> **Glass preset.** The motion system running on [modimihir.com](https://modimihir.com), with its real values, meant to be copied whole. Read it beside `domains/motion/guide.md`: the laws live there, and this guide holds only what glass sets — its durations, curve, springs and tokens, its recipes and code, and the decisions behind them. Under any other preset it is only a worked example.
 
-Motion in a text-heavy interface has one job: **make a change legible.** Not to delight, not to demonstrate craft. If you can remove an animation and the user is no less clear about what happened, remove it. The few places you *do* spend motion — a menu that squashes open, a highlight sliding between rows — then land hard, because nothing competes. State is CSS transitions; springs and presence use [Motion](https://motion.dev).
+State is CSS transitions; springs and presence use [Motion](https://motion.dev). "Law" below means a motion law in the domain guide.
 
 ## 1. The duration ladder
 
-Duration is set by **how much of the screen changes**, not by how important the element feels.
+Tiers by area, not importance (law 2):
 
 | Tier | Duration | What moves | Easing |
 |---|---|---|---|
@@ -18,19 +18,17 @@ Duration is set by **how much of the screen changes**, not by how important the 
 | Route | 260ms | An incoming page fading in | the house curve |
 | Theme | 400ms | Every colour on the page at once | plain `ease` |
 
-Three numbers carry almost everything: **150 / 200 / 300**. **Route is 260ms**, not 300: a page transition sits on the critical path to content, and 260 is the shortest crossfade that doesn't read as a flicker. **Theme is 400ms with plain `ease`**: the largest change gets the longest duration, and colour has no momentum, so the house curve's overshoot would read as a wobble. Nothing loops, nothing animates to attract attention, and nothing on the ladder exceeds 400ms.
+Three numbers carry almost everything: **150 / 200 / 300**. **Route is 260ms**, not 300: 260 is the shortest crossfade on the critical path that doesn't read as a flicker. **Theme is 400ms with plain `ease`**, the largest change on the longest duration, and colour gets no overshoot. Nothing on the ladder exceeds 400ms.
 
-**Hover is on the ladder by area too.** A link's opacity takes 100ms; a wash across a whole card is a larger change and takes 200ms. Under 100ms on a large surface reads as a cut, not a fade. And **motion that stands for a process stops when the process does**: a moving meter or a working stroke holds still the moment its source pauses, since motion that carries on claims work that isn't happening.
+**Hover takes its tier by area:** a link's opacity 100ms, a wash across a whole card 200ms.
 
 ### Two things that sit off the ladder
 
-The ladder is for **state**: something changed that the user must follow. Two things aren't, and forcing them onto it makes them worse.
+Glass uses two of law 4's classes:
 
-**The subject of the moment.** Stepping between gallery photographs dissolves over **620ms**: the photograph *is* the content, watched directly, and a noise-thresholded dissolve needs time to read as a dissolve rather than a cut. The same photo's flight between two layouts stays at 420ms, in the overlay tier, because that *is* a state change with the photo on screen at both ends. **Same component, two durations, decided by whether the motion is the subject or the report.**
+**The subject of the moment.** Stepping between gallery photographs dissolves over **620ms**: the photograph *is* the content, and a noise-thresholded dissolve needs time to read as a dissolve rather than a cut. The same photo's flight between two layouts stays at 420ms, in the overlay tier, because that *is* a state change with the photo on screen at both ends. **Same component, two durations, decided by whether the motion is the subject or the report.**
 
-**A once-a-session set piece.** The opening screen runs 560ms in, holds 1400ms, about 2.5 seconds in all: indefensible as interaction, fine as a greeting that plays once per tab, never blocks a deep link and never runs under reduced motion.
-
-The test: **would a user see this more than a handful of times a session?** If yes, it's on the ladder; if no, it earns its own timing by never appearing again.
+**A once-a-session set piece.** The opening screen runs 560ms in, holds 1400ms, about 2.5 seconds in all, defensible only because it plays once per tab (§14).
 
 ## 2. One easing curve
 
@@ -38,20 +36,18 @@ The test: **would a user see this more than a handful of times a session?** If y
 --ease-geist: cubic-bezier(0.175, 0.885, 0.32, 1.1);
 ```
 
-One curve for the whole site. The `1.1` end control point overshoots slightly and settles back, physical but not bouncy, and sharing it makes unrelated elements moving at once feel like one system. The exceptions:
+One curve for the whole site. The `1.1` end control point overshoots slightly and settles back, physical but not bouncy. The exceptions:
 
-- **Opacity-only micro-transitions**: `ease-out` at 100ms, since opacity has no position and clamps at 1.
+- **Opacity-only micro-transitions**: `ease-out` at 100ms.
 - **The theme crossfade**: plain `ease`.
 - **Anything spring-driven**: no bezier at all.
-- **Any track that also drives a filter**, or any property floored at zero — brightness, a border radius, a scale you've promised won't invert. That's correctness, not taste: an overshooting curve passes its end value, so a `blur()` animating to `0px` would need a negative radius. Use expo-out, `cubic-bezier(0.16, 1, 0.3, 1)`, which never exceeds 1.
+- **Any track that also drives a filter**, or any property floored at zero (law 5): expo-out, `cubic-bezier(0.16, 1, 0.3, 1)`, which never exceeds 1. It is the same intent in a curve legal for the property, not a second character.
 
-Overshoot is safe on transform, so **check what else rides the curve**. And never write a second bezier "because this one needs to feel different": character belongs to springs, and expo-out is the same intent in a curve legal for the property, not a second character.
-
-→ Full reasoning, plus the bezier-vs-spring decision: `glass/motion/easing-and-duration.md`
+→ The tiers in code, the theme crossfade, and the overshoot: `glass/motion/easing-and-duration.md`
 
 ## 3. Springs, tuned by character
 
-Three springs, each with a job. Two are written as `bounce`/`duration` (a designer's controls), one as `stiffness`/`damping`/`mass` (a physicist's); use whichever states the intent more directly.
+Three springs, each with a job (law 6), plus the close:
 
 ```ts
 // Highlight or tooltip re-targeting: moving, not arriving — almost no bounce.
@@ -69,13 +65,13 @@ const CROSS = { type: "spring", stiffness: 380, damping: 30 } as const;
 const CLOSE = { duration: 0.13, ease: "easeIn" } as const;
 ```
 
-**Split opacity out of every spring**, as `SLIDE` does: a spring on opacity overshoots toward transparent and back, which is a flicker. Position wants physics; opacity wants a curve.
+Opacity is split out of every spring, as `SLIDE` does (law 6).
 
-→ Tuning guide, bounce vs damping, how to arrive at these numbers: `glass/motion/springs.md`
+→ How these numbers were arrived at: `glass/motion/springs.md`
 
 ## 4. Squash and stretch, out of physics
 
-The best motion detail in the system, in four lines of config. A menu scales open from its anchored edge, and the **grow axis and the cross axis get springs of different character**: `GROW` is light and underdamped, and sails past its final size; `CROSS` is heavily damped and arrives late. Through the overshoot the panel is briefly **taller and narrower** than it ends up — squash and stretch from physics rather than a keyframe timeline, so it stays interruptible and velocity-aware.
+The best motion detail in the system, in four lines of config. A menu scales open from its anchored edge: `GROW` is light and underdamped, and sails past its final size; `CROSS` is heavily damped and arrives late. Through the overshoot the panel is briefly **taller and narrower** than it ends up.
 
 ```tsx
 transition={{
@@ -86,7 +82,7 @@ transition={{
 }}
 ```
 
-**When two axes of one element move together, giving them different springs creates deformation, and deformation reads as mass.**
+→ The principle: `domains/motion/ladder-and-curves.md`, squash and stretch. The component: `glass/motion/assets/DropMenu.tsx`
 
 ## 5. Asymmetric open and close
 
@@ -95,11 +91,11 @@ transition={{
 | Open | spring, overshoots | ~400ms effective |
 | Close | tween, `easeIn`, flat | 130ms |
 
-Opening answers the user's intent and can afford personality. Closing happens after they've moved on: a bounce on exit reads as *reluctance*, and delays whatever they reach for next. Close fast, close flat. The exit offsets are smaller too — open starts from `scaleY: 0.82, scaleX: 0.94`, exit only goes to `scaleY: 0.9, scaleX: 0.97` — because it's disappearing anyway.
+Why exits get out of the way is law 7. The exit offsets are smaller too: open starts from `scaleY: 0.82, scaleX: 0.94`, exit only goes to `scaleY: 0.9, scaleX: 0.97`.
 
 ## 6. Shared elements
 
-The signature interaction: in a dock or a list, **one** highlight and **one** tooltip animate their `x / y / width / height` to whichever item is hovered.
+In the dock and in lists, **one** highlight and **one** tooltip animate their `x / y / width / height` to whichever item is hovered (law 8):
 
 ```tsx
 // One element. It re-targets. It does not remount.
@@ -114,73 +110,49 @@ The signature interaction: in a dock or a list, **one** highlight and **one** to
 />
 ```
 
-Per-item hover backgrounds flicker as one fades out and the next fades in; one shared element slides instead.
+The details that keep it from flickering are in `domains/motion/patterns.md`, the shared highlight; in Tailwind they are `isolate` on the container and `-z-10` on the highlight.
 
-- **`initial={false}`** skips the mount animation, or the highlight flies in from the origin on first paint.
-- **`isolate` on the container, `-z-10` on the highlight** keeps the bar behind the icons but inside its own stacking context, never behind the container's background.
-- **Measure with `offsetLeft/offsetTop`, not `getBoundingClientRect()`.** Offsets are already in the positioned parent's coordinate space: no scroll maths, no reflow read.
-
-→ In full, with the tooltip variant and hit-target measurement: `glass/motion/shared-element.md`
+→ The tooltip and vertical-list variants, and the active state: `glass/motion/shared-element.md`
 
 ### When the DOM element isn't enough
 
-A *photograph* travelling between layouts is different: an `<img>` animated between boxes of different aspect distorts, and re-laying-out a hundred-tile wall every frame is unaffordable. One viewport-sized canvas above the gallery draws the open photo into a screen rect instead — four numbers in a uniform, no reflow — under four rules:
+A *photograph* travelling between layouts escalates to the GPU (law 13): one viewport-sized canvas above the gallery draws the open photo into a screen rect, four numbers in a uniform, no reflow. The wall stays DOM, since a hundred tiles as textures is ~590MB before atlasing; the open photo is `alt=""`, its labels sitting beside it; failure returns `null` and keeps the caller's `<img>`.
 
-- **Only the decorative element goes on the GPU — one element, not a view.** The wall stays DOM: a hundred tiles as textures is ~590MB before atlasing, with keyboard and screen-reader semantics a canvas can't carry. The open photo is `alt=""` (its labels sit beside it), so drawing it loses nothing.
-- **Failing must return `null`, never throw**, since a throw in an effect takes the gallery down; `null` keeps the caller's `<img>`, the same path as reduced motion or a lost context.
-- **Carry the reading position across**: open the other layout on the tile nearest the viewport centre, measured before React commits it. Landing at the top of a filmstrip from photo 60 is worse than no transition.
-- **Each end keeps its own shape**: two rects around a shared centre, since one stretches whichever photograph has the other aspect.
+**Carry the reading position across**: open the other layout on the tile nearest the viewport centre, measured before React commits it, and give each end its own rect around a shared centre (law 8).
 
-## 7. Reduced motion is a branch, not a switch
+→ The measurement (`centreFrame`) and the WebGL notes: `glass/motion/shared-element.md`, escalating to the GPU
 
-Every animated component reads the preference and takes its own path. A global "disable animations" gives you a menu that pops into existence with no sign it opened.
+## 7. Reduced motion
+
+Every animated component takes its own branch (law 10):
 
 ```tsx
 const reduce = useReducedMotion();
 const tween = reduce ? { duration: 0.15 } : SLIDE;
 ```
 
-The four substitutions:
-
-| Original | Reduced | Why |
-|---|---|---|
-| Spring slide | 150ms tween | State change stays legible; physics goes. |
-| Squash-and-stretch open | plain fade | Presence is still communicated. |
-| Reveal-on-scroll | fully off, content visible | The animation *is* the effect; nothing to degrade to. |
-| Blur crossfade | crossfade, `blur(0px)` | Blur is the vestibular trigger, the fade isn't. |
+The glass substitutes: a spring slide becomes a 150ms tween; the squash-and-stretch open becomes a plain fade.
 
 ```tsx
 // No elastic scaling, but you still see it appear.
 initial={reduce ? { opacity: 0 } : { opacity: 0, scaleY: 0.82, scaleX: 0.94, y: 4 }}
 ```
 
-Also honour `prefers-reduced-transparency` (glass → solid) and `prefers-contrast: more` (add borders) — see the Glass colour guide (`glass/color/guide.md`). Imperative APIs don't read it, so pass it yourself: `scrollIntoView({ behavior: reduce ? "auto" : "smooth" })`.
+Imperative APIs get the preference passed in: `scrollIntoView({ behavior: reduce ? "auto" : "smooth" })`. Reduced transparency and high contrast are §8 of `glass/depth/guide.md`.
 
-→ Every guard in the system, and how to test them: `glass/motion/reduced-motion.md`
+→ Every glass substitute: `glass/motion/reduced-motion.md`
 
-## 8. Scroll: one listener, one rAF
+## 8. Scroll
 
-Every scroll-driven behaviour has this shape:
+One passive listener and one rAF per behaviour (law 12; the shape is in `domains/motion/performance.md`).
 
-```ts
-let ticking = false;
-const onScroll = () => {
-  if (!ticking) { ticking = true; requestAnimationFrame(update); }
-};
-window.addEventListener("scroll", onScroll, { passive: true });
-```
+**The dock's dead zone** is 6px of intent either way, and it is always open within 24px of the top or at the bottom. **It collapses only where `(hover: hover) and (pointer: fine)` matches**, so a hover can reopen it.
 
-`passive: true` and the `ticking` flag (one measurement per frame) are both mandatory, not optimisations.
-
-**Hysteresis stops flicker.** A dock that collapses on scroll-down needs a dead zone — 6px of intent either way, and always open within 24px of the top or at the bottom — or a 1px jitter toggles it forever.
-
-**Never hide an affordance where it can't come back.** The dock collapses only where `(hover: hover) and (pointer: fine)` matches, so a hover can reopen it; on touch, a collapsed dock would strand the navigation. Gate every hover-revealed control on the capability, and give touch its own path.
-
-→ Scroll spies, `scroll-mt` alignment, rAF throttling: `glass/motion/scroll-performance.md`
+→ Scroll spy, `scroll-mt` alignment, the grid collapse: `glass/motion/scroll-performance.md`
 
 ## 9. Reveal on scroll
 
-CSS animates; JavaScript only marks an element as arrived.
+CSS animates; JavaScript only marks an element as arrived:
 
 ```css
 .reveal { opacity: 0; transform: translateY(8px);
@@ -192,17 +164,12 @@ CSS animates; JavaScript only marks an element as arrived.
 }
 ```
 
-An `IntersectionObserver` sets `data-in` and immediately **unobserves**: a reveal is one-shot, and re-animating on scroll-back is nauseating. `threshold: 0` with `rootMargin: "0px 0px -40px 0px"` fires once an element is 40px inside the viewport — the margin, not a threshold, does that. 8px of travel registers without a page of paragraphs seeming to slide. Five failure modes:
+`threshold: 0` with `rootMargin: "0px 0px -40px 0px"`, one-shot, re-run on the pathname. 8px of travel registers without a page of paragraphs seeming to slide. Every guard is law 11 and `domains/motion/guards.md`; the two the site hit:
 
-**A fractional threshold on a tall element.** A threshold is a fraction of the element's *own* area, and the visible ratio can't exceed viewport height over element height, so anything over ten screens tall never reaches `0.1` and the observer never fires — every rendered SKILL.md on the site, eight to thirteen thousand pixels in one `.reveal`, once sat invisible at opacity 0. Never use a fractional threshold for a reveal; the root margin works at any height.
+- **A fractional threshold on a tall element.** Every rendered SKILL.md on the site, eight to thirteen thousand pixels in one `.reveal`, once sat invisible at opacity 0 behind `0.1`.
+- **A class the framework owns.** Tag-filtered rows went blank as the pointer left, when React rewrote a state-dependent `className` and wiped an `in` added with `classList.add`. Hence `data-in`.
 
-**A class the framework owns.** Once `className` depends on state, React rewrites it on render, wiping an `in` added with `classList.add`, and the already-unobserved element fades to 0 for good (tag-filtered rows here went blank as the pointer left). Mark arrival with an attribute the framework doesn't render (`data-in`), and match `.reveal[data-in]`.
-
-**No `IntersectionObserver`**: mark everything arrived immediately. Never leave content at `opacity: 0` behind a feature check.
-
-**Route changes**: re-run the observer keyed on the pathname, or the new page goes unobserved.
-
-**No JavaScript at all** — the one people miss, since no feature check catches it: the CSS applies and `data-in` is never set. Two lines in the head:
+The no-JavaScript reset, in the head:
 
 ```html
 <noscript>
@@ -210,18 +177,13 @@ An `IntersectionObserver` sets `data-in` and immediately **unobserves**: a revea
 </noscript>
 ```
 
-**Any CSS that hides content pending JavaScript needs a `<noscript>` reset.** It's a correctness bug, not a progressive-enhancement nicety: the failure is a blank page, not a plain one.
-
 ## 10. Performance: `m` not `motion`
 
-`motion.div` bundles every feature at import. `m.div` inside `<LazyMotion features={domAnimation} strict>` is minimal and loads only the bundle named — `domAnimation` (no layout animations, no drag) is a fraction of the size — while `strict` makes a stray `motion.*` component a build error.
-
-- **Animate `transform` and `opacity`**, not `width`/`height`/`top`/`left`, which trigger layout every frame. The shared highlight's `width`/`height` is an exception you should be able to justify: one absolutely-positioned element outside the flow.
-- **A transform on a parent weakens `backdrop-filter` in its subtree**, so the wrapper scales and the child carries the blur: the menu animates a bare `<m.div>` around the `glass-panel`.
+`m.div` inside `<LazyMotion features={domAnimation} strict>`, never a bare `motion.*` (`domains/motion/performance.md`). The menu animates a bare `<m.div>` around the `glass-panel`, so the wrapper scales and the child carries the blur (law 13).
 
 ## 11. Hover intent
 
-A 100ms grace period on close, so crossing the gap from a trigger into its menu doesn't close it:
+A 100ms grace period on close (law 14):
 
 ```ts
 const closeBoxSoon = () => {
@@ -230,9 +192,9 @@ const closeBoxSoon = () => {
 };
 ```
 
-Where the elements are adjacent, a **hover bridge** is cheaper: wrapper padding that spans the gap (`pt-2.5` between a button and the pill below it), so the pointer never leaves the hover region. Otherwise use the timer, and always clear it on unmount and on navigation.
+The hover bridge here is `pt-2.5` of wrapper padding between a button and the pill below it.
 
-**Hover reports; it doesn't travel.** A surface under the pointer takes a wash, never a translate-up: a grid of cards rising on hover reads as a marketing page, and moves the target the pointer is aiming at. The folder's rising cards (`LIFT`) are the one exception, and being the only one is the point (`glass/motion/springs.md`).
+**Hover is a wash, never a translate-up** (law 1). The folder's rising cards (`LIFT`) are the one exception, and being the only one is the point (`glass/motion/springs.md`).
 
 ## 12. Press and sound
 
@@ -240,25 +202,17 @@ Where the elements are adjacent, a **hover bridge** is cheaper: wrapper padding 
 active:scale-[0.92]   /* 8% — felt, not seen */
 ```
 
-On the press, not the release: respond to `pointerdown`; waiting for `click` feels dead.
+On `pointerdown` (law 3).
 
-The site also synthesises a "tok" on hover and click (Web Audio, no asset files): a sine fundamental, a fast-decaying marimba-like 3.9:1 partial, and a lowpassed noise transient for the wooden attack. Hover is quiet and high (1200Hz, 0.09s, 0.05 gain), click lower and louder (900Hz, 0.14s, 0.13 gain); it's gated on the autoplay policy, muteable, and persisted.
-
-**Arm the context on every gesture the browser accepts as activation, not just the one you expect**: `pointerdown`, `keydown` and `touchstart`. Hover is activation in no engine, so with `pointerdown` alone a reader who only hovers the dock hears nothing — *the hover was the interaction*. Enter on a focused link dispatches `click` into a still-suspended context, so keyboard-only readers never hear the site. Keep the handler idempotent (`resume()` on a running context is a no-op); leave out `wheel`, which is activation in no engine either.
-
-**Give dense surfaces a way to opt out of hover sound**, by skipping `playHover()` inside `[data-quiet-hover]`. A tick per tile across an image wall or a filmstrip is a machine gun, not feedback. Clicks still sound: the opt-out is about *rate*, not importance.
+The site synthesises a "tok" on hover and click (Web Audio, no asset files): a sine fundamental, a fast-decaying marimba-like 3.9:1 partial, and a lowpassed noise transient for the wooden attack. Hover is quiet and high (1200Hz, 0.09s, 0.05 gain), click lower and louder (900Hz, 0.14s, 0.13 gain); it's gated on the autoplay policy, muteable, and persisted. Dense surfaces opt out of the hover tick with `[data-quiet-hover]`; clicks still sound. The rules for arming and muting are in `domains/motion/patterns.md`, sound.
 
 **Sound can be a phrase, not just an event.** The opening screen's run, a note per photograph, is written out in A major pentatonic, where no two notes clash, so a run cut short by a failed image still resolves; the landing note, the only accented one, sits a fifth *below* the start, closing the phrase rather than adding a step.
 
-The most optional thing in the system. If you add it: hover sound on mouse only (`pointerType === "mouse"`), a visible mute control, and *on* by default only if you're confident. → Synthesis walkthrough and delegation pattern: `glass/motion/sound.md`
+Sound is *on* by default here, which is defensible only on a personal site and only if you're confident. → Synthesis walkthrough and delegation pattern: `glass/motion/sound.md`
 
 ## 13. Fill means chosen
 
-A rule about icons that is really about motion, because the mechanism is a crossfade.
-
-**An icon is filled when, and only when, it is the thing you've picked or the thing you're pointing at** — never because it looks better. Previewing and reporting a choice are the same gesture a beat apart, so the glyph commits under the pointer and stays committed on click; where both show at once, the sliding highlight from §6 tells them apart.
-
-**A filled variant is not a second drawing**: it's the outline with its interior painted in, layered *over* the stroke at the same coordinates, so the layers cross-fade in place with no pop and nothing to line up.
+Law 9, in glass's mechanism: the filled variant is the outline with its interior painted, layered *over* the stroke at the same coordinates, so the layers cross-fade in place.
 
 ```tsx
 export const fillFade = (on: boolean) =>
@@ -269,10 +223,9 @@ export const detailFade = (on: boolean) =>
   `transition-opacity duration-200 ease-out motion-reduce:transition-none ${on ? "opacity-0" : "opacity-100"}`;
 ```
 
-- **200ms `ease-out`, not the house curve**: overshoot suits travel, not a fade.
-- **Interior detail needs a knockout, not deletion.** Where the fill would swallow a line, mask the silhouette: the shape in white (fill *and* stroke, to match the outline), interior lines in black at the outline's stroke width, so each gap lands where its line was.
+**200ms `ease-out`, not the house curve**: overshoot suits travel, not a fade. The knockout mask for interior lines is in `domains/motion/patterns.md`, fill means chosen.
 
-**Three kinds of mark sit outside the rule:**
+**How the marks that can't fill signal instead:**
 
 | Mark | Why fill is wrong | What it does instead |
 |---|---|---|
@@ -280,29 +233,23 @@ export const detailFade = (on: boolean) =>
 | Open strokes — chevrons, arrows, checks, menu bars | No interior to paint | A stroke-weight ladder by role |
 | A mark on static content, or a lone toggle | Never hovered, never current — or the only mark on screen | Stays in the default state |
 
-**Fill that distinguishes nothing is just weight**: a lone toggle whose glyph already changes shape has nothing to be picked out *from*, so filling it adds mass, not meaning.
-
 ## 14. Set pieces play once
 
-A greeting rather than feedback — an opening screen, a summary panel's first reveal — may be longer and more theatrical than the ladder allows, provided it happens **once a session** and never blocks anything.
+Two set pieces, each once a session (law 15): the opening screen, and a summary panel's first reveal.
 
 ```ts
 // Once a session, per item. The theatre is a welcome; a re-run is a delay.
 const seenKey = (slug: string) => `short-version:${slug}`;
 ```
 
-Four rules, each a bug the reference implementation hit.
-
-**Decide before the first pixel, in an inline script.** The answer lives in `sessionStorage`, invisible to the server, so deciding in React shows a frame of page before the overlay. A blocking inline script sets an attribute on `<html>` for CSS to answer at paint; the component only *ends* it, by flipping the attribute.
+The inline gate's glass condition:
 
 ```js
 // Home page, first landing, not a deep link (/#work), never under reduced motion.
 document.documentElement.dataset.intro = "on";
 ```
 
-**A filling animation beats a declared value.** A CSS entrance with `both` holds its `to` state over any plain declaration, so replace the animation rather than layering a transition over it.
-
-**Branch transitions on the client-only flag, never rendered styles.** "Has this played before?" is false on the server and true on most clients, so a *style* branched on it gives two first paints and a console warning. A transition isn't a style, so hydration can't disagree, and reduced motion gets a zero-length transition, not a different starting position.
+The summary panel's lines branch the transition, never the style, on the client-only flag:
 
 ```tsx
 variants={{
@@ -312,9 +259,9 @@ variants={{
 }}
 ```
 
-**Record "seen" on completion, not on start.** Set at the start, it lands in the open's render batch and cancels the animation it records; `onAnimationComplete` also makes a second open in one visit as quiet as a second visit.
+"Seen" is recorded in `onAnimationComplete`, which also makes a second open in one visit as quiet as a second visit. The gate, the hydration rule and the "seen" bookkeeping are in `domains/motion/guards.md`.
 
-For anything collapsible: **animate height, don't unmount**, so the content stays in the served HTML for a crawler or an `llms.txt`; while closed, `inert` plus `aria-hidden` sends a screen reader or a tab press to the trigger, not the hidden prose.
+Collapsibles animate height and stay mounted (law 11), so the content stays in the served HTML for a crawler or an `llms.txt`.
 
 ## Assets
 
@@ -326,34 +273,14 @@ For anything collapsible: **animate height, don't unmount**, so the content stay
 
 ## Checklist
 
+The domain checklist first; then glass's values:
+
 - [ ] Every duration on the ladder: no 250ms, 500ms or 1s.
-- [ ] Off-ladder timing is the subject of the moment or a once-a-session set piece, and says which.
-- [ ] One curve, plus `ease-out` for opacity-only and plain `ease` for the theme fade.
-- [ ] No overshoot on a track driving a filter or anything floored at zero.
-- [ ] Opacity split out of every spring as a short tween.
-- [ ] Opens spring; closes tween, flat and faster.
-- [ ] One shared highlight for lists and docks, not per-item backgrounds.
-- [ ] `initial={false}` on any persistent element that re-targets.
-- [ ] Canvas escalation: one decorative element, `null` on failure, reading position kept.
-- [ ] Icons fill only when current or hovered, crossfading over the outline in place.
-- [ ] Marks that can't fill (brand silhouettes, open strokes, lone toggles) signal another way.
-- [ ] `useReducedMotion()` branch in every animated component; `.reveal` fully off.
-- [ ] Reveals: `threshold: 0` plus a root margin, never fractional; arrival as a `data-` attribute, not a framework-owned class.
-- [ ] A `<noscript>` reset for any CSS hiding content pending JavaScript.
-- [ ] Set pieces gated before first paint by an inline script, not React.
-- [ ] Client-only flags branch transitions, never rendered styles.
-- [ ] "Seen" recorded on animation *complete*, not start.
-- [ ] Collapsibles animate height and go `inert`; they never unmount.
-- [ ] `scrollIntoView` behaviour passes the reduced-motion preference.
-- [ ] Scroll listeners `passive`, rAF-throttled, one per behaviour.
-- [ ] Hysteresis on any scroll-direction toggle.
-- [ ] Hover-only affordances gated on `(hover: hover) and (pointer: fine)`, with a touch path.
+- [ ] Off-ladder timing is the subject of the moment (the 620ms dissolve) or a once-a-session set piece, and says which.
+- [ ] `--ease-geist` everywhere, plus `ease-out` for opacity-only, plain `ease` for the theme fade, and expo-out on any track driving a filter.
+- [ ] Menus open on the `GROW`/`CROSS` pair and close on `CLOSE`.
 - [ ] Hover timed by area: a link 100ms, a card-sized wash 200ms.
 - [ ] No translate on hover, bar the folder's rising cards.
+- [ ] Icon fills cross-fade at 200ms `ease-out`.
 - [ ] `LazyMotion` + `m` + `strict`; no bare `motion.*`.
-- [ ] No `backdrop-filter` inside an animating transform.
-- [ ] Press feedback on pointer-down.
-- [ ] Audio armed on `pointerdown`, `keydown` **and** `touchstart`.
-- [ ] Dense hover surfaces opt out of hover sound.
-- [ ] Nothing loops; nothing animates to attract attention.
-- [ ] Motion standing for a process holds still when the process pauses.
+- [ ] Dense hover surfaces carry `data-quiet-hover`.

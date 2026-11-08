@@ -1,6 +1,6 @@
 # Elevation recipes
 
-Starting values for each level's bundle and shadow; `SKILL.md`'s Dials set their strength, `DESIGN.md` the project's choice.
+Starting values for each level's bundle and shadow; the depth guide's Dials set their strength, `DESIGN.md` the project's choice.
 
 ## The bundle, part by part
 
@@ -68,7 +68,7 @@ Product leans on `border.default` with short shadows, so dense screens don't fil
 Three things change; none is "the same shadow, darker":
 
 1. **The surface lifts** by the Dials' OKLCH step: page 0.18 → raised 0.22 → floating 0.26 → overlay 0.30 at +0.04. It carries most of the separation.
-2. **Drop layers get about eight to ten times the opacity**, capped around 0.6. A 4% black shadow on a near-black page is invisible.
+2. **Drop layers rise to the dials' dark peak** (depth guide, *Floating shadow*). A 4% black shadow on a near-black page is invisible.
 3. **The highlight drops to a sixth.** `0.5` white along a dark top edge reads as a lit wire; `0.08` defines the edge without lighting it.
 
 ```css
@@ -143,11 +143,11 @@ const openDialog = () => { opener.current = document.activeElement as HTMLElemen
 
 ## The art panel
 
-Where a product keeps art (depth law 6) it is one inset panel: on a sign-in page, the half beside an unboxed form, from the breakpoint where both fit; phones get the form alone.
+Where a product keeps art (depth law 6) it is one inset panel; where it sits on a sign-in page is patterns law 13.
 
 - **Its own surface, not a level.** Inset by the page gutter, at `radius.container`, no shadow: it is part of the page, not above it.
 - **Its theme is scoped.** Art designed for one ground looks wrong on the other, so the panel pins a theme (`data-theme="dark"` on the panel, its tokens re-resolving inside) and reads the same in both.
-- **Generative over photographic.** A photograph or a soft gradient wash reads dated; art generated in the brand's colours reads current. Its motion is ambient (motion law 4): the screen it lives on is an area on a preset that allows it, or the art holds one still frame, as it must under reduced motion.
+- **Generative over photographic.** A photograph or a soft gradient wash reads dated; art generated in the brand's colours reads current. Whether it moves is the motion guide's ambient class (motion law 4).
 - **A frosted element sits over still art** only, as the pocket in `translucent-materials.md`, with its opaque fallback.
 
 ## One definition per level

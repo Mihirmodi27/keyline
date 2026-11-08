@@ -84,13 +84,13 @@ Springs are wrong for discrete flips with no travel, anything that must land in 
 
 **If the same thing is on screen before and after a change, it moves between the two positions rather than fading out in one place and in at another.** Per-item hover backgrounds across a row of icons give overlapping fades, one brightening as its neighbour dims: a stutter, not an object. One shared highlight that re-targets its position and size can't flicker, because there is only one; it skips its mount animation, or it flies in from the corner on first paint.
 
-Leaving a grid at item 60 and arriving at the top of a list is worse than no transition, so **measure the reading position before the outgoing layout unmounts** and open the incoming one there, neither end stretched to the other's aspect. A shared element is the wrong tool for a lone item, items that reflow while hovered, items in different scroll containers, and a grid crossed diagonally.
+A view switch keeps the reader's place (layout law 9), so **measure the reading position before the outgoing layout unmounts** and open the incoming one there, neither end stretched to the other's aspect. A shared element is the wrong tool for a lone item, items that reflow while hovered, items in different scroll containers, and a grid crossed diagonally.
 
 → Highlight, tooltip and layout-switch patterns in View Transitions, Motion `layoutId` and GSAP Flip: `domains/motion/patterns.md`
 
-### 9. One signal means chosen
+### 9. One highlight travels between hovered and current
 
-**Choose a single treatment for "this is the one" — a fill, a solid surface, a weight — and apply it everywhere a thing is current or being pointed at, and nowhere else.** Nothing is filled because it looks better. Previewing a choice and reporting one are the same gesture a beat apart, so they share it; where both are on screen at once, law 8's travelling highlight tells them apart: two signals each doing half the job, never one doing both.
+**Where a group shows both a current item and the one under the pointer — a nav, a segmented control — one highlight travels with the pointer and comes to rest on the current item, rather than a second treatment appearing beside the first.** What current looks like is colour law 7's, never re-picked here, and weight never changes on hover (type law 5). Previewing a choice and reporting one are the same gesture a beat apart, so they share one moving shape (law 8): two signals each doing half the job, never one doing both. Outside such a group, hover is a wash (the dials). Nothing is filled because it looks better.
 
 A filled icon is the same outline with its interior painted, cross-faded in place at `duration.popover` on `ease.colour`, so the silhouette never moves. Marks that can't take it — a brand's official solid mark, a chevron with no interior, a lone toggle with nothing to be picked out from — signal another way. **Fill that distinguishes nothing is just weight.** Nor is a step from `text.secondary` to `text.primary` a signal; the colour guide covers why.
 
@@ -116,11 +116,11 @@ Imperative APIs — `scrollIntoView`, `scrollTo`, `Element.animate`, a GSAP time
 
 **Any style that hides content until an animation runs must resolve to visible whenever that animation can't run** — no JavaScript, no observer, reduced motion, print, or an element too tall to trip its trigger. The failure is not a plainer page but a correct document the reader can't see. Two such bugs on the Glass preset's reference site left content at opacity 0: an observer threshold of 0.1 that no section over ten viewports tall could reach, and an externally added `in` class the framework rewrote out of a state-dependent `className`.
 
-So reveals are one-shot, with a zero threshold and a root margin, re-observed on client navigation, marked by a data attribute the framework doesn't own, and reset by a `<noscript>` style and a print rule. A collapsible animates its height and goes `inert` while shut, but stays mounted, so its content stays in the served HTML.
+So reveals are one-shot, with a zero threshold and a root margin, re-observed on client navigation, marked by a data attribute the framework doesn't own, and reset by a `<noscript>` style and a print rule. A collapsible animates its height but stays mounted (layout law 11).
 
 ### 12. Scroll work runs once a frame, and never hides what it can't bring back
 
-**Each scroll-driven behaviour is one passive listener collapsed to one `requestAnimationFrame`, with a dead zone on anything that toggles on direction — and nothing collapses on a device that can't expand it again.** A rAF flag gives one measurement per painted frame, which no time-based throttle can. A dead zone of a few pixels stops trackpad jitter toggling a collapsing header forever. A header that collapses on scroll but expands only on hover strands the navigation on touch, so gate the collapse on `(hover: hover) and (pointer: fine)` where you decide to hide.
+**Each scroll-driven behaviour is one passive listener collapsed to one `requestAnimationFrame`, with a dead zone on anything that toggles on direction — and nothing collapses on a device that can't expand it again.** A rAF flag gives one measurement per painted frame, which no time-based throttle can. A dead zone of a few pixels stops trackpad jitter toggling a collapsing header forever. Whether it may collapse at all on touch is layout law 8.
 
 ### 13. Animate what the compositor can; escalate one element, never a view
 
@@ -221,7 +221,7 @@ Under `## Open issues`: each audit breach, one line with its evidence, removed w
 - [ ] Springs are `spring.<character>`, only where things re-target or are grabbed, opacity split out.
 - [ ] Exits are shorter than entrances, flat, on `ease.exit`, no spring.
 - [ ] Shared elements re-target, never remount, and skip their mount animation; layout switches keep the reading position.
-- [ ] One signal means chosen, only on current or hovered; marks that can't take it signal another way.
+- [ ] In a group with a current item, one highlight travels between hovered and current; current looks as colour law 7 says; no weight change on hover; marks that can't take a fill signal another way.
 - [ ] Each animated component has a reduced path that still shows the change; imperative APIs get the preference.
 - [ ] Hidden-until-animated content survives no JS, no observer, reduced motion, print, tall elements and re-renders.
 - [ ] Scroll work is passive, rAF-collapsed and hysteretic, and never hides what touch can't restore.

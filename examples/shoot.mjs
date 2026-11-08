@@ -5,7 +5,7 @@
  *   node examples/shoot.mjs                 every scene, every state
  *   node examples/shoot.mjs dashboard       one scene
  *
- * States are before/, steps/<n>-<domain>/ and after/; shots land in
+ * States are before/, steps/<n>-<domain>/, impeccable/ and after/; shots land in
  * <scene>/shots/<state>-fold.png (the first 1440×900, what a visitor sees),
  * <state>-desktop.png (the full page) and <state>-phone.png. Light scheme
  * unless --dark. Drives headless Chrome over
@@ -44,6 +44,7 @@ function states(scene) {
       if (existsSync(join(dir, "steps", s, "index.html"))) out.push([s, join(dir, "steps", s, "index.html")]);
     }
   }
+  if (existsSync(join(dir, "impeccable/index.html"))) out.push(["impeccable", join(dir, "impeccable/index.html")]);
   if (existsSync(join(dir, "after/index.html"))) out.push(["after", join(dir, "after/index.html")]);
   return out;
 }

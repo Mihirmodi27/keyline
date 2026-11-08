@@ -105,7 +105,7 @@ export const SUBJECT = {
 
 /* A SET PIECE gets its own budget by never appearing again: once per tab,
    never blocking a deep link, never played under reduced motion. See §14 of
-   the SKILL.md for the gating. */
+   glass/motion/guide.md for the gating. */
 export const SET_PIECE = {
   /** The first open of a disclosure, per line. */
   theatreLine: 0.34,

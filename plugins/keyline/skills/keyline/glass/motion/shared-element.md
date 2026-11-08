@@ -1,17 +1,6 @@
 # The shared-element highlight
 
-The signature interaction of this system: one highlight rectangle and one tooltip per container, animating position and size to whichever child is hovered or focused.
-
-## The problem it solves
-
-The obvious hover highlight is a background on each item:
-
-```tsx
-// The flicker version
-<a className="transition-colors hover:bg-highlight">
-```
-
-Sweep the pointer across five icons and you get five overlapping fades, one brightening as its neighbour dims: a stutter, not an object — and they must be short or the trail lags, so they can't be smooth. A shared element can't flicker, because there's only one; like a selector knob, it *travels*.
+The signature interaction of this system: one highlight rectangle and one tooltip per container, animating position and size to whichever child is hovered or focused. Why it beats per-item backgrounds, and when it's the wrong tool, is law 8; the details that keep it from flickering are in `domains/motion/patterns.md`, the shared highlight.
 
 ## The implementation
 
@@ -56,14 +45,7 @@ const enter = (el: HTMLElement, label: string) =>
 </ul>
 ```
 
-## Six details that make it work
-
-- **`offsetLeft` / `offsetTop`, not `getBoundingClientRect()`.** Offsets are relative to the nearest positioned ancestor, the highlight's own coordinate space, and cheaper to read. `getBoundingClientRect()` is in viewport coordinates: you'd subtract the container's rect, and it breaks if the page scrolls between measurement and render.
-- **`initial={false}`** means "start at whatever `animate` says", always right for a persistent re-targeting element; without it the highlight flies in from the top-left on first paint.
-- **`isolate` on the container, `-z-10` on the highlight.** The highlight must sit *behind* the icons but *in front of* the container's background. `-z-10` alone drops it behind the container; `isolate` makes the container a stacking context, so `-z-10` is scoped inside it.
-- **`pointer-events-none`.** The highlight is under the pointer by definition; without this it intercepts `mouseenter` from the item it's highlighting, and the whole thing oscillates.
-- **`onFocus` alongside `onMouseEnter`.** Keyboard users get the same feedback, nearly free: it makes the highlight an affordance, not a mouse decoration. Pair with `onBlur` where the list can lose focus without the pointer leaving.
-- **`onMouseLeave` on the *container*, not the items.** One handler clears the state when the pointer leaves the group; per-item `onMouseLeave` fires between items and would blank the highlight in the gaps.
+Pair `onFocus` with `onBlur` where the list can lose focus without the pointer leaving.
 
 ## The tooltip variant
 
@@ -85,8 +67,6 @@ Same state, same spring, one axis:
 </m.div>
 ```
 
-The two layers are the trick. The outer `m.div` animates `x` to the item's **centre**; the inner div is statically `-translate-x-1/2`. The animated value stays a plain coordinate — combine them and Motion would have to interpolate a mixed-unit `calc(centre - 50%)`.
-
 `bottom-full mb-2` places it above the container at any height; flip to `top-full mt-2` when the container is itself a dropdown, so the tooltip doesn't cover what opened it. It's `aria-hidden` because every item already carries an `aria-label` with the same text.
 
 ## The vertical list variant
@@ -101,20 +81,13 @@ For rows rather than icons only the container class changes: items carry the pad
 />
 ```
 
-`-mx-3` against `px-3` on each item: the bar extends 12px past the measure on both sides while the text sits exactly on it. Without the negative margin you'd inset the text or clip the bar.
+`-mx-3` against `px-3` on each item: the bar extends 12px past the measure on both sides while the text sits exactly on it.
 
 Here the bar uses `bg-gray-100` rather than `bg-highlight`: in a list on the page surface the subtle-surface token is right; in floating glass chrome, the elevated one.
 
-## When the shared element is the wrong choice
-
-- **A single element with no siblings.** Just use a hover background.
-- **Items that reflow while hovered** (a list that filters as you type). The measured rect goes stale; you'd need a `ResizeObserver`, and it stops being simple.
-- **Items in different scroll containers.** The offset space isn't shared.
-- **A grid where the pointer moves diagonally.** The highlight travels through cells it never visited. Fine for a single row or column.
-
 ## Interaction with active state
 
-When an item can also be *active* (the current route), the states mustn't fight. Here the active item shows a static background and drops it while the dock is hovered, so the sliding highlight owns the surface:
+The active item shows a static background and drops it while the dock is hovered (`domains/motion/patterns.md`, current versus hovered):
 
 ```tsx
 isActive
@@ -122,19 +95,15 @@ isActive
   : "text-gray-600 hover:text-gray-1000"
 ```
 
-A static and a sliding highlight at once make the selection ambiguous; ceding the surface while the pointer is present resolves it, and the active item keeps its text colour so you never lose your place.
-
-This pairs with icon fill (§13 of the SKILL.md): the *glyph* fills both when current and when hovered, and the chip disambiguates the two when both are on screen. Two signals, each doing half the job — don't make either carry both.
+The glyph fills both when current and when hovered (§13 of `glass/motion/guide.md`), and the chip tells the two apart when both are on screen.
 
 ## Escalating to the GPU
 
-Everything above is one small rectangle between measured boxes, which is why it's affordable. What broke that: a gallery with a masonry wall of ~100 tiles and a "roll" with one photo open above a filmstrip, the same photograph travelling between them. Three things break the DOM approach at once:
+What broke the DOM approach: a gallery with a masonry wall of ~100 tiles and a "roll" with one photo open above a filmstrip, the same photograph travelling between them. Three things break at once:
 
 1. **Aspect ratios differ.** Consecutive photographs are 1:1 then 16:9; one `<img>` animated between the boxes distorts for the whole trip.
 2. **The wall is expensive to re-lay-out.** Layout on 100 tiles is not a per-frame budget.
 3. **The endpoints exist at different moments.** One rect is measurable only while the outgoing layout is rendered, the other only after the incoming one commits.
-
-### The shape of the fix
 
 One viewport-sized canvas above the gallery draws a single photo into an arbitrary screen rect, so the trip is four numbers in a uniform and costs no reflow at any size:
 
@@ -145,11 +114,9 @@ export type Rect = { x: number; y: number; width: number; height: number };
 export function lerpRect(a: Rect, b: Rect, t: number): Rect { /* … */ }
 ```
 
-### The four rules that keep it honest
+The rules are law 13 and `domains/motion/performance.md`, escalating to the GPU. Here the wall stays DOM and the open photo is `alt=""`, its labels in the strip beside it.
 
-**Only the decorative element goes on the GPU.** The wall stays DOM, and the open photo is `alt=""` because its labels sit in the strip beside it. *Once the canvas owns something with semantics, or a hundred instances, you've traded accessibility and memory for a transition.*
-
-**Failing returns `null`, never throws**, because an exception inside an effect takes the whole view down instead of falling back:
+**Failing returns `null`:**
 
 ```ts
 export function createPhotoStage(canvas: HTMLCanvasElement): PhotoStage | null {
@@ -165,9 +132,7 @@ export function createPhotoStage(canvas: HTMLCanvasElement): PhotoStage | null {
 }
 ```
 
-`null` keeps the caller's `<img>`, also the path for reduced motion and a GPU that later drops the context: not a nicety, but what renders for everyone whose machine says no.
-
-**Carry the reading position across.** Before the switch, find the tile nearest the viewport centre and open the other layout on *that* item, from *that* rect:
+**Carry the reading position across** (law 8). Before the switch, find the tile nearest the viewport centre and open the other layout on *that* item, from *that* rect:
 
 ```ts
 // Read while the OUTGOING layout is still rendered — from the layout store's
@@ -185,14 +150,12 @@ export function centreFrame(): { id: string; rect: Rect } | null {
 }
 ```
 
-Leaving a wall at photo 60 for the top of a filmstrip is worse than no transition. Beyond galleries, **any layout switch should resume where the reader was, measured before the old layout unmounts.**
-
-**Each end keeps its own shape.** One shared rect stretches one photograph to the other's box for the whole crossfade; interpolate two rects around a shared centre and each keeps its aspect through the linear lerp. The GPU path then matches the `<img>` fallback exactly: two absolutely-centred images, each at its own aspect, crossfading.
+**Each end keeps its own shape**: two rects around a shared centre, each keeping its aspect through the linear lerp. The GPU path then matches the `<img>` fallback exactly: two absolutely-centred images, each at its own aspect, crossfading.
 
 ### Implementation notes that cost real time to find
 
-**Mipmaps, or the photo shimmers.** A 2000px photo in a 355px tile samples one texel in five, so without a mip chain it aliases and shimmers as the rect moves sub-pixel. Use trilinear (`LINEAR_MIPMAP_LINEAR`) so crossing mip levels as the photo grows doesn't step.
+**Mipmaps.** A 2000px photo in a 355px tile samples one texel in five, so without a mip chain it shimmers as the rect moves sub-pixel. Use trilinear (`LINEAR_MIPMAP_LINEAR`) so crossing mip levels as the photo grows doesn't step.
 
-**Fade the last pixel of the edge.** The rect's edges land on moving fractional pixels, and a binary in/out test snaps the boundary between columns, so the edge crawls. One `smoothstep` across a pixel's width holds it still — fading *alpha only* on a non-premultiplied context, or the edge darkens toward black instead of disappearing.
+**Fade the last pixel of the edge** with one `smoothstep` across a pixel's width, fading *alpha only* on a non-premultiplied context, or the edge darkens toward black instead of disappearing.
 
-**Don't call `WEBGL_lose_context` on teardown.** It frees GPU memory slightly sooner and poisons the canvas for good: React reuses the node across a remount (StrictMode does on every mount), and the next context silently fails to compile its shaders. Drop the textures and references; the context goes with the element.
+**Don't call `WEBGL_lose_context` on teardown.** React reuses the node across a remount (StrictMode does on every mount), and the next context silently fails to compile its shaders. Drop the textures and references; the context goes with the element.

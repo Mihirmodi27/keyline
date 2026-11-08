@@ -114,7 +114,7 @@ A persisted toggle lands a reader in a mode picked weeks ago for a different col
 
 ### Which views a collection gets
 
-A second view shows how the collection moves. Work that moves through states gets a board whose columns run in the order work moves, each headed by its state; work that moves through time gets a week board with a span switch (week, three days, day). The list stays as the other view. A collection that doesn't move — a directory, an archive — gets a list and no board.
+Which second view shows how a collection moves — a board, a week board — is patterns law 10. A collection that doesn't move — a directory, an archive — gets a list and no board.
 
 ### Carry the position across
 
@@ -194,8 +194,7 @@ Animate `block-size` to the content's height on open and remove `inert` and `ari
 :where(h2, h3, h4)[id] { scroll-margin-top: var(--reading-line); }
 
 @media print {
-  nav, footer, .skip { display: none; }
-  [data-reveal] { opacity: 1; transform: none; }
+  nav, footer, .skip { display: none; }   /* reveals: motion/guards.md */
 }
 ```
 

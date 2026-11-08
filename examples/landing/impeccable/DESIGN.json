@@ -1,0 +1,434 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-06T10:01:17.829Z",
+  "title": "Design System: Tandem",
+  "extensions": {
+    "colorMeta": {
+      "ink": {
+        "role": "neutral",
+        "displayName": "Ink",
+        "canonical": "oklch(18.5% 0.03 265)",
+        "tonalRamp": [
+          "#080b12",
+          "#23262e",
+          "#3d4556",
+          "#5e6678",
+          "#80899c",
+          "#a5aec2",
+          "#cbd4e9",
+          "#eaeff9"
+        ]
+      },
+      "ink-secondary": {
+        "role": "neutral",
+        "displayName": "Ink Secondary",
+        "canonical": "oklch(38% 0.03 265)",
+        "tonalRamp": [
+          "#080b12",
+          "#23262e",
+          "#3d4556",
+          "#5e6678",
+          "#80899c",
+          "#a5aec2",
+          "#cbd4e9",
+          "#eaeff9"
+        ]
+      },
+      "ink-tertiary": {
+        "role": "neutral",
+        "displayName": "Ink Tertiary",
+        "canonical": "oklch(50% 0.025 265)",
+        "tonalRamp": [
+          "#080b12",
+          "#23262e",
+          "#3d4556",
+          "#5e6678",
+          "#80899c",
+          "#a5aec2",
+          "#cbd4e9",
+          "#eaeff9"
+        ]
+      },
+      "hairline": {
+        "role": "neutral",
+        "displayName": "Hairline",
+        "canonical": "oklch(91.5% 0.01 265)",
+        "tonalRamp": [
+          "#0a0b0d",
+          "#252628",
+          "#434549",
+          "#64666b",
+          "#87898e",
+          "#abaeb3",
+          "#d2d4da",
+          "#edeef1"
+        ]
+      },
+      "hairline-soft": {
+        "role": "neutral",
+        "displayName": "Hairline Soft",
+        "canonical": "oklch(95% 0.007 265)",
+        "tonalRamp": [
+          "#0a0b0c",
+          "#262628",
+          "#434548",
+          "#64666a",
+          "#87898d",
+          "#acaeb2",
+          "#d2d4d8",
+          "#edeef0"
+        ]
+      },
+      "paper": {
+        "role": "neutral",
+        "displayName": "Paper",
+        "canonical": "oklch(99.3% 0.003 265)",
+        "tonalRamp": [
+          "#0b0b0b",
+          "#262626",
+          "#454545",
+          "#666666",
+          "#898989",
+          "#aeaeae",
+          "#d4d4d4",
+          "#eeeeee"
+        ]
+      },
+      "paper-tint": {
+        "role": "neutral",
+        "displayName": "Paper Tint",
+        "canonical": "oklch(97.4% 0.006 265)",
+        "tonalRamp": [
+          "#0a0b0c",
+          "#262628",
+          "#444548",
+          "#656669",
+          "#88898c",
+          "#acaeb1",
+          "#d2d4d8",
+          "#edeef0"
+        ]
+      },
+      "ember": {
+        "role": "primary",
+        "displayName": "Ember",
+        "canonical": "oklch(69% 0.19 38)",
+        "tonalRamp": [
+          "#270000",
+          "#4a0d00",
+          "#8f0000",
+          "#b92700",
+          "#e4531f",
+          "#ff7a4b",
+          "#ffa272",
+          "#ffd9c1"
+        ]
+      },
+      "ember-wash": {
+        "role": "primary",
+        "displayName": "Ember Wash",
+        "canonical": "oklch(96.5% 0.02 40)",
+        "tonalRamp": [
+          "#0f0a08",
+          "#2b2523",
+          "#4f423d",
+          "#71625e",
+          "#958580",
+          "#baaaa5",
+          "#e1d0cb",
+          "#f5ece9"
+        ]
+      },
+      "working-wash": {
+        "role": "secondary",
+        "displayName": "Working Wash",
+        "canonical": "oklch(92.5% 0.04 259)",
+        "tonalRamp": [
+          "#060b14",
+          "#212730",
+          "#38465b",
+          "#58677d",
+          "#7b8aa2",
+          "#9fafc8",
+          "#c5d5ef",
+          "#e7effc"
+        ]
+      },
+      "flexible-wash": {
+        "role": "secondary",
+        "displayName": "Flexible Wash",
+        "canonical": "oklch(94.5% 0.04 78)",
+        "tonalRamp": [
+          "#100a03",
+          "#2c251b",
+          "#51432c",
+          "#73644c",
+          "#97876e",
+          "#bcab92",
+          "#e3d2b8",
+          "#f6ede0"
+        ]
+      },
+      "confirm-green": {
+        "role": "secondary",
+        "displayName": "Confirm Green",
+        "canonical": "oklch(62% 0.14 158)",
+        "tonalRamp": [
+          "#001302",
+          "#003019",
+          "#005925",
+          "#007d45",
+          "#1ca268",
+          "#51c88b",
+          "#7bf0b1",
+          "#c8fedd"
+        ]
+      },
+      "night": {
+        "role": "neutral",
+        "displayName": "Night",
+        "canonical": "oklch(17% 0.03 268)",
+        "tonalRamp": [
+          "#080b12",
+          "#23262e",
+          "#3e4556",
+          "#5f6678",
+          "#81899c",
+          "#a6aec2",
+          "#ccd4e9",
+          "#eaeef9"
+        ]
+      },
+      "ember-text": {
+        "role": "primary",
+        "displayName": "Ember Text",
+        "canonical": "oklch(53% 0.18 36)",
+        "tonalRamp": [
+          "#270000",
+          "#4a0d00",
+          "#8f0000",
+          "#b92700",
+          "#e4531f",
+          "#ff7a4b",
+          "#ffa272",
+          "#ffd9c1"
+        ]
+      },
+      "working-text": {
+        "role": "secondary",
+        "displayName": "Working Text",
+        "canonical": "oklch(42% 0.14 259)",
+        "tonalRamp": [
+          "#060b14",
+          "#212730",
+          "#38465b",
+          "#58677d",
+          "#7b8aa2",
+          "#9fafc8",
+          "#c5d5ef",
+          "#e7effc"
+        ]
+      },
+      "flexible-text": {
+        "role": "secondary",
+        "displayName": "Flexible Text",
+        "canonical": "oklch(46% 0.1 70)",
+        "tonalRamp": [
+          "#100a03",
+          "#2c251b",
+          "#51432c",
+          "#73644c",
+          "#97876e",
+          "#bcab92",
+          "#e3d2b8",
+          "#f6ede0"
+        ]
+      },
+      "paper-raised": {
+        "role": "neutral",
+        "displayName": "Paper Raised",
+        "canonical": "oklch(99.8% 0.002 265)",
+        "tonalRamp": [
+          "#080b12",
+          "#23262e",
+          "#3d4556",
+          "#5e6678",
+          "#80899c",
+          "#a5aec2",
+          "#cbd4e9",
+          "#eaeff9"
+        ]
+      },
+      "hairline-strong": {
+        "role": "neutral",
+        "displayName": "Hairline Strong",
+        "canonical": "oklch(84% 0.014 265)",
+        "tonalRamp": [
+          "#080b12",
+          "#23262e",
+          "#3d4556",
+          "#5e6678",
+          "#80899c",
+          "#a5aec2",
+          "#cbd4e9",
+          "#eaeff9"
+        ]
+      },
+      "on-night": {
+        "role": "neutral",
+        "displayName": "On Night",
+        "canonical": "oklch(97% 0.005 265)",
+        "tonalRamp": [
+          "#080b12",
+          "#23262e",
+          "#3d4556",
+          "#5e6678",
+          "#80899c",
+          "#a5aec2",
+          "#cbd4e9",
+          "#eaeff9"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "Hero headline only."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Section headings."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Feature, step and plan names."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Paragraphs; lead at 19px."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Section eyebrows."
+      }
+    },
+    "shadows": [
+      {
+        "name": "floating",
+        "value": "0 2px 4px oklch(18.5% 0.03 265 / 0.04), 0 24px 60px -20px oklch(18.5% 0.03 265 / 0.28)",
+        "purpose": "App window, suggestion card, featured plan."
+      }
+    ],
+    "motion": [
+      {
+        "name": "state",
+        "value": "160ms cubic-bezier(0.25, 1, 0.5, 1)",
+        "purpose": "Hover and colour changes (ease-out-quart)."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "sm",
+        "value": "640px"
+      },
+      {
+        "name": "md",
+        "value": "900px"
+      },
+      {
+        "name": "lg",
+        "value": "1080px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Main call to action.",
+      "html": "<a class=\"ds-btn-primary\" href=\"#\">Start free</a>",
+      "css": ".ds-btn-primary{display:inline-flex;align-items:center;font:600 15px/1 Inter,system-ui,sans-serif;text-decoration:none;border-radius:999px;padding:12px 20px;background:oklch(18.5% 0.03 265);color:oklch(99.3% 0.003 265);transition:background-color 160ms cubic-bezier(0.25,1,0.5,1)}.ds-btn-primary:hover{background:oklch(27% 0.035 265)}.ds-btn-primary:focus-visible{outline:2px solid oklch(53% 0.18 36);outline-offset:3px}.ds-btn-primary:active{transform:translateY(1px)}"
+    },
+    {
+      "name": "Ghost Button",
+      "kind": "button",
+      "refersTo": "button-ghost",
+      "description": "Secondary action.",
+      "html": "<a class=\"ds-btn-ghost\" href=\"#\">See how it works</a>",
+      "css": ".ds-btn-ghost{display:inline-flex;align-items:center;font:600 15px/1 Inter,system-ui,sans-serif;text-decoration:none;border-radius:999px;padding:12px 20px;background:oklch(99.3% 0.003 265);color:oklch(18.5% 0.03 265);border:1px solid oklch(91.5% 0.01 265)}.ds-btn-ghost:hover{background:oklch(97.4% 0.006 265);border-color:oklch(84% 0.014 265)}.ds-btn-ghost:focus-visible{outline:2px solid oklch(53% 0.18 36);outline-offset:3px}"
+    },
+    {
+      "name": "Navigation",
+      "kind": "nav",
+      "refersTo": "nav",
+      "description": "Header links.",
+      "html": "<nav class=\"ds-nav\"><a href=\"#\">Features</a><a href=\"#\">How it works</a><a href=\"#\">Pricing</a></nav>",
+      "css": ".ds-nav{display:flex;gap:28px}.ds-nav a{font:500 15px Inter,system-ui,sans-serif;color:oklch(38% 0.03 265);text-decoration:none}.ds-nav a:hover{color:oklch(18.5% 0.03 265)}"
+    },
+    {
+      "name": "Chip",
+      "kind": "chip",
+      "refersTo": "chip",
+      "description": "Status and value chips in step visuals.",
+      "html": "<span class=\"ds-chip\">30 min</span>",
+      "css": ".ds-chip{display:inline-flex;padding:6px 12px;border-radius:999px;border:1px solid oklch(91.5% 0.01 265);background:oklch(97.4% 0.006 265);font:500 13px Inter,system-ui,sans-serif;color:oklch(38% 0.03 265)}"
+    },
+    {
+      "name": "Plan Card",
+      "kind": "card",
+      "refersTo": "plan-card",
+      "description": "Pricing plan.",
+      "html": "<article class=\"ds-plan\"><h3>Team</h3><p><b>$8</b> per user / month</p></article>",
+      "css": ".ds-plan{padding:32px;border:1px solid oklch(91.5% 0.01 265);border-radius:22px;background:oklch(99.3% 0.003 265);font-family:Inter,system-ui,sans-serif}.ds-plan b{font-size:48px}"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Shared Clock",
+    "overview": "Tandem's page is a clean product-marketing surface built around one object: a timeline where four teammates' days line up and one hour lights up for all of them. Everything else is set in a single neo-grotesque family on near-white paper, with dark ink and one warm ember accent. Density is moderate; sections are long and calm, and the product visual is the only richly detailed thing on the page.\n\nThe system is restrained by temperament: tinted neutrals, one accent that means \"the chosen time\" or \"act here\", and a small set of state colours that exist only inside the product visual (working, flexible, off, confirmed). It rejects the generic AI-built SaaS page named in PRODUCT.md: the centred eyebrow-headline-subhead stack repeated everywhere, identical icon-over-heading feature cards, gradient blobs, and every section wrapped in a bordered rounded card.",
+    "keyCharacteristics": [
+      "One family (Inter, with Inter Tight for display), weight and size carry hierarchy.",
+      "Ember accent reserved for the best slot, the primary nudge and the plan you are being steered to.",
+      "Product visual drawn in HTML and CSS, not a screenshot.",
+      "Two dark bands (testimonials, final call to action) for pacing.",
+      "Pill-shaped buttons and chips; larger radii on containers."
+    ],
+    "rules": [
+      {
+        "name": "The One Meaning Rule",
+        "body": "Ember means \"the chosen time\" or \"act here\". It never decorates.",
+        "section": "colors"
+      },
+      {
+        "name": "The Visual-Only Palette Rule",
+        "body": "Blue, amber and green belong to the product visual and its echoes (step chips, check marks). They never colour page chrome.",
+        "section": "colors"
+      },
+      {
+        "name": "The Tabular Time Rule",
+        "body": "Every hour, offset and price is set with tabular numerals so columns of time line up.",
+        "section": "typography"
+      },
+      {
+        "name": "The Only-What-Floats Rule",
+        "body": "A shadow says \"this sits above the page\". Only the app window, the suggestion card and the featured plan float.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "**Do** reserve ember (#ff6a3d) for the chosen hour, the primary nudge and the recommended plan.",
+      "**Do** let the overlap timeline carry the explanation; keep copy beside it short and specific.",
+      "**Do** use tabular numerals for every time, offset and price.",
+      "**Do** meet WCAG 2.2 AA: 4.5:1 for body text, 3:1 for large text and focus rings.",
+      "**Do** honour `prefers-reduced-motion`."
+    ],
+    "donts": [
+      "**Don't** build the generic AI-built SaaS page: a centred eyebrow-headline-subhead stack in every section, identical icon-over-heading feature cards, soft gradient blobs, every section wrapped in a bordered rounded card.",
+      "**Don't** use the hero-metric template (big number, small label, gradient accent).",
+      "**Don't** loop decorative motion (floating cards, pulsing dots).",
+      "**Don't** use glassmorphism as decoration.",
+      "**Don't** use `border-left` or `border-right` over 1px as a coloured stripe, or gradient text.",
+      "**Don't** use em dashes in copy."
+    ]
+  }
+}

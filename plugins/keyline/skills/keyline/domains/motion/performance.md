@@ -53,11 +53,7 @@ The end zones come first, or a small upward scroll near the foot leaves a collap
 
 ## Never hide an affordance where it can't come back
 
-```ts
-if (!matchMedia("(hover: hover) and (pointer: fine)").matches) return;   // before attaching anything
-```
-
-Check capability where you decide to *hide*, and bail out early so no listener attaches on touch at all. Use `hover` and `pointer: fine` together: some touch devices report `any-hover: hover` because a stylus *could* be attached. Touch then needs its own presentation (the layout guide covers forks).
+Gate the effect before attaching anything — layout law 8, with the code in `domains/layout/forks-gating-and-disclosures.md`.
 
 ## Scroll spies
 
