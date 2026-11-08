@@ -78,8 +78,10 @@ export function writeBaseline(file, findings) {
  * `change: "new" | "still"`; `fixed` holds the baseline's entries with no
  * match today. Only entries the run could have seen again count as fixed: in
  * a file it checked (`files`, relative paths) and a rule it ran (`rules`).
+ * A project-wide finding can only be fixed by a run over the whole project:
+ * `partial` (a narrower path, --changed) leaves those alone.
  */
-export function compare(findings, baseline, { files = null, rules = null } = {}) {
+export function compare(findings, baseline, { files = null, rules = null, partial = false } = {}) {
   const left = new Map();
   for (const b of baseline.findings) {
     if (!left.has(b.fingerprint)) left.set(b.fingerprint, []);
@@ -95,7 +97,8 @@ export function compare(findings, baseline, { files = null, rules = null } = {})
   });
   const seen = files ? new Set(files) : null;
   const ran = (b) => !rules || rules.some((r) => r === b.rule || r === b.rule.split("/")[0]);
-  const fixed = [...left.values()].flat().filter((b) => (!seen || seen.has(b.file) || b.scope === "project") && ran(b));
+  const visible = (b) => (b.scope === "project" ? !partial : !seen || seen.has(b.file));
+  const fixed = [...left.values()].flat().filter((b) => visible(b) && ran(b));
   fixed.sort((a, b) => a.file.localeCompare(b.file) || a.line - b.line);
   const count = (change) => marked.filter((f) => f.change === change).length;
   return { findings: marked, fixed, counts: { new: count("new"), still: count("still"), fixed: fixed.length } };

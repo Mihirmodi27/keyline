@@ -67,6 +67,18 @@ test("new, fixed and still: and two identical lines count as two", () => {
   assert.deepEqual(split.findings.map((f) => f.change), ["still", "new", "new"]);
   assert.deepEqual(split.fixed.map((f) => f.fingerprint), ["b"], "y.css wasn't checked, so c isn't fixed");
   assert.equal(compare(now, baseline, { files: ["x.css"], rules: ["layout"] }).fixed.length, 0, "a rule that didn't run fixes nothing");
+
+  // A project-wide finding points at some file, but belongs to the whole project.
+  const project = { findings: [{ fingerprint: "p", rule: "layout/skip-link", file: "index.html", line: 1, scope: "project" }] };
+  assert.equal(compare([], project, { files: ["x.css"] }).fixed.length, 1, "gone from a whole-project run: fixed");
+  assert.equal(compare([], project, { files: ["x.css"], partial: true }).fixed.length, 0, "a narrower run can't tell");
+});
+
+test("checking one folder against the baseline doesn't fix project-wide findings", () => {
+  const root = copyOf(SLOPPY);
+  assert.equal(cli("check", "--root", root, "--baseline", "save").status, 0);
+  const out = JSON.parse(cli("check", "src", "--root", root, "--baseline", "--json").stdout);
+  assert.ok(!out.fixed.some((f) => f.scope === "project"), JSON.stringify(out.fixed.map((f) => f.rule)));
 });
 
 test("--baseline save, then --baseline: fails only on new errors, and says what's new and fixed", () => {

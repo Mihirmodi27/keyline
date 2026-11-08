@@ -367,7 +367,7 @@ export function run(argv) {
 
   let baseline = null;
   if (saved) {
-    const split = compare(result.findings, saved, { files: result.checked, rules: opts.rules });
+    const split = compare(result.findings, saved, { files: result.checked, rules: opts.rules, partial: opts.paths.length > 0 });
     result.findings = split.findings;
     baseline = { file: baselineName, created: saved.created, counts: split.counts, fixed: split.fixed };
   }
