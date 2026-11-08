@@ -1,0 +1,63 @@
+# Keyline on pull requests. Copy to .github/workflows/keyline.yml.
+#
+# The `check` job reads the changed files, draws findings on the PR's lines,
+# and keeps one summary comment up to date. With .keyline/baseline.json
+# committed (`npx trykeyline check --baseline save`), only findings the PR adds
+# are annotated and fail it.
+#
+# The `capture` job is optional: when a preview deploy finishes (Vercel,
+# Netlify and others report one as a deployment status), it walks the preview
+# in a browser and uploads keyline-report/ as an artifact. Delete it if you
+# don't deploy previews; run it by hand with a URL from the Actions tab.
+name: Keyline
+
+on:
+  pull_request:
+  deployment_status:
+  workflow_dispatch:
+    inputs:
+      preview-url:
+        description: A deployed preview to walk, e.g. https://my-app-git-branch.vercel.app
+        required: true
+
+permissions:
+  contents: read
+  pull-requests: write # only for comment: true
+
+jobs:
+  check:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: Mihirmodi27/keyline@main # pin a release tag once there is one
+        with:
+          comment: true
+          # base: origin/main      default: the PR's base branch
+          # strict: true           fail on new warnings too
+          # baseline: auto         .keyline/baseline.json when it's there
+          # path: apps/web         where DESIGN.md is, in a monorepo
+          # args: --ignore src/content
+
+  capture:
+    if: >-
+      (github.event_name == 'deployment_status' && github.event.deployment_status.state == 'success') ||
+      github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4 # the code, so routes are found from the router's files too
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Walk the preview
+        env:
+          PREVIEW_URL: ${{ github.event.deployment_status.environment_url || github.event.deployment_status.target_url || inputs.preview-url }}
+        # Exits 1 when a page has errors; the report is uploaded either way.
+        run: npx -y trykeyline capture --base "$PREVIEW_URL" --root . --out keyline-report
+        # Once /keyline audit ships its runner, swap `capture` for `audit` here.
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: keyline-report
+          path: keyline-report/
+          if-no-files-found: ignore

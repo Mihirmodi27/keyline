@@ -1,0 +1,110 @@
+name: Keyline
+description: Check a pull request's changed files against Keyline's interface laws, annotate the lines, and optionally post one summary comment.
+author: Mihir Modi
+branding:
+  icon: check-square
+  color: gray-dark
+
+inputs:
+  base:
+    description: The ref to compare with. Default, on a pull request, its base branch (origin/<base>); on any other event, the whole project is checked.
+    required: false
+    default: ""
+  strict:
+    description: Fail on (new) warnings as well as (new) errors.
+    required: false
+    default: "false"
+  baseline:
+    description: "auto: use .keyline/baseline.json when it's there, so only new findings are annotated and fail the run. true: require it. false: ignore it. Or a path to a baseline file, relative to path."
+    required: false
+    default: auto
+  comment:
+    description: Post one summary comment on the pull request (counts and the top findings), and edit it on every later push. Needs `pull-requests write` permission.
+    required: false
+    default: "false"
+  path:
+    description: The project's root, where DESIGN.md and package.json are, relative to the repository.
+    required: false
+    default: "."
+  args:
+    description: More options for `keyline check`, e.g. `--ignore src/content --rule motion`.
+    required: false
+    default: ""
+  github-token:
+    description: The token `comment` posts with.
+    required: false
+    default: ${{ github.token }}
+
+outputs:
+  report:
+    description: Path to the JSON report (`keyline check --json`).
+    value: ${{ steps.check.outputs.report }}
+  status:
+    description: The check's exit code. 0 passed, 1 findings failed it, 2 a usage error.
+    value: ${{ steps.check.outputs.status }}
+
+runs:
+  using: composite
+  steps:
+    - name: Keyline check
+      id: check
+      shell: bash
+      env:
+        KEYLINE: ${{ github.action_path }}
+        INPUT_BASE: ${{ inputs.base }}
+        INPUT_STRICT: ${{ inputs.strict }}
+        INPUT_BASELINE: ${{ inputs.baseline }}
+        INPUT_PATH: ${{ inputs.path }}
+        INPUT_ARGS: ${{ inputs.args }}
+        PR_BASE: ${{ github.base_ref }}
+        KEYLINE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+      run: |
+        set -uo pipefail
+        args=(--root "$INPUT_PATH")
+
+        base="$INPUT_BASE"
+        if [ -z "$base" ] && [ -n "$PR_BASE" ]; then base="origin/$PR_BASE"; fi
+        if [ -n "$base" ]; then
+          # A default checkout is one commit deep: make sure the base exists to diff against.
+          if ! git rev-parse --verify --quiet "$base^{commit}" >/dev/null && [ "${base#origin/}" != "$base" ]; then
+            branch="${base#origin/}"
+            git fetch --no-tags --quiet --depth=1 origin "+refs/heads/$branch:refs/remotes/origin/$branch" || true
+          fi
+          args+=(--changed "$base")
+        fi
+
+        case "$INPUT_BASELINE" in
+          false|"") ;;
+          auto) if [ -f "$INPUT_PATH/.keyline/baseline.json" ]; then args+=(--baseline); fi ;;
+          true) args+=(--baseline) ;;
+          *) args+=(--baseline-file "$INPUT_BASELINE") ;;
+        esac
+        if [ "$INPUT_STRICT" = "true" ]; then args+=(--strict); fi
+        read -r -a extra <<< "$INPUT_ARGS"
+
+        report="${RUNNER_TEMP:-/tmp}/keyline.json"
+        node "$KEYLINE/bin/keyline.mjs" check "${args[@]}" ${extra[@]+"${extra[@]}"} --format github --json-file "$report"
+        status=$?
+
+        if [ -f "$report" ]; then
+          node "$KEYLINE/plugins/keyline/skills/keyline/scripts/github.mjs" summary "$report" >> "${GITHUB_STEP_SUMMARY:-/dev/null}" || true
+        fi
+        echo "report=$report" >> "$GITHUB_OUTPUT"
+        echo "status=$status" >> "$GITHUB_OUTPUT"
+        # The run fails after the comment is posted, in the last step.
+        exit 0
+
+    - name: Keyline comment
+      if: inputs.comment == 'true' && github.event.pull_request && steps.check.outputs.status != '2'
+      shell: bash
+      env:
+        KEYLINE: ${{ github.action_path }}
+        GH_TOKEN: ${{ inputs.github-token }}
+        KEYLINE_SHA: ${{ github.event.pull_request.head.sha }}
+        REPORT: ${{ steps.check.outputs.report }}
+      run: node "$KEYLINE/plugins/keyline/skills/keyline/scripts/github.mjs" comment "$REPORT" --pr "${{ github.event.pull_request.number }}" --repo "$GITHUB_REPOSITORY"
+
+    - name: Keyline result
+      if: steps.check.outputs.status != '0'
+      shell: bash
+      run: exit ${{ steps.check.outputs.status }}

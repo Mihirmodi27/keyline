@@ -9,6 +9,8 @@
  *   node check.mjs --ignore src/content --rule motion/transition-all
  *   node check.mjs --baseline save    record today's findings in .keyline/baseline.json
  *   node check.mjs --baseline         report what's new, fixed and still since then
+ *   node check.mjs --changed origin/main --format github
+ *                                     only the files a branch changed, as PR annotations
  *
  * It reads DESIGN.md at the root for the preset and the motion and z-index
  * ladders, so a verdict follows the project's own decisions. Silence one line
@@ -20,7 +22,7 @@
  * Exit codes: 0 clean (or only warnings and info), 1 findings that fail the
  * run, 2 a usage error. Against a baseline, only new findings fail it.
  */
-import { existsSync, readFileSync } from "node:fs";
+import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { collect } from "./check/files.mjs";
@@ -29,6 +31,8 @@ import { readMarkup } from "./check/markup.mjs";
 import { readDesign } from "./check/design.mjs";
 import { DOMAINS, RULES } from "./check/rules.mjs";
 import { BASELINE_FILE, compare, fingerprint, readBaseline, writeBaseline } from "./check/baseline.mjs";
+import { changedFiles, repoOf } from "./check/git.mjs";
+import { annotations } from "./github.mjs";
 
 const USAGE = `keyline check — the interface laws that can be checked without a model.
 
@@ -36,7 +40,12 @@ const USAGE = `keyline check — the interface laws that can be checked without 
   node <skill>/scripts/check.mjs [paths…] [options]   (the same, from an installed skill)
 
 Options:
-  --json              every finding as JSON
+  --json              every finding as JSON (the same as --format json)
+  --format <f>        human (default), json, or github: workflow annotations
+                      that GitHub draws on a pull request's lines
+  --json-file <path>  also write the JSON report here, whatever --format says
+  --changed <ref>     only report on files changed since <ref> (its merge base
+                      with HEAD), plus uncommitted and untracked ones
   --strict            fail on warnings as well as errors
   --quiet             errors only
   --all               don't cap repeated findings in the report
@@ -168,7 +177,12 @@ function suppressed(facts, f) {
   return false;
 }
 
-export function check({ root = ".", paths = ["."], ignores = [], rules = null } = {}) {
+/**
+ * `only`, when given, is a set of paths relative to `root`: every file is still
+ * read, so project-wide facts (is there a reduced-motion branch anywhere?) stay
+ * true, but only findings in those files are reported.
+ */
+export function check({ root = ".", paths = ["."], ignores = [], rules = null, only = null } = {}) {
   const absRoot = resolve(root);
   const files = collect(absRoot, paths.map((p) => resolve(absRoot, p)), ignores);
   // DESIGN.md lives at the project root. Checking one folder with no --root, look in it too.
@@ -181,6 +195,7 @@ export function check({ root = ".", paths = ["."], ignores = [], rules = null } 
     for (const f of rule.check(facts, { design })) {
       const finding = { rule: rule.id, domain: rule.domain, law: rule.law, severity: f.severity, file: f.file, line: f.line, message: f.message };
       if (suppressed(facts, finding)) continue;
+      if (only && !only.has(finding.file)) continue;
       if (rule.scope === "project") finding.scope = "project";
       finding.fingerprint = fingerprint(finding, facts.sources.get(finding.file), { project: rule.scope === "project" });
       findings.push(finding);
@@ -188,7 +203,8 @@ export function check({ root = ".", paths = ["."], ignores = [], rules = null } 
   }
   const order = { error: 0, warning: 1, info: 2 };
   findings.sort((a, b) => a.file.localeCompare(b.file) || a.line - b.line || order[a.severity] - order[b.severity]);
-  return { files: files.length, checked: files.map((f) => f.rel), design, findings, rules };
+  const checked = files.map((f) => f.rel).filter((rel) => !only || only.has(rel));
+  return { files: checked.length, checked, design, findings, rules };
 }
 
 /* ── Report ─────────────────────────────────────────────────────────────── */
@@ -205,13 +221,13 @@ function summarise(findings) {
 
 const plural = (n, word) => `${n} ${word}${n === 1 ? "" : "s"}`;
 
-function human(result, { all, color, baseline }) {
+function human(result, { all, color, baseline, changed }) {
   const paint = (code, s) => (color ? `\x1b[${code}m${s}\x1b[0m` : s);
   const sev = { error: (s) => paint("31", s), warning: (s) => paint("33", s), info: (s) => paint("36", s) };
   const dim = (s) => paint("2", s);
   const out = [];
   const d = result.design;
-  out.push(`Keyline check — ${result.files} files${d.found ? `, preset ${d.preset ?? "not set"} (${d.file})` : ", no DESIGN.md (run /keyline init for verdicts that follow your system)"}`);
+  out.push(`Keyline check — ${changed ? `${plural(result.files, "changed file")} since ${changed.base}` : `${result.files} files`}${d.found ? `, preset ${d.preset ?? "not set"} (${d.file})` : ", no DESIGN.md (run /keyline init for verdicts that follow your system)"}`);
   out.push("");
 
   // Against a baseline, the detail is what's new; what was already there is a count (or, with --all, a second list).
@@ -278,11 +294,14 @@ function human(result, { all, color, baseline }) {
 }
 
 export function parseCheckArgs(argv) {
-  const opts = { json: false, strict: false, quiet: false, all: false, ignores: [], rules: null, root: ".", paths: [], baseline: null, baselineFile: null };
+  const opts = { format: "human", strict: false, quiet: false, all: false, ignores: [], rules: null, root: ".", paths: [], baseline: null, baselineFile: null, changed: null, jsonFile: null };
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i];
     const value = () => (a.includes("=") ? a.slice(a.indexOf("=") + 1) : argv[++i]);
-    if (a === "--json") opts.json = true;
+    if (a === "--json") opts.format = "json";
+    else if (a === "--format" || a.startsWith("--format=")) opts.format = value();
+    else if (a === "--json-file" || a.startsWith("--json-file=")) opts.jsonFile = value();
+    else if (a === "--changed" || a.startsWith("--changed=")) opts.changed = value();
     else if (a === "--strict") opts.strict = true;
     else if (a === "--quiet") opts.quiet = true;
     else if (a === "--all") opts.all = true;
@@ -301,6 +320,11 @@ export function parseCheckArgs(argv) {
   }
   if (opts.baseline && !["save", "compare"].includes(opts.baseline)) return { error: `--baseline takes save or nothing, not ${opts.baseline}` };
   if (opts.baselineFile && !opts.baseline) opts.baseline = "compare";
+  if (!["human", "json", "github"].includes(opts.format)) return { error: `--format takes human, json or github, not ${opts.format}` };
+  if (opts.changed === undefined || opts.changed === "") return { error: "--changed needs a base, like origin/main" };
+  if (opts.jsonFile === undefined || opts.jsonFile === "") return { error: "--json-file needs a path" };
+  if (opts.changed && opts.baseline === "save") return { error: "a baseline is the whole project: save it without --changed" };
+  opts.json = opts.format === "json";
   return opts;
 }
 
@@ -353,7 +377,18 @@ export function run(argv) {
     }
   }
 
-  const result = check({ root: opts.root, paths: opts.paths.length ? opts.paths : ["."], ignores: opts.ignores, rules: opts.rules });
+  let changed = null;
+  if (opts.changed) {
+    try {
+      changed = changedFiles(resolve(opts.root), opts.changed);
+    } catch (err) {
+      console.error(`keyline check: ${err.message}`);
+      return 2;
+    }
+    if (!changed.mergeBase) console.error(`keyline check: ${opts.changed} and HEAD share no history here (a shallow clone?), so this compares with ${opts.changed} itself`);
+  }
+
+  const result = check({ root: opts.root, paths: opts.paths.length ? opts.paths : ["."], ignores: opts.ignores, rules: opts.rules, only: changed ? new Set(changed.files) : null });
 
   // A baseline holds everything found, whatever --quiet shows.
   if (opts.baseline === "save") {
@@ -367,7 +402,7 @@ export function run(argv) {
 
   let baseline = null;
   if (saved) {
-    const split = compare(result.findings, saved, { files: result.checked, rules: opts.rules, partial: opts.paths.length > 0 });
+    const split = compare(result.findings, saved, { files: result.checked, rules: opts.rules, partial: Boolean(changed) || opts.paths.length > 0 });
     result.findings = split.findings;
     baseline = { file: baselineName, created: saved.created, counts: split.counts, fixed: split.fixed };
   }
@@ -381,17 +416,31 @@ export function run(argv) {
   const s = summarise(result.findings);
   const failing = summarise(baseline ? result.findings.filter((f) => f.change === "new") : result.findings);
 
-  if (opts.json) {
+  const prefix = changed?.prefix ?? repoOf(resolve(opts.root))?.prefix ?? "";
+  const report = () => {
     const design = { found: result.design.found, file: result.design.file ?? null, preset: result.design.preset, durations: result.design.durations ? [...result.design.durations] : null, zLadder: result.design.zLadder ? [...result.design.zLadder] : null };
-    const out = { files: result.files, design, summary: s, findings: result.findings };
+    const out = { files: result.files, design, summary: s, findings: result.findings, prefix };
+    if (changed) out.changed = { base: changed.base, from: changed.from, mergeBase: changed.mergeBase, files: result.files };
     if (baseline) {
       out.summary = { ...s, new: { error: failing.error, warning: failing.warning, info: failing.info } };
       out.baseline = { file: baseline.file, created: baseline.created, ...baseline.counts };
       out.fixed = baseline.fixed;
     }
-    console.log(JSON.stringify(out, null, 2));
+    return JSON.stringify(out, null, 2);
+  };
+  if (opts.jsonFile) writeFileSync(resolve(opts.jsonFile), report() + "\n");
+
+  if (opts.format === "json") {
+    console.log(report());
+  } else if (opts.format === "github") {
+    // Annotations go to stdout, where the runner reads them; a closing line says what was checked.
+    for (const line of annotations(result.findings, { prefix })) console.log(line);
+    const scope = changed ? `${plural(result.files, "changed file")} since ${changed.base}` : plural(result.files, "file");
+    const counted = baseline ? `${plural(failing.error, "new error")}, ${plural(failing.warning, "new warning")}, ${failing.info} new info · ${baseline.counts.still} still · ${baseline.counts.fixed} fixed` : `${plural(s.error, "error")}, ${plural(s.warning, "warning")}, ${s.info} info`;
+    console.log(`Keyline: ${counted} in ${scope}.`);
   } else {
-    console.log(human(result, { all: opts.all, color: process.stdout.isTTY && !process.env.NO_COLOR, baseline }));
+    if (changed && result.files === 0) console.log(`No changed files to check since ${changed.base}.`);
+    else console.log(human(result, { all: opts.all, color: process.stdout.isTTY && !process.env.NO_COLOR, baseline, changed }));
   }
   return failing.error > 0 || (opts.strict && failing.warning > 0) ? 1 : 0;
 }

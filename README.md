@@ -67,6 +67,50 @@ In CI:
 - run: npx trykeyline check
 ```
 
+## In pull requests
+
+Keyline can read only what a pull request changed and put its findings on the PR's lines. Add [`examples/github/keyline.yml`](examples/github/keyline.yml) as `.github/workflows/keyline.yml`, or the step on its own:
+
+```yaml
+permissions:
+  contents: read
+  pull-requests: write   # only for comment: true
+
+jobs:
+  keyline:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: Mihirmodi27/keyline@main
+        with:
+          comment: true
+```
+
+| Input | Default | Does |
+|---|---|---|
+| `base` | the PR's base branch | Compare with this ref. Off a pull request with no `base`, the whole project is checked |
+| `strict` | `false` | Fail on (new) warnings too |
+| `baseline` | `auto` | Use `.keyline/baseline.json` when it's committed, so only findings the PR adds are annotated and fail it. `true` requires it, `false` ignores it, or give a path |
+| `comment` | `false` | Post one summary comment (the counts and the top ten findings, each linked to its line) and edit it on every push, rather than adding one per push |
+| `path` | `.` | The project's root, where `DESIGN.md` is, in a monorepo |
+| `args` | | More `keyline check` options, e.g. `--ignore src/content` |
+
+The annotations need no token: they're printed as workflow commands, and GitHub draws them on the diff. GitHub shows at most ten errors and ten warnings per step, so they're printed errors first, and the job summary (and the comment) list the rest. Commenting uses the workflow's own `GITHUB_TOKEN` through `gh`. The default one-commit checkout is enough; the Action fetches the base branch itself.
+
+On a codebase that already has findings, save a baseline first (`npx trykeyline check --baseline save`, commit `.keyline/baseline.json`). Without one, every finding in a touched file is annotated, old ones included.
+
+The same works anywhere, without the Action:
+
+```sh
+npx trykeyline check --changed origin/main                  # only files changed since the merge base, plus uncommitted ones
+npx trykeyline check --changed origin/main --format github  # as ::error / ::warning / ::notice annotations
+npx trykeyline check --changed origin/main --baseline --json-file keyline.json
+```
+
+### Walking a preview
+
+The example's second job is optional. When a preview deploy finishes (Vercel, Netlify and others report one as a deployment status), it runs `npx trykeyline capture` against the preview URL, which visits every page at desktop and phone, light and dark, records errors, failed requests and console errors, and screenshots each, then uploads `keyline-report/` as a workflow artifact. Run it by hand from the Actions tab with any URL. Keep the previous run's artifact and `npx trykeyline report keyline-report --compare keyline-report-before` marks what's new, fixed or back, and diffs the screenshots. A preview behind deployment protection needs its bypass, and Playwright installs into the runner's cache on first use.
+
 ## Presets
 
 The laws hold everywhere. A preset sets the dials — how far the type scale climbs, how much colour is spent, how long motion runs — for what your reader is doing:
