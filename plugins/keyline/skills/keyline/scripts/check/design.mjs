@@ -15,18 +15,35 @@ function section(md, heading) {
 
 export function readDesign(root) {
   const name = existsSync(root) ? readdirSync(root).find((f) => f.toLowerCase() === "design.md") : null;
-  if (!name) return { found: false, preset: null, durations: null, zLadder: null };
+  if (!name) return { found: false, preset: null, durations: null, roles: new Map(), zLadder: null };
   const md = readFileSync(join(root, name), "utf8");
+  const headingLine = (h) => {
+    const i = md.search(new RegExp(`^##\\s+${h}\\b`, "mi"));
+    return i < 0 ? 1 : md.slice(0, i).split("\n").length;
+  };
 
   const profile = section(md, "Profile");
   const presetRow = profile.split("\n").find((l) => /^\|\s*Preset\s*\|/i.test(l)) ?? "";
   const preset = PRESETS.find((p) => new RegExp(`\`${p}\`|\\b${p}\\b`).test(presetRow.split("|").slice(2).join("|"))) ?? null;
 
-  // Durations: every ms / s value in the Motion section's table rows.
+  // Durations: every ms / s value in the Motion section's table rows. Rows on a
+  // canonical duration.* role (before any "Named exemptions" line) are also kept by
+  // role, so the detector can check they grow with the size of the change.
   const motion = section(md, "Motion");
   const durations = new Set();
-  for (const row of motion.split("\n").filter((l) => l.startsWith("|"))) {
-    for (const m of row.matchAll(/(?<![\w.])(\d+(?:\.\d+)?)(ms|s)\b/g)) durations.add(m[2] === "s" ? Math.round(parseFloat(m[1]) * 1000) : Math.round(parseFloat(m[1])));
+  const roles = new Map();
+  let inExemptions = false;
+  for (const line of motion.split("\n")) {
+    if (!line.startsWith("|")) {
+      if (/exemption/i.test(line)) inExemptions = true;
+      continue;
+    }
+    for (const m of line.matchAll(/(?<![\w.])(\d+(?:\.\d+)?)(ms|s)\b/g)) {
+      const ms = m[2] === "s" ? Math.round(parseFloat(m[1]) * 1000) : Math.round(parseFloat(m[1]));
+      durations.add(ms);
+      const role = line.split("|")[1]?.match(/duration\.(\w+)/)?.[1];
+      if (!inExemptions && role && !roles.has(role)) roles.set(role, ms);
+    }
   }
 
   // z-index: rows whose role is z.*, or a project role whose name is a z utility
@@ -41,8 +58,10 @@ export function readDesign(root) {
   return {
     found: true,
     file: name,
+    lines: { motion: headingLine("Motion"), layout: headingLine("Layout") },
     preset,
     durations: durations.size ? durations : null,
+    roles,
     zLadder: zLadder.size ? zLadder : null,
   };
 }

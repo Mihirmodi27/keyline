@@ -36,7 +36,7 @@ You don't have to name a command: ask for "tighter spacing" or "a review of the 
 
 ## The detector
 
-Twenty-two of the laws can be checked from source alone, with no model and no API key:
+Twenty-four of the laws can be checked from source alone, with no model and no API key:
 
 ```sh
 npx keyline check            # human report; exits 1 on errors
@@ -96,6 +96,8 @@ npx keyline update                          # refresh every copy already install
 /plugin marketplace add Mihirmodi27/keyline
 /plugin install keyline@keyline
 ```
+
+Claude Code names a plugin's skills after the plugin, so installed this way the command is `/keyline:keyline init`, `/keyline:keyline critique` and so on. Installed with `npx keyline install`, it's `/keyline`.
 
 **With the [`skills` CLI](https://github.com/vercel-labs/skills):** `npx skills add Mihirmodi27/keyline --agent claude-code`.
 

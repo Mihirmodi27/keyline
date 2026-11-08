@@ -43,6 +43,17 @@ test("DESIGN.md decides the verdicts: preset, ladders, suppressions", () => {
   assert.deepEqual(by("motion/duration-ladder").map((f) => f.line), [6], "250ms flagged; 400ms is suppressed");
 });
 
+test("regressions from the launch smoke test stay fixed", () => {
+  const r = check({ root: fixture("regressions") });
+  const at = (rule) => r.findings.filter((f) => f.rule === rule).map((f) => `${f.file}:${f.line}`);
+  assert.deepEqual(at("layout/target-size"), ["src/styles.css:3"], "a dot inside a button isn't a target; a 16px button is");
+  assert.deepEqual(at("type/zoom-disabled"), ["index.html:2"], "a viewport tag locks zoom; prose that names maximum-scale=1 doesn't");
+  assert.deepEqual(at("motion/reduced-motion"), ["src/styles.css:6"], "zeroing every duration on * is a kill switch");
+  const ladder = r.findings.filter((f) => f.rule === "motion/duration-ladder" && f.file === "DESIGN.md");
+  assert.equal(ladder.length, 1, "one inversion, and the 900ms exemption isn't a rung");
+  assert.match(ladder[0].message, /duration\.popover.*140ms.*duration\.state.*150ms/, "popover shorter than state is flagged");
+});
+
 test("an apostrophe in JSX text doesn't derail class extraction", () => {
   const r = check({ root: fixture("sloppy"), rules: ["color/raw-color"] });
   assert.ok(r.findings.some((f) => f.file === "src/App.tsx" && f.line === 7), "inline style after JSX text is still read");

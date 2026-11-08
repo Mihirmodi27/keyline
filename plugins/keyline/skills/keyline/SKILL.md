@@ -54,4 +54,4 @@ Paths in these files are relative to this skill's folder. In shell commands it i
 | `system/` | Setup: the canonical `roles.md`, the four `presets.md`, the `design-md.md` format, `detection.md` for each stack |
 | `domains/<domain>/` | Each domain's `guide.md` — laws, dials per preset, building, auditing, checklist — and its deeper references |
 | `glass/<domain>/` | The `glass` preset: modimihir.com's exact values, with drop-in tokens and components in `assets/` |
-| `scripts/` | `check.mjs` (the detector: 22 mechanical laws, `--json`, exit codes for CI), `scan.mjs` (token and value inventory) and `contrast.mjs` (measured contrast, translucency composited). Node 18+, no dependencies |
+| `scripts/` | `check.mjs` (the detector: 24 mechanical laws, `--json`, exit codes for CI), `scan.mjs` (token and value inventory) and `contrast.mjs` (measured contrast, translucency composited). Node 18+, no dependencies |

@@ -18,4 +18,12 @@
 - **Improving is not restructuring.** Improving an existing screen doesn't move its navigation or add features — a collapsible icon rail, a theme toggle, a new view. Those go under `## Open issues` unless the user asks for them.
 - **Improving keeps what the design already chose.** Its brand colour and gradients stay wherever they do a job, and its corners stay at least as round as they were. A dial describes a new system, so an existing design is never greyed or sharpened to fit one. Only a law removes something, and the report names it. When a pass would make the screen plainer than it was, check whether a law actually asked for that.
 
+**Where a preset's default and the existing design disagree**, this is the order, and the one place it is decided:
+
+- **Dividers.** The design's section device stays: panels stay panels, made quieter (layout law 3). The preset's "full-bleed hairline, no tiles" describes a new system. One thing changes either way: a row of stat tiles folds into one strip of figures parted by hairlines, because that is a law about figures, not a divider dial — unless keeping the tiles is recorded under `## Decisions`.
+- **Corners.** The nesting law (layout law 5) never sharpens a corner. Where inner = outer − inset would come out sharper than the inner corner is now, raise the outer radius or trim the inset until they share a centre; if neither fits, the corners aren't concentric and the inner keeps its radius.
+- **Line weight.** The design's line weights stay, like its corners. Product's 0.5px hairline is for a new system, or for an existing line that reads heavy and whose colour is strong enough to survive halving; a border already near the surface colour keeps its 1px.
+
+Record each of these calls under `## Decisions`, so the next run makes the same one.
+
 **Report:** what was wrong, as a reader would feel it; what changed, by token or component, with the law; what was measured (sizes, ratios, durations); and anything noticed outside the domain, with its command.

@@ -289,7 +289,9 @@ const layoutRules = [
       }
       const exempt = (z) => z === 0 || z === -1 || z === 1;
       if (design.zLadder) {
-        return uses.filter((u) => !exempt(u.z) && !design.zLadder.has(u.z)).map((u) => ({ ...u, severity: "warning", message: `\`${u.how}\` isn't on the z-index ladder in DESIGN.md (${[...design.zLadder].sort((a, b) => a - b).join(", ")}). Use the rung for what this is, or add a rung.` }));
+        const rungs = [...design.zLadder].filter((z) => !exempt(z));
+        const long = rungs.length > 9 ? [{ file: design.file, line: design.lines.layout, severity: "info", message: `The z-index ladder in DESIGN.md has ${rungs.length} values. A ladder needs about seven named rungs; one that records every value in use approves them all.` }] : [];
+        return long.concat(uses.filter((u) => !exempt(u.z) && !design.zLadder.has(u.z)).map((u) => ({ ...u, severity: "warning", message: `\`${u.how}\` isn't on the z-index ladder in DESIGN.md (${[...design.zLadder].sort((a, b) => a - b).join(", ")}). Use the rung for what this is, or add a rung.` })));
       }
       const out = uses.filter((u) => u.z >= 1000).map((u) => ({ ...u, severity: "warning", message: `\`${u.how}\` — a literal this high is a bug waiting for its pair. Put every z-index on one named ladder, ordered by how long a thing stays on screen.` }));
       const distinct = [...new Set(uses.map((u) => u.z).filter((z) => !exempt(z)))].sort((a, b) => a - b);
@@ -345,7 +347,11 @@ const layoutRules = [
         }
       }
       // CSS: a rule for a button or link that fixes both dimensions under 24px.
-      const INTERACTIVE = /(^|[\s,>+~(])(button|a)(?![\w-])|\[role=["']?button|\.[\w-]*(btn|button)(?![\w-])/i;
+      // Only the subject of the selector counts: `.icon-btn .dot` sizes a dot inside a
+      // button, not the button, so test the last compound of each selector in the list.
+      const INTERACTIVE_COMPOUND = /^(button|a)(?![\w-])|^:(is|where)\([^)]*\b(button|a)\b|\[role=["']?button|\.[\w-]*(btn|button)(?![\w-])/i;
+      const subjects = (sel) => sel.split(",").map((s) => s.trim().split(/\s*[>+~]\s*|\s+/).pop() ?? "");
+      const INTERACTIVE = { test: (sel) => subjects(sel).some((c) => INTERACTIVE_COMPOUND.test(c)) };
       const px = (v) => {
         const m = (v ?? "").trim().match(/^(\d*\.?\d+)px$/);
         return m ? parseFloat(m[1]) : null;
@@ -472,7 +478,13 @@ const motionRules = [
     law: "motion law 10",
     title: "No reduced-motion branch",
     check(facts) {
-      if (!facts.project.animation || facts.project.reducedMotion) return [];
+      if (facts.project.reducedMotion) {
+        // A branch that zeroes every duration on * is a kill switch, not a substitute:
+        // the fades that carry meaning go with the movement.
+        const kill = facts.decls.find((d) => /^\*|[\s,]\*(?:::?(?:before|after))?\s*(?:,|$)/.test(d.selector.trim()) && d.atRules.some((a) => /prefers-reduced-motion\s*:\s*reduce/i.test(a)) && /^(transition|animation)(-duration)?$/.test(d.prop) && /^(none|0m?s|0\.0*1m?s)\b/i.test(d.value.trim()));
+        return kill ? [{ ...where(kill), severity: "info", message: "The reduced-motion branch zeroes every duration on `*`. That turns motion off rather than substituting it: keep the fades and colour changes that say something changed, and drop only the travel and scale." }] : [];
+      }
+      if (!facts.project.animation) return [];
       return [{ ...facts.project.animation, severity: "error", message: "The project animates, and nothing anywhere reads `prefers-reduced-motion`. Give every movement a substitute under it — usually a short fade, or the end state at once." }];
     },
   },
@@ -496,7 +508,17 @@ const motionRules = [
       const real = uses.filter((u) => u.ms > 0);
       if (design.durations) {
         const ladder = [...design.durations].sort((a, b) => a - b);
-        return real.filter((u) => !design.durations.has(u.ms)).map((u) => ({ ...u, severity: "info", message: `${u.ms}ms isn't on the motion ladder in DESIGN.md (${ladder.map((n) => n + "ms").join(", ")}). Use the tier for how much of the screen changes, or name the exemption.` }));
+        const out = real.filter((u) => !design.durations.has(u.ms)).map((u) => ({ ...u, severity: "info", message: `${u.ms}ms isn't on the motion ladder in DESIGN.md (${ladder.map((n) => n + "ms").join(", ")}). Use the tier for how much of the screen changes, or name the exemption.` }));
+        // roles.md's one unrenameable rule: duration.* grows with the size of the change.
+        // A ladder written down as found can break it, and then approves the inversion.
+        const ORDER = ["micro", "state", "popover", "overlay", "route"];
+        let prev = null;
+        for (const role of ORDER.filter((r) => design.roles.has(r))) {
+          const ms = design.roles.get(role);
+          if (prev && ms <= prev.ms) out.push({ file: design.file, line: design.lines.motion, severity: "warning", message: `\`duration.${role}\` (${ms}ms) is no longer than \`duration.${prev.role}\` (${prev.ms}ms) in DESIGN.md. Durations grow with the size of the change, so a ladder written down as found needs its strays snapped to a tier, not recorded as one.` });
+          if (!prev || ms > prev.ms) prev = { role, ms };
+        }
+        return out;
       }
       const distinct = [...new Set(real.map((u) => u.ms))].sort((a, b) => a - b);
       if (distinct.length <= 6) return [];

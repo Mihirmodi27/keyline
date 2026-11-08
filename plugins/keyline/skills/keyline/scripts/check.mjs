@@ -29,7 +29,8 @@ import { DOMAINS, RULES } from "./check/rules.mjs";
 
 const USAGE = `keyline check — the interface laws that can be checked without a model.
 
-  keyline check [paths…] [options]
+  npx keyline check [paths…] [options]
+  node <skill>/scripts/check.mjs [paths…] [options]   (the same, from an installed skill)
 
 Options:
   --json              every finding as JSON
@@ -84,7 +85,13 @@ export function gather(root, files) {
       facts.labels.push(...m.labels.map((l) => ({ ...l, file: f.rel })));
       facts.navs.push(...m.navs.map((n) => ({ ...n, file: f.rel })));
       const at = lineIndex(m.text);
-      for (const z of m.text.matchAll(/maximum-scale\s*=\s*1(?:\.0)?\b|user-scalable\s*=\s*(?:no|0)\b|maximumScale\s*:\s*1\b|userScalable\s*:\s*false\b/g)) facts.zoomLocks.push({ file: f.rel, line: at(z.index) });
+      // A zoom lock lives in a viewport value: a <meta name="viewport"> tag, a string
+      // that also sets width=device-width, or a viewport object's maximumScale /
+      // userScalable. The phrase alone in prose or docs ("never maximum-scale=1") isn't one.
+      const LOCK = /maximum-scale\s*=\s*1(?:\.0)?\b|user-scalable\s*=\s*(?:no|0)\b/g;
+      const VIEWPORT_VALUE = /<meta\b[^>]*\bviewport\b[^>]*>|["'`][^"'`\n<>]*width\s*=\s*device-width[^"'`\n<>]*["'`]/gi;
+      for (const v of m.text.matchAll(VIEWPORT_VALUE)) for (const z of v[0].matchAll(LOCK)) facts.zoomLocks.push({ file: f.rel, line: at(v.index + z.index) });
+      for (const z of m.text.matchAll(/\bmaximumScale\s*:\s*1\b|\buserScalable\s*:\s*false\b/g)) facts.zoomLocks.push({ file: f.rel, line: at(z.index) });
       if (MOTION_IMPORT.test(m.text)) {
         const imp = m.text.match(MOTION_IMPORT);
         noteAnimation({ file: f.rel, line: at(imp.index) });

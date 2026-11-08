@@ -63,6 +63,8 @@ At most four questions, each with your recommendation first:
 
 Don't ask what you can find out, and don't ask for approval of the whole mapping — write it and let the user correct the file.
 
+**When you can't stop to ask** — a headless or scheduled run, or a user who said to go ahead — take your recommendation for each question, write the file, and list each one under `## Decisions` marked *(?) assumed*, with the alternative, so the user can overturn it in one edit. A later command treats an *(?) assumed* entry like any decision until the user changes it.
+
 ## 5. Write `DESIGN.md`
 
 Follow `system/design-md.md`: the project's names in `Name here`, canonical roles in `Role`, values as the source states them, measured contrast for every text tier, per-theme columns only where themes exist, nothing for roles the project lacks. Then:

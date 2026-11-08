@@ -1,6 +1,6 @@
 # Impeccable on the dashboard scene
 
-Source: `before/` copied to `impeccable/`. Impeccable skill only (`/Users/mehere/.agents/skills/impeccable`): setup gates, then `teach` (which delegated to `document` for DESIGN.md), then `polish`. No other skills.
+Source: `before/` copied to `impeccable/`. Impeccable skill only (installed at `~/.agents/skills/impeccable`): setup gates, then `teach` (which delegated to `document` for DESIGN.md), then `polish`. No other skills.
 
 ## What teach set up
 
