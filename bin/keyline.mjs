@@ -2,10 +2,10 @@
 /**
  * Keyline's command line.
  *
- *   npx keyline install                      asks which coding agent
- *   npx keyline install --tool codex,cursor  answers up front
- *   npx keyline install --user               for every project on this machine
- *   npx keyline update                       refresh every copy already installed
+ *   npx trykeyline install                      asks which coding agent
+ *   npx trykeyline install --tool codex,cursor  answers up front
+ *   npx trykeyline install --user               for every project on this machine
+ *   npx trykeyline update                       refresh every copy already installed
  *
  * Keyline is one skill folder. Each coding agent reads skills from its own
  * folder: Claude Code and Windsurf have their own; Codex, Cursor, Gemini CLI,
@@ -80,11 +80,11 @@ const SUPERSEDED = [
 
 const USAGE = `Keyline ${version} — interface design laws for coding agents.
 
-  npx keyline install [options]   install the skill
-  npx keyline update  [options]   refresh every copy already installed
-  npx keyline check  [paths…]     the laws that can be checked without a model
-                                  (--json, --strict; see npx keyline check --help)
-  npx keyline tools               list the agents it installs for
+  npx trykeyline install [options]   install the skill
+  npx trykeyline update  [options]   refresh every copy already installed
+  npx trykeyline check  [paths…]     the laws that can be checked without a model
+                                     (--json, --strict; see npx trykeyline check --help)
+  npx trykeyline tools               list the agents it installs for
 
 Options:
   -t, --tool <tool[,tool…]>   which agent — asked for when not given, Claude Code
@@ -244,7 +244,7 @@ if (command === "update") {
   const scopes = dir ? [{ path: dir, label: shown(dir) }] : [...destinations(TOOL_IDS, false), ...destinations(TOOL_IDS, true)];
   const found = scopes.filter((d) => installedAt(d.path));
   if (found.length === 0) {
-    console.log("Keyline isn't installed here or for this user — run `npx keyline install`.");
+    console.log("Keyline isn't installed here or for this user — run `npx trykeyline install`.");
     process.exit(0);
   }
   for (const d of found) {
@@ -263,7 +263,7 @@ let installed = 0;
 for (const d of dests) {
   console.log(`${d.label} → ${shown(join(d.path, NAME))}`);
   if (installedAt(d.path) && !force) {
-    console.log("  · already installed — `npx keyline update` refreshes it, --force overwrites it");
+    console.log("  · already installed — `npx trykeyline update` refreshes it, --force overwrites it");
   } else {
     copyTo(d.path);
     console.log(`  ✓ keyline ${version}`);

@@ -5,8 +5,10 @@ Interface design laws for coding agents.
 Keyline reads your codebase once and writes a `DESIGN.md` that maps your own token names onto its roles and picks a preset for your reader. From then on your agent critiques, audits and fixes type, colour, layout, depth, motion and product patterns through that file: the same laws on every project, your values on yours.
 
 ```sh
-npx keyline install
+npx trykeyline install
 ```
+
+The npm package is `trykeyline`, because npm holds `keyline` too close to an older package's name. Everything else, the skill and the commands in your agent, is `keyline`.
 
 Then, in your agent:
 
@@ -39,12 +41,12 @@ You don't have to name a command: ask for "tighter spacing" or "a review of the 
 Twenty-four of the laws can be checked from source alone, with no model and no API key:
 
 ```sh
-npx keyline check            # human report; exits 1 on errors
-npx keyline check --json     # every finding, for CI or an agent
-npx keyline check --strict   # warnings fail the run too
+npx trykeyline check            # human report; exits 1 on errors
+npx trykeyline check --json     # every finding, for CI or an agent
+npx trykeyline check --strict   # warnings fail the run too
 ```
 
-It reads CSS, Tailwind classes, inline styles, `<style>` blocks and CSS-in-JS, in React, Vue, Svelte, Astro and plain HTML, and it reads `DESIGN.md` so the verdicts follow your preset and your motion and z-index ladders. A few of the things it catches: `transition: all`; animation with no reduced-motion branch; an outline removed with nothing in its place; `100vh`; `z-index: 9999`; colours typed inline instead of tokens; translucency with no `@supports` fallback; pinch-zoom disabled; uppercase labels and Title Case buttons where the preset says sentence case. `npx keyline check --rules` lists all of them, each with the law it comes from.
+It reads CSS, Tailwind classes, inline styles, `<style>` blocks and CSS-in-JS, in React, Vue, Svelte, Astro and plain HTML, and it reads `DESIGN.md` so the verdicts follow your preset and your motion and z-index ladders. A few of the things it catches: `transition: all`; animation with no reduced-motion branch; an outline removed with nothing in its place; `100vh`; `z-index: 9999`; colours typed inline instead of tokens; translucency with no `@supports` fallback; pinch-zoom disabled; uppercase labels and Title Case buttons where the preset says sentence case. `npx trykeyline check --rules` lists all of them, each with the law it comes from.
 
 `/keyline audit` runs it first and spends its own reading on what a detector can't see — hierarchy, grouping, whether a box should exist at all.
 
@@ -53,7 +55,7 @@ Silence a line with a `keyline-ignore` comment on it or the line above, naming t
 In CI:
 
 ```yaml
-- run: npx keyline check
+- run: npx trykeyline check
 ```
 
 ## Presets
@@ -71,12 +73,12 @@ Mixed projects are normal: `product`, with the marketing routes on `expressive`.
 
 ## Installing
 
-`npx keyline install` asks which agent you use and copies the skill into that agent's folder. Flags answer up front:
+`npx trykeyline install` asks which agent you use and copies the skill into that agent's folder. Flags answer up front:
 
 ```sh
-npx keyline install --tool codex,cursor     # several agents
-npx keyline install --tool claude-code --user   # every project on this machine
-npx keyline update                          # refresh every copy already installed
+npx trykeyline install --tool codex,cursor     # several agents
+npx trykeyline install --tool claude-code --user   # every project on this machine
+npx trykeyline update                          # refresh every copy already installed
 ```
 
 | Agent | `--tool` | This project | Every project (`--user`) |
@@ -97,15 +99,15 @@ npx keyline update                          # refresh every copy already install
 /plugin install keyline@keyline
 ```
 
-Claude Code names a plugin's skills after the plugin, so installed this way the command is `/keyline:keyline init`, `/keyline:keyline critique` and so on. Installed with `npx keyline install`, it's `/keyline`.
+Claude Code names a plugin's skills after the plugin, so installed this way the command is `/keyline:keyline init`, `/keyline:keyline critique` and so on. Installed with `npx trykeyline install`, it's `/keyline`.
 
 **With the [`skills` CLI](https://github.com/vercel-labs/skills):** `npx skills add Mihirmodi27/keyline --agent claude-code`.
 
-Until the first npm release, run the installer from GitHub: `npx github:Mihirmodi27/keyline install`.
+Or run the installer straight from GitHub: `npx github:Mihirmodi27/keyline install`.
 
 ### Coming from interface-skills
 
-Keyline replaces both interface-skills packages: the adaptable set became the commands, and the Glass package became the `glass` preset. `npx keyline install` finds the old skills and offers to remove them, since their descriptions would compete with Keyline's for the same requests. A `DESIGN.md` written by the old setup skill works as it is.
+Keyline replaces both interface-skills packages: the adaptable set became the commands, and the Glass package became the `glass` preset. `npx trykeyline install` finds the old skills and offers to remove them, since their descriptions would compete with Keyline's for the same requests. A `DESIGN.md` written by the old setup skill works as it is.
 
 ## Requirements
 

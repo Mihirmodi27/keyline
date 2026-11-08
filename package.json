@@ -1,5 +1,5 @@
 {
-  "name": "keyline",
+  "name": "trykeyline",
   "version": "0.1.0",
   "description": "Interface design laws for coding agents: one skill that reads your codebase, writes a DESIGN.md in your own token names, then critiques, audits and fixes type, colour, layout, depth, motion and product patterns through it.",
   "keywords": [
@@ -23,7 +23,8 @@
   "author": "Mihir Modi (https://modimihir.com)",
   "type": "module",
   "bin": {
-    "keyline": "bin/keyline.mjs"
+    "keyline": "bin/keyline.mjs",
+    "trykeyline": "bin/keyline.mjs"
   },
   "files": [
     "bin",

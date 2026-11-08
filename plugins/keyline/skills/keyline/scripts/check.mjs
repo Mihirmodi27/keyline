@@ -29,7 +29,7 @@ import { DOMAINS, RULES } from "./check/rules.mjs";
 
 const USAGE = `keyline check — the interface laws that can be checked without a model.
 
-  npx keyline check [paths…] [options]
+  npx trykeyline check [paths…] [options]
   node <skill>/scripts/check.mjs [paths…] [options]   (the same, from an installed skill)
 
 Options:
