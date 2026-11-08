@@ -81,6 +81,7 @@ const list = (xs, n = 4) => xs.slice(0, n).join(", ") + (xs.length > n ? `, +${x
 const typeRules = [
   {
     id: "type/weights",
+    scope: "project", // one finding for the whole project, pointed at a first use
     domain: "type",
     law: "type law 5",
     title: "Too many font weights",
@@ -175,6 +176,7 @@ const typeRules = [
   },
   {
     id: "type/font-synthesis",
+    scope: "project", // one finding for the whole project, pointed at a first use
     domain: "type",
     law: "type law 9",
     title: "Browsers may fake missing styles",
@@ -376,6 +378,7 @@ const layoutRules = [
   },
   {
     id: "layout/skip-link",
+    scope: "project", // one finding for the whole project, pointed at a first use
     domain: "layout",
     law: "layout law 12",
     title: "No skip link",
@@ -396,6 +399,7 @@ const backdropUses = (facts) => [
 const depthRules = [
   {
     id: "depth/backdrop-guard",
+    scope: "project", // one finding for the whole project, pointed at a first use
     domain: "depth",
     law: "depth law 15",
     title: "Translucency with no fallback",
@@ -424,6 +428,7 @@ const depthRules = [
   },
   {
     id: "depth/reduced-transparency",
+    scope: "project", // one finding for the whole project, pointed at a first use
     domain: "depth",
     law: "depth law 15",
     title: "No reduced-transparency path",
@@ -474,6 +479,7 @@ const motionRules = [
   },
   {
     id: "motion/reduced-motion",
+    scope: "project", // one finding for the whole project, pointed at a first use
     domain: "motion",
     law: "motion law 10",
     title: "No reduced-motion branch",
@@ -490,6 +496,7 @@ const motionRules = [
   },
   {
     id: "motion/duration-ladder",
+    scope: "project", // one finding for the whole project, pointed at a first use
     domain: "motion",
     law: "motion law 4",
     title: "Durations off the ladder",

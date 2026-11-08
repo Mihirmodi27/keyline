@@ -25,7 +25,7 @@
  *
  *   id        stable within the run, e.g. "f12"
  *   kind      "audit" | "smoke" | "capture" | "check"
- *   domain    type | color | layout | depth | motion | patterns | a11y | slop | flow | copy | states | runtime
+ *   domain    type | color | layout | depth | motion | patterns | a11y | slop | flow | copy | states | runtime | visual
  *   rule      "a11y/name", "flow/dead-click", "slop/purple-hero" …
  *   law       "patterns law 1" — the law it comes from, when there is one
  *   severity  "error" | "warning" | "info"
@@ -42,13 +42,18 @@
  *   fix       the command that fixes it: "/keyline color", "/keyline polish --from keyline-report"
  *   steps     smoke only: the steps that reproduce it, in order
  *   status    "open" (default) | "accepted" | "dismissed" — set by a person in the report or by hand
+ *
+ * Compared with an earlier run (`report --compare`, see compare.mjs), each
+ * finding also has `change` ("new" | "still" | "returned"), the run has
+ * `compare` (the counts) and `fixed` (the earlier run's findings that are
+ * gone), and each page has `diffs`, its screenshot diffs by shot key.
  */
 
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 
 export const SEVERITIES = ["error", "warning", "info"];
-export const DOMAINS = ["type", "color", "layout", "depth", "motion", "patterns", "a11y", "copy", "states", "slop", "flow", "runtime"];
+export const DOMAINS = ["type", "color", "layout", "depth", "motion", "patterns", "a11y", "copy", "states", "slop", "flow", "runtime", "visual"];
 
 export function newRun({ kind, title = null, base = null, root = null }) {
   return {

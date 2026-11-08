@@ -50,6 +50,15 @@ It reads CSS, Tailwind classes, inline styles, `<style>` blocks and CSS-in-JS, i
 
 `/keyline audit` runs it first and spends its own reading on what a detector can't see — hierarchy, grouping, whether a box should exist at all.
 
+On a codebase that already has findings, record them once and fail only on what a change adds:
+
+```sh
+npx trykeyline check --baseline save   # writes .keyline/baseline.json; commit it
+npx trykeyline check --baseline        # what's new, fixed and still; exits 1 only on new errors
+```
+
+Findings are matched on rule, file and the text of the line, not its number, so moving code doesn't make it new.
+
 Silence a line with a `keyline-ignore` comment on it or the line above, naming the rule if you like (`/* keyline-ignore type/uppercase */`); a whole file with `keyline-ignore-file`. Leave out paths with `--ignore src/content`.
 
 In CI:

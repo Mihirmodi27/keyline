@@ -53,9 +53,9 @@ export async function loadPlaywright({ root = process.cwd(), install = true, log
   return importFrom(found);
 }
 
-/** Chrome if it's installed, Playwright's Chromium if not (downloaded once). */
-export async function launch({ root, headless = true, log } = {}) {
-  const { pw, dir } = await loadPlaywright({ root, log });
+/** Chrome if it's installed, Playwright's Chromium if not (downloaded once). `install: false` never installs anything: it throws instead. */
+export async function launch({ root, headless = true, log, install = true } = {}) {
+  const { pw, dir } = await loadPlaywright({ root, log, install });
   try {
     return await pw.chromium.launch({ headless, channel: "chrome" });
   } catch {
@@ -63,7 +63,8 @@ export async function launch({ root, headless = true, log } = {}) {
   }
   try {
     return await pw.chromium.launch({ headless });
-  } catch {
+  } catch (err) {
+    if (!install) throw err;
     (log ?? ((m) => process.stderr.write(m + "\n")))("Downloading Playwright's Chromium once …");
     execFileSync(process.execPath, [join(dir, "cli.js"), "install", "chromium"], { stdio: ["ignore", "inherit", "inherit"] });
     return pw.chromium.launch({ headless });
