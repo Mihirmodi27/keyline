@@ -41,7 +41,7 @@
  *   file      source file, relative to the project root, and `line`
  *   fix       the command that fixes it: "/keyline color", "/keyline polish --from keyline-report"
  *   steps     smoke only: the steps that reproduce it, in order
- *   status    "open" (default) | "accepted" | "dismissed" — set by a person in the report or by hand
+ *   status    "open" (default) | "accepted" | "dismissed" | "fixed" — set by a person, the auditing agent, or polish --from
  */
 
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
@@ -100,7 +100,7 @@ export function sortFindings(findings) {
 export function counts(findings) {
   const c = { error: 0, warning: 0, info: 0, byDomain: {} };
   for (const f of findings) {
-    if (f.status === "dismissed") continue;
+    if (f.status === "dismissed" || f.status === "fixed") continue;
     c[f.severity]++;
     c.byDomain[f.domain] = (c.byDomain[f.domain] ?? 0) + 1;
   }

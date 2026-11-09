@@ -53,7 +53,8 @@ export function parseArgs(argv) {
       continue;
     }
     const [k, inline] = a.slice(2).split("=");
-    const flag = ["json", "headed", "help", "strict"].includes(k);
+    // A switch takes no value: a known one, or any option followed by another option or nothing.
+    const flag = ["json", "headed", "help", "strict", "quick", "no-check", "allow-writes"].includes(k) || (inline === undefined && (i + 1 >= argv.length || argv[i + 1].startsWith("--")));
     opts[k] = flag ? true : (inline ?? argv[++i]);
   }
   return opts;

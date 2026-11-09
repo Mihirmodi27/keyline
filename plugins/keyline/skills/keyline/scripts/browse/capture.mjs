@@ -61,6 +61,9 @@ async function settle(page) {
     window.scrollTo(0, 0);
     await wait(120);
     await document.fonts?.ready;
+    // Let finite animations land (an opening sequence, a reveal), up to 4s, so the page is shot as it settles.
+    const finite = document.getAnimations().filter((a) => a.effect?.getComputedTiming().endTime !== Infinity);
+    await Promise.race([Promise.all(finite.map((a) => a.finished.catch(() => {}))), wait(4000)]);
   });
 }
 

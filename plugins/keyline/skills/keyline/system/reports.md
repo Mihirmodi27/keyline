@@ -94,7 +94,7 @@ Add `keyline-report/` and `smoke-report/` to `.gitignore` unless the user wants 
 }
 ```
 
-Only `rule` and `title` are required. `box` is in CSS pixels on the full-page screenshot named by `shot` (the element's `getBoundingClientRect()` plus the page's scroll offset); the report crops round it and outlines it. A smoke finding adds `steps`, the actions that reproduce it, in order. `status` is `open`, `accepted` or `dismissed`; a person sets it, and `/keyline polish --from <dir>` works on what is open or accepted.
+Only `rule` and `title` are required. `box` is in CSS pixels on the full-page screenshot named by `shot` (the element's `getBoundingClientRect()` plus the page's scroll offset); the report crops round it and outlines it. A smoke finding adds `steps`, the actions that reproduce it, in order. `status` is `open`, `accepted`, `dismissed` or `fixed`: a person or the auditing agent sets the first three, and `/keyline polish --from <dir>` works on what is open or accepted and marks what it fixed. The report leaves dismissed and fixed findings out of its counts. `scoresDraft: true` marks scores drafted from the measurements and not yet reviewed; the report says so beside them.
 
 **Domains**: `type`, `color`, `layout`, `depth`, `motion`, `patterns` (the six passes), plus `a11y`, `copy`, `states`, `slop` (audit), `flow` (smoke) and `runtime` (any walk). **Severity**: `error` is broken for someone (unreadable, unreachable, does nothing, crashes); `warning` is a law broken in a way a reader feels; `info` is worth knowing.
 

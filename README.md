@@ -22,8 +22,8 @@ Then, in your agent:
 |---|---|
 | `/keyline init` | Scans the codebase, maps its tokens onto roles, picks a preset, writes `DESIGN.md` with the open issues it found |
 | `/keyline sync` | Reconciles `DESIGN.md` with code that has moved since |
-| `/keyline critique` | A designer's read of one screen: what the reader feels first, what's working, the few changes that matter |
-| `/keyline audit` | Every law checked with evidence, per domain, scored 0–4 |
+| `/keyline critique` | A designer's read of one screen: what the reader feels first, what's working, the few changes that matter. The audit's quick mode |
+| `/keyline audit` | Every page of the running product at desktop and phone, light and dark, plus the code: accessibility, contrast, AI slop and every law checked with evidence, scored 0–4, in one HTML report |
 | `/keyline type` | Type scale, weights, leading, tracking, emphasis, numerals, font loading |
 | `/keyline color` | Tokens by intent, text tiers by measured contrast, status colours, themes |
 | `/keyline layout` | Measure, spacing that groups, radii, line weights, z-index, breakpoints, empty states |
@@ -35,6 +35,26 @@ Then, in your agent:
 You don't have to name a command: ask for "tighter spacing" or "a review of the settings page" and the agent picks one.
 
 `critique`, `audit`, `init` and `sync` change no code. The refining commands change only what their domain owns, in your token names, and write decisions back to `DESIGN.md` so the next session starts from them.
+
+## The audit report
+
+`/keyline audit` walks the running product in a browser: every page Keyline can find (router files, sitemap, a crawl), at desktop and phone width, in light and dark. It measures what a reader meets — text contrast against what's really behind it, controls with no name, tap targets too small, sideways scroll, text cut off, the type actually rendered, copy left half-done, and the tells of AI slop (stock phrases, purple gradients, gradient headlines, emoji bullets, a card around everything) — adds the detector's findings from the source, and your agent adds what only judgement sees. Everything lands in one report:
+
+```
+keyline-report/
+  index.html      scores, a summary, every finding with its screenshot cropped and the element outlined
+  findings.json   the same, for CI or the next run
+  shots/
+```
+
+`/keyline polish --from keyline-report` then fixes what's open, a domain at a time, and marks what it fixed. The measuring half runs on its own too:
+
+```sh
+npx trykeyline audit --base http://localhost:3000       # a running app
+npx trykeyline audit --serve dist                       # a static build
+```
+
+It drives your installed Chrome through Playwright, which it installs once into `~/.cache/keyline` — not into your project — the first time a browser is needed. Agents with their own browser tools can use those instead.
 
 ## The detector
 

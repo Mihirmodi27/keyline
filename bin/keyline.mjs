@@ -8,6 +8,7 @@
  *   npx trykeyline update                       refresh every copy already installed
  *   npx trykeyline check                        the detector (see scripts/check.mjs)
  *   npx trykeyline pages | capture | report     the browser tools (see scripts/browse.mjs)
+ *   npx trykeyline audit                        every page measured, one report (see scripts/audit.mjs)
  *
  * Keyline is one skill folder. Each coding agent reads skills from its own
  * folder: Claude Code and Windsurf have their own; Codex, Cursor, Gemini CLI,
@@ -124,6 +125,10 @@ if (argv[0] === "check") {
 if (["pages", "capture", "report"].includes(argv[0])) {
   const { run } = await import(new URL("../plugins/keyline/skills/keyline/scripts/browse.mjs", import.meta.url));
   process.exit(await run(argv));
+}
+if (argv[0] === "audit") {
+  const { run } = await import(new URL("../plugins/keyline/skills/keyline/scripts/audit.mjs", import.meta.url));
+  process.exit(await run(argv.slice(1)));
 }
 const command = argv[0] && !argv[0].startsWith("-") ? argv.shift() : null;
 let dir = null;

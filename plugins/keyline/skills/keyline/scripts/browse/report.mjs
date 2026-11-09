@@ -45,7 +45,8 @@ function crop(box, shot) {
 function figure(f, page) {
   const shot = f.shot && page?.shots?.[f.shot];
   if (!shot) return "";
-  if (!f.box) {
+  // An element outside the shot (scrolled away in a strip) can't be outlined; show the page instead.
+  if (!f.box || f.box.x >= shot.width || f.box.x + f.box.w <= 0 || f.box.y >= shot.height) {
     return `<a class="shot shot--whole" href="${esc(shot.path)}" target="_blank" rel="noopener"><img src="${esc(shot.path)}" alt="" loading="lazy"></a>`;
   }
   const c = crop(f.box, shot);
@@ -78,12 +79,12 @@ function card(f, page) {
 </article>`;
 }
 
-function scoreTable(scores) {
+function scoreTable(scores, draft) {
   if (!scores) return "";
   const rows = Object.entries(scores)
     .map(([d, s]) => `<tr><th scope="row">${esc(DOMAIN_NAMES[d] ?? d)}</th><td><span class="meter" style="--v:${Number(s) / 4}"></span></td><td>${esc(s)}/4</td><td>${esc(SCORE_WORDS[s] ?? "")}</td></tr>`)
     .join("");
-  return `<section class="block"><h2>Scores</h2><table class="scores"><tbody>${rows}</tbody></table></section>`;
+  return `<section class="block"><h2>Scores${draft ? ` <small class="draft">drafted from the measurements; not yet reviewed</small>` : ""}</h2><table class="scores"><tbody>${rows}</tbody></table></section>`;
 }
 
 const STYLE = `
@@ -134,6 +135,7 @@ h2{margin:0 0 12px;font-size:16px;font-weight:500;letter-spacing:-.015em}
 .f__facts dt{width:6em;flex:none;color:var(--faint)}
 .f__facts dd{margin:0;min-width:0;overflow-wrap:anywhere}
 .empty{margin-top:48px;color:var(--muted)}
+.draft{font-size:13px;font-weight:400;color:var(--faint);margin-left:8px}
 footer{margin-top:64px;font-size:13px;color:var(--faint)}
 @media print{.filters{display:none}.f{break-inside:avoid}}
 `;
@@ -148,7 +150,7 @@ document.querySelectorAll('.filters select').forEach(x=>x.addEventListener('chan
 `;
 
 export function render(run) {
-  const findings = sortFindings(run.findings.filter((f) => f.status !== "dismissed"));
+  const findings = sortFindings(run.findings.filter((f) => f.status !== "dismissed" && f.status !== "fixed"));
   const c = counts(findings);
   const pagesByRoute = new Map(run.pages.map((p) => [p.route, p]));
   const groups = new Map();
@@ -179,7 +181,7 @@ export function render(run) {
 <p class="lede">${esc(run.base ?? run.root ?? "")} · ${esc(when.toLocaleString("en-GB", { dateStyle: "medium", timeStyle: "short" }))} · ${run.pages.length} ${run.pages.length === 1 ? "page" : "pages"}</p>
 ${run.summary ? `<p class="summary">${esc(run.summary)}</p>` : ""}
 <ul class="totals"><li><b>${c.error}</b><span>Errors</span></li><li><b>${c.warning}</b><span>Warnings</span></li><li><b>${c.info}</b><span>Notes</span></li></ul>
-${scoreTable(run.scores)}
+${scoreTable(run.scores, run.scoresDraft)}
 <nav class="filters" aria-label="Filter findings">
 <select name="severity" aria-label="Severity">${option("", "Every severity")}${option("error", "Errors")}${option("warning", "Warnings")}${option("info", "Notes")}</select>
 <select name="domain" aria-label="Area">${option("", "Every area")}${domains.map((d) => option(d, DOMAIN_NAMES[d] ?? d)).join("")}</select>

@@ -8,7 +8,8 @@
  * statuses, console errors, uncaught exceptions and failed requests. Callers
  * pass `probes` to measure more inside each page and `judge` to turn what they
  * measured into findings: the audit and the smoke test are both a walk plus
- * their own probes and judges.
+ * their own probes and judges. `probeFor(viewport, theme, route)` adds probes
+ * that depend on the pass.
  */
 import { add, newRun } from "./findings.mjs";
 import { THEMES, openContext, shotKey, visit, withHelpers } from "./capture.mjs";
@@ -26,8 +27,10 @@ export async function walk({
   viewports = ["desktop", "phone"],
   themes = THEMES,
   probes = [],
+  probeFor = null,
   judge = null,
   headless = true,
+  reducedMotion = false,
   log = (m) => process.stderr.write(m + "\n"),
 }) {
   const run = newRun({ kind, title, base, root });
@@ -48,11 +51,11 @@ export async function walk({
     let first = true;
     for (const viewport of viewports) {
       for (const theme of themes) {
-        const context = await withHelpers(await openContext(browser, { viewport, theme }));
+        const context = await withHelpers(await openContext(browser, { viewport, theme, reducedMotion }));
         for (let i = 0; i < queue.length; i++) {
           const route = queue[i];
           log(`  ${viewport} ${theme}  ${route}`);
-          const v = await visit(context, { base, route, out, viewport, theme, probes });
+          const v = await visit(context, { base, route, out, viewport, theme, probes: probeFor ? [...probes, ...probeFor(viewport, theme, route)] : probes });
           if (first) {
             for (const link of v.links) {
               if (!known.has(link) && known.size < limit) {
