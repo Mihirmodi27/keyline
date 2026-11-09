@@ -9,6 +9,7 @@
  *   npx trykeyline check                        the detector (see scripts/check.mjs)
  *   npx trykeyline pages | capture | report     the browser tools (see scripts/browse.mjs)
  *   npx trykeyline audit                        every page measured, one report (see scripts/audit.mjs)
+ *   npx trykeyline smoke --base URL             the smoke test (see scripts/smoke.mjs)
  *
  * Keyline is one skill folder. Each coding agent reads skills from its own
  * folder: Claude Code and Windsurf have their own; Codex, Cursor, Gemini CLI,
@@ -87,6 +88,8 @@ const USAGE = `Keyline ${version} — interface design laws for coding agents.
   npx trykeyline update  [options]   refresh every copy already installed
   npx trykeyline check  [paths…]     the laws that can be checked without a model
                                      (--json, --strict; see npx trykeyline check --help)
+  npx trykeyline smoke --base <url>  click through a running product and report
+                                     broken flows (see npx trykeyline smoke --help)
   npx trykeyline tools               list the agents it installs for
 
 Options:
@@ -128,6 +131,10 @@ if (["pages", "capture", "report"].includes(argv[0])) {
 }
 if (argv[0] === "audit") {
   const { run } = await import(new URL("../plugins/keyline/skills/keyline/scripts/audit.mjs", import.meta.url));
+  process.exit(await run(argv.slice(1)));
+}
+if (argv[0] === "smoke") {
+  const { run } = await import(new URL("../plugins/keyline/skills/keyline/scripts/smoke.mjs", import.meta.url));
   process.exit(await run(argv.slice(1)));
 }
 const command = argv[0] && !argv[0].startsWith("-") ? argv.shift() : null;

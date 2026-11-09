@@ -24,6 +24,7 @@ Then, in your agent:
 | `/keyline sync` | Reconciles `DESIGN.md` with code that has moved since |
 | `/keyline critique` | A designer's read of one screen: what the reader feels first, what's working, the few changes that matter. The audit's quick mode |
 | `/keyline audit` | Every page of the running product at desktop and phone, light and dark, plus the code: accessibility, contrast, AI slop and every law checked with evidence, scored 0–4, in one HTML report |
+| `/keyline smoke` | Uses your running app like a tester and reports what's broken, with the steps to reproduce each |
 | `/keyline type` | Type scale, weights, leading, tracking, emphasis, numerals, font loading |
 | `/keyline color` | Tokens by intent, text tiers by measured contrast, status colours, themes |
 | `/keyline layout` | Measure, spacing that groups, radii, line weights, z-index, breakpoints, empty states |
@@ -34,7 +35,18 @@ Then, in your agent:
 
 You don't have to name a command: ask for "tighter spacing" or "a review of the settings page" and the agent picks one.
 
-`critique`, `audit`, `init` and `sync` change no code. The refining commands change only what their domain owns, in your token names, and write decisions back to `DESIGN.md` so the next session starts from them.
+`critique`, `audit`, `smoke`, `init` and `sync` change no code. The refining commands change only what their domain owns, in your token names, and write decisions back to `DESIGN.md` so the next session starts from them.
+
+## The smoke test
+
+`/keyline smoke` walks your running app the way a tester would: every same-origin link (404s, redirect chains and loops), every button and clickable element clicked from a fresh load (a click that changes nothing in 1.5 s is a dead click), Back after every move, Escape on every menu and dialog, loaders still spinning after 8 s, views lost on reload, every form submitted empty, wrong and right (an error must appear by the field; success must show), Tab through each page (traps, invisible focus), a phone-width pass on the navigation, and layout shift on a slow connection. Each finding comes with the steps that reproduce it and a screenshot with the element outlined, in `smoke-report/index.html`.
+
+```sh
+npx trykeyline smoke --base http://localhost:3000    # a running dev server
+npx trykeyline smoke --serve dist                    # a static build
+```
+
+Form submits and anything that says delete, pay, buy, unsubscribe or log out run only on `localhost`, `*.localhost`, `*.test` or hosts you list as test hosts, and destructive ones only with `--allow-writes`; anywhere else the runner only reads and blocks every write request. Sign-in, example URLs for dynamic routes and forbidden areas go in an optional `keyline.smoke.json`, with credentials read from environment variables. With its own browser tools your agent runs the same checks in your session; otherwise Keyline installs Playwright once into `~/.cache/keyline` and drives your installed Chrome.
 
 ## The audit report
 
@@ -131,7 +143,7 @@ Keyline replaces both interface-skills packages: the adaptable set became the co
 
 ## Requirements
 
-Node 18 or later, for the installer and for the three scripts the skill runs: the detector, a token inventory and a contrast checker. None of them needs a dependency, a model or an API key.
+Node 18 or later, for the installer and for the three scripts the skill runs: the detector, a token inventory and a contrast checker. None of them needs a dependency, a model or an API key. The smoke test drives a browser: Playwright, installed once into `~/.cache/keyline` on first use, and your installed Chrome.
 
 ## Licence
 

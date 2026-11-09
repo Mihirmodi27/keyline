@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Planted bugs</title>
+  <style>
+    body { font: 16px/1.5 system-ui, sans-serif; margin: 0; padding: 24px; max-width: 720px; }
+    nav { display: flex; gap: 16px; margin-bottom: 24px; }
+    section { margin: 24px 0; }
+    .ghost { border: 0; background: none; padding: 4px 8px; font: inherit; }
+    .ghost:focus { outline: none; }
+    .spinner { display: inline-block; width: 160px; padding: 8px; background: #eee; }
+    [role="menu"] { display: block; border: 1px solid #ccc; padding: 8px; }
+    [role="menu"][hidden] { display: none; }
+  </style>
+</head>
+<body>
+  <nav aria-label="Main">
+    <a href="/about/">About</a>
+    <a href="/missing/">Pricing</a>
+  </nav>
+  <main>
+    <h1>Planted bugs</h1>
+
+    <section>
+      <button id="details-toggle" type="button">Show details</button>
+      <p id="details" hidden>Details, shown on request.</p>
+      <!-- Planted: a button with no handler. -->
+      <button id="export" type="button">Export CSV</button>
+      <!-- Planted: focus is styled away. -->
+      <button id="share" class="ghost" type="button">Share</button>
+      <span id="shared" role="status"></span>
+    </section>
+
+    <section>
+      <!-- Planted: a loader that never stops. -->
+      <div class="spinner" aria-busy="true" role="status">Loading activity…</div>
+    </section>
+
+    <section>
+      <!-- Planted: a menu that Escape doesn't close. -->
+      <button id="more" type="button" aria-haspopup="menu" aria-expanded="false" aria-controls="more-menu">More</button>
+      <div id="more-menu" role="menu" hidden>
+        <a role="menuitem" href="/about/">Team</a>
+      </div>
+    </section>
+
+    <section>
+      <!-- Planted: a form that swallows every submit and says nothing. -->
+      <form id="join" novalidate aria-label="Newsletter">
+        <label for="email">Email</label>
+        <input id="email" name="email" type="email" required>
+        <button type="submit">Join</button>
+      </form>
+    </section>
+
+    <section>
+      <!-- Planted: Tab can't leave these two. -->
+      <input id="code" aria-label="Promo code">
+      <button id="apply" type="button">Apply code</button>
+    </section>
+  </main>
+  <footer><a href="/about/">About us</a></footer>
+  <script>
+    document.getElementById("details-toggle").addEventListener("click", () => {
+      const d = document.getElementById("details");
+      d.hidden = !d.hidden;
+    });
+    const more = document.getElementById("more");
+    more.addEventListener("click", () => {
+      const menu = document.getElementById("more-menu");
+      menu.hidden = !menu.hidden;
+      more.setAttribute("aria-expanded", String(!menu.hidden));
+    });
+    document.getElementById("share").addEventListener("click", () => {
+      document.getElementById("shared").textContent = "Link copied";
+    });
+    document.getElementById("apply").addEventListener("click", () => {
+      document.getElementById("code").setAttribute("aria-invalid", "true");
+    });
+    document.getElementById("join").addEventListener("submit", (e) => e.preventDefault());
+    document.getElementById("apply").addEventListener("keydown", (e) => {
+      if (e.key === "Tab" && !e.shiftKey) {
+        e.preventDefault();
+        document.getElementById("code").focus();
+      }
+    });
+  </script>
+</body>
+</html>

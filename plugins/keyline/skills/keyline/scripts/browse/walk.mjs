@@ -31,6 +31,11 @@ export async function walk({
   judge = null,
   headless = true,
   reducedMotion = false,
+  // Optional, for callers that drive more than a walk (the smoke test):
+  browser: shared = null, // a browser already launched; left open
+  storageState = undefined, // a signed-in session for every context
+  prepare = null, // async (context, { viewport, theme }) before any page opens: route guards, init scripts
+  follow = () => true, // (path) => whether to follow a link the page rendered
   log = (m) => process.stderr.write(m + "\n"),
 }) {
   const run = newRun({ kind, title, base, root });
@@ -45,20 +50,21 @@ export async function walk({
   }
   run.dynamic = found.dynamic.map((d) => ({ path: d.path, sample: d.sample, file: d.file ?? null }));
 
-  const browser = await launch({ root: root ?? process.cwd(), headless, log });
+  const browser = shared ?? (await launch({ root: root ?? process.cwd(), headless, log }));
   const pages = new Map();
   try {
     let first = true;
     for (const viewport of viewports) {
       for (const theme of themes) {
-        const context = await withHelpers(await openContext(browser, { viewport, theme, reducedMotion }));
+        const context = await withHelpers(await openContext(browser, { viewport, theme, reducedMotion, storageState }));
+        if (prepare) await prepare(context, { viewport, theme });
         for (let i = 0; i < queue.length; i++) {
           const route = queue[i];
           log(`  ${viewport} ${theme}  ${route}`);
           const v = await visit(context, { base, route, out, viewport, theme, probes: probeFor ? [...probes, ...probeFor(viewport, theme, route)] : probes });
           if (first) {
             for (const link of v.links) {
-              if (!known.has(link) && known.size < limit) {
+              if (!known.has(link) && known.size < limit && follow(link)) {
                 known.add(link);
                 queue.push(link);
               }
@@ -75,7 +81,7 @@ export async function walk({
       }
     }
   } finally {
-    await browser.close();
+    if (!shared) await browser.close();
   }
   run.pages = [...pages.values()];
   return run;
