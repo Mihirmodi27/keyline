@@ -12,7 +12,7 @@ export const SKIP_DIRS = new Set([
 ]);
 export const STYLE = new Set([".css", ".scss", ".sass", ".less", ".pcss"]);
 export const MARKUP = new Set([".tsx", ".jsx", ".ts", ".js", ".mjs", ".vue", ".svelte", ".astro", ".html", ".mdx"]);
-const SKIP_FILES = /\.(min|d|test|spec|stories|config)\.[a-z]+$|^(eslint|postcss|tailwind|next|vite|vitest|jest|playwright)\.config\./;
+export const SKIP_FILES = /\.(min|d|test|spec|stories|config)\.[a-z]+$|^(eslint|postcss|tailwind|next|vite|vitest|jest|playwright)\.config\./;
 
 /** Every style and markup file under `paths`, relative to `root`, minus ignores. */
 export function collect(root, paths, ignores) {
@@ -41,4 +41,19 @@ export function collect(root, paths, ignores) {
   };
   for (const p of paths) visit(p);
   return out;
+}
+
+/**
+ * Whether one file, given relative to the root, is a file the detector would
+ * read on a full walk: a style or markup file, not a test or config, and not
+ * under a folder the walk skips. For checking a list of files (git's staged or
+ * changed ones, or the one an agent just edited) without walking the tree.
+ */
+export function isInterfaceFile(rel) {
+  const parts = rel.split("/");
+  const name = parts.pop();
+  if (parts[0] === "..") return false;
+  if (parts.some((d) => SKIP_DIRS.has(d) || (d.startsWith(".") && d !== ".storybook"))) return false;
+  const ext = extname(name);
+  return (STYLE.has(ext) || MARKUP.has(ext)) && !SKIP_FILES.test(name);
 }

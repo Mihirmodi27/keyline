@@ -11,6 +11,7 @@
  *                                               report --compare marks what changed since a run
  *   npx trykeyline audit                        every page measured, one report (see scripts/audit.mjs)
  *   npx trykeyline smoke --base URL             the smoke test (see scripts/smoke.mjs)
+ *   npx trykeyline guard --install              check each UI file as the agent writes it
  *
  * Keyline is one skill folder. Each coding agent reads skills from its own
  * folder: Claude Code and Windsurf have their own; Codex, Cursor, Gemini CLI,
@@ -91,6 +92,9 @@ const USAGE = `Keyline ${version} — interface design laws for coding agents.
                                      (--json, --strict, --baseline; see npx trykeyline check --help)
   npx trykeyline smoke --base <url>  click through a running product and report
                                      broken flows (see npx trykeyline smoke --help)
+  npx trykeyline guard --install     check each UI file as the agent writes it, and
+                                     hand what's found straight back to it
+                                     (--pre-commit for any agent; see npx trykeyline guard --help)
   npx trykeyline tools               list the agents it installs for
 
 Options:
@@ -137,6 +141,11 @@ if (argv[0] === "audit") {
 if (argv[0] === "smoke") {
   const { run } = await import(new URL("../plugins/keyline/skills/keyline/scripts/smoke.mjs", import.meta.url));
   process.exit(await run(argv.slice(1)));
+}
+// `guard` wires the live guard (bin/guard.mjs) into an agent's hooks or git's.
+if (argv[0] === "guard") {
+  const { guardCommand } = await import("./guard.mjs");
+  process.exit(await guardCommand(argv.slice(1)));
 }
 const command = argv[0] && !argv[0].startsWith("-") ? argv.shift() : null;
 let dir = null;

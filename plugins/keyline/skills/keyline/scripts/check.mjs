@@ -11,6 +11,8 @@
  *   node check.mjs --baseline         report what's new, fixed and still since then
  *   node check.mjs --changed origin/main --format github
  *                                     only the files a branch changed, as PR annotations
+ *   node check.mjs --staged           only what's staged (a pre-commit hook)
+ *   node check.mjs --changed main     only what changed since main
  *
  * It reads DESIGN.md at the root for the preset and the motion and z-index
  * ladders, so a verdict follows the project's own decisions. Silence one line
@@ -22,10 +24,11 @@
  * Exit codes: 0 clean (or only warnings and info), 1 findings that fail the
  * run, 2 a usage error. Against a baseline, only new findings fail it.
  */
-import { existsSync, readFileSync, writeFileSync } from "node:fs";
-import { join, resolve } from "node:path";
+import { existsSync, readFileSync, realpathSync, writeFileSync } from "node:fs";
+import { spawnSync } from "node:child_process";
+import { isAbsolute, join, relative, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
-import { collect } from "./check/files.mjs";
+import { collect, isInterfaceFile } from "./check/files.mjs";
 import { lineIndex, parseCss } from "./check/css.mjs";
 import { readMarkup } from "./check/markup.mjs";
 import { readDesign } from "./check/design.mjs";
@@ -44,8 +47,9 @@ Options:
   --format <f>        human (default), json, or github: workflow annotations
                       that GitHub draws on a pull request's lines
   --json-file <path>  also write the JSON report here, whatever --format says
-  --changed <ref>     only report on files changed since <ref> (its merge base
-                      with HEAD), plus uncommitted and untracked ones
+  --changed [ref]     only report on files changed since <ref> (its merge base
+                      with HEAD; default HEAD), plus uncommitted and untracked ones
+  --staged            only the files staged in git (for a pre-commit hook)
   --strict            fail on warnings as well as errors
   --quiet             errors only
   --all               don't cap repeated findings in the report
@@ -178,33 +182,107 @@ function suppressed(facts, f) {
 }
 
 /**
- * `only`, when given, is a set of paths relative to `root`: every file is still
- * read, so project-wide facts (is there a reduced-motion branch anywhere?) stay
- * true, but only findings in those files are reported.
+ * Rules whose verdict depends on a signal anywhere in the project — a
+ * reduced-motion branch, a focus-visible style, an @supports guard. Checking a
+ * few files, the signal may sit in a file that wasn't read, so a finding from
+ * one of these is confirmed against the whole project before it's reported.
  */
-export function check({ root = ".", paths = ["."], ignores = [], rules = null, only = null } = {}) {
-  const absRoot = resolve(root);
-  const files = collect(absRoot, paths.map((p) => resolve(absRoot, p)), ignores);
-  // DESIGN.md lives at the project root. Checking one folder with no --root, look in it too.
-  let design = readDesign(absRoot);
-  if (!design.found && paths.length === 1 && existsSync(resolve(absRoot, paths[0], "DESIGN.md"))) design = readDesign(resolve(absRoot, paths[0]));
-  const facts = gather(absRoot, files);
+export const PROJECT_RULES = new Set([
+  "type/font-synthesis", "color/focus-removed", "layout/skip-link", "depth/backdrop-guard",
+  "depth/prefix-pair", "depth/reduced-transparency", "motion/reduced-motion",
+]);
+
+function runRules(facts, design, rules) {
   const findings = [];
   for (const rule of RULES) {
     if (rules && !rules.some((r) => r === rule.id || r === rule.domain)) continue;
     for (const f of rule.check(facts, { design })) {
       const finding = { rule: rule.id, domain: rule.domain, law: rule.law, severity: f.severity, file: f.file, line: f.line, message: f.message };
       if (suppressed(facts, finding)) continue;
-      if (only && !only.has(finding.file)) continue;
       if (rule.scope === "project") finding.scope = "project";
       finding.fingerprint = fingerprint(finding, facts.sources.get(finding.file), { project: rule.scope === "project" });
       findings.push(finding);
     }
   }
+  return findings;
+}
+
+/**
+ * Check a project. `paths` walks folders; `only` instead names files (relative
+ * to the root) and reports findings in those files alone, with verdicts that
+ * still hold for the whole project.
+ */
+export function check({ root = ".", paths = ["."], ignores = [], rules = null, only = null } = {}) {
+  const absRoot = resolve(root);
+  // DESIGN.md lives at the project root. Checking one folder with no --root, look in it too.
+  let design = readDesign(absRoot);
+  if (!design.found && !only && paths.length === 1 && existsSync(resolve(absRoot, paths[0], "DESIGN.md"))) design = readDesign(resolve(absRoot, paths[0]));
+
+  let files;
+  let findings;
+  if (only) {
+    const rels = [...new Set(only.map((p) => relative(absRoot, resolve(absRoot, p)).split(sep).join("/")))];
+    const picked = rels.filter((rel) => isInterfaceFile(rel) && existsSync(join(absRoot, rel)));
+    files = collect(absRoot, picked.map((rel) => join(absRoot, rel)), ignores);
+    const mine = new Set(files.map((f) => f.rel));
+    findings = runRules(gather(absRoot, files), design, rules);
+    // A rule whose verdict needs the whole project: one listed here, or one the rules mark as project-scoped.
+    const isProject = (f) => PROJECT_RULES.has(f.rule) || f.scope === "project";
+    const needsProject = [...new Set(findings.filter(isProject).map((f) => f.rule))];
+    if (needsProject.length) {
+      // Only when it matters: a clean file never pays for the walk.
+      const whole = runRules(gather(absRoot, collect(absRoot, [absRoot], ignores)), design, needsProject);
+      findings = findings.filter((f) => {
+        if (!isProject(f)) return true;
+        return whole.some((w) => w.rule === f.rule) && !whole.some((w) => w.rule === f.rule && mine.has(w.file));
+      });
+      // Where the whole-project run places a finding in these files, its version wins (its severity knows the project).
+      findings.push(...whole.filter((w) => mine.has(w.file)));
+    }
+    findings = findings.filter((f) => mine.has(f.file));
+  } else {
+    files = collect(absRoot, paths.map((p) => resolve(absRoot, p)), ignores);
+    findings = runRules(gather(absRoot, files), design, rules);
+  }
   const order = { error: 0, warning: 1, info: 2 };
   findings.sort((a, b) => a.file.localeCompare(b.file) || a.line - b.line || order[a.severity] - order[b.severity]);
-  const checked = files.map((f) => f.rel).filter((rel) => !only || only.has(rel));
+  const checked = files.map((f) => f.rel);
   return { files: checked.length, checked, design, findings, rules };
+}
+
+/* ── Files from git ─────────────────────────────────────────────────────── */
+
+function git(cwd, args) {
+  const r = spawnSync("git", args, { cwd, encoding: "utf8", maxBuffer: 64 * 1024 * 1024 });
+  return r.status === 0 ? r.stdout : null;
+}
+
+/**
+ * The files git names — staged, or changed since `base` — relative to `root`,
+ * or null when `root` isn't in a git repository. The detector reads the files
+ * on disk, so a file staged in part is checked as it is in the working tree.
+ */
+export function gitFiles(root, { staged = false, base = "HEAD" } = {}) {
+  const absRoot = resolve(root);
+  const top = git(absRoot, ["rev-parse", "--show-toplevel"])?.trim();
+  if (!top) return null;
+  const lists = [];
+  if (staged) lists.push(git(absRoot, ["diff", "--cached", "--name-only", "--diff-filter=ACMR", "-z"]));
+  else {
+    const from = git(absRoot, ["merge-base", base, "HEAD"])?.trim() || base;
+    lists.push(git(absRoot, ["diff", "--name-only", "--diff-filter=ACMR", "-z", from]));
+    lists.push(git(absRoot, ["ls-files", "--others", "--exclude-standard", "--full-name", "-z"]));
+  }
+  const out = new Set();
+  // git answers with real paths; the root may have come through a symlink (/tmp on macOS).
+  const real = realpathSync(absRoot);
+  for (const list of lists) {
+    for (const name of (list ?? "").split("\0").filter(Boolean)) {
+      const rel = relative(real, join(top, name)).split(sep).join("/");
+      if (!rel.startsWith("../") && !isAbsolute(rel)) out.add(rel);
+    }
+  }
+  return [...out];
 }
 
 /* ── Report ─────────────────────────────────────────────────────────────── */
@@ -294,14 +372,20 @@ function human(result, { all, color, baseline, changed }) {
 }
 
 export function parseCheckArgs(argv) {
-  const opts = { format: "human", strict: false, quiet: false, all: false, ignores: [], rules: null, root: ".", paths: [], baseline: null, baselineFile: null, changed: null, jsonFile: null };
+  const opts = { format: "human", strict: false, quiet: false, all: false, ignores: [], rules: null, root: ".", paths: [], baseline: null, baselineFile: null, changed: null, staged: false, jsonFile: null };
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i];
     const value = () => (a.includes("=") ? a.slice(a.indexOf("=") + 1) : argv[++i]);
     if (a === "--json") opts.format = "json";
     else if (a === "--format" || a.startsWith("--format=")) opts.format = value();
     else if (a === "--json-file" || a.startsWith("--json-file=")) opts.jsonFile = value();
-    else if (a === "--changed" || a.startsWith("--changed=")) opts.changed = value();
+    else if (a.startsWith("--changed=")) opts.changed = value();
+    else if (a === "--changed") {
+      // The base is optional (default HEAD): take the next word only if git knows it as a commit.
+      const next = argv[i + 1];
+      const isRev = next && !next.startsWith("-") && git(resolve(opts.root), ["rev-parse", "--verify", "--quiet", `${next}^{commit}`]) !== null;
+      opts.changed = isRev ? argv[++i] : "HEAD";
+    }
     else if (a === "--strict") opts.strict = true;
     else if (a === "--quiet") opts.quiet = true;
     else if (a === "--all") opts.all = true;
@@ -313,6 +397,7 @@ export function parseCheckArgs(argv) {
       opts.baseline = ["save", "compare"].includes(argv[i + 1]) ? argv[++i] : "compare";
     } else if (a.startsWith("--baseline=")) opts.baseline = value();
     else if (a === "--baseline-file" || a.startsWith("--baseline-file=")) opts.baselineFile = value();
+    else if (a === "--staged") opts.staged = true;
     else if (a === "--rules") opts.listRules = true;
     else if (a === "-h" || a === "--help") opts.help = true;
     else if (a.startsWith("-")) return { error: `unknown option ${a} (try --help)` };
@@ -321,7 +406,8 @@ export function parseCheckArgs(argv) {
   if (opts.baseline && !["save", "compare"].includes(opts.baseline)) return { error: `--baseline takes save or nothing, not ${opts.baseline}` };
   if (opts.baselineFile && !opts.baseline) opts.baseline = "compare";
   if (!["human", "json", "github"].includes(opts.format)) return { error: `--format takes human, json or github, not ${opts.format}` };
-  if (opts.changed === undefined || opts.changed === "") return { error: "--changed needs a base, like origin/main" };
+  if (opts.staged && opts.changed) return { error: "--staged and --changed don't go together" };
+  if (opts.staged && opts.baseline === "save") return { error: "a baseline is the whole project: save it without --staged" };
   if (opts.jsonFile === undefined || opts.jsonFile === "") return { error: "--json-file needs a path" };
   if (opts.changed && opts.baseline === "save") return { error: "a baseline is the whole project: save it without --changed" };
   opts.json = opts.format === "json";
@@ -388,7 +474,21 @@ export function run(argv) {
     if (!changed.mergeBase) console.error(`keyline check: ${opts.changed} and HEAD share no history here (a shallow clone?), so this compares with ${opts.changed} itself`);
   }
 
-  const result = check({ root: opts.root, paths: opts.paths.length ? opts.paths : ["."], ignores: opts.ignores, rules: opts.rules, only: changed ? new Set(changed.files) : null });
+  let only = changed ? changed.files : null;
+  if (opts.staged) {
+    only = gitFiles(opts.root, { staged: true });
+    if (!only) {
+      console.error("keyline check: --staged needs a git repository");
+      return 2;
+    }
+    changed = { base: "the last commit (staged)", staged: true, files: only };
+  }
+  // Paths, when given, narrow git's list to those folders.
+  if (only && opts.paths.length) {
+    const within = opts.paths.map((p) => relative(resolve(opts.root), resolve(opts.root, p)).split(sep).join("/"));
+    only = only.filter((rel) => within.some((w) => w === "" || rel === w || rel.startsWith(w + "/")));
+  }
+  const result = check({ root: opts.root, paths: opts.paths.length ? opts.paths : ["."], ignores: opts.ignores, rules: opts.rules, only });
 
   // A baseline holds everything found, whatever --quiet shows.
   if (opts.baseline === "save") {
