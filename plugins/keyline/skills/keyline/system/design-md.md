@@ -118,7 +118,7 @@ Plus springs by character, and the reduced-motion policy in one sentence.
 
 ## Patterns
 
-**Nouns** — one per kind of thing: task (never "issue"), note, project, member. **Row second line** — `{type} from {origin}`. **Destructive** — delete, remove, sign out: last in menu, no icon; projects and accounts need a typed word. **Shortcuts** — ⌘K palette, J/K, F filter, Escape one layer. **Remembered views** — tasks and meetings per page; folders pinned to folders.
+**Voice** — plain and direct, like a colleague who knows the work; warm only when something is finished, never on errors or payments; no "we", "your" only to tell two things apart. **Nouns** — one per kind of thing: task (never "issue"), note, project, member. **Row second line** — `{type} from {origin}`. **Destructive** — delete, remove, sign out: last in menu, no icon; projects and accounts need a typed word. **Shortcuts** — ⌘K palette, J/K, F filter, Escape one layer. **Remembered views** — tasks and meetings per page; folders pinned to folders.
 
 ## Decisions
 
