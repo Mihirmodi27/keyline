@@ -108,7 +108,7 @@ test("project-wide signals are read from the whole project, not just the edited 
   assert.match(found, /error motion\/reduced-motion/);
   assert.match(found, /error color\/focus-removed/);
 
-  const guarded = project({ ...files, "src/base.css": "@media (prefers-reduced-motion: reduce) { * { transition: none; } }\n:focus-visible { outline: 2px solid; }\n" });
+  const guarded = project({ ...files, "src/base.css": "@media (prefers-reduced-motion: reduce) { .a { transition: opacity 100ms; } }\n:focus-visible { outline: 2px solid; }\n" });
   const text = JSON.parse(hook(guarded, "src/a.css").stdout).hookSpecificOutput.additionalContext;
   assert.ok(!/reduced-motion/.test(text), "reduced motion is handled in another file");
   assert.match(text, /warning color\/focus-removed/, "with focus-visible elsewhere, a removed :focus outline is a warning, not an error");
