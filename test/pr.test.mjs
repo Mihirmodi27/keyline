@@ -72,7 +72,7 @@ test("check --changed reports only changed files, but still reads the whole proj
   assert.match(out.stdout, /2 changed files since main/);
   assert.doesNotMatch(out.stdout, /b\.css/);
   assert.equal(cli(join(root, "web"), "--changed", "nope").status, 2);
-  assert.equal(cli(join(root, "web"), "--changed").status, 2);
+  assert.notEqual(cli(join(root, "web"), "--changed").status, 2, "a bare --changed compares with HEAD, as the guard uses it");
   assert.equal(cli(join(root, "web"), "--changed", "main", "--baseline", "save").status, 2, "a baseline is the whole project");
 });
 

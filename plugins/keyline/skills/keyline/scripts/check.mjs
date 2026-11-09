@@ -221,7 +221,7 @@ export function check({ root = ".", paths = ["."], ignores = [], rules = null, o
   let files;
   let findings;
   if (only) {
-    const rels = [...new Set(only.map((p) => relative(absRoot, resolve(absRoot, p)).split(sep).join("/")))];
+    const rels = [...new Set([...only].map((p) => relative(absRoot, resolve(absRoot, p)).split(sep).join("/")))];
     const picked = rels.filter((rel) => isInterfaceFile(rel) && existsSync(join(absRoot, rel)));
     files = collect(absRoot, picked.map((rel) => join(absRoot, rel)), ignores);
     const mine = new Set(files.map((f) => f.rel));
