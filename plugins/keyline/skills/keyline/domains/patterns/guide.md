@@ -21,7 +21,7 @@ Boundaries: how a label or figure is set is the type guide's; what colour danger
 
 **A label names the action in the fewest words that still say it: a button reads its verb — "Send", "Save changes", "Record" — not the sentence around it ("Record a voice note").** Labels are scanned, not read; every extra word moves the verb away from where the eye lands, and the tail is the first thing to truncate. Short is not narrow: a label covers everything behind it, so an item that takes questions, bug reports and requests is "Help & feedback", not "Request a feature". Add an object only where two verbs on one screen would otherwise collide ("Save draft" beside "Publish"); a confirm button repeats its dialog's verb ("Delete project"), never "OK" or "Yes".
 
-**Sentence case everywhere** — buttons, menu items, dialog titles, field and column names, tabs, toasts, and labels the code generates from keys (`dueDate` → "Due date"). Title case marks every word as a name, and uppercase strips word shapes; acronyms, proper nouns and third-party product names stay as written.
+**Sentence case everywhere** — buttons, menu items, dialog titles, field and column names, tabs, toasts, and labels the code generates from keys (`dueDate` → "Due date"). Title case marks every word as a name, and uppercase strips word shapes; acronyms, proper nouns and third-party product names stay as written. What the law asks is one capitalisation per kind of element: a product that follows a platform's title-case convention for one kind (a macOS app's menu items) records it in `DESIGN.md` and applies it to every element of that kind; a mix inside one kind is the failure.
 
 ### 2. A row's second line says what it is and where it's from
 
@@ -127,6 +127,12 @@ Whether the view and span are remembered is layout law 9; list each page that re
 
 → Pending states, skeletons, forgiving inputs and progress in code: `domains/patterns/actions-and-forms.md`
 
+### 18. One voice, a tone for the moment, in words anyone can read
+
+**The product speaks with one voice, chosen for its reader, and shifts its tone with the moment: plain and direct when something failed or money is moving, warm only when something good is finished.** The voice is a decision, not a mood: who reads this, which words they already use (the glossary in law 2), and how the product should leave them feeling — a bank's words carry steadiness, a game's carry play. Tone is the same voice in a different room: "Payment declined. Check the card's expiry date" and "You closed every task this week" can come from one product. What never changes is clarity. **Every word earns its place** — read the line aloud; if a word can go, it goes. **No cleverness on an action**: "Let's do it!" hides what the button does, where "Send" says it. **Plain words for everyone**: no jargon the reader didn't bring, no gendered terms, no idioms that don't translate, and strings built whole so they can be translated. **"Your" only where it disambiguates, one perspective throughout, and never "we"** — a reader can't tell who "we" is, least of all in an error. **Verbs that match the device**: "tap" on touch, "click" with a pointer, "select" or "choose" where both apply. Several of these follow Apple's guidance on writing for interfaces, restated for the web.
+
+→ Voice and tone, plain and translatable words, pronouns, flow labels, field hints, settings and delivery: `domains/patterns/copy.md`
+
 ## Dials
 
 | Dial | editorial | product | expressive |
@@ -137,6 +143,7 @@ Whether the view and span are remembered is layout law 9; list each page that re
 | Optimistic updates | Rare | Default for moves, toggles, renames, reorders | Rare |
 | Proof of intent for large deletes | Typed word | Typed word | Typed word |
 | Empty-state copy | One sentence and the action | One line and the action | A headline, a line and the action |
+| Tone at rest | Plain, close to the reading | Plain and brief; warmth only at finished work | The brand's voice, still plain on errors and payments |
 | Agent steps | Collapsed to one line each | Collapsed when done; running and failed steps open | Collapsed to one line each |
 | Toasts | Failures and Undo only | Failures, Undo, and results off screen | Failures and Undo only |
 
@@ -182,12 +189,13 @@ Most product feedback is one step: "one step lighter", "25% smaller", "to 16px".
 | 15 | Async actions with no pending label; centred spinners over blank regions; long jobs with no progress or cancel; results shown away from where they were asked for; silent saves | Action, its wait, and what the reader sees meanwhile |
 | 16 | Inputs that reject spaces, dashes, case or a trailing space; placeholders as labels; pickers with no recent items; questions the product could answer itself | Field, the input it rejects or the question it needn't ask |
 | 17 | Multi-step flows with no position or count; a last screen that says only "Success" or "Done"; failure copy with a code and no next step | Flow, step, and its end state |
+| 18 | Errors with "Oops", "Uh-oh", "Whoops" or "we"; cute labels on actions ("Let's go!", "Yes please"); "Your" on every nav item; "click" in a touch layout; strings concatenated from fragments; jargon the reader didn't bring; two voices on one screen | String, and the line it should be |
 
 Click through every flow once with the keyboard alone, and once with the network throttled to failure. Report one line per finding with its evidence under `## Open issues`, and fix nothing unless asked.
 
 ## Writing back to DESIGN.md
 
-- **`## Patterns`**: the product's nouns, one per kind of thing; the second-line formula; the destructive items and the proof each needs; the shortcut map; which pages remember their view and which default wins; the agent-step conventions.
+- **`## Patterns`**: the voice in a line, and how the tone shifts (errors, payments, finished work); the product's nouns, one per kind of thing; the second-line formula; the destructive items and the proof each needs; the shortcut map; which pages remember their view and which default wins; the agent-step conventions.
 - **Decisions**, dated, marked by who decided, with the reason: any dial moved off the preset, a law knowingly broken, or a change a law forced that a later session might undo (marked *law*).
 - **Open issues** for every law the code breaks, with evidence, removed when the fix lands.
 
@@ -211,6 +219,7 @@ Click through every flow once with the keyboard alone, and once with the network
 - [ ] Every input is acknowledged at once; past ≈ 400ms the control says it's working, past ≈ 1s the region shows its shape, past ≈ 10s progress is determinate and cancellable; results appear where they were asked for.
 - [ ] Inputs accept any reasonable form and normalise it; labels stay visible; pickers lead with recent items; the product never asks for what it already knows.
 - [ ] Multi-step flows show position and what's left; the last screen names what happened, shows it and offers the next action; failures at the peak get the most careful copy.
+- [ ] One voice, recorded under `## Patterns`; errors and payments plain, warmth only at finished work; no "we", no "Oops", no cute action labels; "your" only where it disambiguates; verbs match the device; strings are whole sentences ready for translation.
 - [ ] Long lists and long strings are chunked; launchers and toolbars show the common path and disclose the rest.
 - [ ] Feedback was applied at the size asked, swept product-wide, reported, and recorded as a dated decision.
 - [ ] Dials match the preset, or the difference is under `## Decisions`.

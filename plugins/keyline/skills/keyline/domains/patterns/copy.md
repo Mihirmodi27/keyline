@@ -1,6 +1,21 @@
 # UI copy
 
-Copy in a product is interface, not prose: it is scanned in passing, compared across screens, and read again a thousand times. Each rule below makes a label faster to recognise the second time.
+Copy in a product is interface, not prose: it is scanned in passing, compared across screens, and read again a thousand times. Each rule below makes a label faster to recognise the second time. Several follow Apple's Human Interface Guidelines on writing (developer.apple.com/design/human-interface-guidelines/writing), restated here for the web and in Keyline's terms.
+
+## Voice and tone
+
+**Voice is chosen once.** Decide who reads the product, which words they already use, and how it should leave them feeling, then write it in one line under `## Patterns`: "Plain and direct, like a colleague who knows the work." The glossary below is the voice's vocabulary.
+
+**Tone moves with the moment.** The same voice is plainer when something failed or money is moving, and allowed some warmth when something good is finished:
+
+| Moment | Tone | Write |
+|---|---|---|
+| A payment fails | Plain, specific, no apology theatre | Payment declined. Check the card's expiry date or use another card. |
+| A save fails | Plain, with the way out | Couldn't save the draft. Your changes are kept here — Retry |
+| A goal is reached | Warm, brief | Every task closed this week. |
+| First run | Welcoming, short, useful | Projects you create or join appear here. |
+
+**Clear beats clever.** Read the line aloud; cut every word that can go. Wit belongs, if anywhere, in a moment with nothing at stake, never on a button or an error.
 
 ## Labels
 
@@ -14,6 +29,8 @@ Copy in a product is interface, not prose: it is scanned in passing, compared ac
 | Are you sure you want to delete? | Delete "Riverside"? | Name the thing, drop the hedge |
 | Manage Team Members | Members | Sentence case; the verb is implied by the page |
 | NEW TASK | New task | Uppercase strips word shapes and reads as shouting |
+| Let's do it! · Sounds good! | Send · Create project | A cheerful label hides what the button does |
+| Your settings · My projects | Settings · Projects | The possessive adds nothing when there is only one kind; keep it for telling two apart ("Your tasks" beside "Team tasks") |
 
 **Verb first, object only when needed.** One primary action on a screen needs no object ("Save"). Two verbs that could be confused do ("Save draft", "Publish"). A destructive button always takes its object ("Delete project"), because the object is what's lost.
 
@@ -73,6 +90,7 @@ One noun per kind of thing, everywhere: navigation, page titles, row lines, toas
 ```markdown
 ## Patterns
 
+**Voice** — plain and direct, like a colleague who knows the work; warm only when something is finished.
 **Nouns** — task (never "issue", "item" or "action"); note (a recording once processed); project; member (never "user" in UI).
 **Row second line** — `{type} from {origin}`; origin is the project, or "Personal" for notes outside one.
 ```
@@ -92,7 +110,18 @@ A synonym in one corner of the product reads as a second kind of thing. When a n
 
 Never "Successfully …" (the outcome is the message), never an exclamation mark, never an error code without words. A move the reader watched happen needs no toast.
 
-**Errors** say what to do, not what went wrong inside: "Enter a date after the start date", not "Invalid date range". Field errors replace the field's hint (`domains/patterns/actions-and-forms.md`).
+**Errors** say what to do, not what went wrong inside, as close to the problem as they can sit:
+
+| Instead of | Write | Why |
+|---|---|---|
+| Invalid date range | Enter a date after the start date | The reader needs the fix, not the verdict |
+| That password is too short | Use at least 8 characters | Say the rule as the way through |
+| Don't use numbers or symbols | Use only letters | Positive instructions read faster and don't scold |
+| Oops! Something went wrong | Couldn't load the report — Retry | Interjections sound insincere at the worst moment |
+| We're having trouble loading this | Couldn't load this page | "We" is nobody the reader can see; name what failed |
+| You entered an invalid email | Enter an email like name@example.com | Don't blame; show the shape that works |
+
+Field errors replace the field's hint (`domains/patterns/actions-and-forms.md`). An error many people hit is a design problem: change the field or the flow so it can't happen, rather than polishing the message.
 
 **Empty states** — one line on what goes here, and the action that makes the first one:
 
@@ -107,6 +136,47 @@ Never "Successfully …" (the outcome is the message), never an exclamation mark
 > **Delete "Riverside"?**
 > Its 48 tasks, 12 notes and every file attached to them will be deleted for everyone. This can't be undone.
 > [Cancel] [Delete project]
+
+**How to say it depends on how urgent it is:**
+
+| The message is… | Deliver it as | Because |
+|---|---|---|
+| About one field, as it's filled | Inline, under the field | It belongs where the eye already is |
+| The result of something just done | A toast, with Undo or Retry | It confirms without stopping the work |
+| A decision that can't wait, or loses data | A dialog | It must be answered before going on |
+| About something away from the screen | A notification, or a badge in the product | The reader isn't looking; don't interrupt unless it can't wait |
+| Always true about the page | A line on the page | Not a message at all |
+
+## Flows
+
+A task of several screens uses one set of words for moving through it (law 17 for the shape):
+
+- **Start** with the task's name or "Get started", once, on the first screen only.
+- **Between steps**, choose "Continue" or "Next", or name the next step ("Choose a plan"), and keep the choice across every flow in the product.
+- **Back** is "Back", never "Previous" on one screen and "Return" on another.
+- **End** on what happened and what's next ("Project created · Open project"), not a bare "Done" or "Success".
+
+## Fields and settings
+
+**Every field has a label that stays visible** and, where the format isn't obvious, a hint that shows it: "name@example.com", "DD/MM/YYYY", "As it appears on the card". A placeholder alone is not a label (law 16).
+
+**A setting is labelled by the thing it controls** ("Weekly summary"), and its description says what happens when it's on: "Email a summary of the week's tasks every Monday." The reader infers the off state.
+
+**To send someone to a setting, link to it**, open on the right row. "Go to Settings › Notifications › Email" is a path the reader has to walk; a link is one click.
+
+## Words anyone can read
+
+- **Plain words over jargon.** "Sign in", not "Authenticate"; "Couldn't connect", not "Network error 503". A term of the trade is fine when the reader is in that trade (law 2's glossary decides).
+- **No gendered terms** where the person's gender isn't the point: "they", "everyone", "team", "staff".
+- **No idioms or wordplay in interface text**: they don't translate and don't survive a screen reader.
+- **Whole strings, ready to translate.** Never build a sentence from fragments (`"Delete " + name + "?"`); keep the sentence whole with a placeholder (`Delete "{name}"?`), leave room for text 30–40% longer, and format dates, numbers and plurals with `Intl`.
+- **Describe images by what they're for**, not what they look like: alt text on a chart says what it shows ("Sign-ups doubled in March"), and decorative images take `alt=""`.
+
+## Pronouns and device words
+
+- **"Your" and "my" sparingly**, and never both: pick the reader's perspective ("Your projects") or none, and keep it product-wide.
+- **Never "we".** The reader can't tell who it is, and in an error it shifts the subject to the company. Say what happened to the thing.
+- **Verbs match the device**: "tap" on touch layouts, "click" with a pointer, and "select", "choose" or "open" in text shared by both. A phone layout that says "click" was written for another screen.
 
 ## Calls to action, links and sign-ups
 
