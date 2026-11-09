@@ -17,17 +17,17 @@ Paths in these files are relative to this skill's folder. In shell commands it i
 |---|---|---|
 | `init` | Scans the codebase, maps its tokens onto roles, picks a preset, writes `DESIGN.md` with the open issues it found | No |
 | `sync` | Reconciles `DESIGN.md` with code that has moved since: drift, new tokens, issues fixed or new | No |
-| `critique` | A designer's read of one screen: what the reader feels first, what's working, the few changes that matter most | No |
-| `audit` | Every law checked with evidence, per domain, scored; findings go to `DESIGN.md` | No |
+| `critique` | A designer's read of one screen: what the reader feels first, what's working, the few changes that matter most. The audit's quick mode | No |
+| `audit` | The whole product in a browser and in its code: every page at desktop and phone, light and dark; every law checked with evidence, accessibility and AI slop included; scored per domain; one HTML report to share; findings go to `DESIGN.md` | No |
 | `type` | Type scale, weights, leading, tracking, emphasis, numerals, fonts | Yes |
 | `color` | Tokens by intent, text tiers by measured contrast, status colours, themes | Yes |
 | `layout` | Measure, spacing that groups, radii, line weights, z-index, breakpoints, empty states | Yes |
 | `depth` | Elevation levels, shadows, edges, scrims, translucent surfaces and their fallbacks | Yes |
 | `motion` | Durations, curves, springs, open and close, reduced motion, scroll, hover intent | Yes |
 | `patterns` | Behaviour and words: labels, buttons, destructive actions, forms, agent UIs, dashboards | Yes |
-| `polish` | All six domains in order, one reviewable pass each | Yes |
+| `polish` | All six domains in order, one reviewable pass each; `--from keyline-report` works through an audit's open findings | Yes |
 
-**No command named?** Pick the one the request is about, say which, and go: "set up", "document", "extract" → `init`; "review", "what's wrong", "feedback" → `critique`; "check everything", "lint", "score" → `audit`; "font", "headings", "typography" → `type`; "colour", "contrast", "dark mode" → `color`; "spacing", "padding", "alignment", "cramped" → `layout`; "shadow", "card", "glass", "modal" → `depth`; "animate", "transition", "feels janky" → `motion`; "copy", "labels", "form", "dialog" → `patterns`; "make it better", "clean this up", "finish" → `polish`. Building something new runs the relevant domains' **Building it for a project** sections, in polish order. `colour`, `typography`, `spacing`, `animate` and `copy` work as aliases.
+**No command named?** Pick the one the request is about, say which, and go: "set up", "document", "extract" → `init`; "review", "what's wrong", "feedback" → `critique`; "check everything", "lint", "score", "audit the app", "find accessibility issues", "find AI slop", "is this accessible" → `audit`; "font", "headings", "typography" → `type`; "colour", "contrast", "dark mode" → `color`; "spacing", "padding", "alignment", "cramped" → `layout`; "shadow", "card", "glass", "modal" → `depth`; "animate", "transition", "feels janky" → `motion`; "copy", "labels", "form", "dialog" → `patterns`; "make it better", "clean this up", "finish" → `polish`. Building something new runs the relevant domains' **Building it for a project** sections, in polish order. `colour`, `typography`, `spacing`, `animate` and `copy` work as aliases.
 
 ## Before any command
 
@@ -54,4 +54,4 @@ Paths in these files are relative to this skill's folder. In shell commands it i
 | `system/` | Setup: the canonical `roles.md`, the four `presets.md`, the `design-md.md` format, `detection.md` for each stack |
 | `domains/<domain>/` | Each domain's `guide.md` — laws, dials per preset, building, auditing, checklist — and its deeper references |
 | `glass/<domain>/` | The `glass` preset: modimihir.com's exact values, with drop-in tokens and components in `assets/` |
-| `scripts/` | `check.mjs` (the detector: 24 mechanical laws, `--json`, exit codes for CI), `scan.mjs` (token and value inventory) and `contrast.mjs` (measured contrast, translucency composited). Node 18+, no dependencies |
+| `scripts/` | `check.mjs` (the detector: 24 mechanical laws, `--json`, exit codes for CI), `scan.mjs` (token and value inventory) and `contrast.mjs` (measured contrast, translucency composited). Node 18+, no dependencies. `browse.mjs` and `browse/` find a product's pages, walk them in a browser and render a report — see `system/reports.md`; they load Playwright only when they run |

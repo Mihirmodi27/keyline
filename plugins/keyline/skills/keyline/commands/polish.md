@@ -17,3 +17,14 @@ Polish improves the screen it's given; it doesn't move navigation or add feature
 **Report**, per domain in order: what changed and why, in a line or two each — a domain with nothing to fix says so — then what the settling pass changed. Then what was measured, what went into `DESIGN.md`, and anything left for later with its command.
 
 If the user wants to review as you go, stop after each domain and show it before starting the next.
+
+## From a report: `/keyline polish --from keyline-report`
+
+After an audit, polish can work through the report instead of a target. Read `<dir>/findings.json`, and take every finding whose `status` is `open` or `accepted`; skip `dismissed` ones. Group them by the command in their `fix`. Run the passes in polish order as above, each on the pages and files its findings name, and fix those findings first. Then hold the rest of that page to the domain's laws as usual.
+
+- **Mark each finding** you fixed `status: "fixed"`. One you decide not to fix stays `open`, with a line in `detail` saying why.
+- **Re-measure when done.** Run `audit.mjs` again with `--routes` set to the pages you touched, or the detector for source findings. A finding that comes back is not fixed.
+- **Re-render** with `node <keyline>/scripts/browse.mjs report <dir>`.
+- **Report** what was fixed, what's still open, and what the new measurements say.
+
+Findings from `/keyline smoke` with `fix` commands work the same way.
