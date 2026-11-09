@@ -7,6 +7,10 @@
  *   node check.mjs src --json         every finding, for CI or an agent
  *   node check.mjs --strict           warnings fail the run too
  *   node check.mjs --ignore src/content --rule motion/transition-all
+ *   node check.mjs --baseline save    record today's findings in .keyline/baseline.json
+ *   node check.mjs --baseline         report what's new, fixed and still since then
+ *   node check.mjs --changed origin/main --format github
+ *                                     only the files a branch changed, as PR annotations
  *
  * It reads DESIGN.md at the root for the preset and the motion and z-index
  * ladders, so a verdict follows the project's own decisions. Silence one line
@@ -16,9 +20,9 @@
  * `keyline-ignore-file`.
  *
  * Exit codes: 0 clean (or only warnings and info), 1 findings that fail the
- * run, 2 a usage error.
+ * run, 2 a usage error. Against a baseline, only new findings fail it.
  */
-import { existsSync, readFileSync } from "node:fs";
+import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { collect } from "./check/files.mjs";
@@ -26,6 +30,9 @@ import { lineIndex, parseCss } from "./check/css.mjs";
 import { readMarkup } from "./check/markup.mjs";
 import { readDesign } from "./check/design.mjs";
 import { DOMAINS, RULES } from "./check/rules.mjs";
+import { BASELINE_FILE, compare, fingerprint, readBaseline, writeBaseline } from "./check/baseline.mjs";
+import { changedFiles, repoOf } from "./check/git.mjs";
+import { annotations } from "./github.mjs";
 
 const USAGE = `keyline check — the interface laws that can be checked without a model.
 
@@ -33,7 +40,12 @@ const USAGE = `keyline check — the interface laws that can be checked without 
   node <skill>/scripts/check.mjs [paths…] [options]   (the same, from an installed skill)
 
 Options:
-  --json              every finding as JSON
+  --json              every finding as JSON (the same as --format json)
+  --format <f>        human (default), json, or github: workflow annotations
+                      that GitHub draws on a pull request's lines
+  --json-file <path>  also write the JSON report here, whatever --format says
+  --changed <ref>     only report on files changed since <ref> (its merge base
+                      with HEAD), plus uncommitted and untracked ones
   --strict            fail on warnings as well as errors
   --quiet             errors only
   --all               don't cap repeated findings in the report
@@ -42,6 +54,10 @@ Options:
   --root <dir>        the project: paths are read from here, and DESIGN.md and
                       package.json found here (default: .)
   --rules             list the rules and exit
+  --baseline save     record today's findings in .keyline/baseline.json
+  --baseline          compare against it: show what's new, fixed and still,
+                      and fail only on new errors (new warnings with --strict)
+  --baseline-file <f> a baseline somewhere else (default .keyline/baseline.json)
   -h, --help          this`;
 
 const MOTION_IMPORT = /from\s+["'](?:motion(?:\/[\w-]+)?|framer-motion|gsap|@react-spring\/[\w-]+|react-spring|animejs)["']/;
@@ -161,7 +177,12 @@ function suppressed(facts, f) {
   return false;
 }
 
-export function check({ root = ".", paths = ["."], ignores = [], rules = null } = {}) {
+/**
+ * `only`, when given, is a set of paths relative to `root`: every file is still
+ * read, so project-wide facts (is there a reduced-motion branch anywhere?) stay
+ * true, but only findings in those files are reported.
+ */
+export function check({ root = ".", paths = ["."], ignores = [], rules = null, only = null } = {}) {
   const absRoot = resolve(root);
   const files = collect(absRoot, paths.map((p) => resolve(absRoot, p)), ignores);
   // DESIGN.md lives at the project root. Checking one folder with no --root, look in it too.
@@ -173,12 +194,17 @@ export function check({ root = ".", paths = ["."], ignores = [], rules = null } 
     if (rules && !rules.some((r) => r === rule.id || r === rule.domain)) continue;
     for (const f of rule.check(facts, { design })) {
       const finding = { rule: rule.id, domain: rule.domain, law: rule.law, severity: f.severity, file: f.file, line: f.line, message: f.message };
-      if (!suppressed(facts, finding)) findings.push(finding);
+      if (suppressed(facts, finding)) continue;
+      if (only && !only.has(finding.file)) continue;
+      if (rule.scope === "project") finding.scope = "project";
+      finding.fingerprint = fingerprint(finding, facts.sources.get(finding.file), { project: rule.scope === "project" });
+      findings.push(finding);
     }
   }
   const order = { error: 0, warning: 1, info: 2 };
   findings.sort((a, b) => a.file.localeCompare(b.file) || a.line - b.line || order[a.severity] - order[b.severity]);
-  return { files: files.length, design, findings, rules };
+  const checked = files.map((f) => f.rel).filter((rel) => !only || only.has(rel));
+  return { files: checked.length, checked, design, findings, rules };
 }
 
 /* ── Report ─────────────────────────────────────────────────────────────── */
@@ -193,69 +219,128 @@ function summarise(findings) {
   return { ...bySeverity, byDomain };
 }
 
-function human(result, { all, color }) {
+const plural = (n, word) => `${n} ${word}${n === 1 ? "" : "s"}`;
+
+function human(result, { all, color, baseline, changed }) {
   const paint = (code, s) => (color ? `\x1b[${code}m${s}\x1b[0m` : s);
   const sev = { error: (s) => paint("31", s), warning: (s) => paint("33", s), info: (s) => paint("36", s) };
   const dim = (s) => paint("2", s);
   const out = [];
   const d = result.design;
-  out.push(`Keyline check — ${result.files} files${d.found ? `, preset ${d.preset ?? "not set"} (${d.file})` : ", no DESIGN.md (run /keyline init for verdicts that follow your system)"}`);
+  out.push(`Keyline check — ${changed ? `${plural(result.files, "changed file")} since ${changed.base}` : `${result.files} files`}${d.found ? `, preset ${d.preset ?? "not set"} (${d.file})` : ", no DESIGN.md (run /keyline init for verdicts that follow your system)"}`);
   out.push("");
 
-  const shown = new Map();
-  const hidden = new Map();
-  let file = null;
-  for (const f of result.findings) {
-    const n = (shown.get(f.rule) ?? 0) + 1;
-    if (!all && n > 8) {
-      hidden.set(f.rule, (hidden.get(f.rule) ?? 0) + 1);
-      continue;
+  // Against a baseline, the detail is what's new; what was already there is a count (or, with --all, a second list).
+  const sections = baseline
+    ? [
+        { heading: "New since the baseline", list: result.findings.filter((f) => f.change === "new") },
+        ...(all ? [{ heading: "Still there", list: result.findings.filter((f) => f.change === "still") }] : []),
+      ]
+    : [{ heading: null, list: result.findings }];
+
+  for (const { heading, list } of sections) {
+    if (heading && list.length) {
+      out.push(paint("1", `${heading}`));
+      out.push("");
     }
-    shown.set(f.rule, n);
-    if (f.file !== file) {
-      if (file) out.push("");
-      out.push(paint("1", f.file));
-      file = f.file;
+    const shown = new Map();
+    const hidden = new Map();
+    let file = null;
+    for (const f of list) {
+      const n = (shown.get(f.rule) ?? 0) + 1;
+      if (!all && n > 8) {
+        hidden.set(f.rule, (hidden.get(f.rule) ?? 0) + 1);
+        continue;
+      }
+      shown.set(f.rule, n);
+      if (f.file !== file) {
+        if (file) out.push("");
+        out.push(paint("1", f.file));
+        file = f.file;
+      }
+      out.push(`  ${String(f.line).padStart(4)}  ${sev[f.severity](f.severity.padEnd(7))}  ${f.rule}`);
+      out.push(`        ${f.message} ${dim(`(${f.law})`)}`);
     }
-    out.push(`  ${String(f.line).padStart(4)}  ${sev[f.severity](f.severity.padEnd(7))}  ${f.rule}`);
-    out.push(`        ${f.message} ${dim(`(${f.law})`)}`);
+    if (hidden.size) {
+      out.push("");
+      for (const [rule, n] of hidden) out.push(dim(`  …${n} more ${rule} — run with --all to see them`));
+    }
+    if (list.length) out.push("");
   }
-  if (hidden.size) {
+
+  if (baseline?.fixed.length) {
+    out.push(paint("1", "Fixed since the baseline"));
     out.push("");
-    for (const [rule, n] of hidden) out.push(dim(`  …${n} more ${rule} — run with --all to see them`));
+    for (const f of baseline.fixed.slice(0, all ? Infinity : 20)) out.push(`  ${paint("32", "✓")} ${f.file}:${f.line}  ${dim(f.rule)}`);
+    if (!all && baseline.fixed.length > 20) out.push(dim(`  …${baseline.fixed.length - 20} more — run with --all to see them`));
+    out.push("");
   }
 
   const s = summarise(result.findings);
-  out.push("");
   out.push(DOMAINS.map((dm) => `${dm} ${s.byDomain[dm]}`).join(dim(" · ")));
   const total = result.findings.length;
   const scope = result.rules ? ` in ${result.rules.join(", ")}` : "";
-  out.push(total === 0 ? paint("32", `✓ nothing the detector can see${scope} — run /keyline critique for what it can't`) : `${s.error ? sev.error(`✖ ${s.error} error${s.error === 1 ? "" : "s"}`) : "✓ no errors"}, ${s.warning} warning${s.warning === 1 ? "" : "s"}, ${s.info} info`);
+  if (baseline) {
+    const n = summarise(result.findings.filter((f) => f.change === "new"));
+    const created = baseline.created ? new Date(baseline.created).toLocaleDateString("en-GB", { dateStyle: "medium" }) : "an earlier run";
+    out.push(dim(`Against ${baseline.file}, saved ${created}:`));
+    const head = n.error ? sev.error(`✖ ${plural(n.error, "new error")}`) : paint("32", "✓ no new errors");
+    out.push(`${head}, ${plural(n.warning, "new warning")}, ${n.info} new info · ${baseline.counts.still} still · ${paint("32", `${baseline.counts.fixed} fixed`)}`);
+    if (baseline.counts.still && !all) out.push(dim(`The ${baseline.counts.still} still there are listed with --all, or without --baseline.`));
+  } else {
+    out.push(total === 0 ? paint("32", `✓ nothing the detector can see${scope} — run /keyline critique for what it can't`) : `${s.error ? sev.error(`✖ ${plural(s.error, "error")}`) : "✓ no errors"}, ${plural(s.warning, "warning")}, ${s.info} info`);
+  }
   return out.join("\n");
 }
 
-export function run(argv) {
-  const opts = { json: false, strict: false, quiet: false, all: false, ignores: [], rules: null, root: ".", paths: [] };
+export function parseCheckArgs(argv) {
+  const opts = { format: "human", strict: false, quiet: false, all: false, ignores: [], rules: null, root: ".", paths: [], baseline: null, baselineFile: null, changed: null, jsonFile: null };
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i];
     const value = () => (a.includes("=") ? a.slice(a.indexOf("=") + 1) : argv[++i]);
-    if (a === "--json") opts.json = true;
+    if (a === "--json") opts.format = "json";
+    else if (a === "--format" || a.startsWith("--format=")) opts.format = value();
+    else if (a === "--json-file" || a.startsWith("--json-file=")) opts.jsonFile = value();
+    else if (a === "--changed" || a.startsWith("--changed=")) opts.changed = value();
     else if (a === "--strict") opts.strict = true;
     else if (a === "--quiet") opts.quiet = true;
     else if (a === "--all") opts.all = true;
     else if (a === "--ignore" || a.startsWith("--ignore=")) opts.ignores.push(value());
     else if (a === "--rule" || a.startsWith("--rule=")) opts.rules = [...(opts.rules ?? []), ...value().split(",").map((s) => s.trim()).filter(Boolean)];
     else if (a === "--root" || a.startsWith("--root=")) opts.root = value();
-    else if (a === "--rules") {
-      for (const r of RULES) console.log(`${r.id.padEnd(28)} ${r.title} (${r.law})`);
-      return 0;
-    } else if (a === "-h" || a === "--help") {
-      console.log(USAGE);
-      return 0;
-    } else if (a.startsWith("-")) {
-      console.error(`keyline check: unknown option ${a} (try --help)`);
-      return 2;
-    } else opts.paths.push(a);
+    else if (a === "--baseline") {
+      // `--baseline` alone compares; `--baseline save` writes. Only those words are taken as its value, so a path after it stays a path.
+      opts.baseline = ["save", "compare"].includes(argv[i + 1]) ? argv[++i] : "compare";
+    } else if (a.startsWith("--baseline=")) opts.baseline = value();
+    else if (a === "--baseline-file" || a.startsWith("--baseline-file=")) opts.baselineFile = value();
+    else if (a === "--rules") opts.listRules = true;
+    else if (a === "-h" || a === "--help") opts.help = true;
+    else if (a.startsWith("-")) return { error: `unknown option ${a} (try --help)` };
+    else opts.paths.push(a);
+  }
+  if (opts.baseline && !["save", "compare"].includes(opts.baseline)) return { error: `--baseline takes save or nothing, not ${opts.baseline}` };
+  if (opts.baselineFile && !opts.baseline) opts.baseline = "compare";
+  if (!["human", "json", "github"].includes(opts.format)) return { error: `--format takes human, json or github, not ${opts.format}` };
+  if (opts.changed === undefined || opts.changed === "") return { error: "--changed needs a base, like origin/main" };
+  if (opts.jsonFile === undefined || opts.jsonFile === "") return { error: "--json-file needs a path" };
+  if (opts.changed && opts.baseline === "save") return { error: "a baseline is the whole project: save it without --changed" };
+  opts.json = opts.format === "json";
+  return opts;
+}
+
+export function run(argv) {
+  const opts = parseCheckArgs(argv);
+  if (opts.error) {
+    console.error(`keyline check: ${opts.error}`);
+    return 2;
+  }
+  if (opts.listRules) {
+    for (const r of RULES) console.log(`${r.id.padEnd(28)} ${r.title} (${r.law})`);
+    return 0;
+  }
+  if (opts.help) {
+    console.log(USAGE);
+    return 0;
   }
   if (opts.rules) {
     const known = new Set([...RULES.map((r) => r.id), ...DOMAINS]);
@@ -276,17 +361,88 @@ export function run(argv) {
     }
   }
 
-  const result = check({ root: opts.root, paths: opts.paths.length ? opts.paths : ["."], ignores: opts.ignores, rules: opts.rules });
-  if (opts.quiet) result.findings = result.findings.filter((f) => f.severity === "error");
-  const s = summarise(result.findings);
-
-  if (opts.json) {
-    const design = { found: result.design.found, file: result.design.file ?? null, preset: result.design.preset, durations: result.design.durations ? [...result.design.durations] : null, zLadder: result.design.zLadder ? [...result.design.zLadder] : null };
-    console.log(JSON.stringify({ files: result.files, design, summary: s, findings: result.findings }, null, 2));
-  } else {
-    console.log(human(result, { all: opts.all, color: process.stdout.isTTY && !process.env.NO_COLOR }));
+  const baselineName = opts.baselineFile ?? BASELINE_FILE;
+  const baselinePath = resolve(opts.root, baselineName);
+  let saved = null;
+  if (opts.baseline === "compare") {
+    try {
+      saved = readBaseline(baselinePath);
+    } catch (err) {
+      console.error(`keyline check: ${err.message}`);
+      return 2;
+    }
+    if (!saved) {
+      console.error(`keyline check: no baseline at ${baselineName} — record one with \`keyline check --baseline save\``);
+      return 2;
+    }
   }
-  return s.error > 0 || (opts.strict && s.warning > 0) ? 1 : 0;
+
+  let changed = null;
+  if (opts.changed) {
+    try {
+      changed = changedFiles(resolve(opts.root), opts.changed);
+    } catch (err) {
+      console.error(`keyline check: ${err.message}`);
+      return 2;
+    }
+    if (!changed.mergeBase) console.error(`keyline check: ${opts.changed} and HEAD share no history here (a shallow clone?), so this compares with ${opts.changed} itself`);
+  }
+
+  const result = check({ root: opts.root, paths: opts.paths.length ? opts.paths : ["."], ignores: opts.ignores, rules: opts.rules, only: changed ? new Set(changed.files) : null });
+
+  // A baseline holds everything found, whatever --quiet shows.
+  if (opts.baseline === "save") {
+    writeBaseline(baselinePath, result.findings);
+    const s = summarise(result.findings);
+    const line = `Saved ${plural(result.findings.length, "finding")} (${plural(s.error, "error")}, ${plural(s.warning, "warning")}, ${s.info} info) to ${baselineName}. From now on, \`keyline check --baseline\` fails only on new ones. Commit the file.`;
+    if (opts.json) console.log(JSON.stringify({ baseline: { file: baselineName, saved: result.findings.length }, summary: s }, null, 2));
+    else console.log(line);
+    return 0;
+  }
+
+  let baseline = null;
+  if (saved) {
+    const split = compare(result.findings, saved, { files: result.checked, rules: opts.rules, partial: Boolean(changed) || opts.paths.length > 0 });
+    result.findings = split.findings;
+    baseline = { file: baselineName, created: saved.created, counts: split.counts, fixed: split.fixed };
+  }
+  if (opts.quiet) {
+    result.findings = result.findings.filter((f) => f.severity === "error");
+    if (baseline) {
+      baseline.fixed = baseline.fixed.filter((f) => f.severity === "error");
+      baseline.counts = { new: result.findings.filter((f) => f.change === "new").length, still: result.findings.filter((f) => f.change === "still").length, fixed: baseline.fixed.length };
+    }
+  }
+  const s = summarise(result.findings);
+  const failing = summarise(baseline ? result.findings.filter((f) => f.change === "new") : result.findings);
+
+  const prefix = changed?.prefix ?? repoOf(resolve(opts.root))?.prefix ?? "";
+  const report = () => {
+    const design = { found: result.design.found, file: result.design.file ?? null, preset: result.design.preset, durations: result.design.durations ? [...result.design.durations] : null, zLadder: result.design.zLadder ? [...result.design.zLadder] : null };
+    const out = { files: result.files, design, summary: s, findings: result.findings, prefix };
+    if (changed) out.changed = { base: changed.base, from: changed.from, mergeBase: changed.mergeBase, files: result.files };
+    if (baseline) {
+      out.summary = { ...s, new: { error: failing.error, warning: failing.warning, info: failing.info } };
+      out.baseline = { file: baseline.file, created: baseline.created, ...baseline.counts };
+      out.fixed = baseline.fixed;
+    }
+    return JSON.stringify(out, null, 2);
+  };
+  if (opts.jsonFile) writeFileSync(resolve(opts.jsonFile), report() + "\n");
+
+  if (opts.format === "json") {
+    console.log(report());
+  } else if (opts.format === "github") {
+    // Annotations go to stdout, where the runner reads them; a closing line says what was checked.
+    for (const line of annotations(result.findings, { prefix })) console.log(line);
+    const scope = changed ? `${plural(result.files, "changed file")} since ${changed.base}` : plural(result.files, "file");
+    const counted = baseline ? `${plural(failing.error, "new error")}, ${plural(failing.warning, "new warning")}, ${failing.info} new info · ${baseline.counts.still} still · ${baseline.counts.fixed} fixed` : `${plural(s.error, "error")}, ${plural(s.warning, "warning")}, ${s.info} info`;
+    console.log(`Keyline: ${counted} in ${scope}.`);
+  } else {
+    if (changed && result.files === 0) console.log(`No changed files to check since ${changed.base}.`);
+    else console.log(human(result, { all: opts.all, color: process.stdout.isTTY && !process.env.NO_COLOR, baseline, changed }));
+  }
+  return failing.error > 0 || (opts.strict && failing.warning > 0) ? 1 : 0;
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {

@@ -7,7 +7,8 @@
  *   npx trykeyline install --user               for every project on this machine
  *   npx trykeyline update                       refresh every copy already installed
  *   npx trykeyline check                        the detector (see scripts/check.mjs)
- *   npx trykeyline pages | capture | report     the browser tools (see scripts/browse.mjs)
+ *   npx trykeyline pages | capture | report     the browser tools (see scripts/browse.mjs);
+ *                                               report --compare marks what changed since a run
  *   npx trykeyline audit                        every page measured, one report (see scripts/audit.mjs)
  *   npx trykeyline smoke --base URL             the smoke test (see scripts/smoke.mjs)
  *
@@ -87,7 +88,7 @@ const USAGE = `Keyline ${version} — interface design laws for coding agents.
   npx trykeyline install [options]   install the skill
   npx trykeyline update  [options]   refresh every copy already installed
   npx trykeyline check  [paths…]     the laws that can be checked without a model
-                                     (--json, --strict; see npx trykeyline check --help)
+                                     (--json, --strict, --baseline; see npx trykeyline check --help)
   npx trykeyline smoke --base <url>  click through a running product and report
                                      broken flows (see npx trykeyline smoke --help)
   npx trykeyline tools               list the agents it installs for

@@ -30,3 +30,7 @@ node examples/shoot.mjs landing --dark
 ```
 
 Writes `<scene>/shots/<state>-fold.png` (first 1440×900), `-desktop.png` (full page) and `-phone.png` (500px wide — headless Chrome clamps anything narrower). They're ignored by git.
+
+## Not a page
+
+[`github/keyline.yml`](github/keyline.yml) is a workflow to copy into `.github/workflows/`: the detector on every pull request, with annotations and one summary comment, and an optional walk of the preview deploy. The main README's "In pull requests" explains its inputs.

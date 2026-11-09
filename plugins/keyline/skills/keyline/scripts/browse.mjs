@@ -5,7 +5,7 @@
  *
  *   node browse.mjs pages   [--root .] [--base URL] [--json]
  *   node browse.mjs capture (--base URL | --serve DIR) [--root .] [--out keyline-report]
- *   node browse.mjs report  [DIR]
+ *   node browse.mjs report  [DIR] [--compare PREVIOUS-DIR]
  *
  * Exit codes: 0 done, 1 the walk found errors, 2 a usage error.
  */
@@ -14,6 +14,7 @@ import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { counts, writeRun } from "./browse/findings.mjs";
 import { renderDir } from "./browse/report.mjs";
+import { compareDirs } from "./browse/compare.mjs";
 import { discover } from "./browse/routes.mjs";
 import { serve } from "./browse/serve.mjs";
 import { walk } from "./browse/walk.mjs";
@@ -28,8 +29,10 @@ const USAGE = `keyline browse — find a product's pages, walk them, and report.
       record load failures, error statuses, console errors, exceptions and
       failed requests; write findings.json and index.html.
 
-  keyline report [DIR]
+  keyline report [DIR] [--compare PREVIOUS-DIR]
       Re-render DIR/index.html from DIR/findings.json (default keyline-report).
+      With --compare, first mark each finding new, still or back since the
+      run in PREVIOUS-DIR, list what was fixed, and diff the screenshots.
 
 Options:
   --base <url>          the running product, e.g. http://localhost:3000
@@ -42,6 +45,11 @@ Options:
   --themes <list>       light,dark (default both)
   --headed              show the browser
   --json                pages as JSON
+  --compare <dir>       an earlier report to compare with (report, capture)
+  --threshold <pct>     a page whose screenshot changed more than this gets a
+                        visual/changed note (default 0.01; one changed heading
+                        on a 1440×900 page is about 0.08)
+  --no-diff             compare findings only, not screenshots
   -h, --help            this`;
 
 export function parseArgs(argv) {
@@ -54,7 +62,7 @@ export function parseArgs(argv) {
     }
     const [k, inline] = a.slice(2).split("=");
     // A switch takes no value: a known one, or any option followed by another option or nothing.
-    const flag = ["json", "headed", "help", "strict", "quick", "no-check", "allow-writes"].includes(k) || (inline === undefined && (i + 1 >= argv.length || argv[i + 1].startsWith("--")));
+    const flag = ["json", "headed", "help", "strict", "quick", "no-check", "allow-writes", "no-diff"].includes(k) || (inline === undefined && (i + 1 >= argv.length || argv[i + 1].startsWith("--")));
     opts[k] = flag ? true : (inline ?? argv[++i]);
   }
   return opts;
@@ -74,6 +82,22 @@ export async function target(opts) {
   return null;
 }
 
+/** Why `--compare` can't run, or null. A capture writes over its own folder, so the earlier run must live elsewhere. */
+function compareProblem(dir, prev, { before = false } = {}) {
+  const p = resolve(prev);
+  if (p === dir) return `--compare needs an earlier report in another folder: ${before ? "a capture writes over its own, so copy it first (cp -R keyline-report keyline-report-before) or pass --out" : "this is the same one"}`;
+  if (!existsSync(`${p}/findings.json`)) return `no findings.json in ${prev} to compare with`;
+  return null;
+}
+
+const compareOptions = (opts) => ({ diff: !opts["no-diff"], threshold: Number(opts.threshold ?? 0.01) });
+
+function sinceLine(run) {
+  const c = run.compare;
+  const v = c.visual;
+  return `Since ${c.against}: ${c.new} new · ${c.returned} back · ${c.still} still · ${c.fixed} fixed${v ? ` · ${v.changed} of ${v.compared} screenshots changed` : ""}`;
+}
+
 export async function run(argv) {
   const opts = parseArgs(argv);
   const [cmd, arg] = opts._;
@@ -84,6 +108,15 @@ export async function run(argv) {
 
   if (cmd === "report") {
     const dir = resolve(arg ?? opts.out ?? "keyline-report");
+    if (opts.compare) {
+      const err = compareProblem(dir, opts.compare);
+      if (err) {
+        console.error(err);
+        return 2;
+      }
+      const run = await compareDirs(dir, resolve(opts.compare), compareOptions(opts));
+      console.log(sinceLine(run));
+    }
     console.log(renderDir(dir));
     return 0;
   }
@@ -112,7 +145,16 @@ export async function run(argv) {
       return 2;
     }
     const out = resolve(opts.out ?? "keyline-report");
+    if (opts.compare) {
+      const err = compareProblem(out, opts.compare, { before: true });
+      if (err) {
+        await t.stop();
+        console.error(err);
+        return 2;
+      }
+    }
     if (existsSync(`${out}/shots`)) rmSync(`${out}/shots`, { recursive: true });
+    if (existsSync(`${out}/diffs`)) rmSync(`${out}/diffs`, { recursive: true });
     try {
       const result = await walk({
         kind: "capture",
@@ -126,10 +168,13 @@ export async function run(argv) {
         headless: !opts.headed,
       });
       writeRun(out, result);
+      const final = opts.compare ? await compareDirs(out, resolve(opts.compare), compareOptions(opts)) : result;
       const file = renderDir(out);
-      const c = counts(result.findings);
-      console.log(`\n${result.pages.length} pages · ${c.error} errors · ${c.warning} warnings · ${c.info} notes\n${file}`);
-      return c.error ? 1 : 0;
+      const c = counts(final.findings);
+      // Against an earlier run, only errors this run added fail it, as with the detector's baseline.
+      const failing = final.compare ? counts(final.findings.filter((f) => f.change === "new" || f.change === "returned")) : c;
+      console.log(`\n${final.pages.length} pages · ${c.error} errors · ${c.warning} warnings · ${c.info} notes${final.compare ? `\n${sinceLine(final)}` : ""}\n${file}`);
+      return failing.error ? 1 : 0;
     } finally {
       await t.stop();
     }
