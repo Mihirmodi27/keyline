@@ -50,7 +50,9 @@ export function readDesign(root) {
   // or mentions one — their values are the ladder.
   const layout = section(md, "Layout");
   const zLadder = new Set();
-  for (const row of layout.split("\n").filter((l) => /^\|\s*`?z\./.test(l) || (l.startsWith("|") && /`-?z-\[?-?\d|`z\./.test(l)))) {
+  // A project rung (`--z-header`, `$z-header`, a `z-header` utility) counts when it opens the token cell, the row's second.
+  const zCell = (c) => /^`(--|\$)?z-[\w-]+`/.test(c);
+  for (const row of layout.split("\n").filter((l) => /^\|\s*`?z\./.test(l) || (l.startsWith("|") && (/`-?z-\[?-?\d|`z\./.test(l) || zCell((l.split("|")[2] ?? "").trim()))))) {
     const cells = row.split("|").slice(1, -1).map((c) => c.trim());
     for (const c of cells.slice(1)) for (const m of c.matchAll(/(?<![\w.#-])(-?\d+)(?![\w.%])/g)) zLadder.add(Number(m[1]));
   }

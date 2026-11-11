@@ -226,8 +226,16 @@ const colorRules = [
         // recipe, not a palette colour; the recipe itself is what depth law 4 wants
         // kept in one definition. A tinted shadow (a blue glow) still counts.
         if (/^(box-shadow|text-shadow)$/.test(d.prop) && neutralOnly(d.value)) continue;
+        // Gradient stops and filter lights only exist inside SVG artwork, which colour law 1 exempts.
+        if (/^(stop-color|flood-color|lighting-color)$/.test(d.prop)) continue;
         const c = literalColor(d.value);
-        if (c) out.push({ ...where(d), severity: "warning", message: `\`${c}\` typed into \`${d.prop}\`${d.inline ? " in an inline style" : ""}. Give it a token named for its job (a text tier, a border, a status), so a theme or a contrast fix changes it once.` });
+        if (!c) continue;
+        // fill and stroke paint SVG: artwork (exempt) or an icon (should be currentColor). A regex can't tell which.
+        if (/^(fill|stroke)$/.test(d.prop)) {
+          out.push({ ...where(d), severity: "info", message: `\`${c}\` painted into \`${d.prop}\`. Inside artwork marked \`role="img"\` that's fine (colour law 1); on an icon, use \`currentColor\` so it follows its label.` });
+          continue;
+        }
+        out.push({ ...where(d), severity: "warning", message: `\`${c}\` typed into \`${d.prop}\`${d.inline ? " in an inline style" : ""}. Give it a token named for its job (a text tier, a border, a status), so a theme or a contrast fix changes it once.` });
       }
       for (const c of tw(facts, (b) => TAILWIND_ARBITRARY_COLOR.test(b))) {
         out.push({ ...where(c), severity: "warning", message: `\`${c.base}\` puts a raw colour in a class. Map it to a token named for its job.` });

@@ -79,7 +79,7 @@ The recorded third weight, for a dense screen where most lines share two or thre
 | 13 | a row's second line, a card's time | nav items, header-bar page title, tabs, buttons, table header labels | — |
 | 12 | timestamps, hints, captions | field labels, a group label's count | — |
 
-Its rules: nothing inside a row, card or folder goes above 500 but the state weight; lift by one step, never on two neighbouring lines; every title in a set takes one weight. A board's card titles sit a step lighter than a list's row titles: a board shows many titles at once, and at 500 the whole board reads heavy.
+Where this table is recorded it replaces the ladder's weight column: nav items, tabs and buttons sit lifted throughout, and the current one is marked by its fill (colour law 7), not by a weight. Its rules: nothing inside a row, card or folder goes above 500 but the state weight; lift by one step, never on two neighbouring lines; every title in a set takes one weight. A board's card titles sit a step lighter than a list's row titles: a board shows many titles at once, and at 500 the whole board reads heavy.
 
 Expect the first pass to be a step too heavy everywhere. Correct it one step at a time per context, then sweep (`type-audit.md`) — a partial step-down is worse than none.
 

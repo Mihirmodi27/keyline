@@ -16,7 +16,7 @@ Boundaries: how a label or figure is set is the type guide's; what colour danger
 
 **A label names the action in the fewest words that still say it: a button reads its verb — "Send", "Save changes", "Record" — not the sentence around it ("Record a voice note").** Labels are scanned, not read; every extra word moves the verb away from where the eye lands, and the tail is the first thing to truncate. A confirm button repeats its dialog's verb, never "OK" or "Yes".
 
-**Sentence case everywhere**, labels the code generates from keys included. Title case marks every word as a name, and uppercase strips word shapes.
+**Sentence case everywhere**, labels the code generates from keys included. Title case marks every word as a name, and uppercase strips word shapes. The one display exception is an `expressive` eyebrow, written in sentence case and set in capitals by `text-transform` (type law 7).
 
 ### 2. A row's second line says what it is and where it's from
 
