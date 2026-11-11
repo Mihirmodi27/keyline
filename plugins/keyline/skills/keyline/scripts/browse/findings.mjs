@@ -51,9 +51,11 @@
 
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
+import { SEVERITIES, bySeverity, tally } from "../check/findings.mjs";
+import { DOMAINS as LAW_DOMAINS } from "../check/rules.mjs";
 
-export const SEVERITIES = ["error", "warning", "info"];
-export const DOMAINS = ["type", "color", "layout", "depth", "motion", "patterns", "a11y", "copy", "states", "slop", "flow", "runtime", "visual"];
+/** The six law domains, and what only a rendered page shows. */
+export const DOMAINS = [...LAW_DOMAINS, "a11y", "copy", "states", "slop", "flow", "runtime", "visual"];
 
 export function newRun({ kind, title = null, base = null, root = null }) {
   return {
@@ -98,18 +100,12 @@ export function dedupe(findings) {
 }
 
 export function sortFindings(findings) {
-  const rank = (s) => SEVERITIES.indexOf(s);
-  return [...findings].sort((a, b) => rank(a.severity) - rank(b.severity) || String(a.page).localeCompare(String(b.page)) || a.rule.localeCompare(b.rule));
+  return [...findings].sort((a, b) => bySeverity(a, b) || String(a.page).localeCompare(String(b.page)) || a.rule.localeCompare(b.rule));
 }
 
+/** Open findings by severity and domain: dismissed and fixed ones don't count. */
 export function counts(findings) {
-  const c = { error: 0, warning: 0, info: 0, byDomain: {} };
-  for (const f of findings) {
-    if (f.status === "dismissed" || f.status === "fixed") continue;
-    c[f.severity]++;
-    c.byDomain[f.domain] = (c.byDomain[f.domain] ?? 0) + 1;
-  }
-  return c;
+  return tally(findings, { skip: (f) => f.status === "dismissed" || f.status === "fixed" });
 }
 
 export function writeRun(dir, run) {

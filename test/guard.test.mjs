@@ -5,7 +5,8 @@ import { chmodSync, existsSync, mkdirSync, mkdtempSync, readFileSync, writeFileS
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { PROJECT_RULES, check, gitFiles } from "../plugins/keyline/skills/keyline/scripts/check.mjs";
+import { check } from "../plugins/keyline/skills/keyline/scripts/check.mjs";
+import { changedFiles, stagedFiles } from "../plugins/keyline/skills/keyline/scripts/check/git.mjs";
 import { RULES } from "../plugins/keyline/skills/keyline/scripts/check/rules.mjs";
 import { editedFiles } from "../plugins/keyline/skills/keyline/scripts/guard.mjs";
 
@@ -163,10 +164,10 @@ test("--staged takes only staged UI files, and --changed adds unstaged and untra
   writeFileSync(join(root, "src/loose.css"), ".c { height: 100vh; }\n"); // untracked
   sh(root, "add", "src/new.css", "notes.md");
 
-  assert.deepEqual(gitFiles(root, { staged: true }).sort(), ["notes.md", "src/new.css"]);
-  assert.deepEqual(gitFiles(root, { base: "HEAD" }).sort(), ["notes.md", "src/loose.css", "src/new.css", "src/old.css"]);
+  assert.deepEqual(stagedFiles(root).files, ["notes.md", "src/new.css"]);
+  assert.deepEqual(changedFiles(root, "HEAD").files, ["notes.md", "src/loose.css", "src/new.css", "src/old.css"]);
 
-  const staged = check({ root, only: gitFiles(root, { staged: true }) });
+  const staged = check({ root, only: stagedFiles(root).files });
   assert.equal(staged.files, 1, "notes.md isn't UI");
   assert.deepEqual([...new Set(staged.findings.map((f) => f.file))], ["src/new.css"]);
 
@@ -269,9 +270,9 @@ test("guard --install --tool codex writes .codex/hooks.json; other agents are po
 
 /* ── Keeping the guard honest ───────────────────────────────────────────── */
 
-test("every rule that reads a project-wide signal is confirmed against the whole project", () => {
+test("every rule that reads a project-wide signal says so, so a partial run confirms it", () => {
   for (const rule of RULES) {
     const reads = /facts\.project\b/.test(rule.check.toString());
-    assert.equal(PROJECT_RULES.has(rule.id), reads, `${rule.id} ${reads ? "reads facts.project but isn't" : "is listed but doesn't read facts.project"} in PROJECT_RULES`);
+    assert.equal(rule.signal === "project", reads, `${rule.id} ${reads ? "reads facts.project but has no" : "doesn't read facts.project but has"} signal: "project"`);
   }
 });

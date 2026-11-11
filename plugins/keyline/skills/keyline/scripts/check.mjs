@@ -24,9 +24,8 @@
  * Exit codes: 0 clean (or only warnings and info), 1 findings that fail the
  * run, 2 a usage error. Against a baseline, only new findings fail it.
  */
-import { existsSync, readFileSync, realpathSync, writeFileSync } from "node:fs";
-import { spawnSync } from "node:child_process";
-import { isAbsolute, join, relative, resolve, sep } from "node:path";
+import { existsSync, readFileSync, writeFileSync } from "node:fs";
+import { join, relative, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 import { collect, isInterfaceFile } from "./check/files.mjs";
 import { lineIndex, parseCss } from "./check/css.mjs";
@@ -34,7 +33,8 @@ import { readMarkup } from "./check/markup.mjs";
 import { readDesign } from "./check/design.mjs";
 import { DOMAINS, RULES } from "./check/rules.mjs";
 import { BASELINE_FILE, compare, fingerprint, readBaseline, writeBaseline } from "./check/baseline.mjs";
-import { changedFiles, repoOf } from "./check/git.mjs";
+import { bySeverity, tally } from "./check/findings.mjs";
+import { changedFiles, repoOf, stagedFiles } from "./check/git.mjs";
 import { annotations } from "./github.mjs";
 
 const USAGE = `keyline check — the interface laws that can be checked without a model.
@@ -71,88 +71,112 @@ const ROOT_LAYOUTS = [
   "index.html", "src/index.html", "src/app.html", "src/layouts/Layout.astro", "app.vue", "src/App.vue",
 ];
 
-/** Gather everything the rules look at, across every file. */
-export function gather(root, files) {
+/**
+ * What one file holds that the rules look at, read and parsed once: its
+ * declarations, class lists, labels and navigation, and the project-wide
+ * signals it carries. Null for a file that can't be read or opts out with
+ * `keyline-ignore-file`.
+ */
+function readFile(f) {
+  let source;
+  try {
+    source = readFileSync(f.abs, "utf8");
+  } catch {
+    return null;
+  }
+  if (/keyline-ignore-file/.test(source)) return null;
+  const x = { source, lines: null, decls: [], atRules: [], classLists: [], classes: [], labels: [], navs: [], zoomLocks: [], jsDurations: [], animation: null, selfHostedFonts: null, signals: {} };
+  const sig = x.signals;
+  const noteAnimation = (loc) => (x.animation ??= loc);
+  const sheets = [];
+
+  if (f.kind === "style") {
+    sheets.push(parseCss(source));
+  } else {
+    const m = readMarkup(source, f.ext);
+    sheets.push(...m.css);
+    x.decls.push(...m.inline.map((d) => ({ ...d, file: f.rel })));
+    for (const list of m.classLists) {
+      x.classLists.push({ ...list, file: f.rel });
+      for (const t of list.tokens) x.classes.push({ ...t, file: f.rel });
+    }
+    x.labels.push(...m.labels.map((l) => ({ ...l, file: f.rel })));
+    x.navs.push(...m.navs.map((n) => ({ ...n, file: f.rel })));
+    const at = lineIndex(m.text);
+    // A zoom lock lives in a viewport value: a <meta name="viewport"> tag, a string
+    // that also sets width=device-width, or a viewport object's maximumScale /
+    // userScalable. The phrase alone in prose or docs ("never maximum-scale=1") isn't one.
+    const LOCK = /maximum-scale\s*=\s*1(?:\.0)?\b|user-scalable\s*=\s*(?:no|0)\b/g;
+    const VIEWPORT_VALUE = /<meta\b[^>]*\bviewport\b[^>]*>|["'`][^"'`\n<>]*width\s*=\s*device-width[^"'`\n<>]*["'`]/gi;
+    for (const v of m.text.matchAll(VIEWPORT_VALUE)) for (const z of v[0].matchAll(LOCK)) x.zoomLocks.push({ file: f.rel, line: at(v.index + z.index) });
+    for (const z of m.text.matchAll(/\bmaximumScale\s*:\s*1\b|\buserScalable\s*:\s*false\b/g)) x.zoomLocks.push({ file: f.rel, line: at(z.index) });
+    const imp = m.text.match(MOTION_IMPORT);
+    if (imp) {
+      noteAnimation({ file: f.rel, line: at(imp.index) });
+      for (const d of m.text.matchAll(/\bduration\s*:\s*(\d*\.?\d+)\b/g)) {
+        // A spring's duration is a settling time set by its character, not a tier.
+        const open = m.text.lastIndexOf("{", d.index);
+        const close = m.text.indexOf("}", d.index);
+        if (/type\s*:\s*["']spring|\bbounce\s*:|\bstiffness\s*:/.test(m.text.slice(open, close))) continue;
+        const v = parseFloat(d[1]);
+        x.jsDurations.push({ file: f.rel, line: at(d.index), ms: Math.round(v < 20 ? v * 1000 : v) });
+      }
+    }
+    if (/next\/font\/local|@fontsource/.test(m.text)) x.selfHostedFonts ??= { file: f.rel, line: 1 };
+    if (/href=\{?["']#(main|content|main-content)["']|>\s*Skip to\b|\bskip-link\b|\bskip-to-content\b/i.test(m.text)) sig.skipLink = true;
+  }
+
+  for (const s of sheets) {
+    x.decls.push(...s.decls.map((d) => ({ ...d, file: f.rel })));
+    x.atRules.push(...s.atRules.map((a) => ({ ...a, file: f.rel })));
+    for (const a of s.atRules) {
+      if (/^@supports.*backdrop-filter/i.test(a.prelude)) sig.backdropSupports = true;
+      if (/^@(-webkit-)?keyframes/i.test(a.prelude)) noteAnimation({ file: f.rel, line: a.line });
+      if (/^@font-face/i.test(a.prelude)) x.selfHostedFonts ??= { file: f.rel, line: a.line };
+      if (/^@import\s+["']tailwindcss/.test(a.prelude)) sig.lightningCss = true;
+    }
+    for (const d of s.decls) {
+      if (/:focus-visible/.test(d.selector)) sig.focusVisible = true;
+      if (/^(transition|transition-property|animation|animation-name)$/.test(d.prop) && !/^(none|0s?)$/.test(d.value.trim())) noteAnimation({ file: f.rel, line: d.line });
+    }
+  }
+
+  if (/prefers-reduced-motion|useReducedMotion|reducedMotion|motion-reduce:|motion-safe:/.test(source)) sig.reducedMotion = true;
+  if (/prefers-reduced-transparency/.test(source)) sig.reducedTransparency = true;
+  if (/supports-\[backdrop-filter|supports-backdrop|CSS\.supports\(\s*["']backdrop-filter/.test(source)) sig.backdropSupports = true;
+  if (/:focus-visible|focus-visible:/.test(source)) sig.focusVisible = true;
+  if (/:focus-within|focus-within:/.test(source)) sig.focusWithin = true;
+  return x;
+}
+
+/**
+ * Gather everything the rules look at, across every file. `cache` maps a
+ * file's path to what `readFile` made of it, so a second gather over more of
+ * the project (a partial run confirming a project-wide finding) reads and
+ * parses only the files the first didn't.
+ */
+export function gather(root, files, cache = new Map()) {
   const facts = {
     decls: [], atRules: [], classLists: [], classes: [], labels: [], navs: [], zoomLocks: [], jsDurations: [],
     project: { focusVisible: false, focusWithin: false, backdropSupports: false, reducedTransparency: false, reducedMotion: false, animation: null, selfHostedFonts: null, lightningCss: false, rootLayout: null, skipLink: false },
-    sources: new Map(),
+    files: new Map(),
   };
   const p = facts.project;
-  const noteAnimation = (loc) => (p.animation ??= loc);
 
   for (const f of files) {
-    let source;
-    try {
-      source = readFileSync(f.abs, "utf8");
-    } catch {
-      continue;
-    }
-    if (/keyline-ignore-file/.test(source)) continue;
-    facts.sources.set(f.rel, source.split("\n"));
-    const sheets = [];
-
-    if (f.kind === "style") {
-      sheets.push(parseCss(source));
-    } else {
-      const m = readMarkup(source, f.ext);
-      sheets.push(...m.css);
-      facts.decls.push(...m.inline.map((d) => ({ ...d, file: f.rel })));
-      for (const list of m.classLists) {
-        facts.classLists.push({ ...list, file: f.rel });
-        for (const t of list.tokens) facts.classes.push({ ...t, file: f.rel });
-      }
-      facts.labels.push(...m.labels.map((l) => ({ ...l, file: f.rel })));
-      facts.navs.push(...m.navs.map((n) => ({ ...n, file: f.rel })));
-      const at = lineIndex(m.text);
-      // A zoom lock lives in a viewport value: a <meta name="viewport"> tag, a string
-      // that also sets width=device-width, or a viewport object's maximumScale /
-      // userScalable. The phrase alone in prose or docs ("never maximum-scale=1") isn't one.
-      const LOCK = /maximum-scale\s*=\s*1(?:\.0)?\b|user-scalable\s*=\s*(?:no|0)\b/g;
-      const VIEWPORT_VALUE = /<meta\b[^>]*\bviewport\b[^>]*>|["'`][^"'`\n<>]*width\s*=\s*device-width[^"'`\n<>]*["'`]/gi;
-      for (const v of m.text.matchAll(VIEWPORT_VALUE)) for (const z of v[0].matchAll(LOCK)) facts.zoomLocks.push({ file: f.rel, line: at(v.index + z.index) });
-      for (const z of m.text.matchAll(/\bmaximumScale\s*:\s*1\b|\buserScalable\s*:\s*false\b/g)) facts.zoomLocks.push({ file: f.rel, line: at(z.index) });
-      const imp = m.text.match(MOTION_IMPORT);
-      if (imp) {
-        noteAnimation({ file: f.rel, line: at(imp.index) });
-        for (const d of m.text.matchAll(/\bduration\s*:\s*(\d*\.?\d+)\b/g)) {
-          // A spring's duration is a settling time set by its character, not a tier.
-          const open = m.text.lastIndexOf("{", d.index);
-          const close = m.text.indexOf("}", d.index);
-          if (/type\s*:\s*["']spring|\bbounce\s*:|\bstiffness\s*:/.test(m.text.slice(open, close))) continue;
-          const v = parseFloat(d[1]);
-          facts.jsDurations.push({ file: f.rel, line: at(d.index), ms: Math.round(v < 20 ? v * 1000 : v) });
-        }
-      }
-      if (/next\/font\/local|@fontsource/.test(m.text)) p.selfHostedFonts ??= { file: f.rel, line: 1 };
-      if (/href=\{?["']#(main|content|main-content)["']|>\s*Skip to\b|\bskip-link\b|\bskip-to-content\b/i.test(m.text)) p.skipLink = true;
-    }
-
-    for (const s of sheets) {
-      facts.decls.push(...s.decls.map((d) => ({ ...d, file: f.rel })));
-      facts.atRules.push(...s.atRules.map((a) => ({ ...a, file: f.rel })));
-      for (const a of s.atRules) {
-        if (/^@supports.*backdrop-filter/i.test(a.prelude)) p.backdropSupports = true;
-        if (/^@(-webkit-)?keyframes/i.test(a.prelude)) noteAnimation({ file: f.rel, line: a.line });
-        if (/^@font-face/i.test(a.prelude)) p.selfHostedFonts ??= { file: f.rel, line: a.line };
-        if (/^@import\s+["']tailwindcss/.test(a.prelude)) p.lightningCss = true;
-      }
-      for (const d of s.decls) {
-        if (/:focus-visible/.test(d.selector)) p.focusVisible = true;
-        if (/^(transition|transition-property|animation|animation-name)$/.test(d.prop) && !/^(none|0s?)$/.test(d.value.trim())) noteAnimation({ file: f.rel, line: d.line });
-      }
-    }
-
-    if (/prefers-reduced-motion|useReducedMotion|reducedMotion|motion-reduce:|motion-safe:/.test(source)) p.reducedMotion = true;
-    if (/prefers-reduced-transparency/.test(source)) p.reducedTransparency = true;
-    if (/supports-\[backdrop-filter|supports-backdrop|CSS\.supports\(\s*["']backdrop-filter/.test(source)) p.backdropSupports = true;
-    if (/:focus-visible|focus-visible:/.test(source)) p.focusVisible = true;
-    if (/:focus-within|focus-within:/.test(source)) p.focusWithin = true;
+    if (!cache.has(f.rel)) cache.set(f.rel, readFile(f));
+    const x = cache.get(f.rel);
+    if (!x) continue;
+    facts.files.set(f.rel, x);
+    for (const key of ["decls", "atRules", "classLists", "classes", "labels", "navs", "zoomLocks", "jsDurations"]) facts[key].push(...x[key]);
+    p.animation ??= x.animation;
+    p.selfHostedFonts ??= x.selfHostedFonts;
+    for (const k of Object.keys(x.signals)) p[k] = true;
   }
 
   for (const c of facts.classes) {
     if (/^(transition|animate-|duration-)/.test(c.base) && c.base !== "animate-none" && c.base !== "transition-none") {
-      noteAnimation({ file: c.file, line: c.line });
+      p.animation ??= { file: c.file, line: c.line };
       break;
     }
   }
@@ -167,10 +191,18 @@ export function gather(root, files) {
   return facts;
 }
 
+/** A file's lines, split the first time a finding in it needs them (to read a keyline-ignore, or fingerprint it). */
+function linesOf(facts, rel) {
+  const x = facts.files.get(rel);
+  if (!x) return undefined;
+  return (x.lines ??= x.source.split("\n"));
+}
+
 /** Whether a finding is silenced by a keyline-ignore comment on its line or up to two above. */
 function suppressed(facts, f) {
-  const lines = facts.sources.get(f.file);
-  if (!lines || !f.line) return false;
+  if (!f.line) return false;
+  const lines = linesOf(facts, f.file);
+  if (!lines) return false;
   for (const l of [lines[f.line - 1], lines[f.line - 2], lines[f.line - 3]]) {
     const m = l?.match(/keyline-ignore(?!-file)((?:[\s,]+[a-z]+(?:\/[a-z-]+)?)*)/);
     if (!m) continue;
@@ -181,16 +213,8 @@ function suppressed(facts, f) {
   return false;
 }
 
-/**
- * Rules whose verdict depends on a signal anywhere in the project — a
- * reduced-motion branch, a focus-visible style, an @supports guard. Checking a
- * few files, the signal may sit in a file that wasn't read, so a finding from
- * one of these is confirmed against the whole project before it's reported.
- */
-export const PROJECT_RULES = new Set([
-  "type/font-synthesis", "color/focus-removed", "layout/skip-link", "depth/backdrop-guard",
-  "depth/prefix-pair", "depth/reduced-transparency", "motion/reduced-motion",
-]);
+/** Rules a run over a few files confirms against the whole project (see rules.mjs). */
+const WHOLE_PROJECT = new Set(RULES.filter((r) => r.scope === "project" || r.signal === "project").map((r) => r.id));
 
 function runRules(facts, design, rules) {
   const findings = [];
@@ -200,7 +224,7 @@ function runRules(facts, design, rules) {
       const finding = { rule: rule.id, domain: rule.domain, law: rule.law, severity: f.severity, file: f.file, line: f.line, message: f.message };
       if (suppressed(facts, finding)) continue;
       if (rule.scope === "project") finding.scope = "project";
-      finding.fingerprint = fingerprint(finding, facts.sources.get(finding.file), { project: rule.scope === "project" });
+      finding.fingerprint = fingerprint(finding, linesOf(facts, finding.file), { project: rule.scope === "project" });
       findings.push(finding);
     }
   }
@@ -225,13 +249,13 @@ export function check({ root = ".", paths = ["."], ignores = [], rules = null, o
     const picked = rels.filter((rel) => isInterfaceFile(rel) && existsSync(join(absRoot, rel)));
     files = collect(absRoot, picked.map((rel) => join(absRoot, rel)), ignores);
     const mine = new Set(files.map((f) => f.rel));
-    findings = runRules(gather(absRoot, files), design, rules);
-    // A rule whose verdict needs the whole project: one listed here, or one the rules mark as project-scoped.
-    const isProject = (f) => PROJECT_RULES.has(f.rule) || f.scope === "project";
+    const cache = new Map();
+    findings = runRules(gather(absRoot, files, cache), design, rules);
+    const isProject = (f) => WHOLE_PROJECT.has(f.rule);
     const needsProject = [...new Set(findings.filter(isProject).map((f) => f.rule))];
     if (needsProject.length) {
-      // Only when it matters: a clean file never pays for the walk.
-      const whole = runRules(gather(absRoot, collect(absRoot, [absRoot], ignores)), design, needsProject);
+      // Only when it matters: a clean file never pays for the walk, and the files already read aren't read again.
+      const whole = runRules(gather(absRoot, collect(absRoot, [absRoot], ignores), cache), design, needsProject);
       findings = findings.filter((f) => {
         if (!isProject(f)) return true;
         return whole.some((w) => w.rule === f.rule) && !whole.some((w) => w.rule === f.rule && mine.has(w.file));
@@ -244,58 +268,14 @@ export function check({ root = ".", paths = ["."], ignores = [], rules = null, o
     files = collect(absRoot, paths.map((p) => resolve(absRoot, p)), ignores);
     findings = runRules(gather(absRoot, files), design, rules);
   }
-  const order = { error: 0, warning: 1, info: 2 };
-  findings.sort((a, b) => a.file.localeCompare(b.file) || a.line - b.line || order[a.severity] - order[b.severity]);
+  findings.sort((a, b) => a.file.localeCompare(b.file) || a.line - b.line || bySeverity(a, b));
   const checked = files.map((f) => f.rel);
   return { files: checked.length, checked, design, findings, rules };
 }
 
-/* ── Files from git ─────────────────────────────────────────────────────── */
-
-function git(cwd, args) {
-  const r = spawnSync("git", args, { cwd, encoding: "utf8", maxBuffer: 64 * 1024 * 1024 });
-  return r.status === 0 ? r.stdout : null;
-}
-
-/**
- * The files git names — staged, or changed since `base` — relative to `root`,
- * or null when `root` isn't in a git repository. The detector reads the files
- * on disk, so a file staged in part is checked as it is in the working tree.
- */
-export function gitFiles(root, { staged = false, base = "HEAD" } = {}) {
-  const absRoot = resolve(root);
-  const top = git(absRoot, ["rev-parse", "--show-toplevel"])?.trim();
-  if (!top) return null;
-  const lists = [];
-  if (staged) lists.push(git(absRoot, ["diff", "--cached", "--name-only", "--diff-filter=ACMR", "-z"]));
-  else {
-    const from = git(absRoot, ["merge-base", base, "HEAD"])?.trim() || base;
-    lists.push(git(absRoot, ["diff", "--name-only", "--diff-filter=ACMR", "-z", from]));
-    lists.push(git(absRoot, ["ls-files", "--others", "--exclude-standard", "--full-name", "-z"]));
-  }
-  const out = new Set();
-  // git answers with real paths; the root may have come through a symlink (/tmp on macOS).
-  const real = realpathSync(absRoot);
-  for (const list of lists) {
-    for (const name of (list ?? "").split("\0").filter(Boolean)) {
-      const rel = relative(real, join(top, name)).split(sep).join("/");
-      if (!rel.startsWith("../") && !isAbsolute(rel)) out.add(rel);
-    }
-  }
-  return [...out];
-}
-
 /* ── Report ─────────────────────────────────────────────────────────────── */
 
-function summarise(findings) {
-  const bySeverity = { error: 0, warning: 0, info: 0 };
-  const byDomain = Object.fromEntries(DOMAINS.map((d) => [d, 0]));
-  for (const f of findings) {
-    bySeverity[f.severity]++;
-    byDomain[f.domain]++;
-  }
-  return { ...bySeverity, byDomain };
-}
+const summarise = (findings) => tally(findings, { domains: DOMAINS });
 
 const plural = (n, word) => `${n} ${word}${n === 1 ? "" : "s"}`;
 
@@ -381,10 +361,13 @@ export function parseCheckArgs(argv) {
     else if (a === "--json-file" || a.startsWith("--json-file=")) opts.jsonFile = value();
     else if (a.startsWith("--changed=")) opts.changed = value();
     else if (a === "--changed") {
-      // The base is optional (default HEAD): take the next word only if git knows it as a commit.
+      // The base is optional (default HEAD). The next word is the base if git knows it as a commit,
+      // else a path: run() asks git, once, when it lists the changed files.
       const next = argv[i + 1];
-      const isRev = next && !next.startsWith("-") && git(resolve(opts.root), ["rev-parse", "--verify", "--quiet", `${next}^{commit}`]) !== null;
-      opts.changed = isRev ? argv[++i] : "HEAD";
+      if (next && !next.startsWith("-")) {
+        opts.changed = argv[++i];
+        opts.changedMaybePath = true;
+      } else opts.changed = "HEAD";
     }
     else if (a === "--strict") opts.strict = true;
     else if (a === "--quiet") opts.quiet = true;
@@ -440,6 +423,31 @@ export function run(argv) {
     console.error(`keyline check: no such directory: ${opts.root}`);
     return 2;
   }
+
+  let changed = null;
+  if (opts.changed) {
+    try {
+      changed = changedFiles(resolve(opts.root), opts.changed);
+    } catch (err) {
+      if (err.code !== "ENOCOMMIT" || !opts.changedMaybePath) {
+        console.error(`keyline check: ${err.message}`);
+        return 2;
+      }
+      // `--changed src`: not a commit, so a path, and the base is HEAD.
+      opts.paths.unshift(opts.changed);
+      changed = changedFiles(resolve(opts.root), (opts.changed = "HEAD"));
+    }
+    if (!changed.mergeBase) console.error(`keyline check: ${opts.changed} and HEAD share no history here (a shallow clone?), so this compares with ${opts.changed} itself`);
+  }
+  if (opts.staged) {
+    try {
+      changed = { base: "the last commit (staged)", staged: true, ...stagedFiles(resolve(opts.root)) };
+    } catch (err) {
+      console.error(`keyline check: ${err.message}`);
+      return 2;
+    }
+  }
+
   for (const p of opts.paths) {
     if (!existsSync(resolve(opts.root, p))) {
       console.error(`keyline check: no such path: ${p}`);
@@ -463,26 +471,7 @@ export function run(argv) {
     }
   }
 
-  let changed = null;
-  if (opts.changed) {
-    try {
-      changed = changedFiles(resolve(opts.root), opts.changed);
-    } catch (err) {
-      console.error(`keyline check: ${err.message}`);
-      return 2;
-    }
-    if (!changed.mergeBase) console.error(`keyline check: ${opts.changed} and HEAD share no history here (a shallow clone?), so this compares with ${opts.changed} itself`);
-  }
-
   let only = changed ? changed.files : null;
-  if (opts.staged) {
-    only = gitFiles(opts.root, { staged: true });
-    if (!only) {
-      console.error("keyline check: --staged needs a git repository");
-      return 2;
-    }
-    changed = { base: "the last commit (staged)", staged: true, files: only };
-  }
   // Paths, when given, narrow git's list to those folders.
   if (only && opts.paths.length) {
     const within = opts.paths.map((p) => relative(resolve(opts.root), resolve(opts.root, p)).split(sep).join("/"));

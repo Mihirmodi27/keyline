@@ -11,22 +11,15 @@
  * names an example; it's returned with `dynamic: true` and, when the crawl met a
  * matching URL, that URL as its `sample`.
  */
-import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { join, relative, sep } from "node:path";
+import { walk } from "../check/files.mjs";
 
-const SKIP_DIRS = new Set(["node_modules", ".git", ".next", "dist", "build", "out", ".svelte-kit", ".astro", ".nuxt", ".output", "coverage", "keyline-report", ".vercel", ".turbo"]);
+/** Route files: what a router reads, and plain HTML. */
+const ROUTE_FILES = new Set([".tsx", ".ts", ".jsx", ".js", ".mdx", ".md", ".svelte", ".astro", ".vue", ".html"]);
 
-function walk(dir, files = []) {
-  if (!existsSync(dir)) return files;
-  for (const name of readdirSync(dir)) {
-    if (SKIP_DIRS.has(name) || name.startsWith(".")) continue;
-    const path = join(dir, name);
-    const st = statSync(path);
-    if (st.isDirectory()) walk(path, files);
-    else files.push(path);
-  }
-  return files;
-}
+/** Every route-shaped file under `dir`, as absolute paths, skipping what the detector skips (dependencies, build output, reports, dot-folders). */
+const files = (dir) => walk(dir, { accept: ROUTE_FILES, skip: null, maxSize: Infinity }).map((f) => f.abs);
 
 const segs = (rel) => rel.split(sep).filter(Boolean);
 const toPath = (parts) => "/" + parts.filter(Boolean).join("/");
@@ -46,7 +39,7 @@ function nextApp(root) {
   const out = [];
   for (const base of ["app", "src/app"]) {
     const dir = join(root, base);
-    for (const file of walk(dir)) {
+    for (const file of files(dir)) {
       if (!/[\\/]page\.(tsx|ts|jsx|js|mdx|md)$/.test(file)) continue;
       const all = segs(relative(dir, file)).slice(0, -1);
       // A _private folder opts its whole subtree out of routing.
@@ -63,7 +56,7 @@ function nextPages(root) {
   const out = [];
   for (const base of ["pages", "src/pages"]) {
     const dir = join(root, base);
-    for (const file of walk(dir)) {
+    for (const file of files(dir)) {
       if (!/\.(tsx|ts|jsx|js|mdx|md)$/.test(file)) continue;
       const parts = segs(relative(dir, file));
       if (parts[0] === "api" || /^_(app|document|error)\./.test(parts.at(-1))) continue;
@@ -77,7 +70,7 @@ function nextPages(root) {
 
 function sveltekit(root) {
   const dir = join(root, "src/routes");
-  return walk(dir)
+  return files(dir)
     .filter((f) => /[\\/]\+page\.svelte$/.test(f))
     .map((file) => {
       const parts = segs(relative(dir, file)).slice(0, -1).filter((s) => !/^\(.*\)$/.test(s));
@@ -87,7 +80,7 @@ function sveltekit(root) {
 
 function astro(root) {
   const dir = join(root, "src/pages");
-  return walk(dir)
+  return files(dir)
     .filter((f) => /\.(astro|md|mdx|html)$/.test(f))
     .map((file) => {
       const parts = segs(relative(dir, file));
@@ -99,7 +92,7 @@ function astro(root) {
 
 function nuxt(root) {
   const dir = join(root, "pages");
-  return walk(dir)
+  return files(dir)
     .filter((f) => f.endsWith(".vue"))
     .map((file) => {
       const parts = segs(relative(dir, file));
@@ -126,7 +119,7 @@ function flatRoutes(root) {
 function routerConfig(root) {
   const out = [];
   const re = /(?:<Route[^>]*\spath=|\bpath:\s*)["'`](\/?[^"'`]*)["'`]/g;
-  for (const file of walk(join(root, "src"))) {
+  for (const file of files(join(root, "src"))) {
     if (!/\.(tsx|ts|jsx|js)$/.test(file)) continue;
     const text = readFileSync(file, "utf8");
     if (!/react-router|createBrowserRouter|<Route\b/.test(text)) continue;
@@ -140,7 +133,7 @@ function routerConfig(root) {
 
 /** Plain HTML: every .html file outside build output. */
 function staticHtml(root) {
-  return walk(root)
+  return files(root)
     .filter((f) => f.endsWith(".html"))
     .map((file) => {
       const rel = relative(root, file).split(sep).join("/");

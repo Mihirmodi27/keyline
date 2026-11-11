@@ -8,6 +8,13 @@
  *   warning  breaks a law in a way a reader feels
  *   info     a stray or a missing safeguard worth a look
  *
+ * Two properties say a rule needs the whole project. `scope: "project"`: it
+ * makes one finding for the project, pointed at a first use, matched in a
+ * baseline by its rule alone. `signal: "project"`: its verdict reads a signal
+ * from anywhere in the project (`facts.project`: a reduced-motion branch, a
+ * focus-visible style). Either way, a run over a few files (`--changed`,
+ * `--staged`, the guard) confirms its findings against the whole project.
+ *
  * What a rule can't see — hierarchy, grouping, whether a card should be a
  * section — is left to `/keyline critique` and `/keyline audit`.
  */
@@ -176,6 +183,7 @@ const typeRules = [
   },
   {
     id: "type/font-synthesis",
+    signal: "project", // its verdict reads a signal anywhere in the project (facts.project)
     scope: "project", // one finding for the whole project, pointed at a first use
     domain: "type",
     law: "type law 9",
@@ -247,6 +255,7 @@ const colorRules = [
   },
   {
     id: "color/focus-removed",
+    signal: "project", // its verdict reads a signal anywhere in the project (facts.project)
     domain: "color",
     law: "color law 5",
     title: "Focus outline removed with no replacement",
@@ -386,6 +395,7 @@ const layoutRules = [
   },
   {
     id: "layout/skip-link",
+    signal: "project", // its verdict reads a signal anywhere in the project (facts.project)
     scope: "project", // one finding for the whole project, pointed at a first use
     domain: "layout",
     law: "layout law 12",
@@ -407,6 +417,7 @@ const backdropUses = (facts) => [
 const depthRules = [
   {
     id: "depth/backdrop-guard",
+    signal: "project", // its verdict reads a signal anywhere in the project (facts.project)
     scope: "project", // one finding for the whole project, pointed at a first use
     domain: "depth",
     law: "depth law 15",
@@ -419,6 +430,7 @@ const depthRules = [
   },
   {
     id: "depth/prefix-pair",
+    signal: "project", // its verdict reads a signal anywhere in the project (facts.project)
     domain: "depth",
     law: "depth law 15",
     title: "Hand-written -webkit-backdrop-filter",
@@ -436,6 +448,7 @@ const depthRules = [
   },
   {
     id: "depth/reduced-transparency",
+    signal: "project", // its verdict reads a signal anywhere in the project (facts.project)
     scope: "project", // one finding for the whole project, pointed at a first use
     domain: "depth",
     law: "depth law 15",
@@ -487,6 +500,7 @@ const motionRules = [
   },
   {
     id: "motion/reduced-motion",
+    signal: "project", // its verdict reads a signal anywhere in the project (facts.project)
     scope: "project", // one finding for the whole project, pointed at a first use
     domain: "motion",
     law: "motion law 10",

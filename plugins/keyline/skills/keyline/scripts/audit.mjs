@@ -26,6 +26,7 @@ import { walk } from "./browse/walk.mjs";
 import { parseArgs, target } from "./browse.mjs";
 import { auditProbe } from "./audit/probe.mjs";
 import { check } from "./check.mjs";
+import { DOMAINS } from "./check/rules.mjs";
 
 const USAGE = `keyline audit — every page, measured, in one report.
 
@@ -44,8 +45,8 @@ Options:
   --headed            show the browser
   -h, --help          this`;
 
-/** The six domains the scores are kept for, and where the audit's own rules fall among them. */
-export const SCORED = ["type", "color", "layout", "depth", "motion", "patterns"];
+/** The six law domains the scores are kept for, and where the audit's own rules fall among them. */
+export const SCORED = DOMAINS;
 const SCORE_DOMAIN = {
   a11y: "patterns",
   copy: "patterns",
@@ -101,9 +102,9 @@ export function draftScores(findings) {
   return scores;
 }
 
-/** The detector's findings, as report findings pointing at source lines. */
+/** The detector's findings, as report findings pointing at source lines. Its walk already skips reports, dependencies and build output. */
 export function sourceFindings(run, root, ignores = []) {
-  const result = check({ root, paths: ["."], ignores: ["keyline-report", "smoke-report", "node_modules", ".next", "dist", "build", ...ignores] });
+  const result = check({ root, paths: ["."], ignores });
   for (const f of result.findings) {
     const [title, ...rest] = f.message.split(/(?<=\.)\s+/);
     add(run, {

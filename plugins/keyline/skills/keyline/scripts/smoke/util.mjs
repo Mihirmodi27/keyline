@@ -1,6 +1,6 @@
 /** Small things every smoke pass shares: a worker pool, a fresh page, steps in words, and finding the source. */
-import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
-import { join, relative } from "node:path";
+import { existsSync, readFileSync } from "node:fs";
+import { walk } from "../check/files.mjs";
 import { VIEWPORTS, listen } from "../browse/capture.mjs";
 
 export const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -65,42 +65,25 @@ export function pathOf(url, base) {
 
 /* ── Pointing at the source ──────────────────────────────────────────────── */
 
-const SKIP = new Set(["node_modules", ".git", ".next", "dist", "build", "out", ".svelte-kit", ".astro", ".nuxt", ".output", "coverage", "keyline-report", "smoke-report", ".vercel", ".turbo", "shots"]);
-const SOURCE = /\.(html?|jsx?|tsx?|vue|svelte|astro|mdx?)$/;
+const SOURCE = new Set([".html", ".htm", ".js", ".jsx", ".ts", ".tsx", ".vue", ".svelte", ".astro", ".md", ".mdx"]);
 
 /**
  * Find where an element is written, by its id, its text or a class from its
  * selector. Cheap and best-effort: the first file and line that mentions it.
+ * Files are walked as the detector walks them, the first time one is asked for.
  */
 export function sourceFinder(root) {
   if (!root || !existsSync(root)) return () => null;
   let files = null;
   const load = () => {
     files = [];
-    const walk = (dir, depth = 0) => {
-      if (depth > 8 || files.length > 3000) return;
-      let names;
+    for (const f of walk(root, { accept: SOURCE }).slice(0, 3000)) {
       try {
-        names = readdirSync(dir);
+        files.push({ path: f.rel, lines: readFileSync(f.abs, "utf8").split("\n") });
       } catch {
-        return;
+        // Unreadable: not a source to point at.
       }
-      for (const name of names) {
-        if (SKIP.has(name) || name.startsWith(".")) continue;
-        const path = join(dir, name);
-        let st;
-        try {
-          st = statSync(path);
-        } catch {
-          continue;
-        }
-        if (st.isDirectory()) walk(path, depth + 1);
-        else if (SOURCE.test(name) && st.size < 400_000 && !/\.min\.|\.test\.|\.spec\./.test(name)) {
-          files.push({ path: relative(root, path), lines: readFileSync(path, "utf8").split("\n") });
-        }
-      }
-    };
-    walk(root);
+    }
   };
   const find = (needle) => {
     for (const f of files) {

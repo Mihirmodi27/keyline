@@ -28,6 +28,7 @@
 import { createHash } from "node:crypto";
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname } from "node:path";
+import { split } from "./findings.mjs";
 
 export const BASELINE_FILE = ".keyline/baseline.json";
 
@@ -82,23 +83,12 @@ export function writeBaseline(file, findings) {
  * `partial` (a narrower path, --changed) leaves those alone.
  */
 export function compare(findings, baseline, { files = null, rules = null, partial = false } = {}) {
-  const left = new Map();
-  for (const b of baseline.findings) {
-    if (!left.has(b.fingerprint)) left.set(b.fingerprint, []);
-    left.get(b.fingerprint).push(b);
-  }
-  const marked = findings.map((f) => {
-    const pool = left.get(f.fingerprint);
-    if (pool?.length) {
-      pool.shift();
-      return { ...f, change: "still" };
-    }
-    return { ...f, change: "new" };
-  });
+  const { matched, left } = split(findings, baseline.findings, (f) => f.fingerprint);
+  const marked = matched.map(([f, was]) => ({ ...f, change: was ? "still" : "new" }));
   const seen = files ? new Set(files) : null;
   const ran = (b) => !rules || rules.some((r) => r === b.rule || r === b.rule.split("/")[0]);
   const visible = (b) => (b.scope === "project" ? !partial : !seen || seen.has(b.file));
-  const fixed = [...left.values()].flat().filter((b) => visible(b) && ran(b));
+  const fixed = left.filter((b) => visible(b) && ran(b));
   fixed.sort((a, b) => a.file.localeCompare(b.file) || a.line - b.line);
   const count = (change) => marked.filter((f) => f.change === change).length;
   return { findings: marked, fixed, counts: { new: count("new"), still: count("still"), fixed: fixed.length } };

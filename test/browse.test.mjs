@@ -1,5 +1,5 @@
 import { strict as assert } from "node:assert";
-import { mkdirSync, mkdtempSync, readFileSync, writeFileSync } from "node:fs";
+import { mkdirSync, mkdtempSync, readFileSync, symlinkSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { test } from "node:test";
@@ -53,6 +53,12 @@ test("React Router paths are read from source", () => {
 test("plain HTML folders become routes", () => {
   const root = project({ "index.html": "", "about/index.html": "", "docs/intro.html": "" });
   assert.deepEqual(routesFromCode(root).map((r) => r.path).sort(), ["/", "/about", "/docs/intro.html"]);
+});
+
+test("routes are walked as the detector walks: a broken link, a report or a dot-folder never breaks or pads the list", () => {
+  const root = project({ "index.html": "", "keyline-report/index.html": "", ".cache/x.html": "", "node_modules/pkg/index.html": "" });
+  symlinkSync(join(root, "nowhere"), join(root, "broken.html"));
+  assert.deepEqual(routesFromCode(root).map((r) => r.path), ["/"]);
 });
 
 test("linkPath keeps same-origin pages and drops assets and other sites", () => {

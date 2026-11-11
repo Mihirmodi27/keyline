@@ -1,6 +1,8 @@
 /**
- * Which files changed since a base, for `keyline check --changed <base>`: the
- * files a pull request touches, plus anything edited and not yet committed.
+ * Which files git names, for `keyline check --changed <base>` and `--staged`.
+ *
+ * Changed: the files a pull request touches, plus anything edited and not yet
+ * committed. Staged: what the next commit holds (a pre-commit hook).
  *
  * The comparison starts from the merge base of <base> and HEAD, so commits
  * that landed on the base after the branch was cut don't count. A shallow CI
@@ -35,10 +37,22 @@ export function repoOf(root) {
   }
 }
 
+const list = (out) => out.split("\0").filter(Boolean);
+
+/** Paths git gave (relative to the repository's top) as paths relative to `root`, minus those outside it. */
+function within(root, repo, paths) {
+  return [...new Set(paths)]
+    .map((p) => relative(real(root), resolve(repo.top, p)).split(sep).join("/"))
+    .filter((p) => p && !p.startsWith("../"))
+    .sort();
+}
+
 /**
  * Files added, copied, modified or renamed since `base`, and untracked files,
  * relative to `root`. Files outside `root` are left out. Throws with a
- * sentence a person can act on when `root` isn't in git or `base` isn't a commit.
+ * sentence a person can act on when `root` isn't in git or `base` isn't a
+ * commit; the second carries `code: "ENOCOMMIT"`, so a caller can treat the
+ * word as something else.
  */
 export function changedFiles(root, base) {
   const repo = repoOf(root);
@@ -46,7 +60,9 @@ export function changedFiles(root, base) {
   try {
     git(root, "rev-parse", "--verify", "--quiet", `${base}^{commit}`);
   } catch {
-    throw new Error(`no commit called ${base}. In CI, fetch it first: actions/checkout with fetch-depth: 0, or git fetch origin <branch>`);
+    const err = new Error(`no commit called ${base}. In CI, fetch it first: actions/checkout with fetch-depth: 0, or git fetch origin <branch>`);
+    err.code = "ENOCOMMIT";
+    throw err;
   }
   let from;
   let mergeBase = true;
@@ -56,13 +72,20 @@ export function changedFiles(root, base) {
     from = base;
     mergeBase = false;
   }
-  const list = (out) => out.split("\0").filter(Boolean);
   // `git diff <commit>` is that commit against the working tree: committed, staged and unstaged changes alike.
   const changed = list(git(repo.top, "diff", "--name-only", "--diff-filter=ACMR", "--no-renames", "-z", from, "--"));
   const untracked = list(git(repo.top, "ls-files", "--others", "--exclude-standard", "-z"));
-  const files = [...new Set([...changed, ...untracked])]
-    .map((p) => relative(real(root), resolve(repo.top, p)).split(sep).join("/"))
-    .filter((p) => p && !p.startsWith("../"))
-    .sort();
-  return { base, from, mergeBase, files, prefix: repo.prefix };
+  return { base, from, mergeBase, files: within(root, repo, [...changed, ...untracked]), prefix: repo.prefix };
+}
+
+/**
+ * Files staged for the next commit (added, copied, modified or renamed),
+ * relative to `root`. The detector reads files on disk, so a file staged in
+ * part is checked as it is in the working tree. Throws when `root` isn't in git.
+ */
+export function stagedFiles(root) {
+  const repo = repoOf(root);
+  if (!repo) throw new Error("--staged needs a git repository");
+  const staged = list(git(repo.top, "diff", "--cached", "--name-only", "--diff-filter=ACMR", "--no-renames", "-z"));
+  return { files: within(root, repo, staged), prefix: repo.prefix };
 }

@@ -23,6 +23,7 @@
  */
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join, relative } from "node:path";
+import { split } from "../check/findings.mjs";
 import { readRun, writeRun } from "./findings.mjs";
 import { shotKey } from "./capture.mjs";
 
@@ -45,21 +46,15 @@ export function clearCompare(run) {
 
 /** Mark `run`'s findings against `prev`. Mutates and returns `run`. */
 export function compareRuns(run, prev, { against = null } = {}) {
-  const before = new Map();
-  for (const f of prev.findings.filter((f) => !isVisual(f))) before.set(matchKey(f), f);
   const fixedBefore = new Set((prev.fixed ?? []).map(matchKey));
-
-  for (const f of run.findings) {
-    if (isVisual(f)) continue;
-    const key = matchKey(f);
-    const was = before.get(key);
+  const { matched, left } = split(run.findings.filter((f) => !isVisual(f)), prev.findings.filter((f) => !isVisual(f)), matchKey);
+  for (const [f, was] of matched) {
     if (was) {
       f.change = "still";
       f.previous = was.id;
       if ((!f.status || f.status === "open") && was.status && was.status !== "open") f.status = was.status;
-      before.delete(key);
     } else {
-      f.change = fixedBefore.has(key) ? "returned" : "new";
+      f.change = fixedBefore.has(matchKey(f)) ? "returned" : "new";
     }
   }
 
@@ -71,7 +66,7 @@ export function compareRuns(run, prev, { against = null } = {}) {
     if (f.viewport && f.theme && passes.size && !passes.has(shotKey(f.viewport, f.theme))) return false;
     return true;
   };
-  run.fixed = [...before.values()].filter(seen).map(({ change, previous, ...f }, i) => ({ ...f, previous: f.id, id: `x${i + 1}`, change: "fixed" }));
+  run.fixed = left.filter(seen).map(({ change, previous, ...f }, i) => ({ ...f, previous: f.id, id: `x${i + 1}`, change: "fixed" }));
 
   const count = (c) => run.findings.filter((f) => f.change === c).length;
   run.compare = {
