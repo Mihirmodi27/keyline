@@ -20,22 +20,7 @@ Vertical dividers inside the dock are layout's (`glass/layout/radius-and-elevati
 
 ## 2. The shadow stack
 
-`.dock-shadow` lives in `glass/depth/assets/glass.css`, both themes side by side; depth law 4 gives each layer's job. Light to dark:
-
-```
-inset 0 1px 0 rgba(255,255,255,0.10),     /* highlight:  0.6  → 0.10 */
-0 1px 1px rgba(0,0,0,0.3),                /* shadows:    0.02 → 0.3  */
-0 8px 16px -4px rgba(0,0,0,0.5),          /*             0.04 → 0.5  */
-0 24px 32px -8px rgba(0,0,0,0.6)          /*             0.06 → 0.6  */
-```
-
-A 4%-black shadow on a `#0b0b0b` surface is invisible; dark mode needs 30–60% black before a shadow registers. It's also why the dark page is `#0b0b0b`, not `#000000` (depth law 5).
-
-Because the structure changes and not just the values, elevation **cannot be a single token**. It needs a per-theme pair — the one place raw `rgba()` outside the token file is acceptable — and it belongs in a **CSS class**, not a JS constant:
-
-```tsx
-<div className="glass-nav dock-shadow rounded-2xl border-[0.5px] border-gray-alpha-400 p-1">
-```
+`.dock-shadow` lives in `glass/depth/assets/glass.css`, both themes side by side; depth law 4 gives each layer's job. Light is 2–6% black with a 0.6 catch light; dark is 30–60% black with the catch light at 0.10, because a 4%-black shadow on `#0b0b0b` is invisible. It's also why the dark page is `#0b0b0b`, not `#000000` (depth law 5). Because the structure changes and not just the values, elevation **cannot be a single token**: it's a per-theme pair — the one place raw `rgba()` outside the token file is acceptable — in a **CSS class**, not a JS constant.
 
 The reference implementation started with an exported constant and moved to the class:
 

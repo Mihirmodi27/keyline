@@ -229,17 +229,11 @@ Where a custom animation rules out `<details>`, glass collapses height to zero (
 
 The content stays in the served HTML, for crawlers, `llms.txt` and find-in-page.
 
-```css
-@media print {
-  nav, footer, .skip { display: none; }
-  .reveal { opacity: 1; transform: none; }
-  a { color: inherit; text-decoration: none; }
-}
-```
+Print: `glass/layout/assets/layout-tokens.css`, with the `.reveal` reset in `glass/motion/assets/motion-tokens.css`.
 
 ## Assets
 
-- `glass/layout/assets/layout-tokens.css` — column, spacing, radius ladder, continuous corners, hairlines, skip link, print.
+- `glass/layout/assets/layout-tokens.css` — column, continuous corners, skip link, print.
 - `glass/layout/assets/SectionNav.tsx` — two presentations of one tree, with shared row rendering.
 
 ## Checklist

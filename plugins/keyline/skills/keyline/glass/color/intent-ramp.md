@@ -58,20 +58,7 @@ Held out of the ramp because a page background is categorically different from a
 
 ## Dark-mode re-tinting
 
-```css
-:root[data-theme="dark"] {
-  --color-gray-100: #1a1a1a;   /* 100–400: dark surfaces, rising slowly */
-  --color-gray-200: #212121;
-  --color-gray-300: #282828;
-  --color-gray-400: #2e2e2e;
-  --color-gray-500: #707070;   /* 500–800: the mid greys jump */
-  --color-gray-600: #7d7d7d;
-  --color-gray-700: #8f8f8f;
-  --color-gray-800: #a0a0a0;
-  --color-gray-900: #c4c4c4;   /* 900–1000: light text */
-  --color-gray-1000: #ededed;
-}
-```
+The values are the dark block of `glass/color/assets/color-tokens.css`.
 
 **It's not an inversion** (domain law 8). Inverting the light ramp would put 100 at `#0d0d0d` and 1000 at `#e8e8e8`, evenly spaced. The real dark ramp is *compressed at the bottom* (100→400 spans only `#1a1a1a`→`#2e2e2e`, twenty units) and *expanded in the middle* (400→500 jumps forty units), because dark surfaces must stay distinguishable at very low lightness, where the eye is more sensitive to small differences, while mid-greys need a big jump to separate "border" from "text."
 
@@ -98,18 +85,7 @@ Against the near-black page the same indices pass — 800 is 7.53:1, 700 is 6.09
 
 ### The fix: text tiers as their own tokens
 
-```css
-:root {
-  --color-muted: #5e5e5e;   /* 6.48:1 — deks, supporting copy, <em> */
-  --color-quiet: #696969;   /* 5.49:1 — resting icons, state labels, <cite> */
-  --color-faint: #757575;   /* 4.61:1 — dates, read times, meta */
-}
-:root[data-theme="dark"] {
-  --color-muted: #a0a0a0;   /* 7.53:1 */
-  --color-quiet: #878787;   /* 5.48:1 */
-  --color-faint: #7a7a7a;   /* 4.59:1 */
-}
-```
+`muted`, `quiet` and `faint`, per theme, are in `glass/color/assets/color-tokens.css`; their jobs are §4 of `glass/color/guide.md`.
 
 **Every tier clears 4.5:1 in both themes**, including the worst real pairing: muted on `gray-100`, a subtle surface, at 5.79:1.
 
@@ -126,11 +102,3 @@ Against the near-black page the same indices pass — 800 is 7.53:1, 700 is 6.09
 **A border step as text.** The one this guide got wrong for a whole revision (above).
 
 **"Something between 500 and 600"**, and **auditing contrast in dark mode only**: domain laws 1 and 3. Here the worst surface is a subtle `gray-100`, not `background-100`.
-
-## Adding a semantic colour
-
-The reference implementation has none, because nothing on the site reports state. Check that before you add them. If you do, they get their own pairs outside the grey ramp, kept out of the focus ring's territory, and follow domain law 6 and `domains/color/status-and-exceptions.md`: shape carries the state, red means loss and never a live state, destructive actions take a red ground (solid danger with `background-100` text when highlighted), and small marks clear 3:1 on every ground in each theme.
-
-## Spending your one chromatic exception
-
-Glass spends it once, on the collapsed summary panel: an offer, not content (domain law 7). Its containment rules — only the mark takes the accent; every stop re-picked for dark — are in §3 of `glass/color/guide.md`.

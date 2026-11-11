@@ -1,33 +1,12 @@
 /**
  * Long-form prose renderer — the reading half of the type system.
  *
- * The reading column is TWO SIZES: 16px for headings, 14px for everything a
- * reader reads. Which means size does no work below the headings, and the
- * blocks sharing 14px have to separate on other axes — each on a different
- * one, or they collide:
+ * Two sizes: 16px headings, 14px for everything read, so the 14px blocks
+ * each separate on a different axis (the table in glass/type/long-form-prose.md).
  *
- *   lead     leading, 1.9 against the body's 1.75
- *   keyline  weight 500, and 36px of air on both sides
- *   body     1.75 — the baseline the others are read against
- *   quote    a 3px rounded bar and a 16px indent
- *   note     13px, the faint tier, and a 1px rule
- *
- * The rule that produced this: A TIER MUST NEVER OUTRANK THE HEADING IT SITS
- * UNDER. An earlier pass ran the keyline at 17px, above the 16px heading it
- * belonged to, and the page read as though the paragraphs were shouting over
- * the titles. Pulling everything to one size removes any chance of that
- * returning.
- *
- * Spacing is deliberately asymmetric around headings: 40px above, 12px below,
- * so a heading belongs to the paragraph that follows it rather than floating
- * between two sections. The keyline is the one symmetric block, because it
- * belongs to neither neighbour.
- *
- * Colour comes from the Glass colour guide (`glass/color/guide.md`): `gray-1000`/`gray-900` for
- * the two upper text tiers, and the `muted`/`quiet`/`faint` tokens below them
- * (which are deliberately NOT ramp steps — 500–800 are border values and fail
- * as text in a light theme). `gray-500` stays on decorative marks, which carry
- * no text. `reveal` comes from glass/motion.
+ * Spacing: 40px above a heading, 12px below; the keyline is the one
+ * symmetric block (glass/type/long-form-prose.md). Text tiers come from
+ * glass/color/guide.md; `reveal` from glass/motion.
  */
 
 import { Fragment, type ReactNode } from "react";
@@ -188,23 +167,9 @@ export function Prose({ blocks }: { blocks: Block[] }) {
 }
 
 /**
- * Inline markdown for **strong**, *em* and [links](/there), mapped onto the
- * system's two axes instead of bold and italic:
- *
- *   **strong** → weight 500 + primary colour   (advances)
- *   *em*       → muted colour, no slant        (recedes)
- *
- * This gives genuinely two-directional emphasis, which a bold-only system
- * can't express. The semantic tags stay — screen readers still announce them.
- *
- * One caution specific to a two-size reading column: <strong> and the keyline
- * are now the same weight at the same size, so a paragraph with a long bolded
- * clause reads as a keyline that failed to get its own line. Keep strong
- * emphasis to a few words; anything longer wants to BE a keyline.
- *
- * Links are here because the strongest sentences often live in data rather
- * than JSX, and a claim that can't carry a link to its own evidence is just an
- * assertion. One link treatment everywhere prose carries one.
+ * Inline markdown for **strong** (500 + primary), *em* (muted, no slant) and
+ * [links](/there) — §5 of glass/type/guide.md. Keep strong to a few words:
+ * at this size it is the keyline's weight.
  */
 const TOKENS = /(\*\*[^*]+\*\*|\*[^*]+\*|\[[^\]]+\]\([^)\s]+\))/g;
 const LINK = /^\[([^\]]+)\]\(([^)\s]+)\)$/;

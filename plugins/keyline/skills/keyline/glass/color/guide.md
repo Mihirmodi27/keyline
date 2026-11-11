@@ -109,7 +109,7 @@ A `#16276b` stop on a `#0b0b0b` page loses the stroke's darker half, so the whol
 
 ### Status colour is not an exception
 
-Nothing on the site reports state, so Glass ships no status pair; if you add one, it follows domain law 6 and `domains/color/status-and-exceptions.md` (`glass/color/intent-ramp.md` has Glass's notes). Every destructive or session-ending action (delete, clear, sign out) shares one red treatment, wherever it sits.
+Nothing on the site reports state, so Glass ships no status pair; if you add one, it follows domain law 6 and `domains/color/status-and-exceptions.md`. Every destructive or session-ending action (delete, clear, sign out) shares one red treatment, wherever it sits.
 
 ## 4. Text is a five-tier ladder — and it is *not* the grey ramp
 

@@ -10,7 +10,7 @@ How Glass sets the reading half: looser leading and spacing than anything else o
 
 Prose body is 14/1.75: a UI paragraph's size, noticeably more open (1.75 vs 1.55).
 
-Why 1.75: a 576px text column at 14px holds roughly 85–95 characters a line, past comfortable, and long lines need more leading for the eye to find the next line's start. A shorter measure could pull it back toward 1.6.
+Why 1.75: the ~90-character measure (`glass/layout/measure-and-rhythm.md`). A shorter measure could pull it back toward 1.6.
 
 ## The reading column is two sizes
 
@@ -24,25 +24,9 @@ Why 1.75: a 576px text column at 14px holds roughly 85–95 characters a line, p
 | Pull quote | 14 | a 3px rounded bar and a 16px indent |
 | Note | 13 | a 1px rule, the faint tier, and a step down in size |
 
-## Keyline and note
+## The blocks, in code
 
-Both came from one diagnosis: a body of writing that was 114 paragraphs and almost nothing else. What each is for, and the build check that keeps them honest: `domains/type/prose-and-emphasis.md`, **Two block types worth having**.
-
-**`keyline`** — body size, weight 500, `my-9`.
-
-```tsx
-case "keyline":
-  return <p className="reveal my-9 text-[14px] font-medium leading-[1.6] text-gray-1000">…</p>;
-```
-
-**`note`** — 13px, faint tier, a 1px left rule and 16px of indent.
-
-```tsx
-case "note":
-  return <p className="reveal my-7 border-l border-gray-alpha-300 pl-4 text-[13px] leading-[1.6] text-faint">…</p>;
-```
-
-The note's rule is 1px and the quote's 3px, with the type inside four steps apart, so the two indented rules can't be mistaken for each other.
+Every block's classes — lead, body, keyline, note, h2, quote, figure, lists — are in `glass/type/assets/prose.tsx`, with the reason for each beside it. Keyline and note both came from one diagnosis, a body of writing that was 114 paragraphs and almost nothing else; what each is for, and the build check that keeps them honest: `domains/type/prose-and-emphasis.md`, **Two block types worth having**.
 
 ## Block spacing
 
@@ -59,61 +43,12 @@ The note's rule is 1px and the quote's 3px, with the type inside four steps apar
 
 The heading's 40 above and 12 below, ~3.3:1, is the domain's asymmetric heading space; the keyline is its symmetric exception.
 
-## Headings inside prose
+## What the code doesn't say
 
-```tsx
-<h2 className="mt-10 mb-3 text-[16px] font-medium leading-[1.2] tracking-[-0.015em]">
-```
-
-16px against 14px body is one step; the weight (500), the tight leading (1.2) and the 40px above do the real work.
-
-It matches a page-level section heading and the detail page's own `<h1>`: three levels at one size, separated by position and spacing. Flatter than most article templates, and deliberate — the alternative was an in-body heading larger than the page title.
-
-## Quotes
-
-```tsx
-<blockquote className="my-9 flex gap-4">
-  <span aria-hidden className="w-[3px] shrink-0 rounded-full bg-gray-500" />
-  <div className="text-[14px] leading-[1.75] text-gray-1000">…</div>
-</blockquote>
-```
-
-The type matches the body around it, so the bar is the entire signal: the 2px `gray-alpha-300` border it replaced is domain law 4's example of auditing what's left after a signal goes. Why a flex child with no vertical margin: `domains/type/prose-and-emphasis.md`, **Quotes**.
-
-- **`bg-gray-500`, from the grey ramp, not the alpha ramp.** It's a decorative mark on an opaque surface — see the Glass colour guide (`glass/color/guide.md`) on why decorative marks stay on the solid ramp.
-
-Still absent: italic (globally disabled), quotation marks, background, colour step. Stepping the quote *down* to secondary, as earlier versions did, at body size just makes a de-emphasised paragraph.
-
-The citation goes quieter and explicitly kills the browser's italic (domain law 9):
-
-```tsx
-<cite className="mt-2 block text-[13px] not-italic text-quiet">— {cite}</cite>
-```
-
-## Figures
-
-```tsx
-<figure className="reveal my-9">
-  <div className="overflow-hidden rounded-[10px] bg-gray-100 ring-1 ring-gray-alpha-300">
-    <div style={{ aspectRatio: b.aspect ?? "16 / 9" }}>
-      <img src={b.src} alt={b.alt} loading="lazy" decoding="async" className="h-full w-full object-cover" />
-    </div>
-  </div>
-  <figcaption className="mt-2.5 text-[13px] leading-[1.55] text-faint">{caption}</figcaption>
-</figure>
-```
-
-The aspect ratio sits on a wrapper so the box is reserved before the image loads. `ring-1` rather than a border, so the outline stays out of the box model and the corner radius stays exact.
-
-**The caption is the point of the figure, not a label on it**: what the thing was for, and which constraint shaped it. It sits at the note/meta tier (13px, faint).
-
-## Lists
-
-```tsx
-<ul className="mb-6 list-disc space-y-2 pl-5 marker:text-gray-500">
-```
-
-The `marker:` variant puts the domain's quiet marker (`domains/type/prose-and-emphasis.md`, **Lists**) on `gray-500`; the same goes for `list-decimal`.
+- **Prose headings** match a page-level section heading and the detail page's own `<h1>`: three levels at 16px, separated by position and spacing. The alternative was an in-body heading larger than the page title.
+- **The pull quote's bar is the entire signal**, since its type matches the body: the 2px `gray-alpha-300` border it replaced is domain law 4's example of auditing what's left after a signal goes. `bg-gray-500` is from the solid ramp, a decorative mark on an opaque surface (`glass/color/guide.md`). Still absent: italic, quotation marks, background, a colour step.
+- **A figure's caption is the point of the figure**, not a label on it: what the thing was for, and which constraint shaped it.
+- **Authored lists keep the UA marker** (`list-disc` / `list-decimal`) on `gray-500`, the domain's quiet marker; imported Markdown uses the 3px dot instead (§8 of `glass/type/guide.md`). Both are what the site ships.
 
 ## Hand-rolled bullets in UI context
 
@@ -144,7 +79,7 @@ Every block carries `reveal`, so paragraphs fade up one by one as they enter the
 <p className="mt-2 text-[14px] leading-[1.55] text-muted">{dek}</p>
 ```
 
-Body size, muted, tighter leading. It was 17px, the ladder's one odd number, sitting between a 30px title and 16px prose; with both gone it separates on colour and leading alone: 1.55, against the body's 1.75 and the lead's 1.9. Dek and lead are the domain's tightest pairing; check them first.
+Body size, muted, tighter leading: it separates on colour and leading alone, 1.55 against the body's 1.75 and the lead's 1.9. Dek and lead are the domain's tightest pairing; check them first.
 
 ## Cover art and the measure
 

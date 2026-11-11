@@ -4,8 +4,8 @@
  * pill). All of them grow out of a trigger sitting against one edge, so all
  * of them stretch from that edge.
  *
- * The effect comes from letting two springs DISAGREE. See motion-presets.ts
- * for the numbers and the reasoning.
+ * The effect comes from letting two springs DISAGREE (motion-presets.ts;
+ * the reasoning is glass/motion/springs.md).
  *
  * Two structural decisions worth keeping:
  *
@@ -16,10 +16,8 @@
  * 2. The wrapper is ALWAYS present, so a trigger's aria-controls still
  *    resolves to a real element when the menu is closed.
  *
- * Note this component animates a bare m.div and expects its child to carry
- * the glass. A transform on an ancestor weakens backdrop-filter in its
- * subtree — the wrapper scales, the child blurs, and they must be different
- * elements.
+ * It animates a bare m.div and expects its child to carry the glass
+ * (glass/depth/guide.md §3).
  */
 
 import { AnimatePresence, LazyMotion, domAnimation, m, useReducedMotion } from "motion/react";

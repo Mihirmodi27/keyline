@@ -60,13 +60,7 @@ One variable turns a blur-crossfade into a plain crossfade; `blur(0px)` → `blu
 
 ## In CSS
 
-The `.reveal` rule is in `glass/motion/assets/motion-tokens.css`; the theme crossfade's opt-in block is in `glass/motion/easing-and-duration.md`. The route fade:
-
-```css
-@media (prefers-reduced-motion: reduce) {
-  .route-fade { animation: none; }
-}
-```
+The `.reveal` reset, the route fade's `animation: none` and the theme crossfade's `no-preference` opt-in are all in `glass/motion/assets/motion-tokens.css`.
 
 ### Tailwind's `motion-reduce:` variant
 
