@@ -1,7 +1,7 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "keyline",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Interface design laws for coding agents. /keyline init reads your codebase and writes a DESIGN.md in your own token names; critique, audit, type, color, layout, depth, motion, patterns and polish work through it, with dials set by a preset (editorial, product, expressive or glass).",
   "author": {
     "name": "Mihir Modi",
