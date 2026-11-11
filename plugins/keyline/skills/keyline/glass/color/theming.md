@@ -99,13 +99,7 @@ The reference implementation ships **two** explicit modes, Light and Dark, with 
 
 Most components need no theme branching; the test for when one does is in `domains/color/theming-mechanics.md`. Glass's cases:
 
-**Multi-layer shadows.** A shadow whose *structure* changes between themes (the inset highlight weakening while the ambient shadows strengthen 10×) can't live in one colour token. Extract it to a shared constant:
-
-```tsx
-const SHADOW =
-  "shadow-[inset_0_1px_0_rgba(255,255,255,0.6),0_1px_1px_rgba(0,0,0,0.02),…] " +
-  "dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.10),0_1px_1px_rgba(0,0,0,0.3),…]";
-```
+**Multi-layer shadows.** A shadow whose *structure* changes between themes (the inset highlight weakening while the ambient shadows strengthen 10×) can't live in one colour token, but Glass keeps it out of `dark:` too: it's one class, `.dock-shadow`, with its `:root[data-theme="dark"]` twin beside it (`glass/depth/depth-cues.md`, §2), not a JS constant.
 
 **Ring/border colours as alpha of a specific hue.** `ring-black/[0.06] dark:ring-white/[0.08]` encodes what the alpha ramp does, where the utility won't take a token. Prefer `gray-alpha-*` where you can; use the pair where you can't.
 

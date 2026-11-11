@@ -97,7 +97,7 @@ const update = () => {
 
 The same works on columns with `min-width: 0`. Where supported, `interpolate-size: allow-keywords` lets `height: auto` transition directly.
 
-**Transforms and `backdrop-filter`.** A transform on an ancestor creates a new containing block and weakens or breaks the blur beneath it, so the moving wrapper and the translucent surface are different elements; the depth guide covers how much the tint carries while it animates.
+**Transforms and `backdrop-filter`.** The moving wrapper and a translucent surface are different elements (depth law 9).
 
 **`will-change`** only on an element about to animate, removed after; left on everything, it pins memory for layers that never move.
 

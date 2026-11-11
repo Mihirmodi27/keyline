@@ -4,8 +4,8 @@
 
 @theme {
   /* ── The measure ────────────────────────────────────────────────────────
-     640px outer, 32px padding → 576px of text. At 16px prose that's ~75–85
-     characters per line: the top of the comfortable range, which is the
+     640px outer, 32px padding → 576px of text. At the 14px prose size that's
+     ~90 characters per line (85–95): past the comfortable range, which is the
      right place for a site that expects sustained reading (long lines are
      efficient once the reader is committed, and 1.75 leading pays for the
      longer return sweep).
@@ -139,7 +139,9 @@
              one dock. Renders as a true sub-pixel hairline on retina and
              rounds UP to 1px elsewhere, so it degrades rather than vanishes.
      1px     a real edge — where a card ends.
-     2px     a mark with editorial weight — a blockquote rule, a focus ring.
+     2px     a focus ring; imported Markdown's blockquote rule.
+     3px     the authored pull quote's bar — a rounded flex child, not a
+             border, since a border can't be rounded on its own.
 
    On translucent surfaces use the ALPHA ramp (border-gray-alpha-400). A
    solid border on glass doesn't participate in what's behind it and reads as

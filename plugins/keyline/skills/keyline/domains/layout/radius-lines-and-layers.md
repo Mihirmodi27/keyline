@@ -36,7 +36,7 @@ Derive the ladder from the nestings, and write the subtraction into the token so
 | `radius.card` | 12px | 12px | 20px | 0 |
 | `radius.container` | 16px | 16px | 28px | 0 |
 
-Product used to run smaller (6px controls, 8px cards), and in review that read as boxy and dated beside current apps. It now matches editorial: with content unboxed (layout law 3), the few cards don't tile edge to edge, which is where large radii leave triangular gaps (one more reason not to build a mosaic of panels). Both draw the corner as a light superellipse (below). An existing design's radii are the floor when improving it: a pass never sharpens corners, not even for the nesting law — it raises the outer radius or trims the inset instead (`commands/refine.md`, the limits). Expressive may go either way, but never mixes round and square components or keeps four near-identical radii that are really one.
+Product matches editorial, because smaller radii (6px controls, 8px cards) read boxy and dated; with content unboxed (layout law 3), the few cards don't tile edge to edge, which is where large radii leave triangular gaps. Both draw the corner as a light superellipse (below). An existing design's radii are the floor (layout guide, Refining an existing design). Expressive may go either way, but never mixes round and square components or keeps four near-identical radii that are really one.
 
 **Radius scales with size, not importance**, and sub-proportionally: a 400px panel gets a larger radius than a 40px button because it is larger, but a proportional one reads as a lozenge. **`radius.pill` is for things with no top and bottom** — tags, dots, toggles, progress tracks. A paragraph in a pill-ended card collides with the curve.
 
@@ -63,7 +63,7 @@ Where chrome and object share a weight, the divider must step down in colour so 
 
 ### Half a pixel, drawn as a border
 
-A `0.5px` border is one device pixel on a 2× screen and rounds up to a full pixel on 1×: browsers snap any border width between 0 and 1 device pixel up to one. A box half a pixel tall with a background gets no such snapping — on 1× it antialiases to a faint smear or nothing. So every hairline is a border, including a divider between rows:
+A `0.5px` border is one device pixel on a 2× screen and rounds up to a full pixel on 1×: browsers snap any border width between 0 and 1 device pixel up to one. A box half a pixel tall with a background gets no such snapping — on 1× it antialiases to a faint smear or nothing. So every hairline is a border, including a divider between rows. A `box-shadow` ring doesn't snap either: on 1× its half pixel antialiases to a faint line, which the depth guide's product ring edge wants, and why it swaps to a real border under `prefers-contrast: more` (`domains/depth/elevation-recipes.md`).
 
 ```css
 :root { --hairline: 0.5px; }

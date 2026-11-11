@@ -32,7 +32,7 @@ Sizes, leading, tracking and weight all hang off these. Owned by the type guide.
 | `type.data` | Numerals that must align — tables, prices, stats. Often `type.ui` or `type.body` plus tabular figures rather than its own size |
 
 Families: `family.text`, `family.display` (only if different), `family.ui` (only if different — interface text beside a serif reading face), `family.mono`.
-Weights: `weight.regular`, `weight.strong`. Two optional ones, each only where the preset allows it: `weight.medium`, a middle weight for dense UI where a project records a job the other two can't carry, and `weight.display`, the display tier's own weight, never reused below it.
+Weights: `weight.regular`, `weight.strong`. Two optional ones, each only where the preset allows it: `weight.medium`, a third weight above `weight.strong` for headings on a dense screen, only where a project records a job the other two can't carry, and `weight.display`, the display tier's own weight, never reused below it.
 
 ## Colour
 
@@ -62,7 +62,7 @@ A project may slot extra tiers between secondary and tertiary (the Glass preset 
 | `surface.raised` | A component's own surface — a card, an input, a menu |
 | `surface.hover` | That surface, hovered |
 | `surface.pressed` | That surface, pressed or active |
-| `surface.selected` | A persistent selected state, distinct from hover. Under product and expressive, the accent at about 25% over its surface, carrying `accent.ink` at 4.5:1 |
+| `surface.selected` | A persistent selected state, distinct from hover. Under product and expressive, the accent tint colour law 7 defines |
 | `surface.floating` · `surface.overlay` | A floating or modal level's own surface, where it differs from `surface.raised` — usually only in dark themes, where elevation is shown by lightening |
 | `surface.inverse` | Tooltips, toasts, solid-filled chrome |
 
@@ -85,8 +85,8 @@ A project may slot extra tiers between secondary and tertiary (the Glass preset 
 |---|---|
 | `focus` | The focus ring. Must hit 3:1 against every surface it can land on |
 | `accent` · `accent.hover` | The brand or action colour, if the system has one, and its hovered state. `accent` may share a token with `focus` |
-| `status.danger` · `status.warning` · `status.success` · `status.info` | Each a pair — `status.<name>.fg`, a foreground that clears 4.5:1 as text, and `status.<name>.bg`, a background tint — plus `status.<name>.solid` where a filled control needs it (a destructive button). Required in product systems, usually absent in editorial ones |
-| `exception.<name>` | A deliberate chromatic spend outside the accent — one per system in editorial, a few in expressive; in product none by default, plus one hue family per question the reader can't answer at a glance, named `exception.<question>.<member>` (`exception.type.task`, `exception.area.<name>`, `exception.person.<n>`), each listed in `DESIGN.md`. Always named after what it's *for* |
+| `status.danger` · `status.warning` · `status.success` · `status.info` | Each a pair — `status.<name>.fg`, a foreground read as text, and `status.<name>.bg`, a background tint — plus `status.<name>.solid` where a filled control needs it (a destructive button) |
+| `exception.<name>` | A deliberate chromatic spend outside the accent, always named after what it's *for*; a hue family answering one question is `exception.<question>.<member>` (`exception.type.task`, `exception.area.<name>`, `exception.person.<n>`), each listed in `DESIGN.md` |
 
 ## Layout
 
@@ -97,19 +97,19 @@ Owned by the layout guide.
 | `measure.reading` | The width of running text |
 | `measure.wide` | Content that isn't prose but should still align — grids, tables |
 | `measure.app` | An application shell's content area, if there is one |
-| `measure.form` | Forms and settings inside a panel, ≈ 640–760px, so controls stay near their labels |
+| `measure.form` | Forms and settings inside a panel, so controls stay near their labels |
 | `measure.frame` | The wider frame that the reading column and its rails are both anchored to, so the gap between them holds as the window grows |
 | `measure.rail` | The width of a rail in the outer margin — a table of contents, an aside |
 | `gutter` | Horizontal page padding at the smallest width (Material's *margin*) |
 | `grid.columns` · `space.column` | A column grid's count per breakpoint, and the gap between columns (Material's *gutter*). Product and expressive only, and only where unlike blocks sit side by side |
-| `target.min` | The smallest hit area a control may have: 24px under a fine pointer, 44px on touch |
+| `target.min` | The smallest hit area a control may have, per pointer: never under 24px fine or 44px on touch, which a preset's dial may raise |
 | `space.tight` | Inside a group — a label and its value, items in a list |
 | `space.group` | Between groups inside a section |
 | `space.section` | Between sections |
 | `space.heading-above` · `space.heading-below` | The asymmetric pair around a heading. Their *ratio* is the rule, not their values |
 | `radius.pill` · `radius.small` · `radius.control` · `radius.card` · `radius.container` | Smallest to outermost. Concentric corners obey inner = outer − padding; anything away from a corner takes a radius for its size |
 | `hairline.chrome` · `hairline.object` · `rule.emphasis` | Divider weight inside chrome, the edge of an object, and a deliberate heavy rule (a quote bar, a focus ring) |
-| `z.below` · `z.raised` · `z.popover` · `z.dismiss` · `z.nav` · `z.overlay` · `z.toast` · `z.skip-link` | The stacking ladder, low to high. `z.toast` sits over modals, because a notification about a modal's action must not hide behind it |
+| `z.below` · `z.raised` · `z.popover` · `z.dismiss` · `z.nav` · `z.overlay` · `z.toast` · `z.skip-link` | The stacking ladder, low to high (layout law 7) |
 | `bp.<name>` | Breakpoints, named for what changes at them, not for devices |
 
 ## Surfaces and depth
@@ -134,7 +134,7 @@ Owned by the motion guide.
 
 | Role | Job |
 |---|---|
-| `duration.instant` | 0 — press feedback, focus rings |
+| `duration.instant` | Press feedback, focus rings |
 | `duration.micro` | Opacity and colour on hover |
 | `duration.state` | Small state changes: colour, background, icon swaps, small transforms |
 | `duration.popover` | Something small appearing: a hover card, a menu, a chevron |

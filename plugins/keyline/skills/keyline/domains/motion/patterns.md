@@ -126,7 +126,7 @@ A wash, with the leave on the resting rule and the arrival on the hovered one, s
 .card:hover { background-color: var(--surface-hover); transition-duration: <hover in>; }
 ```
 
-No `translate`, no shadow change, one named property; the bundle stays where the depth guide put it. Rows keep `duration.micro` both ways.
+Why a wash, and the timings: `domains/motion/ladder-and-curves.md`.
 
 ## Press
 

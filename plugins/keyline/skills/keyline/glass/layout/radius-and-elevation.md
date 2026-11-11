@@ -46,9 +46,10 @@ The rule is in §4 of the guide: `superellipse(1.5)` on every element and pseudo
 |---|---|---|
 | 0.5px | `border-[0.5px]`, `h-[0.5px]` | Chrome borders, dividers, glass edges |
 | 1px | `border`, `ring-1`, `h-px` | Card borders, TOC markers |
-| 2px | `border-l-2` | Quote rules, focus rings |
+| 2px | `outline-2`, `border-l-2` | Focus rings, an imported Markdown quote's rule |
+| 3px | `w-[3px] rounded-full` | The pull-quote bar |
 
-By job (layout law 6): two groups of icons within one dock, 0.5px; where a card ends, 1px; a blockquote's left rule, 2px.
+By job (layout law 6): two groups of icons within one dock, 0.5px; where a card ends, 1px; a focus ring, 2px. The authored pull quote's bar is 3px and rounded, so a flex child rather than a border (`glass/type/long-form-prose.md`, Quotes); imported Markdown, which can't take classes, keeps a 2px `gray-alpha-300` border.
 
 Vertical dividers use `w-[0.5px]` with an explicit height and `self-center`:
 

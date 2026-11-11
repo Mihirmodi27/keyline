@@ -291,29 +291,9 @@
    ───────────────────────────────────────────────────────────────────────── */
 
 /* ─────────────────────────────────────────────────────────────────────────
-   Elevation, for reference — apply in components, not here. A shadow that
-   changes STRUCTURE between themes can't be a single token, so it needs a
-   dark: variant. Extract it once to a shared constant and import it.
-
-   Four layers, one light source:
-     inset 1px white   top-edge catch light — does more for "floating" than
-                       any of the shadows
-     1px/1px @ 2%      contact shadow: resting on something, not pasted over
-     8/16 @ 4%         near ambient
-     24/32 @ 6%        far ambient — two layers, because one large shadow
-                       reads as fog while two fall off like real penumbra
-
-   Negative spread (-4px, -8px) contracts before blurring, keeping the shadow
-   tucked under the element instead of haloing past its edges. This is the
-   detail most hand-written shadows miss.
-
-   Opacities are 2–6%. Elevation should be felt, not seen.
-
-   const SHADOW =
-     "shadow-[inset_0_1px_0_rgba(255,255,255,0.6),0_1px_1px_rgba(0,0,0,0.02),0_8px_16px_-4px_rgba(0,0,0,0.04),0_24px_32px_-8px_rgba(0,0,0,0.06)] " +
-     "dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.10),0_1px_1px_rgba(0,0,0,0.3),0_8px_16px_-4px_rgba(0,0,0,0.5),0_24px_32px_-8px_rgba(0,0,0,0.6)]";
-
-   Dark inverts BOTH ways: shadows ~10x stronger (4% black on #0b0b0b is
-   mathematically invisible), inset highlight ~6x weaker (0.6 white on a dark
-   surface reads as a glowing edge, not a catch light).
+   Elevation is not here. A shadow that changes STRUCTURE between themes can't
+   be a single token, so it lives in one class with its dark twin beside it:
+   .dock-shadow, at the foot of glass/depth/assets/glass.css. Not a JS
+   constant — the reference implementation started with one and moved to the
+   class (glass/depth/depth-cues.md, §2).
    ───────────────────────────────────────────────────────────────────────── */

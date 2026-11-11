@@ -14,7 +14,7 @@ For mostly-text interfaces, where layout should get out of the way. One decision
 }
 ```
 
-At most 576px of text, roughly 75–85 characters at 16px: the top of comfortable, chosen for sustained reading. **Every page uses the class** (layout law 1).
+At most 576px of text, about 90 characters a line (85–95) at the 14px prose size: past comfortable on purpose, with prose leading opened to match. **Every page uses the class** (layout law 1).
 
 - **Non-text content may leave the column**: a masonry image wall has no reading measure, so it goes full-bleed.
 - **An article's cover image stays in it.** Bled wide, it becomes a banner *above* the article, not part of it.
@@ -40,16 +40,16 @@ Rail and column share one centred 1280px frame, so their gap holds from 1280px u
 ## 3. Spacing groups; asymmetry is the mechanism
 
 ```
-mt-11  (44px)   ← heading
+mt-10  (40px)   ← heading
 mb-3   (12px)
                 ← the paragraph it introduces
 ```
 
-~3.5:1 above to below makes them one unit (layout law 2). It holds at every scale:
+~3.3:1 above to below makes them one unit (layout law 2). It holds at every scale:
 
 | Relationship | Inner | Outer | Ratio |
 |---|---|---|---|
-| Heading → its paragraph | 12px below | 44px above | 3.7:1 |
+| Heading → its paragraph | 12px below | 40px above | 3.3:1 |
 | List items → the next block | 8px between | 24px below | 3:1 |
 | Bio paragraphs → the links after | 16px between | 32px after last | 2:1 |
 | Section heading → its content | 16–32px | 36px+ between sections | ~2:1 |
@@ -88,7 +88,8 @@ Glass sets the corner shape on everything, pseudo-elements included, with no exc
 |---|---|
 | `0.5px` | Chrome borders, dividers, glass edges |
 | `1px` | Card borders, rings, disclosure outlines |
-| `2px` | Quote rules, focus rings |
+| `2px` | Focus rings, an imported Markdown quote's rule |
+| `3px` | The pull-quote bar: a rounded flex child, not a border |
 | `1px` (`h-px`) | Table-of-contents markers |
 
 Weight follows the job (layout law 6): dividing icon groups inside one dock, 0.5px; defining a card's edge, 1px. On translucent surfaces the edge is the **alpha ramp** (`border-gray-alpha-400`; see `glass/color/guide.md`).
@@ -247,10 +248,10 @@ The domain checklist applies in full; these are glass's values for it.
 
 - [ ] `.col` — 640px, 32px padding — on every page; article covers stay in it.
 - [ ] Rails in the 1280px frame: `left-8`, `w-[196px]`, `sticky top-28`, `max-h-[calc(100dvh-11rem)]`, shown from `xl`.
-- [ ] Prose headings `mt-11` / `mb-3`; home sections `py-9`; long pages `mt-16 border-t pt-10`, the first `mt-14`.
+- [ ] Prose headings `mt-10` / `mb-3`; home sections `py-9`; long pages `mt-16 border-t pt-10`, the first `mt-14`.
 - [ ] Rules between Work, Experience and Life only; Watching and Socials follow on.
 - [ ] Radii from the ladder: 6 / 9 / 10 / 12 / 16px and full; `superellipse(1.5)` on everything.
-- [ ] 0.5px chrome, 1px object edges, 2px marks; `gray-alpha` on translucent surfaces.
+- [ ] 0.5px chrome, 1px object edges, 2px focus rings, the pull quote's 3px rounded bar; `gray-alpha` on translucent surfaces.
 - [ ] `MobileDock` / `DesktopDock` and `SectionNav` / `SectionNavCompact`, sharing data and rows.
 - [ ] The gallery opens on the wall; its layout lives in module memory.
 - [ ] `pb-28` under the dock on every page that can end near the viewport bottom.

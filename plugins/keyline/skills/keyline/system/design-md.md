@@ -80,9 +80,9 @@ Copy this shape. Drop any table or row that doesn't apply; add project roles und
 
 | Role | Name here | Value |
 |---|---|---|
-| `z.popover` | `z-popover` | 50 |
-| `z.overlay` | `z-overlay` | 80 |
-| `z.toast` | `z-toast` | 90 |
+| `z.popover` | `z-popover` | 20 |
+| `z.overlay` | `z-overlay` | 60 |
+| `z.toast` | `z-toast` | 70 |
 
 **Breakpoints**
 
@@ -123,7 +123,7 @@ Plus springs by character, and the reduced-motion policy in one sentence.
 ## Decisions
 
 - YYYY-MM-DD — Card titles at 500, not 600: they read heavy beside the pane title. (User decision; the type guide dial.)
-- YYYY-MM-DD — Three weights, not two: the billing table needs a middle weight for column totals. (Client feedback; the type guide dial override.)
+- YYYY-MM-DD — Three weights, not two: the billing screens need a 600 heading weight above the 500 that lifts lines inside rows. (Client feedback; the type guide dial override.)
 - YYYY-MM-DD — Page on white `surface.page`, not the grey `bg-neutral-50`: the text tiers failed against the grey. (Law; the colour guide.)
 
 ## Open issues

@@ -84,7 +84,7 @@ input[aria-invalid="true"] { border-color: var(--status-danger-fg); }
 .field-error svg { color: var(--status-danger-fg); }    /* only the mark takes the colour */
 ```
 
-The neutral case: a contents rail moving the current label from `text.secondary` to `text.primary` — 7.7:1 to 15:1, clear in a table, nearly invisible in daylight, to low vision, or mid-scroll. A 2px rule or marker at the edge carries the state; the colour change reinforces it.
+The neutral case, a current label one grey tier darker, needs a rule or marker too (colour law 6).
 
 A ring that fills as work moves is legible in greyscale, so its colour only confirms what the shape says; that is what lets a product colour done without colour carrying it.
 
@@ -99,7 +99,7 @@ Law 7's dial, decided by whether completion is the news:
 | A long list of ticked checkboxes | A light grey box with an ink tick | An inverted ink or accent block per tick shouts down a long list; the tick's shape carries the state |
 | A switch | Its strong fill, on | A switch has no tick, so the fill is the state |
 
-The second row reverses the first on purpose: it is what the "too grey" product in law 7 changed on its boards. Record which lists take which row under `## Decisions`, so the next audit doesn't "fix" one into the other. Under `expressive`, completion may take a brand colour in any row, counted among its exceptions.
+The second row reverses the first on purpose. Record which lists take which row under `## Decisions`, so the next audit doesn't "fix" one into the other. Under `expressive`, completion may take a brand colour in any row, counted among its exceptions.
 
 Where the reader *is* in the interface (the current nav item or tab) takes the accent tint under product and expressive and stays neutral under editorial and glass (colour law 7). A place in the data with one member is different: on a calendar board, today's column may take a filled `accent` with `text.on-accent`, the one time the brand marks a place rather than an action. Record it as `exception.today`; it doesn't make a second.
 

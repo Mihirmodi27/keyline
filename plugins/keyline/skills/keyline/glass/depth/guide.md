@@ -30,12 +30,7 @@ backdrop-filter: blur(20px) saturate(1.8);
 
 ## 3. The 97% panel
 
-`glass-panel` pairs a 24px blur with **97% opacity** because its menus' wrappers *scale open*, and a transform on an ancestor weakens `backdrop-filter` beneath it (depth law 9): for the whole animation the tint does the work. Where you can, the animating wrapper and the glass surface are different elements:
-
-```tsx
-<DropMenu open={open}>            {/* animates scale + y */}
-  <ul className="glass-panel …">  {/* carries the blur, never transformed */}
-```
+`glass-panel` pairs a 24px blur with **97% opacity** because its menus' wrappers *scale open*, and a transform on an ancestor weakens `backdrop-filter` beneath it (depth law 9): for the whole animation the tint does the work. Where you can, the animating wrapper and the glass surface are different elements: `DropMenu` scales and moves, the `glass-panel` inside it carries the blur and is never transformed (`glass/motion/assets/DropMenu.tsx`).
 
 ## 4. Glass over glass
 
@@ -53,30 +48,7 @@ Depth law 3's translucent edge is the alpha ramp (`glass/color/guide.md`): `gray
 
 ### The shadow stack
 
-Four layers, one light source above (depth law 4), in **one class**, not inline:
-
-```css
-.dock-shadow {
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.6),   /* top-edge catch light */
-    0 1px 1px rgba(0, 0, 0, 0.02),            /* contact */
-    0 8px 16px -4px rgba(0, 0, 0, 0.04),      /* near ambient */
-    0 24px 32px -8px rgba(0, 0, 0, 0.06);     /* far ambient */
-}
-:root[data-theme="dark"] .dock-shadow {
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.1),
-    0 1px 1px rgba(0, 0, 0, 0.3),
-    0 8px 16px -4px rgba(0, 0, 0, 0.5),
-    0 24px 32px -8px rgba(0, 0, 0, 0.6);
-}
-```
-
-Opacities are 2–6% in light. Dark is a different shadow, not a re-tint (depth law 5): shadows ~10× stronger (4% black on `#0b0b0b` is invisible), highlight ~6× weaker (0.6 white on dark is a glowing edge, not a catch light).
-
-**Extracted the moment it appeared twice.** This ~400-character string was once inline in five places here, each with a dark twin. Not being a colour, it *can't* be a design token (colour law 10), so a class is its only home.
-
-→ Every elevation tier, the pocket's edge, and stacking inside a glass surface: `glass/depth/depth-cues.md`
+`.dock-shadow`: four layers, one light (depth law 4), 2–6% black in light and a different shadow in dark (depth law 5); one class with its dark twin, not a token or a JS constant. → `glass/depth/assets/glass.css`; tiers, the pocket's edge, stacking: `glass/depth/depth-cues.md`
 
 ## 6. A gradient edge, without a wrapper or a mask
 
@@ -141,54 +113,13 @@ The class drops on `animationend`; under reduced motion, plain accent colour.
 
 ## 8. Fallbacks
 
-Depth law 15, at glass's tokens.
-
-### `prefers-reduced-transparency`
-
-```css
-/* AFTER both theme blocks — it re-declares the same properties. */
-@media (prefers-reduced-transparency: reduce) {
-  :root, :root[data-theme="dark"] {
-    --glass-nav-bg: var(--color-gray-100);
-    --glass-panel-bg: var(--color-gray-100);
-    --folder-glass-bg: var(--color-background-100);
-  }
-  .glass-nav, .glass-panel, .folder-glass {
-    backdrop-filter: none;
-  }
-}
-```
-
-### `prefers-contrast: more`
-
-```css
-@media (prefers-contrast: more) {
-  .glass-nav, .glass-panel, .folder-glass { border-color: var(--color-gray-1000); }
-}
-```
-
-### `@supports` — the gap in the reference implementation
-
-The reference implementation has **no `@supports` guard**, so without `backdrop-filter` it gets a bare 72% tint: legible, but weak. `glass/depth/assets/glass.css` ships with the guard:
-
-```css
-.glass-nav { background: var(--color-gray-100); }   /* opaque baseline */
-
-@supports (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px)) {
-  .glass-nav {
-    background: var(--glass-nav-bg);
-    backdrop-filter: blur(20px) saturate(1.8);
-  }
-}
-```
-
-**Don't hand-write `-webkit-backdrop-filter`.** Tailwind v4's Lightning CSS adds it and keeps only the last of a hand-written pair, so the site ships the prefix alone and Firefox loses every blur (`glass/depth/performance-and-fallbacks.md`).
+Depth law 15, at glass's tokens, in `glass/depth/assets/glass.css`: reduced transparency swaps the tints to `gray-100` / `background-100` and drops the filter, after both theme blocks; `prefers-contrast: more` turns the edge `gray-1000`; an `@supports` guard over a `gray-100` baseline, which the site lacks. **Never hand-write `-webkit-backdrop-filter`**: Lightning CSS keeps only the last of a pair, and Firefox loses every blur (§9).
 
 ## 9. Performance
 
 Depth law 16, within glass's budget: three or four surfaces at most, each small — a dock a few hundred pixels wide, not a full-viewport overlay — and closed menus unmount.
 
-→ What keeps it affordable here, and the prefix bug in detail: `glass/depth/performance-and-fallbacks.md`
+→ What keeps it affordable, and the prefix bug: `glass/depth/performance-and-fallbacks.md`
 
 ## 10. Confirmations
 

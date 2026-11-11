@@ -80,11 +80,8 @@ Use the project's names, and keep the list beside the theme tokens so a new role
 
 ## The sweep
 
-After any change to a role — a size, a weight step, a tracking value:
+The sweep is `domains/patterns/iteration.md`'s. For a type role, two steps of its own:
 
-1. **Change the token, not the instances.** If the change needs instance edits, those instances weren't on the role; migrate them first.
-2. **Grep for the old value** in the role's raw forms (`font-semibold`, `text-[14px]`, `font-weight: 600`) and decide each hit.
-3. **Run the rendered inventory on every route**, not the route the change was asked about.
-4. **Check the generated strings** for case while you're there (patterns law 1): field names, column headers, tool labels, dialog titles and toasts that arrive in Title Case from a schema or a config.
-   `rg -n "(label|title|header|name):\s*['\"][A-Z][a-z]+ [A-Z][a-z]+" src`
-5. **Report what moved**, by role and by page, and anything left on the old value with its reason, so the change can be checked rather than trusted.
+- **Grep for the old value** in the role's raw forms (`font-semibold`, `text-[14px]`, `font-weight: 600`) and decide each hit; raw sizes are where a partial update hides.
+- **Check the generated strings** for case while you're there (patterns law 1): field names, column headers, tool labels, dialog titles and toasts that arrive in Title Case from a schema or a config.
+  `rg -n "(label|title|header|name):\s*['\"][A-Z][a-z]+ [A-Z][a-z]+" src`

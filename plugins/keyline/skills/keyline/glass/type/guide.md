@@ -108,7 +108,7 @@ Archivo's true italic is a separate file whose slant fights its geometric letter
 ```tsx
 // From the inline markdown renderer
 if (bold) return <strong className="font-medium text-gray-1000">{text}</strong>;
-if (em)   return <em className="text-gray-800">{text}</em>;
+if (em)   return <em className="text-muted">{text}</em>;
 ```
 
 Why the mapping works, and the semantic tags it keeps: domain law 9 and `domains/type/prose-and-emphasis.md`.
@@ -184,9 +184,7 @@ Glass's two systems (domain law 8):
 
 The ranges overlap, so leading and measure carry the distinction. Reading leading on a UI row is the usual symptom here: it grows, and the dock loses its rhythm.
 
-**UI copy is sentence case, generated labels included.** Buttons, column heads, field names, dialog titles, toasts, and anything a template builds from a key: first word and proper nouns capitalised, acronyms and third-party names as written. Labels generated from code drift into Title Case unnoticed, and a second case is a second voice.
-
-**Icons beside text** follow domain law 13: 13px text takes a 13–14px icon with a 4–6px gap. It is the mass problem `glass/color/guide.md` solves for colour, by resting icons a tier below, solved here for size.
+**Labels are sentence case, generated ones included** (patterns law 1), and **icons beside text** follow domain law 13: 13px text, a 13–14px icon, a 4–6px gap.
 
 → How prose blocks are set — headings, quotes, lists, spacing: `glass/type/long-form-prose.md`
 

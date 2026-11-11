@@ -6,18 +6,13 @@ This guide speaks in roles such as `text.secondary`; the code says whatever `DES
 
 ## Before you start
 
-Read `DESIGN.md` at the project root: `## Profile` for the preset and any areas on another one, `## Layout` for the project's name for each role and the decisions already made. Reason in roles; write code in the project's names.
-
-- **No `DESIGN.md`:** run `/keyline init` for this domain only, do the task, then recommend the full setup.
-- **A role you need has no row:** reuse a value already doing that job; otherwise add one in the project's naming style and record it in `DESIGN.md`.
-- **The task would break a law or move a dial off its preset:** say so and ask; if the user confirms, record it with its reason under `## Decisions`.
-- **Preset `glass`:** the values are in `DESIGN.md`; `glass/layout/guide.md` has the exact recipes behind them.
+Reads `DESIGN.md` `## Layout`.
 
 ## Laws
 
 ### 1. Running text has one reading measure, and it doesn't move between templates
 
-**Every block of running prose sits at `measure.reading`, defined once and shared by every template that shows prose.** Past about 80 characters the return sweep lands on the wrong line; under about 45 the eye spends more effort returning than reading. So the measure is set in characters of `type.body` and resolved to a width, not picked as a round pixel number. Sharing it buys **positional continuity**: clicking from an index summary to its detail page reads as the summary expanding, not as arriving somewhere else, and a template with its own width breaks that on every route in or out.
+**Every block of running prose sits at `measure.reading`, defined once and shared by every template that shows prose.** Past about 80 characters the return sweep lands on the wrong line; under about 55 the eye spends more effort returning than reading. So the measure is set in characters of `type.body` and resolved to a width, not picked as a round pixel number. Sharing it buys **positional continuity**: clicking from an index summary to its detail page reads as the summary expanding, not as arriving somewhere else, and a template with its own width breaks that on every route in or out.
 
 Non-prose content — an image wall, a data table or a diagram at `measure.wide`, a full-bleed band on an expressive page — may leave the measure, as may chrome and rails. **No paragraph longer than two lines may.** An article's cover — image or diagram — may run at `measure.wide` between the head and the body; images inside the body stay at the measure unless marked wide. **A divider is as wide as what it divides**: in a single-column reading layout, the measure, not the viewport. If a `type.title` wraps to four lines at the narrowest measure — the smallest viewport minus two `gutter`s, 320px say — the fix is usually the ladder (the type guide), not a responsive type step.
 
@@ -49,7 +44,7 @@ This is the law of **proximity**: things near each other are read as one group b
 | Sections on a tinted page ground — a dashboard whose page is `surface.subtle` with its regions as surfaces on it | Each region is a surface (`elevation.flat` or `raised` on `surface.raised`, depth law 1); the ground between them is the divider, so no lines |
 | Items in a collection | Hairlines between rows, or a grid of like cards — not a section boundary |
 
-**An existing design's divider stays.** Improving a design whose sections are panels keeps the panels and makes them quieter — one edge, nothing boxed inside — rather than unboxing it into a page that runs together; this table and the preset's divider are for a new system, and `commands/refine.md` (the limits) settles any disagreement. A shadow on a panel that doesn't float is reported to `depth`, not removed here. **One device per kind of boundary across the product** (similarity): lines between some peer sections and space between others reads as unfinished. **The test is a squint**: blur a screenshot until the text goes, and each section should still read as its own block. Where two run together, move one device up — space, then a line, then a band or a panel — and where the page reads as stripes or a stack of boxes, move one down.
+**An existing design's divider stays.** Improving a design whose sections are panels keeps the panels and makes them quieter — one edge, nothing boxed inside — rather than unboxing it into a page that runs together; this table is for a new system (→ Refining an existing design, below). A shadow on a panel that doesn't float is reported to `depth`, not removed here. **One device per kind of boundary across the product** (similarity): lines between some peer sections and space between others reads as unfinished. **The test is a squint**: blur a screenshot until the text goes, and each section should still read as its own block. Where two run together, move one device up — space, then a line, then a band or a panel — and where the page reads as stripes or a stack of boxes, move one down.
 
 **Common region is real, which is why boxes are scarce.** A shared boundary makes things read as one group strongly enough to beat proximity, so boxing every region erases the grouping it was meant to show. Inside a section, the quietest device that holds a group wins: space (law 2), then a tint or a hairline, and a card only for one object the reader acts on (depth law 2). Figures are the commonest case: a set of stats is one row, each figure over its label, parted by vertical hairlines, not a tile per figure; the row wraps and stacks cleanly where tiles become a column of boxes. Where the figures count what the table below holds, they are also its filter. Boxed figures are a decision to record, and the boxes stay quiet: no hover lift, no icon tile, no more padding above than beside.
 
@@ -83,21 +78,19 @@ The absolute wrapper spans the section so the sticky child has a track, and keep
 
 ### 5. Nested radii: inner = outer − padding
 
-**Where one rounded object sits in another's corner, the inner radius is the outer radius minus the gap between their edges.** This is geometry, not taste: only then do the curves share a centre. Too large and the corner pinches; too small and the gap swells at the corners — visible even to people who couldn't say what's wrong. A 16px container with 4px of padding holds 12px buttons; a 12px button with an avatar inset 2px gives the avatar 10px. Snap to the ladder when the difference is 2px or less.
+**Where one rounded object sits in another's corner, the inner radius is the outer radius minus the gap between their edges.** This is geometry, not taste: only then do the curves share a centre. Too large and the corner pinches; too small and the gap swells at the corners — visible even to people who couldn't say what's wrong. A 16px container with 4px of padding holds 12px buttons.
 
-The law binds concentric corners only: an inner corner tucked inside the outer one's curve, inset by less than the outer radius. Inset further, or set away from the corners — an icon tile in a padded card, a `kbd` in a search field — the two curves have no centre to share, and the inner element takes a radius for its own size from the ladder. So outer − padding reaching zero means the corners are no longer concentric, not that the inner corner goes square. Improving an existing design, the law never sharpens a corner: raise the outer radius or trim the inset instead (`commands/refine.md`, the limits).
-
-**Radius scales with size, not importance** — and sub-proportionally, or a large panel reads as a lozenge. `radius.pill` is only for things with no top and bottom — tags, dots, toggles, markers — never anything holding a paragraph.
+The law binds concentric corners only, inset by less than the outer radius; anything inset further or set away from the corners takes the ladder's radius for its size, never a square corner by subtraction. Improving an existing design, it never sharpens a corner (→ Refining an existing design, below). Radius scales with size, not importance, and `radius.pill` is only for things with no top and bottom.
 
 ### 6. A line's weight says what it's doing
 
-**Lines are assigned by job — `hairline.chrome` for a divider inside one object, `hairline.object` for an object's edge, `rule.emphasis` for a deliberate mark such as a quote bar or a focus ring — and an internal divider is never more prominent than its object's edge**, or the object reads as two. Where chrome and object share a weight, the divider steps down in colour (`border.divider` against `border.default`). Three jobs, at most three weights. **A frame and the dividers inside it are one drawing**: same weight, same inset, meeting cleanly, or a table's edge and its row rules disagree in a way readers see as "the thickness is off" without naming it. Hairlines are drawn as borders, which a 1× screen rounds up to a pixel, never as half-pixel boxes, which it drops; focus rings and `prefers-contrast: more` never take a half pixel. On a translucent or unknown backdrop the line is translucent (`border.layered`; its colour is the colour guide's). A non-structural divider is `aria-hidden`, and an `<hr>` needs its UA border reset.
+**Lines are assigned by job — `hairline.chrome` for a divider inside one object, `hairline.object` for an object's edge, `rule.emphasis` for a deliberate mark such as a quote bar or a focus ring — and an internal divider is never more prominent than its object's edge**, or the object reads as two. Where chrome and object share a weight, the divider steps down in colour (`border.divider` against `border.default`). Three jobs, at most three weights. **A frame and the dividers inside it are one drawing**: same weight, same inset, meeting cleanly, or a table's edge and its row rules disagree in a way readers see as "the thickness is off" without naming it. Hairlines are drawn as borders, never as half-pixel boxes; focus rings and `prefers-contrast: more` never take a half pixel. On a translucent or unknown backdrop the line is translucent (`border.layered`; its colour is the colour guide's). A non-structural divider is `aria-hidden`, and an `<hr>` needs its UA border reset.
 
 ### 7. The z-index ladder is documented, sparse, and ordered by permanence
 
 **Every z-index comes from one named ladder with gaps between the rungs; a literal `z-index: 9999` is a bug waiting for its pair.** The longer something stays on screen, the higher it sits; the skip link beats everything. Gaps of ten let a later layer, like the Glass preset's once-a-session greeting overlay, take a free rung without renumbering. Two pairs are constraints, not choices:
 
-- **A dismiss catcher sits above the page and directly below what it dismisses**: above its menu it eats the menu's clicks; below the page it catches nothing. `z.dismiss` serves the navigation; a content popover renders its own catcher in its portal, catcher first.
+- **A dismiss catcher sits above the page and directly below what it dismisses.** `z.dismiss` serves the navigation; a content popover renders its own catcher in its portal, catcher first.
 - **`z.skip-link` sits above `z.overlay`**, so a keyboard user tabbing during a splash or a modal can always get past it.
 
 | Role | Default | Holds |
@@ -111,9 +104,9 @@ The law binds concentric corners only: an inner corner tucked inside the outer o
 | `z.raised` | 10 | A hovered or focused item |
 | `z.below` | −10 | A highlight behind content |
 
-A negative layer needs an `isolation: isolate` parent, and **a `transform`, `filter`, `backdrop-filter`, `perspective`, `contain` or `will-change` on an ancestor traps `position: fixed` descendants inside it** — check every ancestor before reaching for a higher number.
+A negative layer needs an `isolation: isolate` parent, and a transformed or filtered ancestor traps `position: fixed` descendants — check every ancestor before reaching for a higher number.
 
-→ Radius ladders and hairline weights per preset, nesting worked through, stacking-context techniques: `domains/layout/radius-lines-and-layers.md`
+→ Nesting worked through, corner shape, hairlines as borders, the catcher pair in code, containing blocks: `domains/layout/radius-lines-and-layers.md`
 
 ### 8. Fork the component when the interaction model changes, not when the arrangement does
 
@@ -123,7 +116,7 @@ A negative layer needs an `isolation: isolate` parent, and **a `transform`, `fil
 
 ### 9. A view choice is about the thing, so it doesn't persist by default
 
-**When the reader can switch between presentations of one collection, the choice resets on arrival unless you can name why it shouldn't, and the switch carries the reader's position across.** Persist preferences about the *reader* — theme, sound, motion, density — not about a *thing*, or readers land in a mode picked weeks ago for another collection and don't remember choosing it; the Glass galleries open on the wall every time, because the whole collection is what you want on arrival. A product's saved view — a board grouped by assignee, a filtered table — is the legitimate exception: persist it as a named, visible thing and record the decision, never as a toggle that silently turns sticky. So is board or list on a working page the reader returns to daily: persist it per page, the switch always visible in the page header, and let the default win where the default is the point. Which second view a collection gets is patterns law 10. On the switch, open the incoming view on the item nearest the viewport centre; leaving a grid at item 60 and arriving at item 1 is worse than not switching.
+**When the reader can switch between presentations of one collection, the choice resets on arrival unless you can name why it shouldn't, and the switch carries the reader's position across.** Persist preferences about the *reader* — theme, sound, motion, density — not about a *thing*, or readers land in a mode picked weeks ago for another collection and don't remember choosing it. A named saved view and board-or-list on a page worked daily are the exceptions, each persisted visibly and recorded (→ `domains/layout/forks-gating-and-disclosures.md`, whether it persists). Which second view a collection gets is patterns law 10. On the switch, open the incoming view on the item nearest the viewport centre; leaving a grid at item 60 and arriving at item 1 is worse than not switching.
 
 ### 10. Owner-curated content disappears when empty
 
@@ -150,7 +143,7 @@ A negative layer needs an `isolation: isolate` parent, and **a `transform`, `fil
 
 ### 13. A target is as big as the pointer needs, and placed where the pointer already is
 
-**Every control has a hit area of at least 24 × 24px under a fine pointer and 44 × 44px on touch, and the action used most sits closest to where the reader's attention already is.** Fitts's law: the time to hit a target grows with its distance and shrinks with its size, so a 16px icon button in a corner costs a reach and a correction every time it's used. **The hit area is not the drawing**: an icon stays 16px while padding or a `::before` inset grows the target round it, so size never has to be bought with visual weight. Adjacent targets on touch keep at least 8px between their hit areas, or the larger finger presses both.
+**Every control has a hit area of at least 24 × 24px under a fine pointer and 44 × 44px on touch, and the action used most sits closest to where the reader's attention already is.** That is Fitts's law. **The hit area is not the drawing**: an icon stays 16px while padding or a `::before` inset grows the target round it, so size never has to be bought with visual weight. Adjacent targets on touch keep at least 8px between their hit areas, or the larger finger presses both.
 
 Distance is the other half. A menu opens where it was clicked; a dialog's primary button sits where the eye finishes the dialog; a row's actions sit on the row, not in a toolbar across the screen. **The edges of the screen are infinitely deep for a mouse** — a pointer can't overshoot them — which is why the dock and the menu bar live there, and why a destructive action never takes the corner where a hurried flick lands (patterns law 3). Below a phone width, the frequent actions move within thumb reach, at the bottom, not into a top corner.
 
@@ -159,9 +152,9 @@ Distance is the other half. A menu opens where it was clicked; a dialog's primar
 | Dial | editorial | product | expressive |
 |---|---|---|---|
 | `measure.reading`, in characters of `type.body` | 65–75; default 70 | 60–70; default 65 — prose inside the product only | 55–70; default 62 |
-| Page structure | One column every template shares | App shell: one navigation surface — a sidebar holding every destination, no top bar repeating it — then content and an optional inspector; every page under its own header bar (breadcrumb, title, actions), which is not navigation | Sections may go full-bleed; text at the measure |
+| Page structure | One column every template shares | App shell: a navigation sidebar, content and an optional inspector; every page under its own header bar | Sections may go full-bleed; text at the measure |
 | `measure.wide` | ≈ 1.5 × `measure.reading` | = `measure.app` | Card grids and multi-column text cap at ≈ 1200–1280px; only full-bleed bands and media run edge to edge |
-| `measure.app` | — | Content fills its panel, left-aligned; forms and settings cap at `measure.form`, ≈ 640–760px; nav 220–264px; inspector 320–400px | — |
+| `measure.app` | — | Content fills its panel, left-aligned; `measure.form` 640–760px; nav 220–264px; inspector 320–400px | — |
 | `gutter` (smallest width) | 24–32px | 16px, growing to 24–32px from tablet up | 20–24px |
 | Column grid: `grid.columns` / `space.column` | None — the measure is the grid | 4 / 8 / 12 on the content panel, measured on the container; 16px, 24px from tablet up | 4 / 8 / 12 on the window for card grids and section layouts; 16px, 24px from tablet up; prose still at the measure |
 | `target.min`, fine pointer / touch | 24 / 44px | 24 / 44px | 24 / 48px |
@@ -179,17 +172,17 @@ Distance is the other half. A menu opens where it was clicked; a dialog's primar
 
 The `glass` preset takes its values from `glass/layout/`.
 
-**The measure.** Editorial's committed reader sits high, since long lines are efficient in sustained reading when leading pays for the return sweep. Product text is scanned in bursts and sits lower; expressive body runs larger, so fewer characters fit. Below 55 or above 80 characters costs reading on any preset.
+**The measure.** Editorial's committed reader sits high, since long lines are efficient in sustained reading when leading pays for the return sweep. Product text is scanned in bursts and sits lower; expressive body runs larger, so fewer characters fit. Law 1's bounds hold on every preset.
 
 **Density.** Product halves editorial's spacing, since a working reader compares side by side and scrolling is friction, but keeps the asymmetry: a dense form with equal gaps is where grouping goes first. Expressive sections are scenes with large gaps, and the heading ratio still holds inside them.
 
-**The shell.** In product, navigation is one surface: in an app, a sidebar holding every destination, with the reader's own controls — account, role, theme — in its footer, and no top bar repeating it. A top bar that repeats it splits navigation across two edges and puts a second band of chrome over every screen. Every page still has a header bar — breadcrumb, title, actions — and that is not a navigation bar. **Improving one screen of an existing app keeps its navigation surface**: moving navigation is a restructure, done only when asked and otherwise listed under `## Open issues`. Primary destinations sit at the top; the long tail goes in collapsible folders, open state remembered and the current page's folder forced open; administration lives in the account menu, not among destinations. Rows are dense, about 30px, with the workspace name at the nav's own size, so the sidebar reads as one list. The sidebar collapses to an icon rail — icons hold their position while the width animates, labels become tooltips, counts become dots — toggled by a button and a shortcut and remembered, since it is a preference about the reader (law 9); it is a feature, so when improving an existing screen, don't add it — list it under `## Open issues`. Below `bp.shell` it opens as a sheet, always expanded. **Pages fill the content panel**, left-aligned at one `gutter` (16px at the smallest width, 24–32px from tablet up), each under its own header bar — breadcrumb at the start, the page's actions at the end as quiet buttons — which titles the page rather than repeating navigation. Forms and settings cap at `measure.form`, about 640–760px, so a switch stays within reach of its label. A page sets neither its own width nor its outer padding; the shell does, once.
+**The shell.** In product, navigation is one surface — a sidebar holding every destination, no top bar repeating it, which would split navigation across two edges — and every page sits under its own header bar, which titles the page rather than navigating. Pages fill the content panel, and the shell, not the page, sets width and outer padding (→ `domains/layout/measure-and-rhythm.md`).
 
 **Tables and group labels.** Editorial tables share a text column's edge, so a frame only adds a box. A product panel has no column to align to: tables run full width beside toolbars and figures, so a frame says where the data stops, and a reader scrolling hundreds of rows in collapsible groups needs the group's name and its controls in view. What both keep is law 3: one table style and one group-label style, used identically everywhere.
 
-**Radius.** A sharp system (0 throughout) is a legitimate expressive character that satisfies the nesting law trivially; what costs is mixing a round button into a square card. Round systems read modern through a soft corner: an 8px control and 12px card, drawn as a light superellipse (a squircle) where the browser supports `corner-shape`, and a plain round corner of the same radius where it doesn't. When improving an existing design, its radii are the floor: keep them, and change one only to satisfy the nesting law.
+**Radius.** A sharp system (0 throughout) is a legitimate expressive character that satisfies the nesting law trivially; what costs is mixing a round button into a square card. Round systems read modern through a soft corner, drawn as a light superellipse where the browser supports `corner-shape` (`radius-lines-and-layers.md`).
 
-**Hairlines.** A `0.5px` border is one device pixel on 2× screens and rounds up to 1px on 1×, so it never vanishes. Product draws every structural line at 0.5px, because a dense screen is mostly rows and a 1px rule on each reads heavy; editorial keeps a 1px object edge for the few objects it has. That is a dial for a new system: an existing design whose border sits close to its surface keeps its 1px (`commands/refine.md`, the limits).
+**Hairlines.** Product draws every structural line at 0.5px, because a dense screen is mostly rows and a 1px rule on each reads heavy; editorial keeps a 1px object edge for the few objects it has.
 
 **Breakpoints.** A single-column site needs two: where the column becomes padding-limited, and where a rail fits. A header with many links needs a third, where they stop fitting on one line, or between the two it has nowhere to go.
 
@@ -206,11 +199,11 @@ The grid is a set of edges to align to, not a set of boxes. A block spans whole 
 ## Building it for a project
 
 1. **Read the preset and the areas.** A `product` app with `app/(docs)/** → editorial` gets a shell for the app and a single column for the docs, sharing one `measure.reading`.
-2. **Set the measure from the type**: a character count from the dials for `family.text` at `type.body`, resolved to a width by measuring the font (a 16px sans averages about 8px per character, so 70 characters ≈ 560px) or in `ch`, which runs wider than an average letter. Check it at the narrowest viewport minus two `gutter`s with the project's longest `type.title`.
+2. **Set the measure from the type**: a character count from the dials for `family.text` at `type.body`, resolved to a width and checked at the narrowest viewport (`domains/layout/measure-and-rhythm.md`).
 3. **Derive the frame.** With a rail, `measure.frame` = `measure.reading` + 2 × (`measure.rail` + gap) + 2 × `gutter`, and `bp.rail` is that width; for a shell, set the region widths and where the inspector, then the nav, collapses.
 4. **Build spacing from ratios**: the base (4px) and `space.section`, the heading pair at the preset's ratio, then `space.tight` and `space.group` so every group's inner gap is at most half its outer one.
 5. **Stack the sections and pick each boundary's divider** from law 3's table, one device per kind of boundary — or the one the existing design already uses: each a heading and its content, figures in hairline-parted rows; list the things that are single objects, which alone get a card (the depth guide). Pick the one table style and the one group-label style for the preset.
-6. **Build the radius ladder inward** from `radius.container` through every concentric nesting (container → control → avatar), subtracting padding and snapping; anything inset past the outer radius takes the rung for its size. **Set the corner shape** from the dial in the same step: under editorial and product, `corner-shape: superellipse(1.5)` on everything, with pills and circles kept `round` (the snippet in `radius-lines-and-layers.md`). It costs one rule and is what makes rounded corners read as squircles rather than boxes.
+6. **Build the radius ladder inward** from `radius.container` through every concentric nesting (law 5), and **set the corner shape** from the dial in the same step (`radius-lines-and-layers.md`).
 7. **Assign the three line jobs** per the preset, drawn as borders; no divider outranks its object's edge, and a frame matches the dividers inside it.
 8. **Write the z ladder** from law 7, dropping unused rungs and keeping the gaps.
 9. **List the forks and the gates**: which components ship twice and why; which collections are owner-curated (gated) and which are user data (empty states).
@@ -240,45 +233,27 @@ Start from the setup scan's frequencies for measures, spacing, radii, z-index an
 | 13 | Icon, close and row-action buttons under 24px (44px on touch) with no padding or pseudo-element growing the hit area; touch targets closer than 8px; frequent actions far from what they act on; destructive actions in a corner | Element, drawn size, hit size |
 | Dials | Blocks side by side that share no edges; a 12-column grid behind a single reading column; columns stretching past `measure.wide` | Page, and the edges that don't line up |
 
-In a browser, resize from 320px to 2560px watching the rail gap, tab through collapsed disclosures, and run find-in-page on a closed one. Report one line per finding with its evidence — a ratio, a count, a file — under `## Open issues`, and fix nothing unless asked.
+In a browser, resize from 320px to 2560px watching the rail gap, tab through collapsed disclosures, and run find-in-page on a closed one.
+
+## Refining an existing design
+
+A preset's dials describe a new system. Where one disagrees with the design being improved, this decides, and each call is recorded under `## Decisions` so the next run makes the same one.
+
+- **Dividers.** The design's section device stays (law 3). One thing changes either way: a row of stat tiles folds into one strip of figures (law 3), because that is a law about figures, not a divider dial — unless keeping the tiles is recorded under `## Decisions`.
+- **Corners.** The design's radii are the floor, and the nesting law never sharpens one. Where inner = outer − inset would come out sharper than the inner corner is now, raise the outer radius or trim the inset until they share a centre; if neither fits, the corners aren't concentric and the inner keeps its radius.
+- **Line weight.** The design's line weights stay, like its corners. Product's 0.5px hairline is for a new system, or for an existing line that reads heavy and whose colour is strong enough to survive halving; a border already near the surface colour keeps its 1px.
 
 ## Writing back to DESIGN.md
 
 - **Layout table rows** for every role set or found — measures, gutter, spacing roles, the heading pair and its ratio, the radius ladder and its nestings, the three line jobs, the z ladder, breakpoints named for what changes — plus one line per forked component naming the interaction model each version serves.
 - **The gate list**: owner-curated collections (gated) and user data (empty states).
-- **Decisions**, dated, with the reason: any dial moved off the preset (a 1px chrome hairline in an editorial project), persisted view preference, layer added to the ladder, or template allowed a different measure.
-- **Open issues** for every law the code breaks, with evidence, removed when the fix lands.
-- **Proposed roles**, marked `proposed`, for a job with no row — a rail width, a frame width, a toast layer.
+- **Decisions** worth recording here: a persisted view preference, a layer added to the ladder, a template allowed a different measure.
+- **Proposed roles** for a job with no row — a rail width, a frame width, a toast layer.
 
 ## Checklist
 
-- [ ] Prose sits at one `measure.reading`, defined once and shared by every template; no paragraph over two lines escapes it.
-- [ ] Only non-text content, chrome and rails leave the measure; dividers are as wide as what they divide.
 - [ ] The narrowest measure fits the longest `type.title` without a responsive type step — except an editorial article title's one phone step (type dials).
-- [ ] Headings sit closer to what follows than what precedes: `space.heading-above : space.heading-below` between 2:1 and 5:1.
-- [ ] Clutter is fixed with gaps, padding and tier order before colour or type; a card's tiers part by space.
-- [ ] Symmetric spacing only between peers.
-- [ ] Every spacing value is a role on the base unit; strays are listed.
-- [ ] Sections stack in reading order, each opened by its heading, and each boundary takes law 3's divider for what it holds — one device per kind across the product, an existing design's panels kept; every section survives the squint test; card grids only for collections of like objects; no bento mosaic.
-- [ ] Stats sit in one row parted by hairlines (product: a strip that filters its table; any boxes stay quiet); tabs are text on a shared hairline.
-- [ ] One table style and one group-label style, the preset's: unframed with labels over a rule, or one shared frame with one sticky group bar.
-- [ ] One chip shape per size across the product.
-- [ ] Product: one navigation surface — a sidebar holding every destination, no top bar repeating it; every page under its own header bar, which is not navigation; an existing app's navigation surface kept unless a restructure is asked for, and shell features it lacks listed, not added; pages fill the panel, forms and settings cap at `measure.form`, and no page sets its own width or padding.
-- [ ] Rails anchor to the content's frame; sticky panels are capped with `dvh` and scroll within.
+- [ ] Stats sit in one row parted by hairlines; tabs are text on a shared hairline; one table style, one group-label style and one chip shape per size.
 - [ ] Below `bp.rail` the rail becomes an in-flow disclosure; fixed chrome has clearance on every template.
-- [ ] Corner shape matches the dial: editorial and product carry the `superellipse(1.5)` rule, with pills and circles `round`.
-- [ ] Inner radius = outer − padding at every concentric corner (inset under the outer radius); elements away from the corners take the ladder's radius for their size, never square by subtraction; `radius.pill` only on things without a top and bottom.
-- [ ] `hairline.chrome`, `hairline.object`, `rule.emphasis` have one job each; no divider outranks its object's edge; a frame matches its dividers; hairlines are borders; `border.layered` on translucent backdrops.
-- [ ] Every z-index is on the ladder; `z.dismiss` sits under what it dismisses; `z.skip-link` tops `z.overlay`.
 - [ ] No transformed or filtered ancestor traps a fixed descendant; negative layers sit in an isolated parent.
-- [ ] Components fork where the interaction model differs, share data and rows, and sync state both hold.
-- [ ] Breakpoints are named for what changes, and measured on the container inside a shell; resizing keeps the column count unless asked; every hover style, decoration included, is gated on `(hover: hover) and (pointer: fine)`.
-- [ ] No affordance hides where it can't come back; every informative hover has a touch path.
-- [ ] View choices reset on arrival unless a recorded decision says otherwise; switching keeps the reader's place.
-- [ ] Empty owner-curated collections lose route, nav entry, section and divider (user-data empty states: patterns law 9).
 - [ ] Grids look deliberate at 1, 2 and n items.
-- [ ] Collapsed disclosures keep their content in the HTML, with `inert` and `aria-hidden`, or use `<details>`; closed groups show a summary and open to a matching search.
-- [ ] Skip link by transform with `id="main"`; every `<nav>` labelled; heading levels follow structure; anchors carry `scroll-margin-top`; print hides chrome.
-- [ ] Every control's hit area is at least 24px (44px on touch), grown by padding or a pseudo-element, not a bigger icon; touch targets sit 8px apart; frequent actions sit on what they act on.
-- [ ] Product and expressive pages that place unlike blocks side by side share a column grid; its breakpoints sit where the content stops fitting; columns stop at `measure.wide`; editorial has none.
-- [ ] Dials (`measure.reading`, spacing density, heading ratio, radius ladder, hairline weights, breakpoint count) match the preset, or the difference is under `## Decisions`.

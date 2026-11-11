@@ -169,7 +169,10 @@ It's still a set piece, not a texture — once a session. See §14 of `glass/mot
 ## Mute, and persistence
 
 ```ts
-let muted = localStorage.getItem("ui-sound") === "off";
+// Every storage access is guarded: it throws in some private modes.
+let muted = (() => {
+  try { return localStorage.getItem("ui-sound") === "off"; } catch { return false; }
+})();
 
 export function setMuted(value: boolean): void {
   muted = value;

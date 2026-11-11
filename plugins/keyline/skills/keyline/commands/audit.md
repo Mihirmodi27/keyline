@@ -2,7 +2,9 @@
 
 The whole product, inspected as a reader meets it and as its code is written: every page at desktop and phone, light and dark, every law checked with evidence, AI slop and accessibility included, scored per domain and written up as one report a person can read, filter and share. `/keyline critique` is the quick read of one screen; this is the inspection.
 
-**Read:** `DESIGN.md`; `system/reports.md` (the target, the two ways to drive a browser, the report format); the `## Auditing existing code` and `## Checklist` sections of every `domains/<domain>/guide.md` (all six unless the user narrows it), and under preset `glass` each `glass/<domain>/guide.md` checklist.
+**Report:** a table of the six domains with score and finding count, then findings grouped by domain, worst first, one line each with evidence — `file:line`, a ratio, a count — and the law, with its UX-law name where one explains it (`commands/ux-laws.md`). Close with the order to fix in: usually the lowest score first, unless a law in another domain blocks it.
+
+**Write back:** every finding under `## Open issues` in `DESIGN.md`, replacing entries now fixed.
 
 **Changes no code.** It writes the report, and the findings into `DESIGN.md`.
 
@@ -36,7 +38,7 @@ The whole product, inspected as a reader meets it and as its code is written: ev
    - whether the copy keeps one voice (patterns law 18);
    - whether the page looks designed for its reader or assembled from a template.
 
-   Add each as a finding in `findings.json` (format in `system/reports.md`): `kind: "audit"`, the domain, a rule id of your own (`layout/hierarchy`, `states/empty-missing`, `slop/template-feel`), the law, the page, and a `shot` and `box` when you can point at it. Where a UX law explains why the reader feels it, name it in `detail` (the table in `commands/critique.md`).
+   Add each as a finding in `findings.json` (format in `system/reports.md`): `kind: "audit"`, the domain, a rule id of your own (`layout/hierarchy`, `states/empty-missing`, `slop/template-feel`), the law, the page, and a `shot` and `box` when you can point at it. Where a UX law explains why the reader feels it, name it in `detail` (`commands/ux-laws.md`).
 
 4. **Judge the machine's findings too.** A measurement is a lead, not a verdict. A finding that is right by the numbers but wrong for this product gets `status: "dismissed"` with the reason in `detail`. Examples: an uppercase eyebrow under the `expressive` preset, which allows them; small text inside an illustration; a tap target the user has accepted. Never dismiss a contrast failure on text people read.
 
@@ -58,7 +60,7 @@ The whole product, inspected as a reader meets it and as its code is written: ev
    node <keyline>/scripts/browse.mjs report keyline-report
    ```
 
-   Look at `index.html` yourself before giving it to the user. Offer to publish it when you can publish pages (an artifact or a doc); otherwise give the path. Add `keyline-report/` to `.gitignore` unless the user wants it kept.
+   Look at `index.html` yourself before giving it to the user; publishing it and `.gitignore` follow `system/reports.md`.
 
 8. **Write back:** every open finding that names a law goes under `## Open issues` in `DESIGN.md`, one line each with its evidence, replacing entries now fixed.
 

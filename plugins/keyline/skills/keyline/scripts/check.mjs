@@ -506,6 +506,8 @@ export function run(argv) {
     result.findings = split.findings;
     baseline = { file: baselineName, created: saved.created, counts: split.counts, fixed: split.fixed };
   }
+  // The verdict counts every finding, so --quiet trims the output, never the exit code.
+  const verdict = summarise(baseline ? result.findings.filter((f) => f.change === "new") : result.findings);
   if (opts.quiet) {
     result.findings = result.findings.filter((f) => f.severity === "error");
     if (baseline) {
@@ -542,7 +544,7 @@ export function run(argv) {
     if (changed && result.files === 0) console.log(`No changed files to check since ${changed.base}.`);
     else console.log(human(result, { all: opts.all, color: process.stdout.isTTY && !process.env.NO_COLOR, baseline, changed }));
   }
-  return failing.error > 0 || (opts.strict && failing.warning > 0) ? 1 : 0;
+  return verdict.error > 0 || (opts.strict && verdict.warning > 0) ? 1 : 0;
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {

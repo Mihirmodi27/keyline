@@ -19,19 +19,3 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-
----
-
-WHAT THIS LICENCE DOES AND DOESN'T COVER
-
-The licence above covers the template: the components, hooks, styles, build
-configuration and scripts.
-
-It does not cover content. Text, photographs, designs, writing, résumés, logos
-and brand marks belong to whoever made them, are not licensed here, and are not
-yours to republish by virtue of having a copy of this repository. If you cloned
-this from someone's personal site, replace their content with your own.
-
-Third-party marks in `src/lib/stackIcons.tsx` are generated from simple-icons
-(CC0-1.0). The brands they represent remain the property of their owners and
-their trademark guidelines still apply.

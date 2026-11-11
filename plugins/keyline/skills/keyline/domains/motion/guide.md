@@ -6,12 +6,7 @@ The constraint also makes the few places motion *is* spent land hard, because no
 
 ## Before you start
 
-Read `DESIGN.md` at the project root: `## Profile` for the preset and any areas on another one, `## Motion` for the project's name for each role and the decisions already made. Reason in roles; write code in the project's names.
-
-- **No `DESIGN.md`:** run `/keyline init` for this domain only, do the task, then recommend the full setup.
-- **A role you need has no row:** reuse a value already doing that job; otherwise add one in the project's naming style and record it in `DESIGN.md`.
-- **The task would break a law or move a dial off its preset:** say so and ask; if the user confirms, record it with its reason under `## Decisions`.
-- **Preset `glass`:** the values are in `DESIGN.md`; `glass/motion/guide.md` has the exact recipes behind them.
+Reads `DESIGN.md` `## Motion`.
 
 ## Laws
 
@@ -21,7 +16,7 @@ Read `DESIGN.md` at the project root: `## Profile` for the preset and any areas 
 
 **Paused means still.** A loop reporting a live state — level bars on a recorder, a stroke travelling round a card while something works — stops or settles low when that state pauses; still moving, it claims the thing is still listening. Only a progress indicator loops through a wait, because waiting is its state. On hover or focus a live indicator morphs in place into the action that ends it — bars into a stop square — so the control's next move appears where the eye already is.
 
-Hover travel answers nothing either: a card rising under the pointer claims it moved, or can be picked up, and a grid of them rising in turn reads as a marketing page. Hover is a wash; how far, if at all, a preset lets a hovered thing travel is a dial.
+Hover travel answers nothing either: a card rising under the pointer claims it moved, or can be picked up. Hover is a wash; how far, if at all, a preset lets a hovered thing travel is a dial (`domains/motion/ladder-and-curves.md`).
 
 → Live indicators, pausing and the morph to their action: `domains/motion/patterns.md`
 
@@ -38,7 +33,7 @@ Hover travel answers nothing either: a card rising under the pointer claims it m
 | `duration.overlay` | A large region entering or collapsing — a sheet, a panel, a reveal |
 | `duration.theme` | Everything on the page at once |
 
-An element tied to a larger change takes its tier: a disclosure chevron runs at `duration.popover` and lands with the panel opening below it. Hover is no exception: a wash across a large card at `duration.micro`'s 80ms looks instant, not smooth, where 200ms in and 250ms out reads as a fade; rows swept in bulk keep the short tier (Dials). `duration.route` is the one tier size doesn't set; law 3 caps it. The numbers are dials; the ordering is not.
+An element tied to a larger change takes its tier: a disclosure chevron runs at `duration.popover` and lands with the panel opening below it. Hover is no exception: a wash across a large card takes a longer tier than a row swept in bulk (Dials). `duration.route` is the one tier size doesn't set; law 3 caps it. The numbers are dials; the ordering is not.
 
 **`duration.theme` runs only when the page itself switches theme**, under a class held on the root for the length of the switch. Everyday colour transitions leave out the page background and are suspended during a theme change: otherwise an OS switch by media query, which has no class to hold, cross-fades every control at its own duration while the page around it snaps.
 
@@ -78,7 +73,7 @@ Springs are wrong for discrete flips with no travel, anything that must land in 
 
 ### 7. Exits get out of the way
 
-**Closing is faster than opening, flat, and eases in — no spring, no overshoot, and it travels less far.** Opening answers the user's intent and can afford character; closing comes after they've moved on, so a bounce reads as reluctance and stands in their way, and a disappearing element needn't travel the full distance. In the Glass preset a menu opens on a spring of about 400ms and closes on a 130ms `ease-in` tween. The law is for things leaving; a hover wash fading behind a pointer that has already moved on stands in nobody's way, so its leave may run a little longer than its arrival, and a sweep across a board fades rather than strobes.
+**Closing is faster than opening, flat, and eases in — no spring, no overshoot, and it travels less far.** Opening answers the user's intent and can afford character; closing comes after they've moved on, so a bounce reads as reluctance and stands in their way, and a disappearing element needn't travel the full distance. In the Glass preset a menu opens on a spring of about 400ms and closes on a 130ms `ease-in` tween. The law is for things leaving; a hover wash fading behind a pointer that has already moved on stands in nobody's way, so its leave may run longer than its arrival.
 
 ### 8. Where identity persists, the element travels
 
@@ -92,21 +87,11 @@ A view switch keeps the reader's place (layout law 9), so **measure the reading 
 
 **Where a group shows both a current item and the one under the pointer — a nav, a segmented control — one highlight travels with the pointer and comes to rest on the current item, rather than a second treatment appearing beside the first.** What current looks like is colour law 7's, never re-picked here, and weight never changes on hover (type law 5). Previewing a choice and reporting one are the same gesture a beat apart, so they share one moving shape (law 8): two signals each doing half the job, never one doing both. Outside such a group, hover is a wash (the dials). Nothing is filled because it looks better.
 
-A filled icon is the same outline with its interior painted, cross-faded in place at `duration.popover` on `ease.colour`, so the silhouette never moves. Marks that can't take it — a brand's official solid mark, a chevron with no interior, a lone toggle with nothing to be picked out from — signal another way. **Fill that distinguishes nothing is just weight.** Nor is a step from `text.secondary` to `text.primary` a signal; the colour guide covers why.
+A filled icon is the same outline with its interior painted, cross-faded in place at `duration.popover` on `ease.colour`, so the silhouette never moves. Marks that can't take it — a brand's official solid mark, a chevron with no interior, a lone toggle with nothing to be picked out from — signal another way. **Fill that distinguishes nothing is just weight.** Nor is a step from `text.secondary` to `text.primary` a signal (colour law 6).
 
 ### 10. Reduced motion is a branch with a substitute
 
 **Every animated component reads `prefers-reduced-motion` and takes its own reduced path that still communicates the change; a global off switch is a regression.** The preference exists because large-area and accelerating motion causes nausea and dizziness, not to remove visible state: `* { animation: none !important }` strips the signals with the decoration, and a menu appears with no sign it opened.
-
-| Original | Reduced path |
-|---|---|
-| Spring slide, re-targeting highlight | A flat tween at `duration.state`; the move stays legible |
-| Scale or squash entrance | A plain fade |
-| Blur cross-fade | A cross-fade; the blur is the trigger, not the fade |
-| Reveal-on-scroll, route fade, ambient loop | Off, with content in its final visible state |
-| Theme cross-fade, programmatic smooth scroll | Instant |
-| Press scale at `duration.instant` | Kept: too small and short to matter |
-| Set piece | Skipped entirely, not softened |
 
 Imperative APIs — `scrollIntoView`, `scrollTo`, `Element.animate`, a GSAP timeline, a canvas loop — don't read the preference; pass it in. Motion's `MotionConfig reducedMotion="user"` and React Spring's `skipAnimation` are a floor, not the plan.
 
@@ -114,7 +99,7 @@ Imperative APIs — `scrollIntoView`, `scrollTo`, `Element.animate`, a GSAP time
 
 ### 11. Motion never owns whether content is visible
 
-**Any style that hides content until an animation runs must resolve to visible whenever that animation can't run** — no JavaScript, no observer, reduced motion, print, or an element too tall to trip its trigger. The failure is not a plainer page but a correct document the reader can't see. Two such bugs on the Glass preset's reference site left content at opacity 0: an observer threshold of 0.1 that no section over ten viewports tall could reach, and an externally added `in` class the framework rewrote out of a state-dependent `className`.
+**Any style that hides content until an animation runs must resolve to visible whenever that animation can't run** — no JavaScript, no observer, reduced motion, print, or an element too tall to trip its trigger. The failure is not a plainer page but a correct document the reader can't see. The usual causes: an observer threshold a very tall section can't reach, and a class added outside the framework, which a re-render rewrites away.
 
 So reveals are one-shot, with a zero threshold and a root margin, re-observed on client navigation, marked by a data attribute the framework doesn't own, and reset by a `<noscript>` style and a print rule. A collapsible animates its height but stays mounted (layout law 11).
 
@@ -124,7 +109,7 @@ So reveals are one-shot, with a zero threshold and a root margin, re-observed on
 
 ### 13. Animate what the compositor can; escalate one element, never a view
 
-**Animate `transform` and `opacity`, list every transitioned property by name, justify any layout property you animate, and when the DOM can't carry a transition, move one decorative element to the GPU — never the view.** `transition: all` catches properties you never meant, including layout ones a parent adds later. Animating `width` is defensible only where nothing reflows, as on one absolutely positioned element outside the flow; otherwise use a transform, or the `0fr`↔`1fr` grid track to "animate to auto". A transform on an ancestor weakens `backdrop-filter` beneath it, so the moving wrapper and the translucent surface are separate elements (the depth guide has the material side).
+**Animate `transform` and `opacity`, list every transitioned property by name, justify any layout property you animate, and when the DOM can't carry a transition, move one decorative element to the GPU — never the view.** `transition: all` catches properties you never meant, including layout ones a parent adds later. Animating `width` is defensible only where nothing reflows, as on one absolutely positioned element outside the flow; otherwise use a transform, or the `0fr`↔`1fr` grid track to "animate to auto". The moving wrapper and a translucent surface are separate elements (depth law 9).
 
 GPU escalation is for one travelling element with no semantics of its own, never a view of tiles, whose semantics a canvas can't carry and whose textures cost hundreds of megabytes; its setup returns `null` rather than throwing, the path reduced motion and no-WebGL already take.
 
@@ -198,37 +183,16 @@ Collect evidence, then report:
 
 Then tab through with reduced motion on, and with JavaScript off, for anything that never appears or appears with no sign it opened. Check hover states on *leave* as well as enter; the leave state is where transition-property mistakes live.
 
-Report each breach as one line under `## Open issues`, with the law, the evidence and the reach: *"Law 11 — `.fade-up` has no `<noscript>` reset; content blank with JS off. 23 components."*
-
 ## Writing back to DESIGN.md
 
 Under `## Motion`: ladder rows (role, name here, value, used for); curves; springs by character; the reduced-motion policy in a sentence; each off-ladder entry as a row in the **Named exemptions** table (exemption, values, why — its law 4 class and where it plays), which the detector reads; the sound policy, if any.
 
-Under `## Decisions`, dated, with a reason: any dial moved off the preset (*"`duration.state` 150ms, not 100ms: the ledger's hover rows felt abrupt in testing"*), a set piece added, sound turned on, a law knowingly broken.
-
-Under `## Open issues`: each audit breach, one line with its evidence, removed when fixed; don't fix beyond the task unasked.
+Under `## Decisions`, besides moved dials: a set piece added, sound turned on.
 
 ## Checklist
 
-- [ ] Every animation answers "what changed?"; only an ongoing state loops, and it holds still when that state pauses.
 - [ ] Live indicators morph in place to their action on hover and focus.
-- [ ] `duration.*` tiers strictly ascend; the area changed sets each animation's tier, hover included.
-- [ ] Hover on cards is a wash at the dial's in · out, with no travel unless the preset allows it.
-- [ ] Press lands on `pointerdown` at `duration.instant`; anything wider than about 200px presses with `scale(0.98)` or a 1px translate; nothing repeated waits; `duration.route` ≤ `duration.overlay`.
-- [ ] `duration.theme` runs only under the page's own switch class; everyday colour transitions leave out the page background and are suspended while the theme changes.
-- [ ] Each off-ladder duration is classed subject, set piece or ambient in `DESIGN.md`.
-- [ ] One `ease.standard`; colour and opacity on `ease.colour`; no overshoot on a filter or floored property.
-- [ ] Springs are `spring.<character>`, only where things re-target or are grabbed, opacity split out.
-- [ ] Exits are shorter than entrances, flat, on `ease.exit`, no spring.
-- [ ] Shared elements re-target, never remount, and skip their mount animation; layout switches keep the reading position.
-- [ ] In a group with a current item, one highlight travels between hovered and current; current looks as colour law 7 says; no weight change on hover; marks that can't take a fill signal another way.
-- [ ] Each animated component has a reduced path that still shows the change; imperative APIs get the preference.
-- [ ] Hidden-until-animated content survives no JS, no observer, reduced motion, print, tall elements and re-renders.
-- [ ] Scroll work is passive, rAF-collapsed and hysteretic, and never hides what touch can't restore.
-- [ ] Only `transform` and `opacity` animate, each property named; GPU escalation is one element and fails to `null`.
-- [ ] Hover-opened elements get a close grace or bridge and cleared timers; focus reveals what hover does.
-- [ ] Set pieces play once a session, gate before first paint, record "seen" on completion, never block the skip link.
-- [ ] Durations, curves and springs match the preset, or a `## Decisions` entry says why not.
-- [ ] Reveal travel, press feedback and route transitions match the preset.
-- [ ] Set pieces and ambient loops are within the preset's allowance; a loop nothing can pause off screen is finite or gone.
+- [ ] `duration.theme` runs only under the page's own switch class; everyday colour transitions leave out the page background.
+- [ ] Shared elements skip their mount animation; layout switches keep the reading position.
+- [ ] Set pieces record "seen" on completion and never block the skip link.
 - [ ] Sound only if the preset allows it, off by default behind a visible, persisted toggle.

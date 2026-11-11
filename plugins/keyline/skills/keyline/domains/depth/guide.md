@@ -4,14 +4,9 @@ Every surface claims a place: a table row, that it is part of the page; a sticky
 
 ## Before you start
 
-Read `DESIGN.md` at the project root: `## Profile` for the preset and any areas on another one, `## Surfaces` for the project's name for each role and the decisions already made. Reason in roles; write code in the project's names.
+Reads `DESIGN.md` `## Surfaces`.
 
-- **No `DESIGN.md`:** run `/keyline init` for this domain only, do the task, then recommend the full setup.
-- **A role you need has no row:** reuse a value already doing that job; otherwise add one in the project's naming style and record it in `DESIGN.md`.
-- **The task would break a law or move a dial off its preset:** say so and ask; if the user confirms, record it with its reason under `## Decisions`.
-- **Preset `glass`:** the values are in `DESIGN.md`; `glass/depth/guide.md` has the exact recipes behind them.
-
-Boundaries: the radius ladder and nesting rule, hairline weights and the z-index ladder are the layout guide's; surface, edge and tint colours, and why translucent tints are runtime values, the colour guide's; the timing of anything that lifts, glows or opens, the motion guide's; a confirmation's flow and a sign-in page's layout, the patterns guide'. This guide picks which a surface takes and checks they agree.
+Boundaries: the radius ladder and nesting rule, hairline weights and the z-index ladder are the layout guide's; surface, edge and tint colours, and why translucent tints are runtime values, the colour guide's; the timing of anything that lifts, glows or opens, the motion guide's; a confirmation's flow and a sign-in page's layout, the patterns guide's. This guide picks which a surface takes and checks they agree.
 
 ## Laws
 
@@ -23,17 +18,17 @@ Mixing parts is the bug the ladder prevents: a card given the menu's shadow on h
 
 A level is also one component. Every dialog is the system's dialog, a destructive confirmation included: a one-off with its own red icon circle, red heading and padding reads as out of the system however right its level. The danger goes on the one action that does it (the colour guide); surface, edge, shadow and scrim stay the overlay's.
 
-The ladder has only the rungs this project uses; the dial lists the most a preset may have. The Glass preset's fourth translucent tier, for "a menu over a surface you already know", never found a user. A dead rung is worse than an absent one: the next person assumes it is load-bearing.
+The ladder has only the rungs this project uses; the dial lists the most a preset may have. A dead rung is worse than an absent one: the next person assumes it is load-bearing.
 
 ### 2. A card is one object, and never holds another card
 
-**A card — a surface with its own edge — is reserved for one object the reader acts on or takes in whole, and a card never holds another card.** A box says "this is a thing". Put one round every section, stat and list and every region claims to be a thing, so none is; each nesting adds an edge, a padding and a radius, and a screen built of boxes in boxes reads as a template however good its type. **Which regions get a surface at all is decided once, in layout law 3's table** — peer sections take a line, a settings group takes a panel, regions on a tinted ground are surfaces, an existing design's panels stay. This law builds what that table gives a surface, and keeps everything else off one.
+**A card — a surface with its own edge — is reserved for one object the reader acts on or takes in whole, and a card never holds another card.** A box says "this is a thing". Put one round every section, stat and list and every region claims to be a thing, so none is; each nesting adds an edge, a padding and a radius, and a screen built of boxes in boxes reads as a template however good its type. **Which regions get a surface at all is decided once, in layout law 3's table**; this law builds what that table gives a surface, and keeps everything else off one.
 
 - **One object** — a decision awaiting approval, a document, a side rail — is a card. A rail with two topics is one card in two parts, parted by a divider; several items of one kind (three pending approvals) share one card the same way, not a card each.
 - **A section panel** (from layout law 3) is `elevation.flat`: an edge and no shadow, because it doesn't float. Nothing inside it is boxed again: its rows part by `border.divider`.
 - **A note** — an aside or caveat — takes a hairline rule on its leading edge, not a tinted box.
 
-A tinted strip behind a group label, a bordered callout and a tile per figure are boxes by other names. The test: take the edge away. If the object still reads as one thing from space and its heading, the edge was decoration. Then check the measure: columns of text left under about 45 characters a line want fewer columns (layout law 1).
+The quiet devices that replace a box are layout law 3's. The test: take the edge away. If the object still reads as one thing from space and its heading, the edge was decoration. Then check the measure: columns of text left under layout law 1's floor want fewer columns.
 
 ### 3. Depth needs an edge as well as a shadow
 
@@ -65,7 +60,7 @@ Nobody spots a `0.04` that became `0.05` in one of five copies, so **a layered s
 - **Video, canvas or anything animating** — the filter re-runs every backdrop frame.
 - **A preset that disallows it** (Dials) — in fluent product tools borders and opaque surfaces do the work, and translucency is decoration that costs contrast.
 
-The Glass preset, built around the material, uses it in four places, all floating chrome: the ceiling, not the target.
+Even a preset built around the material uses it in four places, all floating chrome: the ceiling, not the target.
 
 ### 7. Blur scales with uncertainty about the backdrop
 
@@ -85,7 +80,7 @@ Role-tier ranges, not dial values; the preset picks which tiers exist (Dials). C
 
 ### 9. The tint carries legibility when the blur can't
 
-**A translucent surface is legible from its tint alone; the blur is a bonus.** A `transform`, `filter`, `perspective`, `contain: paint` or `will-change` on an ancestor weakens or breaks `backdrop-filter` beneath it — a menu's scaling wrapper does, for the whole animation — and a 72% tint without its blur is unreadable over a busy page. Animate one element and filter another; failing that, thicken the tint, as the Glass preset's floating panel does at 97%. The same ancestors trap `position: fixed` descendants, so check the whole ancestor chain when either misbehaves.
+**A translucent surface is legible from its tint alone; the blur is a bonus.** A transformed or filtered ancestor — a menu's scaling wrapper, for the whole animation — weakens or breaks `backdrop-filter` beneath it, and a 72% tint without its blur is unreadable over a busy page. Animate one element and filter another; failing that, thicken the tint to the defensive tier (→ `domains/depth/translucent-materials.md`, the wrapper and the surface).
 
 ### 10. Translucent text is checked against the worst backdrop
 
@@ -109,7 +104,7 @@ Modal also hands back what it took: **on close, focus returns to whatever opened
 
 ### 13. Gradients on resizing elements are anchored in pixels
 
-**A gradient stroke or fill on an element that changes size places its stops in absolute units, and a gradient stroke is two background layers on one box.** Percentage stops rescale with the box: a Glass preset panel opening from a 46px bar to 250px ran its whole navy-to-pale sweep inside the closed bar — louder closed than open — and shimmered as it grew. Anchored at `0px / 120px / 240px`, the top holds still and the colour grows downward. The stroke also needs `background-origin: border-box`, or every side gets the wrong end of the ramp — which looks almost right.
+**A gradient stroke or fill on an element that changes size places its stops in absolute units, and a gradient stroke is two background layers on one box.** Percentage stops rescale with the box, so a panel opening from a 46px bar runs its whole sweep inside the closed bar — louder closed than open — and shimmers as it grows. Anchored at `0px / 120px / 240px`, the top holds still and the colour grows downward. The stroke also needs `background-origin: border-box`, or every side gets the wrong end of the ramp — which looks almost right.
 
 → The stroke's two layers, with no wrapper or mask: `domains/depth/translucent-materials.md`
 
@@ -121,7 +116,7 @@ Modal also hands back what it took: **on close, focus returns to whatever opened
 
 **Each material ships an opaque baseline, then the material inside `@supports`, then its `prefers-reduced-transparency`, `prefers-contrast: more` and `forced-colors` rules — after every theme block that sets the same properties.** The order is the law: opaque first makes the non-supporting path the default, and so the tested one; why preferences go after every theme block is colour law 10.
 
-Reduced transparency needs both halves, an opaque surface *and* no filter: filter only leaves a thin tint over live content, tint only still pays for the blur. High contrast promotes the edge to a real border and leaves the surface alone; forced colours needs law 3's edge. Read the *compiled* CSS: a prefixing pipeline may treat a hand-written `-webkit-backdrop-filter` for Safari as a duplicate and drop the standard property Firefox needs — as the Glass preset's own advice did to the site it documents.
+Reduced transparency needs both halves, an opaque surface *and* no filter: filter only leaves a thin tint over live content, tint only still pays for the blur. High contrast promotes the edge to a real border and leaves the surface alone; forced colours needs law 3's edge. Read the *compiled* CSS: a prefixing pipeline may treat a hand-written `-webkit-backdrop-filter` for Safari as a duplicate and drop the standard property Firefox needs.
 
 → The full fallback block, in order: `domains/depth/fallbacks-and-performance.md`
 
@@ -188,7 +183,7 @@ Then, for raised and above, the material:
 
 **4. Add materials last**, fallbacks in order (law 15), counted against the budget.
 
-**5. Measure** every text tier on every translucent surface against its worst backdrop (law 10) with `<keyline>/scripts/contrast.mjs`, passing the backdrop with `--over` so the tint is composited first — `node <keyline>/scripts/contrast.mjs --over "#0b1220" --ladder "rgba(250,250,250,0.82)" "#16161a" "#4b4b52"`; the focus ring at 3:1 on each level's surface.
+**5. Measure** every text tier on every translucent surface against its worst backdrop (law 10) with `contrast.mjs --over` (colour law 3); the focus ring at 3:1 on each level's surface.
 
 → Bundle tables per preset and theme, shadow derivation and a worked example: `domains/depth/elevation-recipes.md`
 → Blur, saturation, tint, gradient strokes, glows and sheens: `domains/depth/translucent-materials.md`
@@ -217,39 +212,15 @@ Then collect evidence per law:
 - **Fallbacks**: present, both halves of reduced transparency, *after* the theme blocks; the prefix in compiled CSS.
 - **Budget**: filtered surfaces visible at once, any at `opacity: 0` rather than unmounted, any animated blur.
 
-One line per finding in `## Open issues`, with evidence: *"`.search-popover` has `shadow-lg` and no border; vanishes in forced colours (3 files)."* Don't fix unless asked.
-
 ## Writing back to DESIGN.md
 
 - **`## Surfaces`** — the bundle table (`Level | Surface | Edge | Shadow | Layer`) in the project's names, per theme where surface or shadow differs, plus a material table (`Tier | Blur | Saturate | Tint | Fallback | Used on`) if it uses translucency. Write it on first build or audit; update it as levels change.
-- **`## Decisions`** — dials moved off the preset, with reason and date: *"Translucent header on the docs area despite `product`: it scrolls over diagrams readers need to keep in view."* Laws knowingly broken, with the user's confirmation.
-- **`## Open issues`** — audit findings, one line each with evidence; remove each when fixed.
 - **Proposed roles** — level surfaces the canonical list lacks (`surface.floating`, `surface.overlay`), marked `proposed`.
 
 ## Checklist
 
-- [ ] Only what layout law 3's table gives a surface has one; a card holds exactly one object, and no card holds a card; section panels are flat, with nothing boxed inside.
-- [ ] Several objects of one kind, or a rail's topics, share one card parted by dividers; asides are a ruled note, not a tinted box.
-- [ ] Each surface on one `elevation.*` level, chosen by what it does, bundle and `z.*` included.
-- [ ] No borrowed parts: a lifted hover or drag moves the whole bundle, layer included.
 - [ ] Every dialog, destructive confirmations included, is the system's dialog; closing one returns focus to its opener, stored when it opened from state.
-- [ ] The ladder holds only the levels this project uses, no more than the dial allows.
-- [ ] Above `elevation.flat`, an edge (`border.default` opaque, `border.layered` translucent) that survives `forced-colors`; a ring edge becomes a 1px border under `prefers-contrast: more`.
-- [ ] `elevation.flat`: edge or surface step, never a faint shadow.
-- [ ] Shadows: contact plus ambient, negative spread, one light; no contact layer on transient surfaces.
-- [ ] One shadow definition per level per theme, used everywhere.
-- [ ] Shadow strength set by what's immediately behind; on a tinted ground, its hue.
-- [ ] Dark levels each lighter than the one below; page not `#000`.
-- [ ] Translucency only where content continues underneath and seeing it helps, or on still art; never cards, rows, sections, reading copy, flat backdrops.
-- [ ] Blur set by backdrop uncertainty, always with `saturate()`.
-- [ ] Animating wrapper and filtered surface are separate, or the tint is defensive.
-- [ ] Translucent-surface text measured against the tint over the worst backdrop.
-- [ ] Overlapping translucent surfaces at visibly different tiers.
-- [ ] `elevation.overlay` has a `scrim`; `elevation.floating` does not.
-- [ ] Resizing gradients use pixel stops; strokes use `background-origin: border-box`.
-- [ ] Glows side-weighted; sheens run once and are removed.
-- [ ] Opaque baseline, `@supports`, then reduced-transparency (tint and filter), high-contrast, forced-colours — after every theme block.
+- [ ] A ring edge becomes a real 1px border under `prefers-contrast: more`; an edgeless surface carries `1px solid transparent` for `forced-colors`.
+- [ ] Animating wrapper and filtered surface are separate elements, or the tint is defensive.
 - [ ] Compiled CSS has both `backdrop-filter` and `-webkit-backdrop-filter`.
 - [ ] Closed filtered surfaces unmount; no animated blur; nothing filtered over video.
-- [ ] Translucency, tier count and on-screen budget match the dials.
-- [ ] Level count, shadow strength, dark lift and scrim match the dials, or a decision says why.

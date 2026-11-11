@@ -396,8 +396,10 @@
     white-space: nowrap;
   }
 
+  /* Imported Markdown can't take the authored pull quote's 3px rounded bar
+     (glass/type/assets/prose.tsx), so it keeps a plain 2px rule. */
   .prose-imported blockquote {
-    padding-left: 14px;
+    padding-left: 15px;
     border-left: 2px solid var(--color-gray-alpha-300);
     color: var(--color-faint);
   }

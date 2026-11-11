@@ -20,7 +20,7 @@ Vertical dividers inside the dock are layout's (`glass/layout/radius-and-elevati
 
 ## 2. The shadow stack
 
-`.dock-shadow` is in §5 of the guide; depth law 4 gives each layer's job. In dark mode:
+`.dock-shadow` lives in `glass/depth/assets/glass.css`, both themes side by side; depth law 4 gives each layer's job. Light to dark:
 
 ```
 inset 0 1px 0 rgba(255,255,255,0.10),     /* highlight:  0.6  → 0.10 */
