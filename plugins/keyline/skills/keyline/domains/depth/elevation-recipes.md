@@ -53,13 +53,7 @@ inset highlight  inset 0 1px 0 white at h       (optional, per preset)
 
 ## Per preset
 
-Light-theme floating shadows at the dial strengths; raised and overlay follow from the `Y` values above.
-
-| Preset | Floating recipe (light) |
-|---|---|
-| `editorial` | `inset 0 1px 0 rgb(255 255 255 / 0.5), 0 1px 1px rgb(0 0 0 / 0.02), 0 8px 16px -4px rgb(0 0 0 / 0.04), 0 24px 32px -8px rgb(0 0 0 / 0.06)` |
-| `product` | `0 1px 1px rgb(0 0 0 / 0.04), 0 12px 24px -8px rgb(0 0 0 / 0.10)` — edges carry the rest |
-| `expressive` | `inset 0 1px 0 rgb(255 255 255 / 0.6), 0 1px 2px rgb(0 0 0 / 0.06), 0 10px 20px -6px rgb(0 0 0 / 0.10), 0 32px 48px -12px rgb(0 0 0 / 0.16)` |
+Each preset's layers and peak opacity are the depth dials, built by the proportions above: editorial's floating shadow is the example, product's is the ring edge below.
 
 Product leans on `border.default` with short shadows, so dense screens don't fill with grey, and draws that edge as a ring inside the shadow on cards, menus and dialogs alike (below). Expressive may add one decorative level — a branded pocket, a hero card — named, with its own bundle.
 
@@ -114,7 +108,7 @@ A card animating by transform, as in a reordering stack, can't change its border
 }
 ```
 
-Half a pixel is one device pixel on a 2x screen and rounds to a faint 1px on 1x, which is the point — quieter than any border — and why the contrast preference gets a real one. Forced colours paints the transparent border.
+Half a pixel is one device pixel on a 2x screen; a shadow's spread doesn't snap to the pixel the way a border does, so on 1x it antialiases to a faint line, which is the point — quieter than any border — and why the contrast preference gets a real one. Forced colours paints the transparent border.
 
 ## Moving between levels
 

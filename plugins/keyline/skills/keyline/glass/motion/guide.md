@@ -38,7 +38,7 @@ Glass uses two of law 4's classes:
 
 One curve for the whole site. The `1.1` end control point overshoots slightly and settles back, physical but not bouncy. The exceptions:
 
-- **Opacity-only micro-transitions**: `ease-out` at 100ms.
+- **100ms opacity hovers and icon fills** (§13): `ease-out`. Opacity entrances (`.reveal`, the route fade) keep the house curve on purpose: on opacity the overshoot clamps at 1.
 - **The theme crossfade**: plain `ease`.
 - **Anything spring-driven**: no bezier at all.
 - **Any track that also drives a filter**, or any property floored at zero (law 5): expo-out, `cubic-bezier(0.16, 1, 0.3, 1)`, which never exceeds 1. It is the same intent in a curve legal for the property, not a second character.
@@ -116,11 +116,7 @@ The details that keep it from flickering are in `domains/motion/patterns.md`, th
 
 ### When the DOM element isn't enough
 
-A *photograph* travelling between layouts escalates to the GPU (law 13): one viewport-sized canvas above the gallery draws the open photo into a screen rect, four numbers in a uniform, no reflow. The wall stays DOM, since a hundred tiles as textures is ~590MB before atlasing; the open photo is `alt=""`, its labels sitting beside it; failure returns `null` and keeps the caller's `<img>`.
-
-**Carry the reading position across**: open the other layout on the tile nearest the viewport centre, measured before React commits it, and give each end its own rect around a shared centre (law 8).
-
-→ The measurement (`centreFrame`) and the WebGL notes: `glass/motion/shared-element.md`, escalating to the GPU
+A *photograph* travelling between layouts escalates to the GPU (law 13), opening on the tile nearest the viewport centre (law 8): `glass/motion/shared-element.md`, escalating to the GPU
 
 ## 7. Reduced motion
 
@@ -152,34 +148,11 @@ One passive listener and one rAF per behaviour (law 12; the shape is in `domains
 
 ## 9. Reveal on scroll
 
-CSS animates; JavaScript only marks an element as arrived:
-
-```css
-.reveal { opacity: 0; transform: translateY(8px);
-          transition: opacity 300ms var(--ease-geist), transform 300ms var(--ease-geist); }
-.reveal[data-in] { opacity: 1; transform: translateY(0); }
-
-@media (prefers-reduced-motion: reduce) {
-  .reveal { opacity: 1; transform: none; transition: none; }
-}
-```
-
-`threshold: 0` with `rootMargin: "0px 0px -40px 0px"`, one-shot, re-run on the pathname. 8px of travel registers without a page of paragraphs seeming to slide. Every guard is law 11 and `domains/motion/guards.md`; the two the site hit:
-
-- **A fractional threshold on a tall element.** Every rendered SKILL.md on the site, eight to thirteen thousand pixels in one `.reveal`, once sat invisible at opacity 0 behind `0.1`.
-- **A class the framework owns.** Tag-filtered rows went blank as the pointer left, when React rewrote a state-dependent `className` and wiped an `in` added with `classList.add`. Hence `data-in`.
-
-The no-JavaScript reset, in the head:
-
-```html
-<noscript>
-  <style>.reveal { opacity: 1 !important; transform: none !important; }</style>
-</noscript>
-```
+300ms on the house curve, 8px of travel, `threshold: 0`, `rootMargin: "0px 0px -40px 0px"`, marked by `data-in`; the guards are law 11, whose two bugs are this site's. → `glass/motion/assets/motion-tokens.css`, `glass/motion/assets/useReveal.ts`
 
 ## 10. Performance: `m` not `motion`
 
-`m.div` inside `<LazyMotion features={domAnimation} strict>`, never a bare `motion.*` (`domains/motion/performance.md`). The menu animates a bare `<m.div>` around the `glass-panel`, so the wrapper scales and the child carries the blur (law 13).
+`m.div` inside `<LazyMotion features={domAnimation} strict>`, never a bare `motion.*` (`domains/motion/performance.md`). The menu's wrapper scales and its `glass-panel` child carries the blur (law 13; `glass/depth/guide.md` §3).
 
 ## 11. Hover intent
 
@@ -204,11 +177,7 @@ active:scale-[0.92]   /* 8% — felt, not seen */
 
 On `pointerdown` (law 3).
 
-The site synthesises a "tok" on hover and click (Web Audio, no asset files): a sine fundamental, a fast-decaying marimba-like 3.9:1 partial, and a lowpassed noise transient for the wooden attack. Hover is quiet and high (1200Hz, 0.09s, 0.05 gain), click lower and louder (900Hz, 0.14s, 0.13 gain); it's gated on the autoplay policy, muteable, and persisted. Dense surfaces opt out of the hover tick with `[data-quiet-hover]`; clicks still sound. The rules for arming and muting are in `domains/motion/patterns.md`, sound.
-
-**Sound can be a phrase, not just an event.** The opening screen's run, a note per photograph, is written out in A major pentatonic, where no two notes clash, so a run cut short by a failed image still resolves; the landing note, the only accented one, sits a fifth *below* the start, closing the phrase rather than adding a step.
-
-Sound is *on* by default here, which is defensible only on a personal site and only if you're confident. → Synthesis walkthrough and delegation pattern: `glass/motion/sound.md`
+Sound is *on* by default here, defensible only on a personal site: a synthesised "tok" on hover and click, muteable; `[data-quiet-hover]` silences hover on dense surfaces. → `glass/motion/sound.md`; the rules: `domains/motion/patterns.md`, sound
 
 ## 13. Fill means chosen
 
@@ -223,7 +192,7 @@ export const detailFade = (on: boolean) =>
   `transition-opacity duration-200 ease-out motion-reduce:transition-none ${on ? "opacity-0" : "opacity-100"}`;
 ```
 
-**200ms `ease-out`, not the house curve**: overshoot suits travel, not a fade. The knockout mask for interior lines is in `domains/motion/patterns.md`, fill means chosen.
+**200ms `ease-out`, not the house curve** (§2). The knockout mask for interior lines is in `domains/motion/patterns.md`, fill means chosen.
 
 **How the marks that can't fill signal instead:**
 
@@ -277,7 +246,7 @@ The domain checklist first; then glass's values:
 
 - [ ] Every duration on the ladder: no 250ms, 500ms or 1s.
 - [ ] Off-ladder timing is the subject of the moment (the 620ms dissolve) or a once-a-session set piece, and says which.
-- [ ] `--ease-geist` everywhere, plus `ease-out` for opacity-only, plain `ease` for the theme fade, and expo-out on any track driving a filter.
+- [ ] `--ease-geist` everywhere, opacity entrances included, plus `ease-out` for 100ms opacity hovers and icon fills, plain `ease` for the theme fade, and expo-out on any track driving a filter.
 - [ ] Menus open on the `GROW`/`CROSS` pair and close on `CLOSE`.
 - [ ] Hover timed by area: a link 100ms, a card-sized wash 200ms.
 - [ ] No translate on hover, bar the folder's rising cards.

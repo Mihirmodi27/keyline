@@ -6,12 +6,7 @@ The laws hold under every preset. How much keyboard, how much is remembered and 
 
 ## Before you start
 
-Read `DESIGN.md` at the project root: `## Profile` for the preset and any areas on another one, `## Patterns` for the conventions already chosen — the product's nouns, its destructive pattern, its shortcut map, which views are remembered — and `## Decisions`. Write copy in the project's nouns.
-
-- **No `DESIGN.md`:** run `/keyline init` for the profile and preset only, do the task, then add a `## Patterns` section and recommend the full setup.
-- **A pattern you need has no entry:** find the nearest one already in the code and reuse it; otherwise define it once and record it under `## Patterns`.
-- **The task would break a law or move a dial off its preset:** say so and ask; if the user confirms, record it with its reason under `## Decisions`.
-- **Preset `glass`:** it carries no pattern values; use the dials of the preset nearest the reader.
+Reads `DESIGN.md` `## Patterns`: the product's nouns, its destructive pattern, its shortcut map, which views are remembered. Write copy in the project's nouns.
 
 Boundaries: how a label or figure is set is the type guide's; what colour danger, brand and status take, the colour guide's; where things sit and which views fork, the layout guide's; what a dialog or card is built from, the depth guide's; how long anything takes to move, the motion guide's. This guide decides the flow and the words, and names the owner where the rest is someone else's.
 
@@ -19,15 +14,15 @@ Boundaries: how a label or figure is set is the type guide's; what colour danger
 
 ### 1. A label is as short as its action, in sentence case
 
-**A label names the action in the fewest words that still say it: a button reads its verb — "Send", "Save changes", "Record" — not the sentence around it ("Record a voice note").** Labels are scanned, not read; every extra word moves the verb away from where the eye lands, and the tail is the first thing to truncate. Short is not narrow: a label covers everything behind it, so an item that takes questions, bug reports and requests is "Help & feedback", not "Request a feature". Add an object only where two verbs on one screen would otherwise collide ("Save draft" beside "Publish"); a confirm button repeats its dialog's verb ("Delete project"), never "OK" or "Yes".
+**A label names the action in the fewest words that still say it: a button reads its verb — "Send", "Save changes", "Record" — not the sentence around it ("Record a voice note").** Labels are scanned, not read; every extra word moves the verb away from where the eye lands, and the tail is the first thing to truncate. A confirm button repeats its dialog's verb, never "OK" or "Yes".
 
-**Sentence case everywhere** — buttons, menu items, dialog titles, field and column names, tabs, toasts, and labels the code generates from keys (`dueDate` → "Due date"). Title case marks every word as a name, and uppercase strips word shapes; acronyms, proper nouns and third-party product names stay as written.
+**Sentence case everywhere**, labels the code generates from keys included. Title case marks every word as a name, and uppercase strips word shapes.
 
 ### 2. A row's second line says what it is and where it's from
 
 **Under a title, the second line names the record's type and origin in the product's own nouns — "Task from Riverside", "Note from site walk" — never an event ("Issue added to Riverside").** The title says which one; the reader's next questions are what kind and from where, and those let them triage without opening it. Event phrasing describes something that happened to the record once, in a verb nobody filters by, and often swaps the noun, so the reader wonders whether an "issue" here is a "task" everywhere else. **One noun per kind of thing across the product**, listed in `DESIGN.md`. Time, owner and status take their own slots — a column, a meta line, a glyph — not the sentence. The title stays the strongest line in the row (the type guide, the colour guide).
 
-→ Before-and-after labels, button verbs, generated labels, toasts and error copy: `domains/patterns/copy.md`
+→ Before-and-after labels, when a label takes an object, generated labels and their acronyms, toasts and error copy: `domains/patterns/copy.md`
 
 ### 3. Destructive and session-ending actions look alike, and come last
 
@@ -35,11 +30,7 @@ Boundaries: how a label or figure is set is the type guide's; what colour danger
 
 ### 4. A confirmation says what is lost, in the system's own dialog
 
-**A confirmation states in plain words what will be lost, uses the product's standard dialog, and asks for proof of intent in proportion to the loss.** The dialog is the system's own (depth law 1). Proportion:
-
-- **Reversible** — no dialog; do it, and offer Undo in the toast.
-- **Irreversible, one item** — a dialog whose button repeats the verb.
-- **Irreversible and large** — a project, an account, a workspace — "Type DELETE to confirm", compared case-insensitively, the input focused on open (not Cancel), the action disabled until it matches, "Deleting…" while it runs, and the dialog held open until it succeeds or says why it failed.
+**A confirmation states in plain words what will be lost, uses the product's standard dialog, and asks for proof of intent in proportion to the loss.** The dialog is the system's own (depth law 1). Proof runs from none for the reversible, which gets Undo, to a typed word for a project, an account or a workspace (→ `domains/patterns/actions-and-forms.md`).
 
 **One pattern everywhere**: deleting a project and deleting an account read the same. On close, focus goes back to what opened it (depth law 12).
 
@@ -65,7 +56,7 @@ The conversation carries no avatar per message: the reader's turns sit right-ali
 
 **A launcher offers only the choices the task has, and a toolbar or a long list holds back what isn't needed every time.** Every option on the path of the most frequent action is something to read before starting: a record launcher asks one question with two answers — which project, or a personal note — not a form. Toolbar filters are icons with tooltips, not a text label on every control. A long admin list groups into collapsed bars, closed by default, each with a summary of what the reader would open it to check ("Admins · 3 of 12 with access"), and a search opens every group it matches.
 
-**Hick's law** is why: the time to choose grows with the number of choices, so every option shown up front taxes the choice the reader came to make. **Progressive disclosure** is the cure — the common path visible, the rest one step away (layout law 11 keeps it in the markup). **Miller's law** says why grouping helps: people hold only a few chunks in mind at once, so a flat run of a dozen nav items or a 16-digit code reads as noise, where three groups of four, or `4242 4242 4242 4242`, read at a glance. Chunk long lists and long strings; don't treat "seven" as a cap that cuts what the product needs.
+**Hick's law** is why, and **progressive disclosure** the cure — the common path visible, the rest one step away (layout law 11 keeps it in the markup). By **Miller's law**, chunk long lists and long strings — three groups of four nav items, `4242 4242 4242 4242` — but don't treat "seven" as a cap that cuts what the product needs.
 
 ### 9. An empty state offers the first action
 
@@ -99,17 +90,13 @@ Whether the view and span are remembered is layout law 9; list each page that re
 
 **What an element looks like says what it does, and it does that: a play icon opens a video, a link goes somewhere, and anything that doesn't act doesn't react.** Landing pages and articles are where these promises break, because they are built to look a certain way before anyone decides what each piece does, and a reader who clicks a dead logo or a silent play icon stops trusting the rest. A logo that isn't a link takes no hover state; an email address is a `mailto:` link; "Copy link" is a button, not a link to the page already open; link text names its destination ("Pricing", not "Learn more"). A call to action names what happens next — "Start free", "Book a demo" — so two on one page can't be mistaken for each other, as "Get started" beside "Start free" can. A subscribe or sign-up field has a visible label and says what will arrive and how often.
 
-**Conventions are promises too** (Jakob's law): readers spend most of their time in other products and arrive expecting those to hold here. The logo goes home, search sits behind ⌘K or a magnifier, the account is at the end of the navigation, a link is underlined or obviously a link. Break a convention only for a gain the reader will feel on first use, and never for novelty alone.
+**Conventions are promises too** (Jakob's law): the logo goes home, search sits behind ⌘K or a magnifier, the account is at the end of the navigation, a link is underlined or obviously a link. Break a convention only for a gain the reader will feel on first use, and never for novelty alone.
 
 → Calls to action, link text and sign-up lines: `domains/patterns/copy.md`
 
 ### 15. Every action answers at once, and anything slow says what it's doing
 
-**An input is acknowledged within 100ms — a press state, a toggle flipping, a row moving — and any result that takes longer than about 400ms shows what is happening in the place it was asked for.** Under 400ms (the Doherty threshold) the reader and the product keep pace and attention holds; past it, people start to wonder whether the click took, and click again. So the acknowledgement is instant and local (press feedback is the motion guide's), the slow part runs in the background where it can (law 11), and the wait is honest where it can't:
-
-- **Past ≈ 400ms**, the control says it's working — "Saving…" in the button's own label, the button held at its width.
-- **Past ≈ 1s**, the region that will change shows its shape — a skeleton of the rows coming, not a centred spinner over a blank page.
-- **Past ≈ 10s**, progress is determinate — a count, a step, a bar — with a way to cancel or leave and be told when it's done.
+**An input is acknowledged within 100ms — a press state, a toggle flipping, a row moving — and any result that takes longer than about 400ms shows what is happening in the place it was asked for.** 400ms is the Doherty threshold. The acknowledgement is instant and local (press feedback is the motion guide's), the slow part runs in the background where it can (law 11), and the wait is honest where it can't, its form set by how long it runs (→ `domains/patterns/actions-and-forms.md`, pending states).
 
 **The loop closes where it opened**: the result appears where the action was taken, and what changed is visible without reading a toast. A save that succeeds silently, a filter that applies off screen, or an error reported in a corner the reader isn't looking at breaks the loop, and readers repeat the action to find out what happened.
 
@@ -117,13 +104,13 @@ Whether the view and span are remembered is layout law 9; list each page that re
 
 **Accept what people type in any reasonable form and store one canonical form; show choices rather than ask for things from memory; and let the product carry the complexity the reader would otherwise carry.** Three laws meet here:
 
-- **Postel's law** — be liberal in what you accept. A phone number with spaces, a date as "12 Mar", an email with a trailing space or capitals, a pasted card number with dashes: all are valid input, normalised on blur, never rejected for format. Errors are for what's actually wrong, and say how to fix it.
-- **Recognition over recall** — seeing beats remembering. Recent and frequent items lead a picker; a command palette lists what it can do before the reader types; labels stay visible above fields (a placeholder that vanishes on typing is recall); a filter shows its current value, not just its name.
-- **Tesler's law** — every task carries some complexity that can't be removed, only moved. Move it into the product: default to the likely answer, infer what can be inferred (the country from the postcode, the time zone from the device), and never ask for what the product already knows.
+- **Postel's law** — spaces, dashes, case and a trailing space are valid input, normalised, never rejected for format. Errors are for what's actually wrong, and say how to fix it.
+- **Recognition over recall** — recent and frequent items lead a picker; a command palette lists what it can do before the reader types; labels stay visible above fields; a filter shows its current value, not just its name.
+- **Tesler's law** — default to the likely answer, infer what can be inferred, and never ask for what the product already knows.
 
 ### 17. A flow shows how near the end is, and the end is designed
 
-**A task of several steps shows where the reader is and how much is left, and its last screen is built as carefully as its first.** People speed up as a goal comes into view (the goal-gradient effect), so a visible "Step 2 of 3" or a checklist with items already ticked pulls them through, where an unmarked sequence of screens feels endless; count a step the reader has already done — the account they just made — as progress. **An experience is remembered by its most intense moment and its end** (the peak-end rule), not its average: a smooth setup that ends on a blank dashboard, or a purchase that ends on "Success", is remembered as flat. The end says what happened in the product's nouns, shows the result, and offers the next action; a failure at the peak — a payment declined, an upload lost — gets the most careful copy in the product, never a code.
+**A task of several steps shows where the reader is and how much is left, and its last screen is built as carefully as its first.** A visible count pulls the reader through (the goal-gradient effect), and the end is what is remembered (the peak-end rule): it says what happened in the product's nouns, shows the result, and offers the next action. A failure at the peak — a payment declined, an upload lost — gets the most careful copy in the product, never a code.
 
 → Pending states, skeletons, forgiving inputs and progress in code: `domains/patterns/actions-and-forms.md`
 
@@ -133,7 +120,7 @@ Whether the view and span are remembered is layout law 9; list each page that re
 |---|---|---|---|
 | Label length | 1–3 words | 1–2 words, verb first | A call to action may run to a short phrase |
 | Keyboard | Tab order, skip link, Escape | Palette, list movement, single-key actions, shown in menus | Tab order and Escape |
-| View memory | Reset on arrival | Remembered per page on daily working pages, switch in the header (layout law 9) | Reset on arrival |
+| View memory | Reset on arrival | Remembered per page on daily working pages (layout law 9) | Reset on arrival |
 | Optimistic updates | Rare | Default for moves, toggles, renames, reorders | Rare |
 | Proof of intent for large deletes | Typed word | Typed word | Typed word |
 | Empty-state copy | One sentence and the action | One line and the action | A headline, a line and the action |
@@ -144,22 +131,11 @@ The `glass` preset carries no pattern dials; take them from the preset nearest t
 
 **Keyboard.** Product readers repeat; editorial and expressive readers arrive, read and leave, so a palette there is a feature nobody discovers. Every preset keeps the floor: everything reachable by Tab, Escape closing one layer.
 
-**View memory.** A working reader returns to the same collection daily and set its view for a reason; a visiting reader didn't, and should see the collection as designed.
-
 **Toasts.** A toast confirms what the reader can't see happen. A move they watched needs none; a save that failed, an undo window, or a result on another page does.
 
 ## Iterating on feedback
 
-Most product feedback is one step: "one step lighter", "25% smaller", "to 16px". The craft is making exactly that change, everywhere it applies, and writing it down.
-
-1. **Make the change asked, at the size asked.** Move one step on the existing ladder; don't re-pick the system. The count per row stays unless more per row was asked for.
-2. **After any change to a shared rule, sweep the product** — every route, every component on that rule — **and report what moved.** Partial updates are the commonest bug: some screens took the new value, some didn't. Ask before calling a page done, and never "fix" a page the owner has said is theirs.
-3. **Record the decision** under `## Decisions` (format: `system/design-md.md`).
-4. **Study reference products for how information is structured, not how it looks**: where icons are and aren't, where tags appear, how tables are built, what is boxed and what isn't, what aligns with what.
-5. **Wireframe a new page type before building it**, and share the wireframe.
-6. **Review on a preview harness**: the real app on mock data, every route reachable without a backend, so a whole-product sweep or audit takes minutes.
-
-→ The sweep, the report, the log entry, a reference-study worksheet and the harness: `domains/patterns/iteration.md`
+Most product feedback is one step: "one step lighter", "25% smaller", "to 16px". Make exactly that change, at the size asked, sweep everywhere the rule reaches and report what moved, then record it under `## Decisions` (→ `domains/patterns/iteration.md`: the step table, the sweep, references and the preview harness). Wireframe a new page type before building it, and share the wireframe.
 
 ## Auditing existing code
 
@@ -183,34 +159,16 @@ Most product feedback is one step: "one step lighter", "25% smaller", "to 16px".
 | 16 | Inputs that reject spaces, dashes, case or a trailing space; placeholders as labels; pickers with no recent items; questions the product could answer itself | Field, the input it rejects or the question it needn't ask |
 | 17 | Multi-step flows with no position or count; a last screen that says only "Success" or "Done"; failure copy with a code and no next step | Flow, step, and its end state |
 
-Click through every flow once with the keyboard alone, and once with the network throttled to failure. Report one line per finding with its evidence under `## Open issues`, and fix nothing unless asked.
+Click through every flow once with the keyboard alone, and once with the network throttled to failure.
 
 ## Writing back to DESIGN.md
 
 - **`## Patterns`**: the product's nouns, one per kind of thing; the second-line formula; the destructive items and the proof each needs; the shortcut map; which pages remember their view and which default wins; the agent-step conventions.
-- **Decisions**, dated, marked by who decided, with the reason: any dial moved off the preset, a law knowingly broken, or a change a law forced that a later session might undo (marked *law*).
-- **Open issues** for every law the code breaks, with evidence, removed when the fix lands.
 
 ## Checklist
 
-- [ ] Labels are as short as their action, read the verb, and are sentence case, generated ones included.
-- [ ] Row second lines name type and origin in the product's nouns; one noun per kind of thing.
-- [ ] Every destructive or session-ending item shares one treatment, last in its menu, with no icon; nothing else borrows it.
-- [ ] Confirmations use the system dialog, say what is lost, scale proof to the loss, show progress and return focus.
-- [ ] Agent steps are cards with name, arguments and result; approvals are inline; no per-message avatars; the panel is non-modal.
-- [ ] Streaming text separates committed from forming, follows only while the reader is at the bottom, and is still when paused.
-- [ ] Frequent actions have keys; every drag has a keyboard path; Escape closes one layer; single keys never fire in inputs.
-- [ ] Launchers offer only the task's choices; toolbar filters are icons with tooltips; long lists group and collapse.
-- [ ] Empty user data offers the first action; filtered-empty names the filter.
-- [ ] Staged work has a board in workflow order beside its list; remembered views follow layout law 9 and are listed under `## Patterns`.
-- [ ] Moves are optimistic with a visible rollback; sends, payments and deletes are not.
-- [ ] Dashboards run overview, trends, action items, wireframed first, scoped views on the global pipeline.
-- [ ] Forms lead with the deciding field; errors replace hints; sign-in is a form alone in its column, its route an `expressive` area if the art moves.
-- [ ] Every element does what its form promises: play icons play, inert logos don't react, email addresses are `mailto:` links, copy controls are buttons, calls to action and link text name what happens next, sign-up fields are labelled and say what arrives and how often.
-- [ ] Conventions readers know from other products hold, unless breaking one is a gain felt on first use.
-- [ ] Every input is acknowledged at once; past ≈ 400ms the control says it's working, past ≈ 1s the region shows its shape, past ≈ 10s progress is determinate and cancellable; results appear where they were asked for.
-- [ ] Inputs accept any reasonable form and normalise it; labels stay visible; pickers lead with recent items; the product never asks for what it already knows.
-- [ ] Multi-step flows show position and what's left; the last screen names what happened, shows it and offers the next action; failures at the peak get the most careful copy.
-- [ ] Long lists and long strings are chunked; launchers and toolbars show the common path and disclose the rest.
-- [ ] Feedback was applied at the size asked, swept product-wide, reported, and recorded as a dated decision.
-- [ ] Dials match the preset, or the difference is under `## Decisions`.
+- [ ] Large deletes show "Deleting…" and hold the dialog open until done; focus returns to the opener.
+- [ ] Filtered-empty names the filter and offers to clear it.
+- [ ] Sends, payments and deletes are never optimistic.
+- [ ] A sign-in route whose art moves is listed as an `expressive` area.
+- [ ] Long lists and long strings are chunked.

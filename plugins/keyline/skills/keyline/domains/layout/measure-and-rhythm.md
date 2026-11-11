@@ -38,15 +38,19 @@ One container, one measure, every template; non-text content leaves the column b
 
 ### Product — an app shell
 
-A working reader needs navigation, content and detail together, so the page is regions:
+A working reader needs navigation, content and detail together, so the page is regions, each sized by the `measure.app` dial:
 
-| Region | Width | Collapses |
+| Region | Holds | Collapses |
 |---|---|---|
-| Navigation | 220–264px | Last — to an icon strip, then a menu button |
-| Content | Fills its panel, left-aligned at one `gutter` — 16px at the smallest width, 24–32px from tablet up; forms and settings cap at `measure.form`, ≈ 640–760px | Never |
-| Inspector | 320–400px | First — to an overlay sheet on `z.overlay` |
+| Navigation | Every destination | Last — to an icon rail, then, below `bp.shell`, a sheet that opens always expanded |
+| Content | The page, filling its panel, left-aligned at one `gutter`; forms and settings cap at `measure.form` | Never |
+| Inspector | Detail on the selection | First — to an overlay sheet on `z.overlay` |
 
 Settings help, onboarding copy, a changelog entry and an empty state's explanation still sit at `measure.reading`; a 1200px-wide paragraph of help text in a settings pane is the most common product failure of law 1. The inspector is detail, so it collapses first; navigation is how the reader leaves, so it stays longest. A centred column inside the content panel wastes the width a working reader opened the window for, and a page that sets its own `max-width` or padding drifts from its neighbours: the shell owns both.
+
+**The sidebar.** Navigation is this one surface, with the reader's own controls — account, role, theme — in its footer; a top bar repeating it puts a second band of chrome over every screen. Primary destinations sit at the top; the long tail goes in collapsible folders, open state remembered and the current page's folder forced open; administration lives in the account menu, not among destinations. Rows are dense, about 30px, with the workspace name at the nav's own size, so the sidebar reads as one list. Collapsed to an icon rail, icons hold their position while the width animates, labels become tooltips and counts become dots; the rail is toggled by a button and a shortcut and remembered, since it is a preference about the reader (layout law 9).
+
+**Improving one screen of an existing app keeps its navigation surface.** Moving navigation is a restructure, and the icon rail a feature: neither is done unasked; list them under `## Open issues`.
 
 ### The product page
 
@@ -63,7 +67,7 @@ Top to bottom, every page in the shell has the same parts, so a reader learns on
 
 **The group bar.** One shared component: a tinted band about 36px tall holding a chevron, the group's name, its count and an add action, sticky under the header row while its group scrolls. How long lists open, summarise and search is patterns law 8.
 
-**Forms.** A form or settings page caps at `measure.form`, about 640–760px, left-aligned in the panel: at the panel's full width a switch ends up a screen's width from its label. The field that decides the rest goes first, at the form's full width — a category before the free text that depends on it.
+**Forms.** A form or settings page caps at `measure.form`, left-aligned in the panel: at the panel's full width a switch ends up a screen's width from its label. The field that decides the rest goes first, at the form's full width — a category before the free text that depends on it.
 
 **Overviews and dashboards.** What a dashboard holds and in what order is patterns law 12; on the page, each of its sections is parted from the next by a full-bleed hairline (layout law 3).
 
@@ -78,16 +82,12 @@ Sections may run to the viewport edge as bands — a colour field, a full-bleed 
 
 ## Spacing ladders per preset
 
-One base unit (4px), a role for every job. Values are defaults; the ratios must survive.
+One base unit (4px), a role for every job. `space.tight`, `space.group`, `space.section` and the pair ratio are the layout dials; the heading pair's defaults land inside that ratio. Values are defaults; the ratios must survive.
 
 | Role | editorial | product | expressive |
 |---|---|---|---|
-| `space.tight` | 8px | 4–8px | 8–12px |
-| `space.group` | 16–24px | 12–16px | 24–32px |
-| `space.section` | 48–72px | 24–32px | 96–160px |
 | `space.heading-above` | 40–48px | 16–24px | 48–80px |
 | `space.heading-below` | 12px | 8px | 16px |
-| Pair ratio | 3:1–4:1 | 2:1–3:1 | 3:1–5:1 |
 
 Half-steps (6px, 10px, 14px, 44px) are legitimate when a ratio lands between whole steps; a value used once with no role behind it isn't.
 
@@ -141,7 +141,7 @@ In prose, a short closing block that reads as a coda follows on without a rule; 
 
 ## Page padding and chrome clearance
 
-- **Top space signals a document.** Editorial pages start well below the top edge (80–112px, about 48–64px at phone widths); an expressive page without a hero does the same; product content starts close under the page's header bar (16–24px), which already framed it.
+- **Top space signals a document.** Editorial pages, and expressive ones without a hero, start well below the top edge; product content starts close under the page's header bar, which already framed it (values: the layout dials).
 - **Fixed chrome reserves its own clearance.** Under a fixed bottom bar or dock, the page's bottom padding must exceed the bar's height plus its offset on every template whose content can end near the viewport bottom; a page ending in a footer can rely on the footer's padding.
 - **Audit it per template.** The long article ends in a padded footer; the short index without one puts its last item under the bar — the layout bug that most often survives review, because the test page is always a long one.
 
@@ -175,10 +175,10 @@ A fictional freight-tracking app — `product`, docs area `editorial`, Inter at 
   --space-heading-above: 24px;    /* 3:1 */
   --space-heading-below: 8px;
 
-  --radius-container: 12px;       /* panel, 4px padding … */
-  --radius-card: 8px;             /* … holds 8px rows */
-  --radius-control: 6px;          /* button, 2px inset … */
-  --radius-small: 4px;            /* … holds a 4px badge */
+  --radius-container: 16px;       /* panel, 4px padding … */
+  --radius-card: 12px;            /* … holds 12px rows */
+  --radius-control: 8px;          /* button, 2px inset … */
+  --radius-small: 6px;            /* … holds a 6px badge */
   --radius-pill: 9999px;
 
   --hairline-chrome: 0.5px;       /* a border: one device pixel on 2×, 1px on 1×; divider uses border.divider */

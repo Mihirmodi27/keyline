@@ -60,7 +60,7 @@ One variable turns a blur-crossfade into a plain crossfade; `blur(0px)` → `blu
 
 ## In CSS
 
-The `.reveal` rule is §9 of `glass/motion/guide.md`; the theme crossfade's opt-in block is in `glass/motion/easing-and-duration.md`. The route fade:
+The `.reveal` rule is in `glass/motion/assets/motion-tokens.css`; the theme crossfade's opt-in block is in `glass/motion/easing-and-duration.md`. The route fade:
 
 ```css
 @media (prefers-reduced-motion: reduce) {

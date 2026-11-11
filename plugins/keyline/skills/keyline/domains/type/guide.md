@@ -6,12 +6,7 @@ The organising idea is **a size exists because a role needs it** — not because
 
 ## Before you start
 
-Read `DESIGN.md` at the project root: `## Profile` for the preset and any areas on another one, `## Type` for the project's name for each role and the decisions already made. Reason in roles; write code in the project's names.
-
-- **No `DESIGN.md`:** run `/keyline init` for this domain only, do the task, then recommend the full setup.
-- **A role you need has no row:** reuse a value already doing that job; otherwise add one in the project's naming style and record it in `DESIGN.md`.
-- **The task would break a law or move a dial off its preset:** say so and ask; if the user confirms, record it with its reason under `## Decisions`.
-- **Preset `glass`:** the values are in `DESIGN.md`; `glass/type/guide.md` has the exact recipes behind them.
+Reads `DESIGN.md` `## Type`.
 
 ## Laws
 
@@ -23,13 +18,13 @@ The ladder has a floor as well as a ceiling. Below the readable floor type is re
 
 Type inside artwork — an illustration or diagram, an SVG or an HTML mock marked `role="img"` — is exempt from the ladder, as colour law 1 exempts colour there; any label in it a reader must read still clears the readable floor.
 
-Cut downward, checking what each remaining step was holding up: removing a 30px Glass article title took three more sizes with it, two of which existed only to sit between it and the body.
+Cut downward, checking what each remaining step was holding up: removing one size often takes others that existed only to sit beside it.
 
 → Per-preset ladders, and adding a role without growing one: `domains/type/ladders.md`
 
 ### 2. A scale is only a system if every template is on it
 
-**No template opens off the ladder, and templates of one kind open alike; a page type with its own hierarchy is opting out of the system, not expressing importance.** Glass articles once opened at 30px with 19px section headings while every index opened at 18px, and a case study felt like a different site. Readers feel the opt-out as inconsistency before they notice sizes; the fix was the site's existing ladder, not a compromise. An article may open above an index — its title starts a piece, an index's labels a list (the ceiling dial) — but every article opens at one size, and every index at another.
+**No template opens off the ladder, and templates of one kind open alike; a page type with its own hierarchy is opting out of the system, not expressing importance.** Readers feel the opt-out as inconsistency before they notice sizes, and the fix is the existing ladder, not a compromise. An article may open above an index — its title starts a piece, an index's labels a list (the ceiling dial) — but every article opens at one size, and every index at another.
 
 Areas on another preset are declared by path in `DESIGN.md`, not drifted into. Inside one every template shares its ladder, and roles crossing the boundary — navigation, `type.ui`, `type.meta`, the footer — keep one set of values, so the chrome doesn't change between marketing site and app.
 
@@ -37,7 +32,7 @@ The same holds for one element: a pane title at 14/600 where every other page's 
 
 ### 3. A tier never outranks the heading it sits under
 
-**Nothing inside a section — a lead, a pull quote, a keyline, a note — may be larger, heavier or louder than the heading that owns it.** A Glass keyline at 17px under a 16px heading read as paragraphs shouting over their titles; an in-body heading larger than the page's title inverts the document. Check role pairs — `type.lead` against `type.heading`, `type.heading` against `type.title` — since a violation only shows where the two meet.
+**Nothing inside a section — a lead, a pull quote, a keyline, a note — may be larger, heavier or louder than the heading that owns it.** A keyline a pixel larger than its heading reads as paragraphs shouting over their titles; an in-body heading larger than the page's title inverts the document. Check role pairs — `type.lead` against `type.heading`, `type.heading` against `type.title` — since a violation only shows where the two meet.
 
 `type.display`, the one role above `type.title`, obeys it too: one loudest moment, nothing under it competing. Two are two pages' worth of hierarchy on one.
 
@@ -59,7 +54,7 @@ In a row or card the rule runs the other way: **its title is the darkest thing i
 
 A further role there needs an unused axis, or it isn't a role.
 
-The corollary matters more: **when you remove a signal, audit the ones you left in.** The Glass pull quote's 2px border at ten percent black, invisible on white, survived only while the quote was two steps larger than the body; when the size step went, it had to become a real bar.
+The corollary matters more: **when you remove a signal, audit the ones you left in.** A pull quote's faint border, invisible on white, survives only while the quote is larger than the body; when the size step goes, it has to become a real bar.
 
 Between sizes too, size is the weakest signal in the 11–20px band: a 13 → 14 → 20 ladder at one weight reads flat. **A step up in rank moves weight and tracking with it** — headings tighten as they grow while labels stay at zero — never size alone.
 
@@ -73,7 +68,7 @@ Between sizes too, size is the weakest signal in the 11–20px band: a 13 → 14
 
 A second family earns its place with a second register — literal text in a code face, a brand display voice, interface text beside a serif reading face — never because "headings should feel different", which size, weight, leading and tracking handle. A code face for a handful of spans is a system stack, not a download; IDs, codes and times rarely need even that — tabular, slashed-zero figures (law 10) set them apart in the text face.
 
-Weight is the cheapest second channel for state: colour alone fails WCAG 1.4.1, so an active row adds `weight.strong` to the colour colour law 7 gives it — only on states that don't follow the pointer (active, current, selected, not hover), since a weight change alters width and shifts neighbours. **Weight carries one state per product:** if unread rows step up beside their dot, current and selected use a fill, a marker or tier, or the step means nothing.
+Weight is the cheapest second channel for state (colour law 6): an active row adds `weight.strong` to the colour colour law 7 gives it — only on states that don't follow the pointer (active, current, selected, not hover), since a weight change alters width and shifts neighbours. **Weight carries one state per product:** if unread rows step up beside their dot, current and selected use a fill, a marker or tier, or the step means nothing.
 
 ### 6. Leading follows the job
 
@@ -214,38 +209,19 @@ Evidence per law:
 - **Loading (12).** Third-party font hosts, `swap` without a metric-matched fallback, weights requested but unused.
 - **Icons (13).** Icon sizes and strokes against the text beside them; sibling controls that differ.
 
-Report one line per finding, with evidence, in `DESIGN.md` `## Open issues`: *"`type.lead` (`.intro`) is 20px under an 18px `type.heading` on `app/blog/[slug]` — outranks its heading."* Don't fix while auditing unless asked.
-
-**Sweep after every type decision** (the sweep: `domains/patterns/iteration.md`). Raw sizes hide a partial type update from grep, so walk every route rendered against the `## Type` table and migrate raw sizes to role tokens as you go. → `domains/type/type-audit.md`
+**Sweep after every type decision** (`domains/patterns/iteration.md`; its type steps, `domains/type/type-audit.md`).
 
 ## Writing back to DESIGN.md
 
 - **`## Type`** — families; a row per role in use (project name, size, leading, tracking, weight, tier); project roles under their canonical parent with their separating axis; each weight's job, and with three the size × use table; each role's icon size. Keep existing names; mark new ones `proposed`.
-- **`## Decisions`** — every dial moved off the preset, dated, with its reason (a third weight and the table that needed it, a raised ceiling and its role, italic for a true italic); any law knowingly broken, with the user's confirmation.
-- **`## Open issues`** — each violation with its evidence, removed when fixed.
+- **`## Decisions`** — a third weight and the table that needed it, a raised ceiling and its role, italic for a true italic.
 
 Write back whenever the ladder changes shape — a role, size, weight or family added or dropped. A size without a row is how a ladder turns back into a pile of values.
 
 ## Checklist
 
-- [ ] Every size maps to a named role in `DESIGN.md`; no unclaimed base size.
-- [ ] One ladder per area; roles crossing a boundary keep one set of values.
-- [ ] Nothing outranks its heading; no in-body heading outranks `type.title`; at most one `type.display` per page.
-- [ ] Each role sharing a size owns a signal no other role there uses; each rank up moves weight or tracking too.
-- [ ] One element, one set of values on every page; row and card titles are their darkest text.
-- [ ] Every weight and family has a job; no weight changes on hover.
-- [ ] Weight lifts one step, never on neighbours; one weight per set of titles; at most one state on weight.
-- [ ] Active and selected states carry a signal besides colour.
-- [ ] Display, reading and UI each use their own leading curve; fixed-height single-line UI uses 1.
-- [ ] Tracking is in `em`: negative only above the text range, positive on tiny text and capitals, zero on body.
-- [ ] UI and reading copy differ in leading, measure and tier; in-product help text is reading copy.
-- [ ] `font-synthesis: none`; `<strong>` is `weight.strong`; no UA italic or bold leaks past the mapping.
-- [ ] Aligned and live numbers are tabular, and the family ships `tnum`.
-- [ ] Imported prose: one scoped class, existing roles, first-child margin reset, wide content scrolling in its own box.
-- [ ] Fonts self-hosted, `swap`, metric-matched fallback; only used weights requested.
-- [ ] Icons match the size and stroke of their text; inputs are 16px on touch widths.
-- [ ] After a type change, every route swept rendered; no raw sizes left.
-- [ ] Nothing a user must read sits below the readable floor.
-- [ ] Dials match the preset: body size, ceiling ratio, weight and family counts, leading ranges, tracking at the top.
+- [ ] No unclaimed base size; row and card titles are their darkest text.
+- [ ] Weight lifts one step, never on neighbours; one weight per set of titles; at most one state on weight; no weight change on hover.
+- [ ] Imported prose resets its first child's margin and scrolls wide content in its own box.
+- [ ] Inputs are 16px on touch widths; nothing a user must read sits below the readable floor.
 - [ ] Display derived from the measure; every fluid size clamped with a `rem` intercept; no text sized in `vw` alone.
-- [ ] Italic, case (generated labels included), numeral defaults and the unit match the preset or a recorded decision.

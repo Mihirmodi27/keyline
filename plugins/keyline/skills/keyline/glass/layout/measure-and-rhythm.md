@@ -6,7 +6,7 @@ Glass's values for layout laws 1–3; the derivations and reasons every preset s
 
 `.col` (§1 of the guide) is 640px outer with 32px padding each side → **576px of text**.
 
-At 16px prose that's roughly 75–85 characters per line, at the top of the comfortable range on purpose: long lines are efficient once the reader is committed, and 1.75 leading compensates for the longer return sweep. At 14px UI copy the column holds ~85–95 characters, which is fine because that text is scanned, not read.
+At the 14px prose size that's about 90 characters a line (85–95, measured in Archivo), past the comfortable range on purpose: long lines are efficient once the reader is committed, and 1.75 leading compensates for the longer return sweep. At 16px the same column would hold 75–85.
 
 The padding does double duty: on a 375px phone the column is `375 − 64 = 311px`, and on desktop the 32px keeps text off the edge of a maximised window.
 
@@ -64,13 +64,13 @@ Tailwind's 4px scale, with a preference for a few well-worn values:
 | `7` | 28 | Capability groups |
 | `8` | 32 | Section heading → content, column padding |
 | `9` | 36 | Home section padding |
-| `10` | 40 | Section content after a rule |
-| `11` | 44 | Prose heading top margin |
+| `10` | 40 | Prose heading top margin, section content after a rule |
+| `11` | 44 | Between roles on the experience page |
 | `14` | 56 | First section on a long page |
 | `16` | 64 | Between major sections on a long page |
 | `20`/`28` | 80/112 | Page top/bottom padding |
 
-The values in heaviest use are `2.5`, `3.5`, `9`, `11` — the half-steps and odd numbers. They exist because 8/12/36/44 are where the *asymmetry ratios* land, not because the scale demanded them.
+The values in heaviest use are `2.5`, `3.5`, `9`, `10` — mostly half-steps and odd numbers. They exist because 10/14/36/40 are where the *asymmetry ratios* land, not because the scale demanded them.
 
 ## Asymmetry, in detail
 

@@ -35,15 +35,7 @@ Card title weight 600 → 500 (role `type.card-title`):
 
 ## The decision log
 
-Every decision goes under `## Decisions` in `DESIGN.md`, in the format `system/design-md.md` sets.
-
-```markdown
-- 2026-10-28 — Card titles at 500, not 600: "unnecessarily heavy" next to the pane title. (User decision.)
-- 2026-10-21 — Boards remember their view per page; folders always open on folders. (User decision.)
-- 2026-10-14 — More colour, each hue with one job: type, status, area, person. (Client feedback.)
-```
-
-Read the log before changing anything it covers. A reviewer's instinct to "fix" a decided value is how a product oscillates between two versions.
+Every decision goes under `## Decisions` in `DESIGN.md`, in the format and with the rules `system/design-md.md` sets.
 
 ## Studying a reference
 

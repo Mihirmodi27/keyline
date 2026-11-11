@@ -2,7 +2,7 @@
 
 Bring `DESIGN.md` back in line with code that has moved since it was written. An audit of the file, not a rewrite of it.
 
-**Read:** `system/guide.md` §0, and `system/design-md.md` for the format.
+**Read:** `system/design-md.md` for the format.
 
 **Steps:**
 
@@ -13,5 +13,3 @@ Bring `DESIGN.md` back in line with code that has moved since it was written. An
 5. Propose the edits as a short diff and apply them. Every name the user chose and every `## Decisions` entry survives; a decision the code now contradicts is reported, never silently dropped.
 
 **Report:** what drifted, what's newly fixed, what's newly broken, and anything in `## Decisions` the code no longer follows.
-
-**Changes no code** — only `DESIGN.md`.

@@ -277,6 +277,9 @@ export function run(argv) {
   }
 
   const result = check({ root: opts.root, paths: opts.paths.length ? opts.paths : ["."], ignores: opts.ignores, rules: opts.rules });
+  // The verdict counts every finding, so --quiet trims the output, never the exit code.
+  const all = summarise(result.findings);
+  const failed = all.error > 0 || (opts.strict && all.warning > 0);
   if (opts.quiet) result.findings = result.findings.filter((f) => f.severity === "error");
   const s = summarise(result.findings);
 
@@ -286,7 +289,7 @@ export function run(argv) {
   } else {
     console.log(human(result, { all: opts.all, color: process.stdout.isTTY && !process.env.NO_COLOR }));
   }
-  return s.error > 0 || (opts.strict && s.warning > 0) ? 1 : 0;
+  return failed ? 1 : 0;
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {

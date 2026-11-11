@@ -114,7 +114,7 @@ export type Rect = { x: number; y: number; width: number; height: number };
 export function lerpRect(a: Rect, b: Rect, t: number): Rect { /* … */ }
 ```
 
-The rules are law 13 and `domains/motion/performance.md`, escalating to the GPU. Here the wall stays DOM and the open photo is `alt=""`, its labels in the strip beside it.
+The rules are law 13 and `domains/motion/performance.md`, escalating to the GPU. Here the wall stays DOM, since a hundred tiles as textures is ~590MB before atlasing, and the open photo is `alt=""`, its labels in the strip beside it.
 
 **Failing returns `null`:**
 

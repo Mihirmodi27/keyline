@@ -68,7 +68,7 @@ The class is applied only on an explicit toggle, then removed:
 
 ```ts
 export function setThemeChoice(choice: ThemeChoice): void {
-  localStorage.setItem(KEY, choice);
+  try { localStorage.setItem(KEY, choice); } catch { /* won't persist */ }
   const root = document.documentElement;
   root.classList.add("theme-transition");
   applyTheme(choice);

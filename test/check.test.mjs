@@ -71,6 +71,7 @@ test("the CLI exits 1 on errors, 0 when clean, 2 on bad usage", () => {
   assert.equal(run("--root", fixture("clean")).status, 0);
   assert.equal(run("--root", fixture("decided")).status, 0, "warnings alone pass");
   assert.equal(run("--root", fixture("decided"), "--strict").status, 1, "--strict fails on warnings");
+  assert.equal(run("--root", fixture("decided"), "--strict", "--quiet").status, 1, "--quiet hides warnings but --strict still fails on them");
   assert.equal(run("--rule", "nope").status, 2);
   assert.equal(run("--root", "/no/such/dir").status, 2);
 

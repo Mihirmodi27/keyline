@@ -46,7 +46,7 @@ node <keyline>/scripts/contrast.mjs --ladder "#ffffff" "#16161a" "#4b4b52" "#6b6
 
 ## 3. Choose the preset
 
-From what the reader is mostly doing — reading, working, or being persuaded — propose `editorial`, `product` or `expressive` (`presets.md`). Offer `glass` only when the user wants modimihir.com's exact system rather than their own; it fills the dials from `glass/`, under the project's existing names wherever it has them.
+From what the reader is mostly doing — reading, working, or being persuaded — propose `editorial`, `product` or `expressive` (`presets.md`). Offer `glass` only when the user wants modimihir.com's exact system rather than their own; it fills the dials from the tables in each `glass/<domain>/guide.md`, under the project's existing names wherever it has them.
 
 State the evidence: *"Mostly long-form pages under `app/blog`, two weights in use, one accent — this reads as `editorial`."* Mixed projects get a base preset plus areas: `product`, with `app/(marketing)/** → expressive`.
 
@@ -70,19 +70,15 @@ Don't ask what you can find out, and don't ask for approval of the whole mapping
 Follow `system/design-md.md`: the project's names in `Name here`, canonical roles in `Role`, values as the source states them, measured contrast for every text tier, per-theme columns only where themes exist, nothing for roles the project lacks. Then:
 
 - **`## Decisions`** — every dial set differently from the preset, with its reason, or a question mark if unknown.
-- **`## Open issues`** — every law the code breaks, one line each with evidence (a ratio, a count, a file). Before writing them, read the law headings (the `### N.` lines) of each domain guide you cite, so every citation names the right law. **Don't fix anything** unless asked; a setup run that also rewrites forty components can't be reviewed.
+- **`## Open issues`** — every law the code breaks, one line each with evidence (a ratio, a count, a file). Cite each law by the right number (`commands/init.md`). **Don't fix anything** unless asked; a setup run that also rewrites forty components can't be reviewed.
 
 Tell the user briefly: the preset and why, how many roles mapped cleanly, what you proposed names for, and the three most important open issues.
 
 ## 6. Generating tokens, only when asked
 
-The set ships no token files, because the right file depends on the stack. Asked for tokens — for a new project, or to fill `proposed` rows — generate them **in the project's existing mechanism**: a Tailwind v4 `@theme` block, a `tailwind.config` extension, CSS custom properties, a JS theme object, a design-tokens JSON. Match the existing layout and naming; never add a second token system beside the first.
+Apart from the `glass` preset's drop-in files under `glass/<domain>/assets/`, the set ships no token files, because the right file depends on the stack. Asked for tokens — for a new project, or to fill `proposed` rows — generate them **in the project's existing mechanism**: a Tailwind v4 `@theme` block, a `tailwind.config` extension, CSS custom properties, a JS theme object, a design-tokens JSON. Match the existing layout and naming; never add a second token system beside the first.
 
 With no tokens yet, `presets.md` and each domain guide's `## Dials` section give defaults. Say they're defaults, choose names with the user, and record the choices in `DESIGN.md`.
-
-## How the other commands use this file
-
-Each domain command reads `DESIGN.md`, finds its section, and works in the project's names. If the file is missing, it runs steps 1–2 for its own domain, does the task and recommends `/keyline init` — it doesn't refuse. A decision that changes the system — a new role, a moved dial, a law knowingly broken, a change a law forced that a later session might undo — goes back under `Decisions` — dated, marked user decision, client feedback or law, newest first, replacing what it supersedes — which is what keeps the file true after the first day.
 
 ## Checklist
 

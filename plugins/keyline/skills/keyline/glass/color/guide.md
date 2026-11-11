@@ -156,20 +156,7 @@ Utilities read the variables, so most of the site needs **no per-component `dark
 
 ### No flash of wrong theme
 
-A blocking inline script in `<head>`, before any paint (domain law 9):
-
-```html
-<script>
-  (function () {
-    try {
-      document.documentElement.dataset.theme =
-        localStorage.getItem("theme") === "dark" ? "dark" : "light";
-    } catch (e) {}
-  })();
-</script>
-```
-
-→ Persistence, toggle crossfade, light/dark/system trade-offs: `glass/color/theming.md`
+A blocking `<head>` script sets the attribute before paint (domain law 9): `glass/color/assets/theme.ts`. → Two states, Light by default, and the toggle's 400ms plain-`ease` crossfade: `glass/color/theming.md`
 
 ## 6. Some colours are runtime, not build-time
 
@@ -183,23 +170,9 @@ The ramps and surfaces are vocabulary, in `@theme`; the **glass tints** are plai
 }
 ```
 
-The `prefers-reduced-transparency` fallback swaps each for a solid tint at runtime, and one isn't a colour at all. Gradients put the `--sv-*` family in `:root` too (two multi-stop gradients and a four-layer `box-shadow`).
+Runtime because the reduced-transparency fallback swaps them, after both theme blocks (`glass/depth/guide.md` §8), and one isn't a colour at all; the `--sv-*` gradients sit in `:root` too.
 
 The nav tint is `#f2f2f2` (`gray-100`), not white: grey chrome reads as an object, not a hole in the page. Dark tints are *lighter* than the dark page (domain law 8).
-
-The reduced-transparency swap comes **after** both theme blocks and names both selectors (domain law 10):
-
-```css
-@media (prefers-reduced-transparency: reduce) {
-  :root, :root[data-theme="dark"] {
-    --glass-nav-bg: var(--color-gray-100);
-    --glass-panel-bg: var(--color-gray-100);
-    --folder-glass-bg: var(--color-background-100);
-  }
-}
-```
-
-Dropping the `backdrop-filter` is the other half, and both are required. Blur, saturation, elevation shadows and text contrast over glass belong to `glass/depth/guide.md`.
 
 ## Assets
 
