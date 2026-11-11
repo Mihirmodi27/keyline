@@ -13,7 +13,7 @@
  */
 import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { join, relative, sep } from "node:path";
-import { walk } from "../check/files.mjs";
+import { walk } from "trykeyline/check/files";
 
 /** Route files: what a router reads, and plain HTML. */
 const ROUTE_FILES = new Set([".tsx", ".ts", ".jsx", ".js", ".mdx", ".md", ".svelte", ".astro", ".vue", ".html"]);

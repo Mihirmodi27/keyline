@@ -1,17 +1,15 @@
-#!/usr/bin/env node
 /**
  * Keyline's browser tools: the pages a product has, a walk through them, and
  * the report. The audit and the smoke test are built on these.
  *
- *   node browse.mjs pages   [--root .] [--base URL] [--json]
- *   node browse.mjs capture (--base URL | --serve DIR) [--root .] [--out keyline-report]
- *   node browse.mjs report  [DIR] [--compare PREVIOUS-DIR]
+ *   keyline pages   [--root .] [--base URL] [--json]
+ *   keyline capture (--base URL | --serve DIR) [--root .] [--out keyline-report]
+ *   keyline report  [DIR] [--compare PREVIOUS-DIR]
  *
  * Exit codes: 0 done, 1 the walk found errors, 2 a usage error.
  */
 import { existsSync, rmSync } from "node:fs";
 import { resolve } from "node:path";
-import { fileURLToPath } from "node:url";
 import { parseOrExplain } from "./browse/args.mjs";
 import { counts, writeRun } from "./browse/findings.mjs";
 import { renderDir } from "./browse/report.mjs";
@@ -174,14 +172,4 @@ export async function run(argv) {
 
   console.error(`no command '${cmd}'\n\n${USAGE}`);
   return 2;
-}
-
-if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
-  run(process.argv.slice(2)).then(
-    (code) => process.exit(code),
-    (err) => {
-      console.error(err?.message ?? err);
-      process.exit(2);
-    },
-  );
 }

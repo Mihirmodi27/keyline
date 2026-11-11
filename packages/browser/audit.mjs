@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 /**
  * The audit's machine half: walk every page of a running product at desktop
  * and phone, light and dark; measure contrast, names, targets, overflow, the
@@ -8,17 +7,16 @@
  *
  * The agent's half follows (commands/audit.md): look at the shots, add the
  * findings only judgement can make, settle the scores, write the summary, and
- * re-render with `browse.mjs report`.
+ * re-render with `keyline report`.
  *
- *   node audit.mjs --base http://localhost:3000 [--root .]
- *   node audit.mjs --serve dist
- *   node audit.mjs --base … --quick [--routes /pricing]     one page, the quick read
+ *   keyline audit --base http://localhost:3000 [--root .]
+ *   keyline audit --serve dist
+ *   keyline audit --base … --quick [--routes /pricing]     one page, the quick read
  *
  * Exit codes: 0 done, 1 errors found, 2 a usage error.
  */
 import { existsSync, rmSync } from "node:fs";
 import { resolve } from "node:path";
-import { fileURLToPath } from "node:url";
 import { add, counts, writeRun } from "./browse/findings.mjs";
 import { shotKey } from "./browse/capture.mjs";
 import { renderDir } from "./browse/report.mjs";
@@ -26,8 +24,8 @@ import { walk } from "./browse/walk.mjs";
 import { parseOrExplain } from "./browse/args.mjs";
 import { target } from "./browse.mjs";
 import { auditProbe } from "./audit/probe.mjs";
-import { check } from "./check.mjs";
-import { DOMAINS } from "./check/rules.mjs";
+import { check } from "trykeyline/check";
+import { DOMAINS } from "trykeyline/check/rules";
 
 const USAGE = `keyline audit — every page, measured, in one report.
 
@@ -208,14 +206,4 @@ export async function run(argv) {
   } finally {
     await t.stop();
   }
-}
-
-if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
-  run(process.argv.slice(2)).then(
-    (code) => process.exit(code),
-    (err) => {
-      console.error(err?.stack ?? err);
-      process.exit(2);
-    },
-  );
 }

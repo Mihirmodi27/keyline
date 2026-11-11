@@ -51,8 +51,8 @@
 
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
-import { SEVERITIES, bySeverity, tally } from "../check/findings.mjs";
-import { DOMAINS as LAW_DOMAINS } from "../check/rules.mjs";
+import { SEVERITIES, bySeverity, tally } from "trykeyline/check/findings";
+import { DOMAINS as LAW_DOMAINS } from "trykeyline/check/rules";
 
 /** The six law domains, and what only a rendered page shows. */
 export const DOMAINS = [...LAW_DOMAINS, "a11y", "copy", "states", "slop", "flow", "runtime", "visual"];

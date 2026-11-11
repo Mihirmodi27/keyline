@@ -7,10 +7,9 @@
  *   npx trykeyline install --user               for every project on this machine
  *   npx trykeyline update                       refresh every copy already installed
  *   npx trykeyline check                        the detector (see scripts/check.mjs)
- *   npx trykeyline pages | capture | report     the browser tools (see scripts/browse.mjs);
- *                                               report --compare marks what changed since a run
- *   npx trykeyline audit                        every page measured, one report (see scripts/audit.mjs)
- *   npx trykeyline smoke --base URL             the smoke test (see scripts/smoke.mjs)
+ *   npx trykeyline audit | smoke | pages | capture | report | probe
+ *                                               the browser tools, from the trykeyline-browser
+ *                                               package at this version (see browser.mjs)
  *   npx trykeyline guard --install              check each UI file as the agent writes it
  *
  * Keyline is one skill folder. Each coding agent reads skills from its own
@@ -97,6 +96,9 @@ const USAGE = `Keyline ${version} — interface design laws for coding agents.
   npx trykeyline pages | capture | report
                                      the walk under them: list the pages, visit
                                      and shoot each, re-render or --compare a report
+  npx trykeyline probe <name>        print a page check to run in your own browser
+                                     (the browser commands come from the
+                                     trykeyline-browser package, fetched on first use)
   npx trykeyline guard --install     check each UI file as the agent writes it, and
                                      hand what's found straight back to it
                                      (--pre-commit for any agent; see npx trykeyline guard --help)
@@ -135,19 +137,9 @@ if (argv[0] === "check") {
   const { run } = await import(new URL("../plugins/keyline/skills/keyline/scripts/check.mjs", import.meta.url));
   process.exit(run(argv.slice(1)));
 }
-// The browser tools live beside it, for the same reason.
-if (["pages", "capture", "report"].includes(argv[0])) {
-  const { run } = await import(new URL("../plugins/keyline/skills/keyline/scripts/browse.mjs", import.meta.url));
-  process.exit(await run(argv));
-}
-if (argv[0] === "audit") {
-  const { run } = await import(new URL("../plugins/keyline/skills/keyline/scripts/audit.mjs", import.meta.url));
-  process.exit(await run(argv.slice(1)));
-}
-if (argv[0] === "smoke") {
-  const { run } = await import(new URL("../plugins/keyline/skills/keyline/scripts/smoke.mjs", import.meta.url));
-  process.exit(await run(argv.slice(1)));
-}
+// The browser tools are a second package, trykeyline-browser (see browser.mjs).
+const { BROWSER_COMMANDS, runBrowser } = await import("./browser.mjs");
+if (BROWSER_COMMANDS.includes(argv[0])) process.exit(await runBrowser(argv, version));
 // `guard` wires the live guard (bin/guard.mjs) into an agent's hooks or git's.
 if (argv[0] === "guard") {
   const { guardCommand } = await import("./guard.mjs");

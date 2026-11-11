@@ -4,7 +4,7 @@
  * close over anything here: they share helpers through `window.__kl`, which
  * `HELPERS` installs and every exported function installs first.
  *
- * The same source works in an agent's own browser: `smoke.mjs probe <name>`
+ * The same source works in an agent's own browser: `keyline probe <name>`
  * prints any of them as one expression to paste into its JavaScript tool.
  */
 

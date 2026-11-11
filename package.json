@@ -26,6 +26,12 @@
     "keyline": "bin/keyline.mjs",
     "trykeyline": "bin/keyline.mjs"
   },
+  "exports": {
+    "./package.json": "./package.json",
+    "./check": "./plugins/keyline/skills/keyline/scripts/check.mjs",
+    "./check/*": "./plugins/keyline/skills/keyline/scripts/check/*.mjs",
+    "./npm": "./bin/npm.mjs"
+  },
   "files": [
     "bin",
     "plugins",
@@ -35,6 +41,7 @@
     "node": ">=18"
   },
   "scripts": {
-    "test": "node --test \"test/**/*.test.mjs\""
+    "pretest": "node packages/browser/link.mjs",
+    "test": "node --test \"test/**/*.test.mjs\" \"packages/*/test/**/*.test.mjs\""
   }
 }

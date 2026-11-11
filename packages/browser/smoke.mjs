@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 /**
  * Keyline's smoke test: walk a running product like a tester and report the
  * flows that break. Built on the shared walk (browse/walk.mjs) — which finds
@@ -15,15 +14,14 @@
  *   phone     at 390px: sideways scroll, navigation that can't be reached
  *   shift     layout shift while loading on a slow connection
  *
- *   node smoke.mjs (--base URL | --serve DIR) [options]
- *   node smoke.mjs probe <name>        a page function, for an agent's own browser
- *   node smoke.mjs report [DIR]        re-render DIR/index.html
+ *   keyline smoke (--base URL | --serve DIR) [options]
+ *   keyline smoke probe <name>        a page function, for an agent's own browser
+ *   keyline smoke report [DIR]        re-render DIR/index.html
  *
  * Exit codes: 0 nothing broken, 1 errors found, 2 a usage error.
  */
 import { existsSync, readFileSync, rmSync } from "node:fs";
 import { join, resolve } from "node:path";
-import { fileURLToPath } from "node:url";
 import { parseOrExplain } from "./browse/args.mjs";
 import { target } from "./browse.mjs";
 import { add, counts, dedupe, writeRun } from "./browse/findings.mjs";
@@ -37,7 +35,8 @@ import { CHECKS, isDestructivePath, loadConfig, policy as makePolicy, settings a
 import { checkForms } from "./smoke/forms.mjs";
 import { checkKeyboard } from "./smoke/keyboard.mjs";
 import { checkLinks } from "./smoke/links.mjs";
-import { PAGE, expression } from "./smoke/page.mjs";
+import { PAGE } from "./smoke/page.mjs";
+import { probeExpression } from "./probe.mjs";
 import { checkPhone } from "./smoke/phone.mjs";
 import { checkShift } from "./smoke/shift.mjs";
 import { openStep, pool, sourceFinder } from "./smoke/util.mjs";
@@ -367,7 +366,7 @@ export async function run(argv) {
   if (cmd === "probe") {
     try {
       const given = opts.arg ? JSON.parse(opts.arg) : arg === "stuck" ? { after: Number(opts["stuck-ms"] ?? 8000) } : {};
-      console.log(expression(arg ?? "inventory", given));
+      console.log(probeExpression(arg ?? "inventory", given));
       return 0;
     } catch (err) {
       console.error(err.message);
@@ -410,14 +409,4 @@ export async function run(argv) {
   } finally {
     await t.stop();
   }
-}
-
-if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
-  run(process.argv.slice(2)).then(
-    (code) => process.exit(code),
-    (err) => {
-      console.error(err?.stack ?? err);
-      process.exit(2);
-    },
-  );
 }

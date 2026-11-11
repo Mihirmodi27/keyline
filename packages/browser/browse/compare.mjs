@@ -23,7 +23,7 @@
  */
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join, relative } from "node:path";
-import { split } from "../check/findings.mjs";
+import { split } from "trykeyline/check/findings";
 import { readRun, writeRun } from "./findings.mjs";
 import { shotKey } from "./capture.mjs";
 

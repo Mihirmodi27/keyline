@@ -1,0 +1,55 @@
+{
+  "name": "trykeyline-browser",
+  "version": "0.1.1",
+  "description": "Keyline's browser tools: find a product's pages, walk them at desktop and phone in light and dark, and report what the audit and the smoke test find. Run through `npx trykeyline audit|smoke|pages|capture|report|probe`.",
+  "keywords": [
+    "design",
+    "ui",
+    "accessibility",
+    "audit",
+    "smoke-test",
+    "playwright",
+    "agent-skills",
+    "claude-code"
+  ],
+  "homepage": "https://github.com/Mihirmodi27/keyline#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Mihirmodi27/keyline.git",
+    "directory": "packages/browser"
+  },
+  "license": "MIT",
+  "author": "Mihir Modi (https://modimihir.com)",
+  "type": "module",
+  "bin": {
+    "trykeyline-browser": "bin/trykeyline-browser.mjs"
+  },
+  "files": [
+    "bin",
+    "browse",
+    "smoke",
+    "audit",
+    "browse.mjs",
+    "smoke.mjs",
+    "audit.mjs",
+    "probe.mjs"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "trykeyline": "0.1.1"
+  },
+  "peerDependencies": {
+    "playwright": "^1.40.0"
+  },
+  "peerDependenciesMeta": {
+    "playwright": {
+      "optional": true
+    }
+  },
+  "scripts": {
+    "pretest": "node link.mjs",
+    "test": "node --test \"test/**/*.test.mjs\""
+  }
+}

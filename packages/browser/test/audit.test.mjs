@@ -3,8 +3,8 @@ import { mkdirSync, mkdtempSync, readFileSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { test } from "node:test";
-import { draftScores, scoreDomain, run } from "../plugins/keyline/skills/keyline/scripts/audit.mjs";
-import { launch } from "../plugins/keyline/skills/keyline/scripts/browse/playwright.mjs";
+import { draftScores, scoreDomain, run } from "../audit.mjs";
+import { launch } from "../browse/playwright.mjs";
 
 test("draft scores fall with each rule broken, errors most", () => {
   const scores = draftScores([

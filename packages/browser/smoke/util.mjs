@@ -1,6 +1,6 @@
 /** Small things every smoke pass shares: a worker pool, a fresh page, steps in words, and finding the source. */
 import { existsSync, readFileSync } from "node:fs";
-import { walk } from "../check/files.mjs";
+import { walk } from "trykeyline/check/files";
 import { VIEWPORTS, listen } from "../browse/capture.mjs";
 
 export const sleep = (ms) => new Promise((r) => setTimeout(r, ms));

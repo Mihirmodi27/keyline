@@ -3,10 +3,10 @@ import { mkdirSync, mkdtempSync, readFileSync, symlinkSync, writeFileSync } from
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { test } from "node:test";
-import { add, dedupe, newRun, readRun, writeRun } from "../plugins/keyline/skills/keyline/scripts/browse/findings.mjs";
-import { render, renderDir } from "../plugins/keyline/skills/keyline/scripts/browse/report.mjs";
-import { discover, linkPath, routesFromCode } from "../plugins/keyline/skills/keyline/scripts/browse/routes.mjs";
-import { serve } from "../plugins/keyline/skills/keyline/scripts/browse/serve.mjs";
+import { add, dedupe, newRun, readRun, writeRun } from "../browse/findings.mjs";
+import { render, renderDir } from "../browse/report.mjs";
+import { discover, linkPath, routesFromCode } from "../browse/routes.mjs";
+import { serve } from "../browse/serve.mjs";
 
 function project(files) {
   const root = mkdtempSync(join(tmpdir(), "keyline-routes-"));

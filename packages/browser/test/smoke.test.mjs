@@ -5,16 +5,16 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { test } from "node:test";
 import { fileURLToPath } from "node:url";
-import { loadPlaywright } from "../plugins/keyline/skills/keyline/scripts/browse/playwright.mjs";
-import { serve } from "../plugins/keyline/skills/keyline/scripts/browse/serve.mjs";
-import { SMOKE_OPTIONS, smoke } from "../plugins/keyline/skills/keyline/scripts/smoke.mjs";
-import { parseArgs } from "../plugins/keyline/skills/keyline/scripts/browse/args.mjs";
-import { BROWSE_OPTIONS } from "../plugins/keyline/skills/keyline/scripts/browse.mjs";
-import { isDestructive, isTestHost, loadConfig, policy, settings, urlMatcher } from "../plugins/keyline/skills/keyline/scripts/smoke/config.mjs";
-import { invalidValue, validValue } from "../plugins/keyline/skills/keyline/scripts/smoke/forms.mjs";
-import { follow } from "../plugins/keyline/skills/keyline/scripts/smoke/links.mjs";
-import { expression, similarity } from "../plugins/keyline/skills/keyline/scripts/smoke/page.mjs";
-import { cls } from "../plugins/keyline/skills/keyline/scripts/smoke/shift.mjs";
+import { loadPlaywright } from "../browse/playwright.mjs";
+import { serve } from "../browse/serve.mjs";
+import { SMOKE_OPTIONS, smoke } from "../smoke.mjs";
+import { parseArgs } from "../browse/args.mjs";
+import { BROWSE_OPTIONS } from "../browse.mjs";
+import { isDestructive, isTestHost, loadConfig, policy, settings, urlMatcher } from "../smoke/config.mjs";
+import { invalidValue, validValue } from "../smoke/forms.mjs";
+import { follow } from "../smoke/links.mjs";
+import { expression, similarity } from "../smoke/page.mjs";
+import { cls } from "../smoke/shift.mjs";
 
 const SITE = fileURLToPath(new URL("./fixtures/smoke-site/", import.meta.url));
 
