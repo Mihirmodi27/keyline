@@ -60,7 +60,7 @@ export function auditProbe({ viewport, theme, firstPass, limit = 12 }) {
   const lum = ([r, g, b]) => {
     const c = (v) => {
       v /= 255;
-      return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4;
+      return v <= 0.04045 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4;
     };
     return 0.2126 * c(r) + 0.7152 * c(g) + 0.0722 * c(b);
   };

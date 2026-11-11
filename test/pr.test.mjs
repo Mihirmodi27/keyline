@@ -7,7 +7,8 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { check } from "../plugins/keyline/skills/keyline/scripts/check.mjs";
 import { changedFiles } from "../plugins/keyline/skills/keyline/scripts/check/git.mjs";
-import { MARKER, annotation, annotations, comment, summary } from "../plugins/keyline/skills/keyline/scripts/github.mjs";
+import { annotation, annotations } from "../plugins/keyline/skills/keyline/scripts/check/github.mjs";
+import { MARKER, comment, summary } from "../ci/github.mjs";
 
 const CLI = fileURLToPath(new URL("../bin/keyline.mjs", import.meta.url));
 const cli = (cwd, ...args) => spawnSync(process.execPath, [CLI, "check", ...args], { cwd, encoding: "utf8", env: { ...process.env, NO_COLOR: "1" } });

@@ -87,7 +87,7 @@ runs:
         status=$?
 
         if [ -f "$report" ]; then
-          node "$KEYLINE/plugins/keyline/skills/keyline/scripts/github.mjs" summary "$report" >> "${GITHUB_STEP_SUMMARY:-/dev/null}" || true
+          node "$KEYLINE/ci/github.mjs" summary "$report" >> "${GITHUB_STEP_SUMMARY:-/dev/null}" || true
         fi
         echo "report=$report" >> "$GITHUB_OUTPUT"
         echo "status=$status" >> "$GITHUB_OUTPUT"
@@ -102,7 +102,7 @@ runs:
         GH_TOKEN: ${{ inputs.github-token }}
         KEYLINE_SHA: ${{ github.event.pull_request.head.sha }}
         REPORT: ${{ steps.check.outputs.report }}
-      run: node "$KEYLINE/plugins/keyline/skills/keyline/scripts/github.mjs" comment "$REPORT" --pr "${{ github.event.pull_request.number }}" --repo "$GITHUB_REPOSITORY"
+      run: node "$KEYLINE/ci/github.mjs" comment "$REPORT" --pr "${{ github.event.pull_request.number }}" --repo "$GITHUB_REPOSITORY"
 
     - name: Keyline result
       if: steps.check.outputs.status != '0'

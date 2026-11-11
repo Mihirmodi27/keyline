@@ -35,7 +35,7 @@ import { DOMAINS, RULES } from "./check/rules.mjs";
 import { BASELINE_FILE, compare, fingerprint, readBaseline, writeBaseline } from "./check/baseline.mjs";
 import { bySeverity, tally } from "./check/findings.mjs";
 import { changedFiles, repoOf, stagedFiles } from "./check/git.mjs";
-import { annotations } from "./github.mjs";
+import { annotations } from "./check/github.mjs";
 
 const USAGE = `keyline check — the interface laws that can be checked without a model.
 

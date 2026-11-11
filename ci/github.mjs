@@ -1,16 +1,16 @@
 #!/usr/bin/env node
 /**
- * The detector in a pull request.
+ * The detector in a pull request: the GitHub Action's own steps (action.yml).
+ * It runs from the Action's checkout, so it isn't in the npm package.
  *
  *   keyline check --changed origin/main --format github     annotations on the PR's lines
- *   node github.mjs summary keyline.json                    the run as Markdown, for $GITHUB_STEP_SUMMARY
- *   node github.mjs comment keyline.json [--pr N] [--repo owner/name]
+ *                                                           (scripts/check/github.mjs, in the skill)
+ *   node ci/github.mjs summary keyline.json                 the run as Markdown, for $GITHUB_STEP_SUMMARY
+ *   node ci/github.mjs comment keyline.json [--pr N] [--repo owner/name]
  *                                                           post or update ONE summary comment on the PR
  *
- * Annotations are workflow commands printed to stdout (`::error file=…,line=…::…`):
- * GitHub draws them on the PR's diff with no token. It shows at most ten
- * errors and ten warnings per step, so they're printed errors first, and the
- * summary carries the rest.
+ * GitHub shows at most ten errors and ten warnings per step as annotations;
+ * the summary carries the rest.
  *
  * `comment` uses the `gh` CLI with GH_TOKEN (the workflow's GITHUB_TOKEN is
  * enough, with `pull-requests: write`). It finds its own earlier comment by a
@@ -22,32 +22,9 @@ import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import { toAnnotate } from "../plugins/keyline/skills/keyline/scripts/check/github.mjs";
 
 export const MARKER = "<!-- keyline-check -->";
-const LEVEL = { error: "error", warning: "warning", info: "notice" };
-const ORDER = { error: 0, warning: 1, info: 2 };
-
-/** Workflow-command escaping: data loses newlines and %, properties also : and , */
-const escData = (s) => String(s ?? "").replace(/%/g, "%25").replace(/\r/g, "%0D").replace(/\n/g, "%0A");
-const escProp = (s) => escData(s).replace(/:/g, "%3A").replace(/,/g, "%2C");
-
-/** One finding as a workflow command. `prefix` is the path from the repository's top to the checked root. */
-export function annotation(f, { prefix = "" } = {}) {
-  const props = [`file=${escProp(prefix + f.file)}`];
-  if (f.line) props.push(`line=${f.line}`);
-  props.push(`title=${escProp(`Keyline: ${f.rule}`)}`);
-  return `::${LEVEL[f.severity] ?? "warning"} ${props.join(",")}::${escData(f.law ? `${f.message} (${f.law})` : f.message)}`;
-}
-
-/** The findings worth a line on the PR: against a baseline, only new ones. Errors first. */
-export function toAnnotate(findings) {
-  const list = findings.some((f) => f.change) ? findings.filter((f) => f.change === "new") : findings;
-  return [...list].sort((a, b) => ORDER[a.severity] - ORDER[b.severity] || a.file.localeCompare(b.file) || a.line - b.line);
-}
-
-export function annotations(findings, opts) {
-  return toAnnotate(findings).map((f) => annotation(f, opts));
-}
 
 const plural = (n, word) => `${n} ${word}${n === 1 ? "" : "s"}`;
 const escMd = (s) => String(s ?? "").replace(/\|/g, "\\|").replace(/\n/g, " ");
@@ -143,7 +120,7 @@ export function main(argv) {
     return i >= 0 ? rest[i + 1] : null;
   };
   if (!cmd || !file || !["summary", "comment"].includes(cmd)) {
-    console.error("usage: github.mjs summary <keyline.json>\n       github.mjs comment <keyline.json> [--pr N] [--repo owner/name] [--sha SHA]");
+    console.error("usage: ci/github.mjs summary <keyline.json>\n       ci/github.mjs comment <keyline.json> [--pr N] [--repo owner/name] [--sha SHA]");
     return 2;
   }
   const report = JSON.parse(readFileSync(resolve(file), "utf8"));
