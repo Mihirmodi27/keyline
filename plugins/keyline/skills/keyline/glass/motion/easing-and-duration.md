@@ -33,12 +33,7 @@ The gap between 150 and 200 maps to *whether other things move too*:
 
 ## Why route transitions are 260ms
 
-```css
-.route-fade { animation: routeFade 260ms var(--ease-geist) both; }
-@keyframes routeFade { from { opacity: 0 } to { opacity: 1 } }
-```
-
-260ms is the shortest crossfade that still reads as intentional; below ~200ms a full-viewport opacity change looks like a rendering artefact (law 3 caps it). Opacity only, because a directional transition implies a spatial relationship between routes, and the site map (home, experience, writing, playground) is flat.
+The rule is `.route-fade` in `glass/motion/assets/motion-tokens.css`. 260ms is the shortest crossfade that still reads as intentional; below ~200ms a full-viewport opacity change looks like a rendering artefact (law 3 caps it). Opacity only, because a directional transition implies a spatial relationship between routes, and the site map (home, experience, writing, playground) is flat.
 
 Keying the wrapper on the pathname replays the CSS animation on every navigation:
 
@@ -50,33 +45,9 @@ Keying the wrapper on the pathname replays the CSS animation on every navigation
 
 ## Why the theme crossfade breaks both rules
 
-```css
-@media (prefers-reduced-motion: no-preference) {
-  :root.theme-transition,
-  :root.theme-transition *,
-  :root.theme-transition *::before,
-  :root.theme-transition *::after {
-    transition: background-color 400ms ease, color 400ms ease, border-color 400ms ease,
-      fill 400ms ease, stroke 400ms ease, box-shadow 400ms ease !important;
-  }
-}
-```
-
 **400ms, longest on the ladder**: every surface, text colour, border, icon fill and shadow at once. At 150ms it reads as a jarring flash; at 400ms, as the lights coming up. **Plain `ease`, not the house curve**, because colour has no mass (law 5).
 
-The class is applied only on an explicit toggle, then removed:
-
-```ts
-export function setThemeChoice(choice: ThemeChoice): void {
-  try { localStorage.setItem(KEY, choice); } catch { /* won't persist */ }
-  const root = document.documentElement;
-  root.classList.add("theme-transition");
-  applyTheme(choice);
-  window.setTimeout(() => root.classList.remove("theme-transition"), 440);
-}
-```
-
-It exists for ~440ms, the duration plus a 40ms margin, and its `!important` beats every component's own `transition-colors duration-150` for that window. Why it's scoped this way is in `domains/motion/patterns.md`, theme cross-fade.
+The `.theme-transition` rule is in `glass/motion/assets/motion-tokens.css`; `setThemeChoice` in `glass/color/assets/theme.ts` adds it only on an explicit toggle and removes it after ~440ms, the duration plus a 40ms margin, so its `!important` beats every component's own `transition-colors duration-150` for that window only. Why it's scoped this way is in `domains/motion/patterns.md`, theme cross-fade.
 
 ## The overshoot in the house curve
 

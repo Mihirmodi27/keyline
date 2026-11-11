@@ -49,7 +49,7 @@ The rule is in §4 of the guide: `superellipse(1.5)` on every element and pseudo
 | 2px | `outline-2`, `border-l-2` | Focus rings, an imported Markdown quote's rule |
 | 3px | `w-[3px] rounded-full` | The pull-quote bar |
 
-By job (layout law 6): two groups of icons within one dock, 0.5px; where a card ends, 1px; a focus ring, 2px. The authored pull quote's bar is 3px and rounded, so a flex child rather than a border (`glass/type/long-form-prose.md`, Quotes); imported Markdown, which can't take classes, keeps a 2px `gray-alpha-300` border.
+By job (layout law 6): two groups of icons within one dock, 0.5px; where a card ends, 1px; a focus ring, 2px. The authored pull quote's bar is 3px and rounded, so a flex child rather than a border (`glass/type/assets/prose.tsx`); imported Markdown, which can't take classes, keeps a 2px `gray-alpha-300` border.
 
 Vertical dividers use `w-[0.5px]` with an explicit height and `self-center`:
 

@@ -17,7 +17,7 @@ A modular scale gives too few sizes in the 11–16px band, where Glass needs 11,
 - 12.5px code. Monospace runs wide, so it steps down to occupy the same measure as the prose around it — the one size that compensates for a *family* rather than a role.
 - 12px. Tags, prev/next labels, hover-card titles; small enough to read as annotation.
 - 11px. Tooltips and avatar initials. The floor for anything a user is expected to read.
-- 8.5px lettermarks, 7.5px card lettering. Below the floor on purpose — recognised rather than read, which is also why 7.5px is the one place a 600 weight is allowed.
+- 8.5px lettermarks, 7.5px card lettering. Below the floor on purpose — recognised rather than read (the 600 exception: §2 of the guide).
 
 **What was deleted**
 
@@ -44,11 +44,7 @@ In the 11–16px band the steps are 1px, and that is enough (`domains/type/ladde
 
 ## Fixed sizes, not `rem`, and why that's a choice
 
-The reference implementation uses `px` throughout (`text-[14px]`, not `text-sm` or `0.875rem`).
-
-The trade: `rem` respects a user's browser font-size setting and `px` doesn't, a real accessibility cost. But this hierarchy depends on precise 1px relationships in the 11–16 band, a root scaled to 20px turns them into 15px steps that break the ladder, and browser *zoom* — which everyone uses, and which scales `px` fine — already covers the need.
-
-If your audience skews toward users who set a root font size — documentation, government, healthcare — use `rem` and accept a looser ladder. Convert at a fixed 16px root: 18px → 1.125rem, 14px → 0.875rem, 13px → 0.8125rem. Never mix the two (the domain's unit dial).
+The reference implementation uses `px` throughout (`text-[14px]`, not `text-sm` or `0.875rem`), to keep the 1px steps of the 11–16 band exact under a scaled root; the trade is the domain's unit dial. Moving to `rem`, convert at a fixed 16px root: 18px → 1.125rem, 14px → 0.875rem, 13px → 0.8125rem.
 
 ## Keeping every element on it
 

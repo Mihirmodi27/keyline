@@ -33,7 +33,7 @@ Each role gets a size in steps of 1–2px, as densely as the roles demand (domai
 
 Text tiers (`primary` → `quiet`) come from the Glass colour guide (`glass/color/guide.md`). Only the top two are grey-ramp steps (`gray-1000`, `gray-900`); `muted` / `quiet` / `faint` are separate tokens picked for contrast (colour law 2).
 
-**Eighteen is the ceiling, and it's lower than you think.** An earlier ladder topped out at 30px, with a 19px prose heading, a 17px dek and a 16px prose body. Case studies and articles opened at 30px and every other page at 18px, so a case study felt like a different site (domain law 2). The rest of the site ran on **two sizes**, 16 for headings and 14 for everything read; the detail templates came down to those, and the four sizes were deleted, not replaced. One element likewise takes one role on every page, and sibling controls match (domain law 2).
+**Eighteen is the ceiling, and it's lower than you think.** The site runs on **two sizes**, 16 for headings and 14 for everything read; the detail templates that once opened two steps above every other page came down to those (domain law 2; the deleted sizes are in `glass/type/scale.md`). One element likewise takes one role on every page, and sibling controls match (domain law 2).
 
 ### When size stops doing the work
 
@@ -50,7 +50,7 @@ At one size, the 17px keyline that once shouted over a 16px heading can't return
 
 The cost is a flatter page: titles and section headings are both 16px, separated by position and spacing. It's the right flat, because the home page already worked that way and the detail pages were the outlier.
 
-**Nothing in this ladder resizes.** The old step, a 30px title dropping to 26px below `sm`, went with the size that needed it (the domain's responsive-sizes dial).
+**Nothing in this ladder resizes** (the domain's responsive-sizes dial).
 
 → Full derivation, including how to add a role without bloating the ladder: `glass/type/scale.md`
 
@@ -67,7 +67,7 @@ Quiet or lifted is set by what the line is doing there, one lift per group, one 
 
 A contents rail's active row takes `font-medium` *and* primary colour, so state is never on colour alone; no state greys a title (domain laws 3 and 5).
 
-→ Weight and tracking in depth, including when 300 is legitimate: `glass/type/weight-and-tracking.md`
+→ Weight and tracking in depth: `glass/type/weight-and-tracking.md`
 
 ## 3. Leading runs inverse to size
 

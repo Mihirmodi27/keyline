@@ -74,73 +74,20 @@ export const playClick = () => tok(900, 0.14, 0.13);
 
 Hover is higher, shorter and **2.6× quieter**: you cross dozens of links moving around a page, and hover at click volume is intolerable within seconds. Click, a completed action, is louder and lower, since lower pitch reads as more consequential. Roughly a fourth apart, they sound pleasant when a click follows a hover.
 
-## The autoplay policy
+## Wiring
 
-An `AudioContext` starts `suspended` and resumes only from a user gesture, so hover sounds stay silent until the reader's first real interaction unlocks it, permanently.
-
-```ts
-export function unlockAudio(): void {
-  const c = getCtx();
-  if (c && c.state === "suspended") void c.resume();
-}
-```
-
-Every playback path checks state rather than assuming:
+The rules — arm on every activation gesture, mouse-only and deduplicated hover, a dense-surface opt-out, a persisted mute checked at playback — are `domains/motion/patterns.md`, sound. Glass's values for them:
 
 ```ts
-if (!c || c.state !== "running") return;
+const UNLOCK_EVENTS = ["pointerdown", "keydown", "touchstart"] as const;  // resume() is idempotent
+const SELECTOR = "a, button, [role='button'], summary";                  // one delegated listener set
+if (el && !el.closest("[data-quiet-hover]")) playHover();                 // image wall, filmstrip
 ```
 
-That's a feature, not a workaround: a page you've merely scrolled past makes no sound. Fail silently; never surface an error for this.
-
-### Arm it on every activation gesture
-
-```ts
-const UNLOCK_EVENTS = ["pointerdown", "keydown", "touchstart"] as const;
-
-/* Idempotent — resume() on a running context is a no-op, which is cheaper
-   than the bookkeeping to detach these after the first one lands. */
-const onUnlock = () => unlockAudio();
-for (const type of UNLOCK_EVENTS) {
-  document.addEventListener(type, onUnlock, { passive: true });
-}
-```
-
-The reference implementation shipped `pointerdown` alone for months. A reader who only moved the mouse across the dock heard nothing — *the hover was the interaction* — which hid because testers click something within seconds; and keyboard-only readers never heard the site. `keydown` is the fix that matters most: the affected group is the one least able to work around it.
-
-## Delegation, not per-element wiring
-
-One set of document listeners covers every link and button on the site.
-
-```ts
-const SELECTOR = "a, button, [role='button'], summary";
-
-const onOver = (e: PointerEvent) => {
-  // Mouse only — touch has no hover, and we don't want a tick on tap.
-  if (e.pointerType && e.pointerType !== "mouse") return;
-  const el = (e.target as Element | null)?.closest?.(SELECTOR) ?? null;
-  if (el === lastHover) return;   // don't re-fire while moving within one element
-  lastHover = el;
-  if (el) playHover();
-};
-
-document.addEventListener("pointerover", onOver);
-document.addEventListener("click", onClick);
-```
-
-- **`pointerType !== "mouse"` bails out**, or every tap plays both sounds 15ms apart, like a stutter.
-- **`lastHover` deduplication.** `pointerover` fires for descendants too, so an icon *inside* a button would re-trigger without the identity check.
-- **`closest(SELECTOR)`** covers anything interactive, including elements added later, with no per-component wiring. `summary` is in it because a `<details>` disclosure is a real control that should feel like one.
-
-### Dense surfaces opt out of the hover tick
-
-```ts
-// Surfaces of a hundred small targets (an image wall, a filmstrip) opt out with
-// data-quiet-hover: a tick per tile is a machine gun. Clicks still tick.
-if (el && !el.closest("[data-quiet-hover]")) playHover();
-```
-
-One attribute on the container quiets the subtree on hover while clicks stay audible. It's a rate limit, not "this surface is unimportant".
+- Every playback path checks `c.state !== "running"` and fails silently, so a page merely scrolled past makes no sound.
+- The site shipped `pointerdown` alone for months; mouse-only readers and keyboard readers heard nothing, and testers, who click within seconds, never noticed.
+- `summary` is in the selector because a `<details>` disclosure is a real control.
+- Mute persists as `localStorage["ui-sound"] = "off" | "on"`, from an `aria-pressed` control in the nav's settings box beside the theme toggle.
 
 ## Sound as a phrase
 
@@ -166,30 +113,10 @@ export const playLanding = () => tok(587, 0.26, 0.16);
 
 It's still a set piece, not a texture — once a session. See §14 of `glass/motion/guide.md`.
 
-## Mute, and persistence
-
-```ts
-// Every storage access is guarded: it throws in some private modes.
-let muted = (() => {
-  try { return localStorage.getItem("ui-sound") === "off"; } catch { return false; }
-})();
-
-export function setMuted(value: boolean): void {
-  muted = value;
-  try { localStorage.setItem("ui-sound", value ? "off" : "on"); } catch {}
-}
-```
-
-The mute control sits in the nav's settings box beside the theme toggle, with an `aria-pressed` state and a label.
-
 ## Should the default be on?
 
 Arguable. On a personal site where sound is part of the character, on is defensible — the only way most people will discover it, and it's quiet, short and muteable. On anything the user didn't choose to visit (a tool, an app, a client site), default to off. If it's on, the mute control must be *findable within seconds*; that's the price.
 
 ## What's deliberately absent
 
-**Haptics.** `navigator.vibrate()` isn't implemented: Safari on iOS lacks it, so it would fire only on Android, and a feedback channel on one platform is worse than none. If you add it, keep it under 10ms and tie it to the same mute preference.
-
-**Sounds for anything but hover, click and the one greeting phrase** — no navigation, reveal or error sounds. The riffle earns its place by playing once per tab.
-
-**Pitch variation** by element type or position. It turns an ambient texture into something the user starts trying to interpret.
+**Haptics**: `navigator.vibrate()` would fire only on Android, and a feedback channel on one platform is worse than none. **Pitch variation** by element type or position, which turns an ambient texture into something the user tries to interpret. And no sound beyond hover, click and the one greeting phrase.

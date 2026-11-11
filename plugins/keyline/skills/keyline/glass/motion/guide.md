@@ -204,7 +204,7 @@ export const detailFade = (on: boolean) =>
 
 ## 14. Set pieces play once
 
-Two set pieces, each once a session (law 15): the opening screen, and a summary panel's first reveal.
+Two set pieces, each once a session (law 15): the opening screen, and a summary panel's first reveal. The first open runs each line at 340ms, its children staggered 90ms after a 60ms delay; every later open runs 160ms with no stagger, and reduced motion runs none.
 
 ```ts
 // Once a session, per item. The theatre is a welcome; a re-run is a delay.
@@ -234,8 +234,8 @@ Collapsibles animate height and stay mounted (law 11), so the content stays in t
 
 ## Assets
 
-- `glass/motion/assets/motion-tokens.css` — easing curve, duration ladder, `.reveal`, route fade, theme crossfade.
-- `glass/motion/assets/motion-presets.ts` — every spring and tween above, plus reduced-motion substitutes.
+- `glass/motion/assets/motion-tokens.css` — easing curve, state durations, `.reveal`, route fade, theme crossfade.
+- `glass/motion/assets/motion-presets.ts` — the springs, the close and the icon-fill fades.
 - `glass/motion/assets/DropMenu.tsx` — the squash-and-stretch menu.
 - `glass/motion/assets/useScrollTick.ts` — rAF-throttled scroll with hysteresis.
 - `glass/motion/assets/useReveal.ts` — the IntersectionObserver hook and its guards.

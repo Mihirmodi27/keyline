@@ -10,74 +10,13 @@ Glass's theme switch, persistence and crossfade, with the values it ships. The m
 
 Tailwind v4 drives `dark:` off the OS media query by default; Glass has a toggle, so `data-theme` on `<html>` is the mechanism (domain law 9). For a permanently-light region inside a dark page, re-declare the custom properties on its container rather than nesting the attribute (`domains/color/theming-mechanics.md`, **Theme islands**).
 
-## No flash of wrong theme
+## No flash of wrong theme, persistence and the crossfade
 
-```html
-<head>
-  <!-- Before the stylesheet. Blocking on purpose. -->
-  <script>
-    (function () {
-      try {
-        document.documentElement.dataset.theme =
-          localStorage.getItem("theme") === "dark" ? "dark" : "light";
-      } catch (e) {}
-    })();
-  </script>
-  <link rel="stylesheet" href="…" />
-</head>
-```
+The code lives in `glass/color/assets/theme.ts` — the three functions and, at the bottom, the inline head script — and the 440ms `.theme-transition` rule in `glass/motion/assets/motion-tokens.css`. The head script duplicates a few lines of the theme module, with a comment in each place pointing at the other. The mechanism, the head script's four requirements, the three callers and why the crossfade class is temporary and `!important`: `domains/color/theming-mechanics.md`.
 
-Inline, blocking, before the stylesheet, in `try/catch`; it duplicates a few lines of the theme module, with a comment in each place pointing at the other (`domains/color/theming-mechanics.md`, **No flash of wrong theme**).
+Glass's values:
 
-## Persistence and the crossfade
-
-```ts
-export type ThemeChoice = "light" | "dark";
-
-const KEY = "theme";
-
-export function getThemeChoice(): ThemeChoice {
-  try {
-    if (localStorage.getItem(KEY) === "dark") return "dark";
-  } catch { /* localStorage unavailable */ }
-  return "light";
-}
-
-export function applyTheme(choice: ThemeChoice): void {
-  document.documentElement.dataset.theme = choice;
-}
-
-export function setThemeChoice(choice: ThemeChoice): void {
-  try {
-    localStorage.setItem(KEY, choice);
-  } catch { /* preference just won't persist */ }
-
-  // Crossfade only on explicit toggles.
-  const root = document.documentElement;
-  root.classList.add("theme-transition");
-  applyTheme(choice);
-  window.setTimeout(() => root.classList.remove("theme-transition"), 440);
-}
-```
-
-Three functions for three callers — `getThemeChoice` for initial React state, `applyTheme` for the DOM write, `setThemeChoice` for the user action (`domains/color/theming-mechanics.md`, **Persistence**). The comparison is `=== "dark"`, so anything unrecognised falls through to light.
-
-### The 440ms class
-
-```css
-@media (prefers-reduced-motion: no-preference) {
-  :root.theme-transition,
-  :root.theme-transition *,
-  :root.theme-transition *::before,
-  :root.theme-transition *::after {
-    transition: background-color 400ms ease, color 400ms ease, border-color 400ms ease,
-      fill 400ms ease, stroke 400ms ease, box-shadow 400ms ease !important;
-  }
-}
-```
-
-Why it's temporary, `!important`, inside `no-preference` and lists the pseudo-elements: `domains/color/theming-mechanics.md`, **The crossfade on toggle**. Glass's values:
-
+- **The comparison is `=== "dark"`**, so anything unrecognised falls through to light.
 - **440ms**: 400ms plus a 40ms margin so nothing is cut off. For those 440ms it has to beat every component's own `transition-colors duration-150`.
 - **400ms**: the longest duration in the system, for its largest change — every surface, text colour, border, icon fill and shadow at once.
 - **Plain `ease`, not the house curve.** The house easing overshoots, and on a colour that sends the background past its target and back — a wobble in the light.

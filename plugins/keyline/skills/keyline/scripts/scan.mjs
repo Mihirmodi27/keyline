@@ -16,8 +16,9 @@
  * at runtime or a class built by string concatenation. When the summary and the
  * code disagree, the code wins — open the file the summary points at.
  */
-import { readdirSync, readFileSync, statSync, existsSync } from "node:fs";
-import { join, relative, extname, basename } from "node:path";
+import { readFileSync, existsSync } from "node:fs";
+import { join, basename, resolve } from "node:path";
+import { walk, STYLE as CHECKED_STYLE, MARKUP as CHECKED_MARKUP } from "./check/files.mjs";
 
 const argv = process.argv.slice(2);
 const json = argv.includes("--json");
@@ -33,37 +34,14 @@ if (!existsSync(root)) {
   process.exit(1);
 }
 
-const SKIP_DIRS = new Set([
-  "node_modules", ".git", ".next", ".nuxt", ".output", ".svelte-kit", ".turbo",
-  ".vercel", ".cache", "dist", "build", "out", "coverage", "vendor",
-  "storybook-static", ".claude", "public", "static",
-]);
-const STYLE = new Set([".css", ".scss", ".sass", ".less", ".pcss", ".styl"]);
-const MARKUP = new Set([".ts", ".tsx", ".js", ".jsx", ".mjs", ".cjs", ".vue", ".svelte", ".astro", ".html", ".mdx"]);
-
-/* ── Walk ─────────────────────────────────────────────────────────────────── */
-
-const files = [];
-(function walk(dir) {
-  let entries;
-  try {
-    entries = readdirSync(dir, { withFileTypes: true });
-  } catch {
-    return;
-  }
-  for (const e of entries) {
-    if (e.name.startsWith(".") && e.isDirectory() && e.name !== ".storybook") continue;
-    const path = join(dir, e.name);
-    if (ignores.some((ig) => ig && relative(root, path).startsWith(ig))) continue;
-    if (e.isDirectory()) {
-      if (!SKIP_DIRS.has(e.name)) walk(path);
-    } else if (STYLE.has(extname(e.name)) || MARKUP.has(extname(e.name))) {
-      if (/\.min\.|\.d\.ts$|\.test\.|\.spec\.|\.stories\./.test(e.name)) continue;
-      if (statSync(path).size > 1_000_000) continue;
-      files.push(path);
-    }
-  }
-})(root);
+/*
+ * The detector's walker and folder skips, read wider: an inventory wants every
+ * hand-written value, so it also reads Stylus and CommonJS, keeps tool configs
+ * (a Tailwind config is where a theme is declared) and allows files up to 1 MB.
+ */
+const STYLE = new Set([...CHECKED_STYLE, ".styl"]);
+const MARKUP = new Set([...CHECKED_MARKUP, ".cjs"]);
+const files = walk(resolve(root), { accept: new Set([...STYLE, ...MARKUP]), maxSize: 1_000_000, ignores });
 
 /* ── Tallies ──────────────────────────────────────────────────────────────── */
 
@@ -74,7 +52,7 @@ function count(bucket, value, file) {
   tallies[bucket] ??= new Map();
   const entry = tallies[bucket].get(v) ?? { n: 0, files: new Set() };
   entry.n++;
-  entry.files.add(relative(root, file));
+  entry.files.add(file);
   tallies[bucket].set(v, entry);
 }
 
@@ -91,7 +69,7 @@ const classWords = new Map();
 const signals = {};
 function signal(name, file) {
   signals[name] ??= new Set();
-  signals[name].add(relative(root, file));
+  signals[name].add(file);
 }
 
 /** Tailwind's scale names, so `text-sm` counts as a size and `text-red-500` doesn't. */
@@ -156,9 +134,9 @@ const SIGNALS = [
   ["numerals: tabular-nums", /tabular-nums|font-variant-numeric/],
 ];
 
-for (const file of files) {
-  const text = readFileSync(file, "utf8");
-  const kind = STYLE.has(extname(file)) ? "style" : "markup";
+for (const { abs, rel: file, ext } of files) {
+  const text = readFileSync(abs, "utf8");
+  const kind = STYLE.has(ext) ? "style" : "markup";
 
   for (const [bucket, re, group, only] of RULES) {
     if (only !== "all" && only !== kind) continue;
@@ -175,7 +153,7 @@ for (const file of files) {
     if (m[1].startsWith("--tw-")) continue;
     const entry = props.get(m[1]) ?? { values: [], files: new Set() };
     if (entry.values.length < 4 && !entry.values.includes(m[2].trim())) entry.values.push(m[2].trim());
-    entry.files.add(relative(root, file));
+    entry.files.add(file);
     props.set(m[1], entry);
   }
   if (kind === "markup") {
@@ -196,14 +174,20 @@ for (const file of files) {
  * but it's the difference between "unused" and "used in 40 files".
  */
 const NAMESPACES = ["color", "font", "text", "radius", "shadow", "ease", "animate", "container", "spacing", "tracking", "leading", "breakpoint", "blur", "inset-shadow", "drop-shadow"];
-function utilityUses(prop) {
-  const ns = NAMESPACES.find((n) => prop.startsWith(`--${n}-`));
-  if (!ns) return 0;
-  const name = prop.slice(ns.length + 3);
-  let n = 0;
-  for (const [word, c] of classWords) if (word.endsWith(`-${name}`) && word !== name) n += c;
-  return n;
+/** Class-word uses by every tail after a hyphen: `hover:text-ink-soft` counts for `ink-soft` and `soft`. */
+const bySuffix = new Map();
+for (const [word, c] of classWords) {
+  for (let i = word.indexOf("-"); i >= 0; i = word.indexOf("-", i + 1)) {
+    const tail = word.slice(i + 1);
+    bySuffix.set(tail, (bySuffix.get(tail) ?? 0) + c);
+  }
 }
+const utilityCount = new Map();
+for (const prop of props.keys()) {
+  const ns = NAMESPACES.find((n) => prop.startsWith(`--${n}-`));
+  utilityCount.set(prop, ns ? (bySuffix.get(prop.slice(ns.length + 3)) ?? 0) : 0);
+}
+const utilityUses = (prop) => utilityCount.get(prop) ?? 0;
 const uses = (prop) => (propUses.get(prop) ?? 0) + utilityUses(prop);
 
 /* ── Stack ────────────────────────────────────────────────────────────────── */

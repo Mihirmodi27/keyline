@@ -129,6 +129,7 @@ GPU escalation is for one travelling element with no semantics of its own, never
 
 | Dial | editorial | product | expressive |
 |---|---|---|---|
+| `duration.instant` | 0 | 0 | 0 |
 | `duration.micro` | 100ms | 80ms | 120ms |
 | `duration.state` | 150ms | 100ms | 200ms |
 | `duration.popover` | 200ms | 150ms | 280ms |

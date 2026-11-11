@@ -150,4 +150,6 @@ if (ladder) {
 if (rest.length !== 2) die("give a foreground and a background (or --ladder)");
 const r = ratio(rest[0], rest[1]);
 console.log(`${r >= floor ? "✓" : "✗"} ${fmt(r)} (floor ${floor}:1)`);
+// 1:1 means the two colours came out identical — nearly always the arguments, not the design.
+if (r < 1.01) console.error(`contrast: ${rest[0]} and ${rest[1]} come out as the same colour. Check the order: <fg> <bg>, or --over <backdrop> <fg> <bg>, or --ladder <bg> <fg>…`);
 process.exit(r >= floor ? 0 : 2);

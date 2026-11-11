@@ -12,7 +12,7 @@
  * copied as links; the click handler takes over to scroll smoothly and keep
  * the URL in step.
  *
- * Pair with useActiveSection (`glass/motion/guide.md`) for the scroll spy, and
+ * Pair with useActiveSection (`glass/motion/assets/useScrollTick.ts`) for the scroll spy, and
  * give every heading a scroll-margin-top just under its READING_LINE.
  */
 
@@ -59,11 +59,8 @@ function ChevronDownIcon() {
 /**
  * One row.
  *
- * Top-level rows sit flush and carry no marker — they read as the headings
- * they are, and the active one takes a heavier WEIGHT so its state isn't
- * signalled by colour alone (WCAG 1.4.1). Weight is a genuine second channel:
- * it survives greyscale, colour-blindness and low-contrast displays, and it's
- * cheaper than a background pill in a list that's meant to be quiet.
+ * Top-level rows sit flush and carry no marker; the active one takes weight
+ * 500 as well as colour, so state is never on colour alone (type law 5).
  *
  * Nested rows carry a horizontal marker that extends and darkens when active,
  * and which doubles as their indent. It sits in a FIXED-WIDTH box so growing

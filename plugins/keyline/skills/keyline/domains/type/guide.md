@@ -121,7 +121,7 @@ The mapping covers user-agent styles: `<cite>`, `<blockquote>`, `<b>`, `<th>` an
 | Dial | editorial | product | expressive |
 |---|---|---|---|
 | `type.body` size | 16–18px | 14px | 17–20px |
-| `type.ui` size | body − 1–2px | 13px (12px in dense tables) | 15–16px |
+| `type.ui` size | body − 1–2px | 13px (12px in dense tables) | 15–16px; on any preset, inputs go to 16px on touch widths only |
 | Ceiling: `type.title` ÷ `type.body` | ≤ 2.25 for an article's or page's title; index and chrome titles may sit lower | ≤ 1.6 | ≤ 2.5 |
 | `type.display` | none | none | one per page, derived from the measure; ≥ 1.5 × `type.title` at every width (× `type.heading` where the display is the `h1`) |
 | Distinct sizes above the floor (excluding display and code) | ≤ 7 | ≤ 7 | ≤ 8 |

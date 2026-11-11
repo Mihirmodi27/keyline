@@ -10,8 +10,6 @@ At the 14px prose size that's about 90 characters a line (85–95, measured in A
 
 The padding does double duty: on a 375px phone the column is `375 − 64 = 311px`, and on desktop the 32px keeps text off the edge of a maximised window.
 
-That 311px once forced a responsive type step (a 30px title wrapping to three lines) until an 18px type ceiling removed it: layout law 1's narrowest-measure check, settled in the scale.
-
 640px also equals Tailwind's `sm` breakpoint — convenient, not meaningful: below it the column is padding-limited, so the two coincide naturally.
 
 The summary and detail pairs it keeps still: home-page role summary → `/experience`, writing index → article.

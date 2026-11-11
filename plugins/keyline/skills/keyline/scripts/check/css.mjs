@@ -13,12 +13,6 @@ export function blankComments(text) {
   return text.replace(/\/\*[\s\S]*?\*\//g, (m) => m.replace(/[^\n]/g, " "));
 }
 
-export function lineAt(text, offset) {
-  let line = 1;
-  for (let i = 0; i < offset && i < text.length; i++) if (text.charCodeAt(i) === 10) line++;
-  return line;
-}
-
 /** Lines start offsets, for fast offset → line lookups on big files. */
 export function lineIndex(text) {
   const starts = [0];
@@ -44,8 +38,7 @@ export function parseCss(source, baseLine = 1) {
   const at = lineIndex(text);
   const decls = [];
   const atRules = [];
-  const blocks = []; // { selector, atRules, decls }
-  const stack = []; // open blocks: { kind: 'rule'|'at', prelude, block }
+  const stack = []; // open blocks: { kind: 'rule'|'at', prelude, block: { decls } }
   let start = 0;
   let quote = null;
   let paren = 0;
@@ -65,7 +58,7 @@ export function parseCss(source, baseLine = 1) {
     const value = raw.slice(colon + 1).trim();
     const lead = from + raw.search(/\S/);
     const ctx = context();
-    const d = { prop, value, line: at(lead) + baseLine - 1, offset: lead, selector: ctx.selector, atRules: ctx.atRules, block: ctx.block };
+    const d = { prop, value, line: at(lead) + baseLine - 1, selector: ctx.selector, atRules: ctx.atRules, block: ctx.block };
     decls.push(d);
     ctx.block?.decls.push(d);
   };
@@ -85,10 +78,8 @@ export function parseCss(source, baseLine = 1) {
       const prelude = text.slice(start, i).trim().replace(/\s+/g, " ");
       const kind = prelude.startsWith("@") ? "at" : "rule";
       const lead = start + text.slice(start, i).search(/\S/);
-      const block = { selector: kind === "rule" ? prelude : context().selector, atRules: [...context().atRules, ...(kind === "at" ? [prelude] : [])], decls: [], line: at(Math.max(lead, 0)) + baseLine - 1 };
-      if (kind === "at") atRules.push({ prelude, line: block.line });
-      blocks.push(block);
-      stack.push({ kind, prelude, block });
+      if (kind === "at") atRules.push({ prelude, line: at(Math.max(lead, 0)) + baseLine - 1 });
+      stack.push({ kind, prelude, block: { decls: [] } });
       start = i + 1;
     } else if (c === ";") {
       if (stack.length) pushDecl(start, i);
@@ -103,7 +94,7 @@ export function parseCss(source, baseLine = 1) {
       start = i + 1;
     }
   }
-  return { decls, atRules, blocks };
+  return { decls, atRules };
 }
 
 /** Parse a `style="..."` attribute's body. */
