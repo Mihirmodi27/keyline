@@ -23,7 +23,8 @@ import { add, counts, writeRun } from "./browse/findings.mjs";
 import { shotKey } from "./browse/capture.mjs";
 import { renderDir } from "./browse/report.mjs";
 import { walk } from "./browse/walk.mjs";
-import { parseArgs, target } from "./browse.mjs";
+import { parseOrExplain } from "./browse/args.mjs";
+import { target } from "./browse.mjs";
 import { auditProbe } from "./audit/probe.mjs";
 import { check } from "./check.mjs";
 import { DOMAINS } from "./check/rules.mjs";
@@ -39,6 +40,7 @@ Options:
   --out <dir>         where the report goes (default: keyline-report)
   --routes <a,b>      only these paths
   --limit <n>         at most this many pages (default 40)
+  --title <name>      the product's name, in the report's heading
   --quick             one page (the first route, or /), desktop and phone, light only
   --no-check          skip the source detector
   --motion            leave motion on (default: reduced, so pages are shot settled)
@@ -123,9 +125,19 @@ export function sourceFindings(run, root, ignores = []) {
   return result;
 }
 
+export const AUDIT_OPTIONS = {
+  values: ["base", "serve", "root", "out", "routes", "limit", "title"],
+  switches: ["quick", "no-check", "motion", "headed"],
+};
+
 export async function run(argv) {
-  const opts = parseArgs(argv);
-  if (opts.help || opts.h) {
+  const opts = parseOrExplain("audit", argv, AUDIT_OPTIONS);
+  if (!opts) return 2;
+  if (opts._.length) {
+    console.error(`keyline audit: no command '${opts._[0]}' (try --help)`);
+    return 2;
+  }
+  if (opts.help) {
     console.log(USAGE);
     return 0;
   }

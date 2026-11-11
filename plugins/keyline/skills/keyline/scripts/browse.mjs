@@ -12,6 +12,7 @@
 import { existsSync, rmSync } from "node:fs";
 import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import { parseOrExplain } from "./browse/args.mjs";
 import { counts, writeRun } from "./browse/findings.mjs";
 import { renderDir } from "./browse/report.mjs";
 import { compareDirs } from "./browse/compare.mjs";
@@ -52,21 +53,11 @@ Options:
   --no-diff             compare findings only, not screenshots
   -h, --help            this`;
 
-export function parseArgs(argv) {
-  const opts = { _: [] };
-  for (let i = 0; i < argv.length; i++) {
-    const a = argv[i];
-    if (!a.startsWith("--")) {
-      opts._.push(a);
-      continue;
-    }
-    const [k, inline] = a.slice(2).split("=");
-    // A switch takes no value: a known one, or any option followed by another option or nothing.
-    const flag = ["json", "headed", "help", "strict", "quick", "no-check", "allow-writes", "no-diff"].includes(k) || (inline === undefined && (i + 1 >= argv.length || argv[i + 1].startsWith("--")));
-    opts[k] = flag ? true : (inline ?? argv[++i]);
-  }
-  return opts;
-}
+/** What pages, capture and report take. */
+export const BROWSE_OPTIONS = {
+  values: ["base", "serve", "root", "out", "routes", "limit", "viewports", "themes", "compare", "threshold"],
+  switches: ["headed", "json", "no-diff"],
+};
 
 const list = (v, fallback) => (v ? String(v).split(",").map((s) => s.trim()).filter(Boolean) : fallback);
 
@@ -99,9 +90,10 @@ function sinceLine(run) {
 }
 
 export async function run(argv) {
-  const opts = parseArgs(argv);
+  const opts = parseOrExplain(["pages", "capture", "report"].includes(argv[0]) ? argv[0] : "browse", argv, BROWSE_OPTIONS);
+  if (!opts) return 2;
   const [cmd, arg] = opts._;
-  if (opts.help || opts.h || !cmd) {
+  if (opts.help || !cmd) {
     console.log(USAGE);
     return cmd ? 0 : 2;
   }

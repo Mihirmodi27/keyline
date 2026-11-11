@@ -90,8 +90,13 @@ const USAGE = `Keyline ${version} — interface design laws for coding agents.
   npx trykeyline update  [options]   refresh every copy already installed
   npx trykeyline check  [paths…]     the laws that can be checked without a model
                                      (--json, --strict, --baseline; see npx trykeyline check --help)
+  npx trykeyline audit --base <url>  measure every page in a browser and the code,
+                                     in one report (see npx trykeyline audit --help)
   npx trykeyline smoke --base <url>  click through a running product and report
                                      broken flows (see npx trykeyline smoke --help)
+  npx trykeyline pages | capture | report
+                                     the walk under them: list the pages, visit
+                                     and shoot each, re-render or --compare a report
   npx trykeyline guard --install     check each UI file as the agent writes it, and
                                      hand what's found straight back to it
                                      (--pre-commit for any agent; see npx trykeyline guard --help)

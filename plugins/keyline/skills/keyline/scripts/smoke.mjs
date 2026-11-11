@@ -24,6 +24,7 @@
 import { existsSync, readFileSync, rmSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import { parseOrExplain } from "./browse/args.mjs";
 import { target } from "./browse.mjs";
 import { add, counts, dedupe, writeRun } from "./browse/findings.mjs";
 import { openContext, shotKey, withHelpers } from "./browse/capture.mjs";
@@ -75,26 +76,10 @@ unsubscribe, sign out or log out) run only on localhost, 127.0.0.1, *.localhost,
 *.test or a host the config lists in testHosts; destructive ones only with
 --allow-writes. Elsewhere every request that isn't GET, HEAD or OPTIONS is blocked.`;
 
-const FLAGS = new Set(["headed", "help", "allow-writes", "json"]);
-
-export function parseArgs(argv) {
-  const opts = { _: [] };
-  for (let i = 0; i < argv.length; i++) {
-    const a = argv[i];
-    if (a === "-h") {
-      opts.help = true;
-      continue;
-    }
-    if (!a.startsWith("--")) {
-      opts._.push(a);
-      continue;
-    }
-    const eq = a.indexOf("=");
-    const k = eq > 0 ? a.slice(2, eq) : a.slice(2);
-    opts[k] = FLAGS.has(k) ? true : eq > 0 ? a.slice(eq + 1) : argv[++i];
-  }
-  return opts;
-}
+export const SMOKE_OPTIONS = {
+  values: ["base", "serve", "root", "config", "out", "routes", "limit", "only", "skip", "max-clicks", "quiet-ms", "stuck-ms", "test-host", "concurrency", "arg"],
+  switches: ["headed", "allow-writes"],
+};
 
 /** Sign in once and return a storage state every context starts from. */
 async function signIn(browser, { base, auth, root, log }) {
@@ -372,7 +357,8 @@ export async function smoke({ base, root, out, config = {}, opts = {}, browser: 
 }
 
 export async function run(argv) {
-  const opts = parseArgs(argv);
+  const opts = parseOrExplain("smoke", argv, SMOKE_OPTIONS);
+  if (!opts) return 2;
   const [cmd, arg] = opts._;
   if (opts.help) {
     console.log(USAGE);

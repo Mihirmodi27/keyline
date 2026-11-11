@@ -7,7 +7,9 @@ import { test } from "node:test";
 import { fileURLToPath } from "node:url";
 import { loadPlaywright } from "../plugins/keyline/skills/keyline/scripts/browse/playwright.mjs";
 import { serve } from "../plugins/keyline/skills/keyline/scripts/browse/serve.mjs";
-import { parseArgs, smoke } from "../plugins/keyline/skills/keyline/scripts/smoke.mjs";
+import { SMOKE_OPTIONS, smoke } from "../plugins/keyline/skills/keyline/scripts/smoke.mjs";
+import { parseArgs } from "../plugins/keyline/skills/keyline/scripts/browse/args.mjs";
+import { BROWSE_OPTIONS } from "../plugins/keyline/skills/keyline/scripts/browse.mjs";
 import { isDestructive, isTestHost, loadConfig, policy, settings, urlMatcher } from "../plugins/keyline/skills/keyline/scripts/smoke/config.mjs";
 import { invalidValue, validValue } from "../plugins/keyline/skills/keyline/scripts/smoke/forms.mjs";
 import { follow } from "../plugins/keyline/skills/keyline/scripts/smoke/links.mjs";
@@ -60,10 +62,19 @@ test("config: credentials come from the environment, never the file", () => {
 });
 
 test("arguments: --allow-writes is a flag, not a value-taker", () => {
-  const o = parseArgs(["--allow-writes", "--base", "http://localhost:3000", "--only=links"]);
+  const o = parseArgs(["--allow-writes", "--base", "http://localhost:3000", "--only=links"], SMOKE_OPTIONS);
   assert.equal(o["allow-writes"], true);
   assert.equal(o.base, "http://localhost:3000");
   assert.equal(o.only, "links");
+});
+
+test("arguments: a value splits at the first = only, and an unknown or valueless option is an error", () => {
+  assert.equal(parseArgs(["--base=http://x/?a=b&c=d"], BROWSE_OPTIONS).base, "http://x/?a=b&c=d");
+  assert.match(parseArgs(["--bsae", "http://x"], BROWSE_OPTIONS).error, /unknown option --bsae/);
+  assert.match(parseArgs(["--strict"], BROWSE_OPTIONS).error, /unknown option --strict/);
+  assert.match(parseArgs(["--base"], BROWSE_OPTIONS).error, /--base needs a value/);
+  assert.match(parseArgs(["--headed=yes"], BROWSE_OPTIONS).error, /takes no value/);
+  assert.deepEqual(parseArgs(["report", "-h"], BROWSE_OPTIONS), { _: ["report"], help: true });
 });
 
 test("form values: plausible ones, and ones a field should refuse", () => {
