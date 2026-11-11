@@ -15,7 +15,7 @@ The whole product, inspected as a reader meets it and as its code is written: ev
 2. **Measure every page.** With Keyline's runner:
 
    ```sh
-   node <keyline>/scripts/audit.mjs --base <url> --root <project root> [--title "<product>"]
+   npx trykeyline audit --base <url> --root <project root> [--title "<product>"]
    ```
 
    It finds the pages (router files, sitemap, crawl), visits each at desktop and phone in light and dark, and measures inside the rendered page:
@@ -28,7 +28,7 @@ The whole product, inspected as a reader meets it and as its code is written: ev
 
    It adds the detector's findings from the source with file and line, drafts a score per domain, and writes `keyline-report/`. Pages are shot with reduced motion so they show their settled state; pass `--motion` to audit a first visit as it plays. A page behind sign-in, or a route that needs an example ID, follows `system/reports.md`.
 
-   **With the agent's own browser instead**, visit the same pages at the same widths and themes, run the same checks with the browser's JavaScript evaluation (the probe in `scripts/audit/probe.mjs` is plain JavaScript you can run as-is, with the helpers from `scripts/browse/capture.mjs`), and write `findings.json` by hand. Then run the detector (`node <keyline>/scripts/check.mjs --root <project root> --json`) and add its findings.
+   **With the agent's own browser instead**, visit the same pages at the same widths and themes, run the same checks with the browser's JavaScript evaluation (`npx trykeyline probe audit` prints the runner's checks as one expression to paste into it; pass `--arg '{"viewport":"phone","theme":"dark","firstPass":false}'` for each later pass; it fetches no browser), and write `findings.json` by hand. Then run the detector (`node <keyline>/scripts/check.mjs --root <project root> --json`) and add its findings.
 
 3. **Read what the machine can't.** Open the screenshots in `keyline-report/shots/` and the code, and judge, domain by domain in polish order, with each guide's audit section:
    - hierarchy, and what the eye lands on first;
@@ -57,7 +57,7 @@ The whole product, inspected as a reader meets it and as its code is written: ev
 7. **Render and hand over:**
 
    ```sh
-   node <keyline>/scripts/browse.mjs report keyline-report
+   npx trykeyline report keyline-report
    ```
 
    Look at `index.html` yourself before giving it to the user; publishing it and `.gitignore` follow `system/reports.md`.

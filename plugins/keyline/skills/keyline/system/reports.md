@@ -17,17 +17,17 @@ Never walk a production site for anything that writes (forms, purchases, deletes
 **The agent's own browser, when it has one.** Claude's browser tools, a Playwright MCP, Chrome DevTools MCP: open each page, take screenshots, run the command's checks with the tool's JavaScript evaluation, and write `findings.json` by hand in the format below. Then render it:
 
 ```sh
-node <keyline>/scripts/browse.mjs report keyline-report
+npx trykeyline report keyline-report
 ```
 
-This path sees what the user sees (their sign-ins, their cookies) and needs no install.
+This path sees what the user sees (their sign-ins, their cookies) and installs no browser.
 
-**Keyline's runner, otherwise.** It loads Playwright from the project, or installs it once into `~/.cache/keyline`, and drives the installed Chrome (Playwright's Chromium if there's none):
+**Keyline's runner, otherwise.** The browser commands come from a second package, `trykeyline-browser`, which `npx trykeyline` fetches the first time. It loads Playwright from the project, or installs it once into `~/.cache/keyline`, and drives the installed Chrome (Playwright's Chromium if there's none):
 
 ```sh
-node <keyline>/scripts/browse.mjs pages   --root . --base http://localhost:3000      # what will be visited
-node <keyline>/scripts/browse.mjs capture --root . --base http://localhost:3000      # visit, shoot, report
-node <keyline>/scripts/browse.mjs capture --serve dist                               # a static build
+npx trykeyline pages   --root . --base http://localhost:3000      # what will be visited
+npx trykeyline capture --root . --base http://localhost:3000      # visit, shoot, report
+npx trykeyline capture --serve dist                               # a static build
 ```
 
 `capture` alone records only what any page load shows: pages that fail or answer 4xx/5xx, uncaught exceptions, console errors, failed requests. The commands add their own measurements on top. Ask before the first install if the user hasn't run Keyline's browser tools before; it is one `npm install` into a cache, not into their project.

@@ -7,9 +7,9 @@ Read beside `system/reports.md`, whose report format this assumes.
 A report says more next to the one before it. Keep the earlier folder (a capture writes over its own, so copy it first) and compare:
 
 ```sh
-cp -R keyline-report keyline-report-before                                 # before the change
-node <keyline>/scripts/browse.mjs capture --base http://localhost:3000 --compare keyline-report-before
-node <keyline>/scripts/browse.mjs report keyline-report --compare keyline-report-before   # any run, including one written by hand
+cp -R keyline-report keyline-report-before                                  # before the change
+npx trykeyline capture --base http://localhost:3000 --compare keyline-report-before
+npx trykeyline report keyline-report --compare keyline-report-before        # any run, including one written by hand
 ```
 
 **Findings** are matched on rule + page + viewport + theme + `selector` (the `title` when there's no selector), the key a run is de-duplicated on, so reword a title freely when the finding has a selector. Each finding in the newer run gets `change`:

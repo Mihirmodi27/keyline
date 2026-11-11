@@ -236,7 +236,7 @@ Keyline replaces both interface-skills packages: the adaptable set became the co
 
 ## Requirements
 
-Node 18 or later, for the installer and for the three scripts the skill runs: the detector, a token inventory and a contrast checker. None of them needs a dependency, a model or an API key. The smoke test drives a browser: Playwright, installed once into `~/.cache/keyline` on first use, and your installed Chrome.
+Node 18 or later, for the installer and for the three scripts the skill runs: the detector, a token inventory and a contrast checker. None of them needs a dependency, a model or an API key. The audit and the smoke test drive a browser, so they ship as a second package, [`trykeyline-browser`](packages/browser): `npx trykeyline audit`, `smoke`, `pages`, `capture`, `report` and `probe` run it at the same version, fetching it the first time, and it installs Playwright once into `~/.cache/keyline` and drives your installed Chrome.
 
 ## Licence
 

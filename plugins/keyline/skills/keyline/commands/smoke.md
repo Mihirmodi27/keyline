@@ -68,22 +68,21 @@ Optional: `keyline.smoke.json` at the project root, or `--config <file>`.
 ### With Keyline's runner
 
 ```sh
-node <keyline>/scripts/smoke.mjs --base http://localhost:3000 --root .
-node <keyline>/scripts/smoke.mjs --serve dist                       # a static build
-node <keyline>/scripts/smoke.mjs --base http://localhost:3000 --only links,clicks
-npx trykeyline smoke --base http://localhost:3000                       # the same, from the package
+npx trykeyline smoke --base http://localhost:3000 --root .
+npx trykeyline smoke --serve dist                       # a static build
+npx trykeyline smoke --base http://localhost:3000 --only links,clicks
 ```
 
 It writes `smoke-report/` (findings.json, index.html, shots/) and exits 1 when it found errors. Useful options: `--routes /a,/b`, `--limit 20` pages, `--max-clicks 30` per page, `--skip shift`, `--quiet-ms 1500`, `--stuck-ms 8000`, `--test-host <host>`, `--allow-writes`, `--headed` to watch it. A run takes about a minute for a small site; most of it is the clicks.
 
 ### With your own browser
 
-When you have browser tools (Claude's browser, a Playwright or Chrome DevTools MCP), you can do the same with the user's session. Keyline's page-side functions run unchanged in any page:
+When you have browser tools (Claude's browser, a Playwright or Chrome DevTools MCP), you can do the same with the user's session. Keyline's page-side functions run unchanged in any page, and printing one fetches no browser:
 
 ```sh
-node <keyline>/scripts/smoke.mjs probe inventory     # every control, form and link, with selectors and boxes
-node <keyline>/scripts/smoke.mjs probe stuck         # loaders still showing after 8 s
-node <keyline>/scripts/smoke.mjs probe watch         # then `arm`, click, `read`: did the click change anything?
+npx trykeyline probe inventory     # every control, form and link, with selectors and boxes
+npx trykeyline probe stuck         # loaders still showing after 8 s
+npx trykeyline probe watch         # then `arm`, click, `read`: did the click change anything?
 ```
 
 Each prints one expression for your JavaScript tool. Then, per page:
@@ -96,7 +95,7 @@ Each prints one expression for your JavaScript tool. Then, per page:
 6. Write `smoke-report/findings.json` by hand, `"kind": "smoke"`, every finding with `steps`, plus `box` and `shot` where there's an element. Render it:
 
 ```sh
-node <keyline>/scripts/browse.mjs report smoke-report
+npx trykeyline report smoke-report
 ```
 
 **Changes no code.** `.gitignore` follows `system/reports.md`.
