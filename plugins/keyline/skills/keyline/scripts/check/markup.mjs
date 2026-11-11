@@ -57,7 +57,7 @@ export function readMarkup(source, ext) {
   text = text.replace(/<!--[\s\S]*?-->/g, (m) => m.replace(/[^\n]/g, " "));
   const at = lineIndex(text);
 
-  const classLists = []; // { value, offset, line, tokens: [{...splitClass, line}] }
+  const classLists = []; // { line, tokens: [{...splitClass, line}], tag }
   const seen = new Set();
   const addList = (value, offset, origin) => {
     if (seen.has(offset)) return;
@@ -66,7 +66,7 @@ export function readMarkup(source, ext) {
     const re = /\S+/g;
     let m;
     while ((m = re.exec(value))) tokens.push({ ...splitClass(m[0]), line: at(offset + m.index) });
-    if (tokens.length) classLists.push({ value, offset, line: at(offset), tokens, origin, tag: origin === "attribute" ? tagAround(offset, value.length) : "" });
+    if (tokens.length) classLists.push({ line: at(offset), tokens, tag: origin === "attribute" ? tagAround(offset, value.length) : "" });
   };
 
   /** The opening tag a class attribute sits in, for rules that need its element or attributes. */
@@ -93,7 +93,7 @@ export function readMarkup(source, ext) {
       addList(s[1] === "`" ? staticParts(s[2]) : s[2], open + 1 + s.index + 1, "helper");
     }
   }
-  if (!isHtmlLike || ext !== ".html") {
+  if (ext !== ".html") {
     for (const m of text.matchAll(EXPR_STRING)) {
       const value = m[2];
       if (value.length < 3 || !CLASSY.test(value) || !TAILWINDISH.test(value)) continue;

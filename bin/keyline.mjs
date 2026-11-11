@@ -90,7 +90,8 @@ Options:
   -t, --tool <tool[,tool…]>   which agent — asked for when not given, Claude Code
                               when there's no terminal to ask on. One of:
                               ${TOOL_IDS.join(", ")}
-  --user                      for every project on this machine, not just this one
+  --agent <tool[,tool…]>      the same as --tool
+  --user                     for every project on this machine, not just this one
   --dir <path>                into <path>, whatever the agent
   -f, --force                 overwrite a copy that's already there
   -h, --help                  this

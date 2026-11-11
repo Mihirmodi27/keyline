@@ -92,8 +92,8 @@ export function gather(root, files) {
       const VIEWPORT_VALUE = /<meta\b[^>]*\bviewport\b[^>]*>|["'`][^"'`\n<>]*width\s*=\s*device-width[^"'`\n<>]*["'`]/gi;
       for (const v of m.text.matchAll(VIEWPORT_VALUE)) for (const z of v[0].matchAll(LOCK)) facts.zoomLocks.push({ file: f.rel, line: at(v.index + z.index) });
       for (const z of m.text.matchAll(/\bmaximumScale\s*:\s*1\b|\buserScalable\s*:\s*false\b/g)) facts.zoomLocks.push({ file: f.rel, line: at(z.index) });
-      if (MOTION_IMPORT.test(m.text)) {
-        const imp = m.text.match(MOTION_IMPORT);
+      const imp = m.text.match(MOTION_IMPORT);
+      if (imp) {
         noteAnimation({ file: f.rel, line: at(imp.index) });
         for (const d of m.text.matchAll(/\bduration\s*:\s*(\d*\.?\d+)\b/g)) {
           // A spring's duration is a settling time set by its character, not a tier.
