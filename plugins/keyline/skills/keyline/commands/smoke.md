@@ -99,4 +99,4 @@ Each prints one expression for your JavaScript tool. Then, per page:
 node <keyline>/scripts/browse.mjs report smoke-report
 ```
 
-**Changes no code.** Add `smoke-report/` to `.gitignore` unless the user wants it committed.
+**Changes no code.** `.gitignore` follows `system/reports.md`.
