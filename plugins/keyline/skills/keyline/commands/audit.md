@@ -5,7 +5,7 @@ An interface inspected as a reader meets it and as its code is written: what the
 - **One screen** — a route, file, component or flow is named, or the conversation is about one screen: a designer's close read, in chat. What the reader notices first, what's working, and the few changes that matter most, ranked, each tied to a law. Follow **One screen** below.
 - **The whole product** — nothing is named and no screen is in view, or the user asks for the app, the site, every page: every page at desktop and phone, light and dark, every law checked with evidence, AI slop and accessibility included, scored per domain and written up as one report a person can read, filter and share. Follow **The whole product** below.
 
-Say which in your first line ("Auditing `/settings` as one screen"), so the user can widen or narrow it, and end either one as **Ask before you stop** says. `/keyline critique` and "review this" are this command on one screen.
+Say which in your first line ("Auditing `/settings` as one screen"), so the user can widen or narrow it. `/keyline critique` and "review this" are this command on one screen.
 
 **Changes no code.** It reports, and writes its findings into `DESIGN.md`.
 
@@ -96,6 +96,6 @@ Don't pad to five. Don't list what's fine as a problem to fix. No scores and no 
 - the worst five findings, one line each with evidence and law;
 - the path to (or link for) the report.
 
-## Ask before you stop
+## Next steps
 
-Every audit, either scope, ends by asking the user what they'd like to do next — one short question in your own words, written for what you found (not a stock line), followed by the two or three next steps that fit, most useful first. For one screen: make the top change with the command it names, take the next screen, or widen to the whole product. For the whole product: `/keyline polish --from keyline-report` to fix what's open a domain at a time, start with the lowest-scoring domain, or publish the report. Then wait for the answer: the audit changes no code, so nothing starts until the user picks.
+End with the question **Ask before you stop** in `SKILL.md` describes. The usual next steps for one screen: make the top change with the command it names, take the next screen, or widen to the whole product. For the whole product: `/keyline polish --from keyline-report` to fix what's open a domain at a time, start with the lowest-scoring domain, or publish the report.

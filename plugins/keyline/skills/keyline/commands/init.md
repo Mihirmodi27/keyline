@@ -11,6 +11,6 @@ Fit Keyline to this project: find out once what it calls things, who it's for an
 - **A new project with no interface yet:** there is nothing to scan. Ask what the product is and who reads it, propose a preset, and write `## Profile` and each domain's section with the preset's defaults from those `## Dials`, marked as defaults. Generate tokens only if asked (`system/guide.md` §6).
 - **Run for some domains only** (another command found `DESIGN.md` missing): write `## Profile` and those domains' sections, and leave the rest for a full run.
 
-**Report**, briefly: the preset and the evidence for it, how many roles mapped cleanly, which names you proposed, and the three open issues that matter most. Then the next step — usually `/keyline audit` on the main screen, or `/keyline polish` if the user wants changes.
+**Report**, briefly: the preset and the evidence for it, how many roles mapped cleanly, which names you proposed, and the three open issues that matter most. Then ask what's next (`SKILL.md`, **Ask before you stop**) — usually `/keyline audit` on the main screen, or `/keyline polish` if the user wants changes.
 
 Generating tokens is a separate request.
