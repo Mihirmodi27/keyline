@@ -2,7 +2,7 @@
 
 Interface design laws for coding agents.
 
-Keyline reads your codebase once and writes a `DESIGN.md` that maps your own token names onto its roles and picks a preset for your reader. From then on your agent critiques, audits and fixes type, colour, layout, depth, motion and product patterns through that file: the same laws on every project, your values on yours.
+Keyline reads your codebase once and writes a `DESIGN.md` that maps your own token names onto its roles and picks a preset for your reader. From then on your agent audits and fixes type, colour, layout, depth, motion and product patterns through that file: the same laws on every project, your values on yours.
 
 ```sh
 npx trykeyline install
@@ -22,8 +22,7 @@ Then, in your agent:
 |---|---|
 | `/keyline init` | Scans the codebase, maps its tokens onto roles, picks a preset, writes `DESIGN.md` with the open issues it found |
 | `/keyline sync` | Reconciles `DESIGN.md` with code that has moved since |
-| `/keyline critique` | A designer's read of one screen: what the reader feels first, what's working, the few changes that matter. The audit's quick mode |
-| `/keyline audit` | Every page of the running product at desktop and phone, light and dark, plus the code: accessibility, contrast, AI slop and every law checked with evidence, scored 0–4, in one HTML report |
+| `/keyline audit` | Name a screen for a designer's read: what the reader feels first, what's working, the few changes that matter. Name nothing for the whole product: every page at desktop and phone, light and dark, plus the code; accessibility, contrast, AI slop and every law checked with evidence, scored 0–4, in one HTML report |
 | `/keyline smoke` | Uses your running app like a tester and reports what's broken, with the steps to reproduce each |
 | `/keyline type` | Type scale, weights, leading, tracking, emphasis, numerals, font loading |
 | `/keyline color` | Tokens by intent, text tiers by measured contrast, status colours, themes |
@@ -35,7 +34,7 @@ Then, in your agent:
 
 You don't have to name a command: ask for "tighter spacing" or "a review of the settings page" and the agent picks one.
 
-`critique`, `audit`, `smoke`, `init` and `sync` change no code. The refining commands change only what their domain owns, in your token names, and write decisions back to `DESIGN.md` so the next session starts from them.
+`audit`, `smoke`, `init` and `sync` change no code. The refining commands change only what their domain owns, in your token names, and write decisions back to `DESIGN.md` so the next session starts from them.
 
 ## The smoke test
 
@@ -224,7 +223,7 @@ npx trykeyline update                          # refresh every copy already inst
 /plugin install keyline@keyline
 ```
 
-Claude Code names a plugin's skills after the plugin, so installed this way the command is `/keyline:keyline init`, `/keyline:keyline critique` and so on. Installed with `npx trykeyline install`, it's `/keyline`.
+Claude Code names a plugin's skills after the plugin, so installed this way the command is `/keyline:keyline init`, `/keyline:keyline audit` and so on. Installed with `npx trykeyline install`, it's `/keyline`.
 
 **With the [`skills` CLI](https://github.com/vercel-labs/skills):** `npx skills add Mihirmodi27/keyline --agent claude-code`.
 

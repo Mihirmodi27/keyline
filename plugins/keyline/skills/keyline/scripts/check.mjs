@@ -346,7 +346,7 @@ function human(result, { all, color, baseline, changed }) {
     out.push(`${head}, ${plural(n.warning, "new warning")}, ${n.info} new info · ${baseline.counts.still} still · ${paint("32", `${baseline.counts.fixed} fixed`)}`);
     if (baseline.counts.still && !all) out.push(dim(`The ${baseline.counts.still} still there are listed with --all, or without --baseline.`));
   } else {
-    out.push(total === 0 ? paint("32", `✓ nothing the detector can see${scope} — run /keyline critique for what it can't`) : `${s.error ? sev.error(`✖ ${plural(s.error, "error")}`) : "✓ no errors"}, ${plural(s.warning, "warning")}, ${s.info} info`);
+    out.push(total === 0 ? paint("32", `✓ nothing the detector can see${scope} — run /keyline audit for what it can't`) : `${s.error ? sev.error(`✖ ${plural(s.error, "error")}`) : "✓ no errors"}, ${plural(s.warning, "warning")}, ${s.info} info`);
   }
   return out.join("\n");
 }

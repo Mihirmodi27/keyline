@@ -303,5 +303,5 @@ for (const d of dests) {
 if (installed > 0) {
   console.log("Next, in your agent:");
   console.log("  /keyline init       scan this project and write DESIGN.md");
-  console.log("  /keyline critique   then a designer's read of any screen");
+  console.log("  /keyline audit      then a designer's read of any screen, or of the whole product");
 }

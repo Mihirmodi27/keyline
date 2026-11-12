@@ -16,7 +16,7 @@
  * `--staged`, the guard) confirms its findings against the whole project.
  *
  * What a rule can't see — hierarchy, grouping, whether a card should be a
- * section — is left to `/keyline critique` and `/keyline audit`.
+ * section — is left to `/keyline audit`.
  */
 
 const COLOR_FN = /\b(rgba?|hsla?|oklch|oklab|lab|lch|hwb)\(([^()]*(?:\([^()]*\)[^()]*)*)\)/gi;

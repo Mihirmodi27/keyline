@@ -12,7 +12,7 @@
     {
       "name": "keyline",
       "source": "./plugins/keyline",
-      "description": "One skill with eleven commands — init, sync, critique, audit, type, color, layout, depth, motion, patterns, polish — that applies one set of interface laws through a DESIGN.md written in your project's own names."
+      "description": "One skill with eleven commands — init, sync, audit, smoke, type, color, layout, depth, motion, patterns, polish — that applies one set of interface laws through a DESIGN.md written in your project's own names."
     }
   ]
 }

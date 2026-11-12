@@ -1,6 +1,6 @@
 # UX laws
 
-The named laws behind what a reader feels, and where Keyline holds each one. `critique` and `audit` cite a name beside a finding only where it explains why the reader feels the problem: the names are reasons, not a checklist. In the table, "step 3 above" is `critique`'s step 3: reading the screen in order.
+The named laws behind what a reader feels, and where Keyline holds each one. `audit` cites a name beside a finding only where it explains why the reader feels the problem: the names are reasons, not a checklist. In the table, "step 3 above" is the one-screen audit's step 3: reading the screen in order.
 
 | UX law | The reader… | Where Keyline holds it |
 |---|---|---|
