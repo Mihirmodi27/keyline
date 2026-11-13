@@ -50,7 +50,7 @@ This is the law of **proximity**: things near each other are read as one group b
 
 The quiet devices carry the rest, one job each, and **each has one style across the product** — two table styles or two group-label styles read as two products stitched together. Which style is a dial:
 
-- **A group label** in editorial is `type.label` in sentence case over a hairline rule. In product it is one group bar — a tinted band holding a chevron, the name, a count and the add action, sticky while its group scrolls. The tint is earned by being a control; a tinted strip behind a heading that does none of this is still decoration.
+- **A group label in content** in editorial is `type.label` over a hairline rule; a sidebar's group labels take no rule and no bar (`domains/layout/measure-and-rhythm.md`). In product it is one group bar — a tinted band holding a chevron, the name, a count and the add action, sticky while its group scrolls. The tint is earned by being a control; a tinted strip behind a heading that does none of this is still decoration.
 - **A table** in editorial has no frame: a hairline under its header, `border.divider` between rows, and its first column flush with the heading above, so the table's edge is the text's edge. In product it has one shared frame — `radius.card` in a hairline, a tinted header row, hairlines between rows only.
 - **Page-level tabs** are text on one shared hairline, with `rule.emphasis` under the current tab and no box round the row. A segmented control is for switching a mode between two or three options, not for navigation.
 - **Chips, badges and tags share one shape**, one height, padding and radius per size, and vary only in fill and text. Three chip shapes on one screen are three components nobody chose.

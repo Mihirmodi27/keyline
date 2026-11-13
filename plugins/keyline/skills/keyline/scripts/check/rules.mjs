@@ -120,16 +120,16 @@ const typeRules = [
     law: "type dials: uppercase labels",
     title: "Uppercase labels",
     check(facts, { design }) {
-      if (design.preset === "expressive") return [];
+      // Capitals are a valid label style; the finding is a project contradicting its own record.
+      if (design.labelCase !== "sentence") return [];
       const hits = [
         ...tw(facts, (b) => b === "uppercase").map(where),
         ...facts.decls.filter((d) => d.prop === "text-transform" && /uppercase/i.test(d.value)).map(where),
       ];
-      const severity = design.preset ? "warning" : "info";
       return hits.map((h) => ({
         ...h,
-        severity,
-        message: `Uppercase label. ${design.preset ? `The ${design.preset} preset sets labels in sentence case` : "Capitals are a texture; a page of them reads as signage"} — separate a group label by tier and a rule instead of case.`,
+        severity: "warning",
+        message: "Uppercase label, but DESIGN.md sets labels in sentence case — match it, or record the capitals as a label role under ## Type.",
       }));
     },
   },

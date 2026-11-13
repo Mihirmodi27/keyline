@@ -9,12 +9,12 @@ const fixture = (name) => fileURLToPath(new URL(`./fixtures/${name}`, import.met
 const CLI = fileURLToPath(new URL("../bin/keyline.mjs", import.meta.url));
 const ids = (r) => new Set(r.findings.map((f) => f.rule));
 
-test("a sloppy project trips every rule that applies without a preset", () => {
+test("a sloppy project trips every rule that applies without a DESIGN.md", () => {
   const r = check({ root: fixture("sloppy") });
   const found = ids(r);
-  const presetOnly = new Set(["type/italic"]);
+  const presetOnly = new Set(["type/italic", "type/uppercase"]);
   for (const rule of RULES) {
-    if (presetOnly.has(rule.id)) assert.ok(!found.has(rule.id), `${rule.id} needs a preset`);
+    if (presetOnly.has(rule.id)) assert.ok(!found.has(rule.id), `${rule.id} needs a DESIGN.md`);
     else assert.ok(found.has(rule.id), `expected ${rule.id}`);
   }
 });
@@ -38,9 +38,15 @@ test("DESIGN.md decides the verdicts: preset, ladders, suppressions", () => {
   const by = (rule) => r.findings.filter((f) => f.rule === rule);
 
   assert.equal(by("type/italic").length, 1, "product has no italic");
-  assert.equal(by("type/uppercase")[0].severity, "warning", "product sets labels in sentence case");
+  assert.equal(by("type/uppercase")[0].severity, "warning", "this DESIGN.md records labels in sentence case");
   assert.deepEqual(by("layout/z-index").map((f) => f.line), [6], "z-10 is on the ladder, z-30 isn't");
   assert.deepEqual(by("motion/duration-ladder").map((f) => f.line), [6], "250ms flagged; 400ms is suppressed");
+});
+
+test("capitals recorded as a label role are not a finding", () => {
+  const r = check({ root: fixture("capitals") });
+  assert.equal(r.design.labelCase, "capitals");
+  assert.deepEqual(r.findings.filter((f) => f.rule === "type/uppercase"), []);
 });
 
 test("regressions from the launch smoke test stay fixed", () => {
