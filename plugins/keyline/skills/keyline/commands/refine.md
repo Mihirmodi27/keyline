@@ -17,3 +17,5 @@
 - **Improving keeps what the design already chose** (`SKILL.md`). Where a preset's default and the existing design disagree on dividers, corners or line weight, `## Refining an existing design` in the layout guide decides; read it when the pass touches layout or depth: `awk '/^## /{p = /^## Refining an existing design/} p' <keyline>/domains/layout/guide.md`.
 
 **Report:** what was wrong, as a reader would feel it; what changed, by token or component, with the law; what was measured (sizes, ratios, durations); and anything noticed outside the domain, with its command.
+
+**Next** (format in `SKILL.md`, `## The flow`), only when the command ran on its own, not as a pass inside `polish`: the command for the most important thing noticed outside this domain, on the same target; with nothing noticed, `polish` on that target, so the other five domains catch up.

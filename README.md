@@ -13,8 +13,22 @@ The npm package is `trykeyline`, because npm holds `keyline` too close to an old
 Then, in your agent:
 
 ```
-/keyline init
+/keyline
 ```
+
+On its own, `/keyline` tells you where your project stands and which command to run next.
+
+## How it runs
+
+You don't need to learn the commands. A project goes through three stages, and every report ends with the next step.
+
+| Stage | Command | What you get |
+|---|---|---|
+| 1. Review | `/keyline critique` or `/keyline audit` | What's wrong with the interface as it is. No setup needed, and nothing changes |
+| 2. Set up | `/keyline init` (`/keyline sync` later on) | `DESIGN.md`: your token names, a preset for your reader, and the review's findings as open issues |
+| 3. Polish | `/keyline polish` | The fixes, one domain at a time, recorded back to `DESIGN.md` |
+
+Then it starts over: polish the next screen with open issues, or review one nobody has looked at yet.
 
 ## Commands
 

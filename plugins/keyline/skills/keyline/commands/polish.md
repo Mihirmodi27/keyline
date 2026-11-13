@@ -16,4 +16,6 @@ Polish improves the screen it's given; it doesn't move navigation or add feature
 
 **Report**, per domain in order: what changed and why, in a line or two each — a domain with nothing to fix says so — then what the settling pass changed. Then what was measured, what went into `DESIGN.md`, and anything left for later with its command.
 
+**Next** (format in `SKILL.md`, `## The flow`), once, at the end of the whole polish rather than after each domain: `polish` on the next screen with open issues; with none left, `critique` on a screen no report has covered.
+
 If the user wants to review as you go, stop after each domain and show it before starting the next.

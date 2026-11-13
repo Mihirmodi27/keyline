@@ -28,3 +28,7 @@ Read a law's full text where a finding needs it. Under preset `glass`, also each
 **Report:** a table of the six domains with score and finding count, then findings grouped by domain, worst first, one line each with evidence — `file:line`, a ratio, a count — and the law, with its UX-law name where one explains it (`commands/ux-laws.md`). Close with the order to fix in: usually the lowest score first, unless a law in another domain blocks it.
 
 **Write back:** every finding under `## Open issues` in `DESIGN.md`, replacing entries now fixed.
+
+**No `DESIGN.md` yet** (stage 1 of the flow in `SKILL.md`): audit from the code. Every step runs as written. Choose the preset the reader points to (`system/presets.md`) and say which you assumed and why. The detector has no preset to read, so its preset rules fall back to their neutral verdicts; judge those findings, and score the dials, against the preset you assumed. Write nothing back: there's no file yet, and `init` records these findings as its open issues.
+
+**Next** (format in `SKILL.md`, `## The flow`): with no `DESIGN.md`, `init`, so the findings are kept and the fixes land in the project's names. With one, `polish` on the screen with the most findings; the lowest-scoring domain's own command when that domain holds most of them.

@@ -13,3 +13,5 @@ Bring `DESIGN.md` back in line with code that has moved since it was written. An
 5. Propose the edits as a short diff and apply them. Every name the user chose and every `## Decisions` entry survives; a decision the code now contradicts is reported, never silently dropped.
 
 **Report:** what drifted, what's newly fixed, what's newly broken, and anything in `## Decisions` the code no longer follows.
+
+**Next** (format in `SKILL.md`, `## The flow`): `polish` on the screen most open issues fall on (`SKILL.md`, flow rule 3); with none open, `critique` on a screen no report has covered.

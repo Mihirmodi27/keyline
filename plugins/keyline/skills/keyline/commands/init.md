@@ -10,7 +10,10 @@ Fit Keyline to this project: find out once what it calls things, who it's for an
 - **`DESIGN.md` already exists:** this is `/keyline sync`, not a rewrite. Say so and run that instead.
 - **A new project with no interface yet:** there is nothing to scan. Ask what the product is and who reads it, propose a preset, and write `## Profile` and each domain's section with the preset's defaults from those `## Dials`, marked as defaults. Generate tokens only if asked (`system/guide.md` §6).
 - **Run for some domains only** (another command found `DESIGN.md` missing): write `## Profile` and those domains' sections, and leave the rest for a full run.
+- **A critique or audit ran earlier in this conversation** (stage 1 of the flow in `SKILL.md`): its findings go into `## Open issues`, one line each like any other: the problem, its evidence and the law. Recheck each against the code, but don't rediscover them, and leave out the review's fixes and commands, which the refining passes work out again. Reuse its preset unless the scan argues for another, and say so if it does.
 
-**Report**, briefly: the preset and the evidence for it, how many roles mapped cleanly, which names you proposed, and the three open issues that matter most. Then the next step — usually `/keyline critique` on the main screen, or `/keyline polish` if the user wants changes.
+**Report**, briefly: the preset and the evidence for it, how many roles mapped cleanly, which names you proposed, and the three open issues that matter most.
+
+**Next** (format in `SKILL.md`, `## The flow`): `polish` on the screen most open issues fall on (`SKILL.md`, flow rule 3). **Or:** `critique` on the main screen, when no review ran before this.
 
 Generating tokens is a separate request.
