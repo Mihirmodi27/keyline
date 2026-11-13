@@ -16,7 +16,7 @@
   --accent: #5b5bf0;
   --accent-ink: #4a48d8;
   --accent-soft: #eeeefe;
-  --selected: rgba(91, 91, 240, 0.22); /* current nav item: accent over the sidebar, ink 4.70:1 */
+  --selected: rgba(91, 91, 240, 0.14); /* current nav item: accent at 14% over the sidebar, ink 5.25:1 */
   --green: #0c7a48;           /* 4.82:1 on --green-soft (was #138a52, 3.93:1) */
   --green-soft: #e6f6ee;
   --red: #c8372d;
@@ -59,7 +59,7 @@
   --z-skip-link: 100;
   --font: "Inter", "Inter Fallback", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
 
-  /* Type ladder — sizes by role (product: 2 weights, sentence case, tabular numbers) */
+  /* Type ladder — sizes by role (product: 2 weights, tabular numbers; capitals on the sidebar group label only) */
   --size-figure: 1.5rem;     /* 24px  headline figures (data, not a tier) */
   --size-heading: 1rem;      /* 16px  section headings, chart-stat figures, wordmark */
   --size-body: 0.875rem;     /* 14px  body, feed copy */
@@ -96,7 +96,7 @@
     --accent: #8282ff;
     --accent-ink: #a5a5ff;
     --accent-soft: rgba(130, 130, 255, 0.14);
-    --selected: rgba(130, 130, 255, 0.22);
+    --selected: rgba(130, 130, 255, 0.14); /* ink 7.16:1 over the sidebar */
     --green: #3ccf8e;
     --green-soft: rgba(60, 207, 142, 0.12);
     --red: #ff7a6e;
@@ -275,13 +275,15 @@ button { cursor: pointer; }
 
 .nav { display: flex; flex-direction: column; gap: 4px; }
 
+/* Group label: the capitals the project already set, tracked; parted from its rows by case and the space above, no rule */
 .nav-label {
   margin: 10px 10px 4px;
-  padding-bottom: 4px;
   font-size: var(--size-small);
+  font-weight: var(--weight-strong);
   line-height: 1.3;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
   color: var(--text-3);
-  border-bottom: 1px solid var(--border);
 }
 
 .nav ul { display: flex; flex-direction: column; gap: 2px; }
@@ -588,8 +590,20 @@ kbd {
 
 /* Headline figures: one strip, each figure under its label, parted by hairlines — not a tile per figure */
 .metrics {
+  position: relative;
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
+  padding-bottom: var(--space-section);
+}
+/* Peer sections (the figures, then trends and pages): a full-bleed hairline, from the panel's edge to its edge,
+   with space.section above and below; none after the last */
+.metrics::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: calc(var(--gutter) * -1);
+  width: 100cqw; /* the content panel's width (container: main) */
+  border-bottom: var(--hairline) solid var(--border);
 }
 .metric { padding: 0 24px; }
 .metric:first-child { padding-left: 0; }
@@ -652,7 +666,9 @@ kbd {
 .delta.up { color: var(--green); background: var(--green-soft); }
 .delta.down { color: var(--red); background: var(--red-soft); }
 
-/* A content column beside a rail: chart and table stack on the page; the activity rail sits beside them */
+/* A content column beside a rail: chart and table stack on the page; the activity rail sits beside them.
+   Chart and table are unlike regions of one section: a hairline between them, as wide as the column, stopping short
+   of the rail. The rail is the one card, and its own edge parts it from the column */
 .grid {
   display: grid;
   grid-template-columns: minmax(0, 1fr) clamp(300px, 30%, 360px);
@@ -664,8 +680,12 @@ kbd {
 }
 
 .chart-section { grid-area: chart; }
+.table-section {
+  grid-area: table;
+  padding-top: var(--space-section);
+  border-top: var(--hairline) solid var(--border);
+}
 .activity-card { grid-area: activity; }
-.table-section { grid-area: table; }
 
 /* The activity rail is the one card: one object, its items parted by space */
 .card {
@@ -1011,11 +1031,21 @@ kbd {
 
 .main { container: main / inline-size; }
 
-/* bp.rail — the activity rail drops below the content column; figures go two-up */
+/* bp.rail — the activity rail drops below the content column; figures go two-up.
+   In one column the chart-to-table hairline runs the panel's width, as the strip's does */
 @container main (max-width: 860px) {
   .grid {
     grid-template-columns: minmax(0, 1fr);
     grid-template-areas: "chart" "table" "activity";
+  }
+  .table-section { position: relative; border-top: 0; }
+  .table-section::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: calc(var(--gutter) * -1);
+    width: 100cqw;
+    border-top: var(--hairline) solid var(--border);
   }
   .metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .metric:nth-child(odd) { padding-left: 0; border-left: 0; }

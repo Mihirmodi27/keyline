@@ -34,12 +34,12 @@ Evidence for `product`: one working screen — an app shell with a sidebar of si
 | ↳ page title (`type.ui` in the header bar) | `--size-ui` · `h1` in `.crumbs` | 0.8125rem (13px) | 1.4 | 0 | 500 | `--text` — the last step of the breadcrumb |
 | `type.data` | `--size-ui` · `.pages td` | 0.8125rem (13px) | 1.5 | 0 | 400; the row's path 500 | `--text` / `--text-2`, tabular |
 | `type.label` | `--size-small` · `.metric-label`, `.chart-stats dt`, `.pages thead th`, `.legend` | 0.75rem (12px) | 1.3 | 0 | 500 (figure and column labels), 400 (legend) | `--text-2` / `--text-3` |
-| ↳ group label (project role) | `--size-small` · `.nav-label` | 0.75rem (12px) | 1.3 | 0, sentence case | 400 | `--text-3` — a hairline rule beneath |
+| ↳ group label (project role) | `--size-small` · `.nav-label` | 0.75rem (12px) | 1.3 | +0.06em, capitals by `text-transform` (written in sentence case) | 500 | `--text-3` — separates from the nav rows on case and the space above; no rule |
 | `type.meta` | `--size-small` · `time`, `.card-sub`, `.crumb`, `.ws-plan`, axes, `.metric-foot`, `kbd`, tooltip | 0.75rem (12px) | 1.4 | 0 | 400 | `--text-3` |
 
 `type.title` has no row: the page title sits in the header bar as chrome (type ladders: product), and no content heading opens the page. Inputs go to 16px under 560px.
 
-**Weights** — `--weight` 400: body, figures, data. `--weight-strong` 500: headings, the current nav item, selected menu option, figure and column labels, names in the feed, the row's path, chips.
+**Weights** — `--weight` 400: body, figures, data. `--weight-strong` 500: headings, the sidebar group label, the current nav item, selected menu option, figure and column labels, names in the feed, the row's path, chips.
 
 **Numerals** — `tabular-nums` on `.num`, `time`, chart axes, tooltips and counts; not on the root, and not on paths (Inter's `tnum` widens hyphens).
 
@@ -54,7 +54,7 @@ Evidence for `product`: one working screen — an app shell with a sidebar of si
 | `text.primary` | `--text` | `#0f1729` | 16.67:1 | `#eef0f5` | 15.13:1 |
 | `text.secondary` | `--text-2` | `#4a5468` | 7.10:1 (×2.35) | `#a9b0c0` | 7.93:1 (×1.91) |
 | `text.tertiary` | `--text-3` | `#636c7e` | 4.93:1 (×1.44) | `#848c9e` | 5.11:1 (×1.55) |
-| `accent.ink` (project role) | `--accent-ink` | `#4a48d8` | 6.54:1 on `--surface`; 4.70:1 on `--selected` | `#a5a5ff` | 8.20:1 on `--surface`; ≈ 6.2:1 on `--selected` |
+| `accent.ink` (project role) | `--accent-ink` | `#4a48d8` | 6.54:1 on `--surface`; 5.25:1 on `--selected` over `--sidebar` | `#a5a5ff` | 8.20:1 on `--surface`; 7.16:1 on `--selected` over `--sidebar` |
 | `text.on-accent` | `--on-accent` | `#ffffff` | on brand gradients; workspace lettermark ≥ 3.02:1 (a mark, recognised not read) | `#ffffff` | same |
 
 **Surfaces**
@@ -67,7 +67,7 @@ Evidence for `product`: one working screen — an app shell with a sidebar of si
 | `surface.hover` | `--surface-2` | `#f9fafb` | `#171b23` |
 | ↳ hover wash on the sidebar (project role, `border.layered` family) | `--wash` (proposed) | `rgba(127,135,155,0.12)` | `rgba(255,255,255,0.06)` |
 | `surface.pressed` | `--pressed` (proposed) | `rgba(127,135,155,0.2)` — ink 14.03:1 on it | `rgba(255,255,255,0.1)` |
-| `surface.selected` | `--selected` (proposed) | accent at 22%: `rgba(91,91,240,0.22)` | `rgba(130,130,255,0.22)` |
+| `surface.selected` | `--selected` (proposed) | accent at 14% over `--sidebar`: `rgba(91,91,240,0.14)` | accent at 14%: `rgba(130,130,255,0.14)` |
 | accent tint for marks (project role) | `--accent-soft` | `#eeeefe` | `rgba(130,130,255,0.14)` |
 
 **Lines and fills**
@@ -116,7 +116,7 @@ App shell: one navigation surface (the sidebar), then the content panel under it
 | header bar | `.topbar` | min 52px; breadcrumb and title at the start, search and the page's actions (ghost buttons) at the end |
 | page top space | `.content` | 24px under the header bar; 16px under `bp.shell` |
 
-**Lines** — `hairline.chrome` · `hairline.object`: `--hairline` (proposed) 0.5px for every structural line (sidebar edge, header rule, figure dividers, table frame and rows, the activity card); control edges stay 1px in `--border-control` (a 3:1 line a reader must find). `rule.emphasis`: the 2px focus ring.
+**Lines** — `hairline.chrome` · `hairline.object`: `--hairline` (proposed) 0.5px for every structural line (sidebar edge, header rule, section dividers, figure dividers, table frame and rows, the activity card); control edges stay 1px in `--border-control` (a 3:1 line a reader must find). `rule.emphasis`: the 2px focus ring.
 
 **Radius ladder**
 
@@ -143,10 +143,18 @@ App shell: one navigation surface (the sidebar), then the content panel under it
 | Role | Name here | Value | What changes |
 |---|---|---|---|
 | `bp.shell` | `@media (max-width: 860px)` | window 860px | The sidebar becomes a sheet behind a menu button; the toolbar takes its own row; gutter 16px |
-| `bp.rail` | `@container main (max-width: 860px)` | panel 860px | The activity rail drops below the column; figures go two-up |
+| `bp.rail` | `@container main (max-width: 860px)` | panel 860px | The activity rail drops below the column; the chart-to-table hairline runs the panel's width; figures go two-up |
 | `bp.compact` | `@container main (max-width: 560px)` | panel 560px | The table keeps path, views and bounce; the chart shortens; inputs go to 16px |
 
 Every hover style sits behind `(hover: hover) and (pointer: fine)`. A skip link targets `#main`.
+
+**Section dividers** — from layout law 3's table, all `--hairline` in `--border`, each as wide as what it divides:
+
+| Boundary | Kind | Divider |
+|---|---|---|
+| Figure strip → the section below (chart, table, rail) | Peer regions of a working page | Full-bleed hairline, panel edge to panel edge (`.metrics::after`, `100cqw` of the `main` container, offset by `--gutter`); `--space-section` above and below; none after the last |
+| Chart → table | Unlike regions within one section | Horizontal hairline as wide as the content column, stopping short of the card (`.table-section` top edge); `--space-section` above and below. Under `bp.rail` (one column) it runs the panel's width, as the strip's does (`.table-section::before`) |
+| Content column → activity rail | Content beside its rail | The card's edge parts the rail (decision of 2026-11-04): no line in the 32px gap; under `bp.rail` the card follows the table at `--space-section`, no extra line |
 
 **Boxes on the Overview screen** — three: the activity rail (a side rail, one object), the table's frame, and the workspace switcher (a control). Figures are one hairline-parted strip; the chart is unboxed.
 
@@ -183,99 +191,6 @@ No springs (nothing is dragged), no set pieces, no loops, no sound. The menu clo
 
 **Nouns** — page (a tracked URL), event, funnel, cohort, visitor, sign-up, teammate, alert. **Links name their destination** — "All activity", "All pages", "Upgrade plan". **Shortcuts** — ⌘K / Ctrl+K focuses search (shown in the field); Escape closes the range menu or the navigation sheet, one layer, and returns focus to the opener; arrow keys and Enter move through the range menu. **Destructive** — none on this screen. **Remembered views** — none; the date range resets on arrival. **Dashboard order** — overview (figure strip), trends (daily visitors), then the table and the activity rail; the brief requires the feed, so it stays.
 
-## Decisions`.
-
-**Chart** — one primary series in `--accent` at full strength (the line, its area wash and the table's view bars); the previous period in `--prev`, dashed.
-
-**Exceptions** — chromatic spend beyond accent and status:
-
-- `exception.person.*` — `--person-violet`, `--person-amber`, `--person-teal`, each with a `-soft` tint, per theme. *Who* at a glance: avatars only, never names or rows.
-- Brand marks, kept from the original design: `--brand-gradient` and `--brand-shadow` (the Lumen mark), `--ws-gradient` (the workspace avatar), `--meter` (the usage meter). Each re-declared per theme.
-
-## Layout
-
-App shell: one navigation surface (the sidebar), then the content panel under its header bar. The panel holds the headline-figure strip, then a content column (chart, then table) beside the activity rail.
-
-| Role | Name here | Value |
-|---|---|---|
-| `measure.app` | `.content` | fills the panel, left-aligned, `max-width: 1440px` |
-| `measure.rail` (navigation) | `--sidebar-w` | 248px |
-| activity rail (project role under `measure.rail`) | `.grid` column | `clamp(300px, 30%, 360px)` |
-| `gutter` | `--gutter` (proposed) | 32px; 16px under `bp.shell` |
-| `space.tight` | `--space-tight` (proposed) | 8px |
-| `space.group` | `--space-group` (proposed) | 16px |
-| `space.section` · `space.heading-above` | `--space-section` (proposed) | 32px |
-| `space.heading-below` | `--space-heading-below` (proposed) | 12px — 32 : 12 ≈ 2.7 : 1 |
-| header bar | `.topbar` | min 52px; breadcrumb and title at the start, search and the page's actions (ghost buttons) at the end |
-| page top space | `.content` | 24px under the header bar; 16px under `bp.shell` |
-
-**Lines** — `hairline.chrome` · `hairline.object`: `--hairline` (proposed) 0.5px for every structural line (sidebar edge, header rule, figure dividers, table frame and rows, the activity card); control edges stay 1px in `--border-control` (a 3:1 line a reader must find). `rule.emphasis`: the 2px focus ring.
-
-**Radius ladder**
-
-| Role | Name here | Value |
-|---|---|---|
-| `radius.pill` | `--radius-pill` (proposed) | 999px — chips, meters, bars |
-| `radius.small` | `--radius-sm` | 6px — `kbd`, menu rows (10 − 6 = 4, snapped), the workspace avatar (12 − 6) |
-| `radius.control` | `--radius-control` (proposed) | 10px — search, buttons, nav rows, menu, tooltip, usage panel |
-| `radius.card` | `--radius` | 12px — the activity card, the table frame, the workspace switcher |
-
-**z-index ladder**
-
-| Role | Name here | Value |
-|---|---|---|
-| `z.raised` | `--z-raised` | 10 |
-| `z.popover` | `--z-popover` | 20 |
-| sticky header bar (project rung) | `--z-header` | 30 |
-| `z.dismiss` | `--z-dismiss` | 40 |
-| `z.nav` | `--z-nav` | 50 |
-| `z.skip-link` | `--z-skip-link` | 100 |
-
-**Breakpoints**
-
-| Role | Name here | Value | What changes |
-|---|---|---|---|
-| `bp.shell` | `@media (max-width: 860px)` | window 860px | The sidebar becomes a sheet behind a menu button; the toolbar takes its own row; gutter 16px |
-| `bp.rail` | `@container main (max-width: 860px)` | panel 860px | The activity rail drops below the column; figures go two-up |
-| `bp.compact` | `@container main (max-width: 560px)` | panel 560px | The table keeps path, views and bounce; the chart shortens; inputs go to 16px |
-
-Every hover style sits behind `(hover: hover) and (pointer: fine)`. A skip link targets `#main`.
-
-**Boxes on the Overview screen** — three: the activity rail (a side rail, one object), the table's frame, and the workspace switcher (a control). Figures are one hairline-parted strip; the chart is unboxed.
-
-## Surfaces
-
-| Level | Surface | Edge | Shadow | Layer |
-|---|---|---|---|---|
-| `elevation.flat` — page, chart, figure strip; the activity card and table frame | `--bg`; `--surface` inside the card and frame | `--hairline` `--border` | none | — |
-| `elevation.floating` — range menu | `--surface-float` (proposed): `#ffffff` · dark `#1b1e26` (raised L 0.196 + 0.04) | 0.5px ring at the head of `--shadow-pop`; `1px solid transparent` for forced colours | `--shadow-pop`: contact + 1 ambient, peak 10% light / 55% dark | `--z-popover` |
-| `elevation.floating` — chart tooltip (transient) | `--surface-float` | ring in `--shadow-tip` | `--shadow-tip` (proposed): no contact layer | `--z-raised` |
-| `elevation.overlay` — navigation sheet under `bp.shell` | `--surface-float` | ring in `--shadow-sheet` | `--shadow-sheet` (proposed) | `--z-nav`, `--scrim` on `--z-dismiss`: 40% light / 60% dark |
-
-Buttons are flat: no shadow on the search field, the workspace switcher or the header's ghost buttons. No translucent material: the header bar is opaque `--bg`. Under `prefers-contrast: more` the ring edges become real 1px borders and hairline frames go to 1px in `--text-3`. Closing the sheet by Escape or the scrim returns focus to the menu button.
-
-## Motion
-
-| Role | Name here | Value | Used for |
-|---|---|---|---|
-| `duration.instant` | `:active` rules | 0ms | press feedback: the `--pressed` step on nav rows and buttons, no scale |
-| `duration.micro` | `--dur-micro` (proposed) | 80ms | table row hover wash (rows swept in bulk) |
-| `duration.state` | `--dur-state` (proposed) | 100ms | hover colour and background on one control; field edge on focus |
-| `duration.popover` | `--dur-popover` (proposed) | 150ms | range menu entrance and its chevron; chart tooltip and hover line fade |
-| `duration.overlay` | `--dur-overlay` (proposed) | 200ms | navigation sheet opening |
-| `duration.exit` | `--dur-exit` (proposed) | 100ms | navigation sheet closing |
-| `ease.standard` | `--ease` (proposed) | `cubic-bezier(0.2, 0, 0, 1)` | everything that moves |
-| `ease.colour` | `--ease-colour` (proposed) | `ease-out` | colour, background, opacity |
-| `ease.exit` | `--ease-exit` (proposed) | `ease-in` | the sheet closing |
-
-No springs (nothing is dragged), no set pieces, no loops, no sound. The menu closes at once (`hidden`).
-
-**Reduced motion** — per component, not a global switch: the range menu keeps its fade and drops the 4px travel and scale; the chevron flips without turning; the navigation sheet fades in place instead of sliding 248px. Colour transitions stay.
-
-## Patterns
-
-**Nouns** — page (a tracked URL), event, funnel, cohort, visitor, sign-up, teammate. **Shortcuts** — ⌘K / Ctrl+K focuses search; Escape closes the range menu and the navigation sheet, one layer each; arrow keys move through the range menu. **Destructive** — none on this screen. **Remembered views** — none.
-
 ## Decisions
 
 - 2026-11-04 — The global reduced-motion kill switch replaced by a reduced path per component. (Law; motion law 10.)
@@ -289,6 +204,9 @@ No springs (nothing is dragged), no set pieces, no loops, no sound. The menu clo
 - 2026-11-04 — Headline figures at 24/400, not 30/600: figures are data and their labels keep the lead by weight. (Law; type law 3, type law 5.)
 - 2026-11-04 — Preset `product`. (User decision.)
 - 2026-11-04 — Theming stays as built: light and dark following the device, no toggle. (User decision.)
+- 2026-11-13 — Sidebar group labels stay in capitals, tracked +0.06em at 12/500, with no rule beneath: the project already set them in capitals, and a refining pass keeps the case a label role has; the 2026-11-04 pass had moved them to sentence case over a hairline. The label role's one case here: capitals for the group label only; figure and column labels stay sentence case. (Type dials: uppercase labels; type ladders: group label; layout, the sidebar.)
+- 2026-11-13 — `surface.selected` (`--selected`) is the accent at 14% over the sidebar in both themes, down from 22%: where the reader is takes the accent as a tint of 10–15%, and 14% is the strength the project's own dark accent tint already had. Hue unchanged. Label in `--accent-ink` measured with `contrast.mjs --over`: 5.25:1 light (on `#fbfbfc`), 7.16:1 dark (on `#0e1016`); the icon in `--accent` 4.02:1 / 5.00:1 against its 3:1. (Law; color law 7.)
+- 2026-11-13 — Section boundaries built from layout law 3's table, beside the standing 2026-11-04 decision that keeps the activity rail as the one card: the figure strip and the section under it are peers, parted by a full-bleed hairline from the panel's edge to its edge with `--space-section` (32px) above and below; chart and table are unlike regions of one section, parted by a hairline as wide as the content column that stops short of the card (the panel's width under `bp.rail`, where the column is the panel); the card's own edge parts the rail, so no line is drawn beside or above it. (Law; layout law 3.)
 
 ## Open issues
 

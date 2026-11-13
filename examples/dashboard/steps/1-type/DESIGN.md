@@ -34,12 +34,12 @@ Evidence for `product`: one working screen — an app shell with a sidebar of si
 | ↳ page title (`type.ui` in the header bar) | `--size-ui` · `h1` in `.crumbs` | 0.8125rem (13px) | 1.4 | 0 | 500 | `--text` — the last step of the breadcrumb |
 | `type.data` | `--size-ui` · `.pages td` | 0.8125rem (13px) | 1.5 | 0 | 400; the row's path 500 | `--text` / `--text-2`, tabular |
 | `type.label` | `--size-small` · `.metric-label`, `.chart-stats dt`, `.pages thead th`, `.legend` | 0.75rem (12px) | 1.3 | 0 | 500 (figure and column labels), 400 (legend) | `--text-2` / `--text-3` |
-| ↳ group label (project role) | `--size-small` · `.nav-label` | 0.75rem (12px) | 1.3 | 0, sentence case | 400 | `--text-3` — a hairline rule beneath |
+| ↳ group label (project role) | `--size-small` · `.nav-label` | 0.75rem (12px) | 1.3 | +0.06em, capitals by `text-transform` (written in sentence case) | 500 | `--text-3` — separates from the nav rows on case and the space above; no rule |
 | `type.meta` | `--size-small` · `time`, `.card-sub`, `.crumb`, `.ws-plan`, axes, `.metric-foot`, `kbd`, tooltip | 0.75rem (12px) | 1.4 | 0 | 400 | `--text-3` |
 
 `type.title` has no row: the page title sits in the header bar as chrome (type ladders: product), and no content heading opens the page. Inputs go to 16px under 560px.
 
-**Weights** — `--weight` 400: body, figures, data. `--weight-strong` 500: headings, the current nav item, selected menu option, figure and column labels, names in the feed, the row's path, chips.
+**Weights** — `--weight` 400: body, figures, data. `--weight-strong` 500: headings, the sidebar group label, the current nav item, selected menu option, figure and column labels, names in the feed, the row's path, chips.
 
 **Numerals** — `tabular-nums` on `.num`, `time`, chart axes, tooltips and counts; not on the root, and not on paths (Inter's `tnum` widens hyphens).
 
@@ -162,6 +162,7 @@ No duration or easing tokens; transitions default to `ease`. Reduced motion: one
 - 2026-11-04 — Headline figures at 24/400, not 30/600: figures are data and their labels keep the lead by weight. (Law; type law 3, type law 5.)
 - 2026-11-04 — Preset `product`. (User decision.)
 - 2026-11-04 — Theming stays as built: light and dark following the device, no toggle. (User decision.)
+- 2026-11-13 — Sidebar group labels stay in capitals, tracked +0.06em at 12/500, with no rule beneath: the project already set them in capitals, and a refining pass keeps the case a label role has; the 2026-11-04 pass had moved them to sentence case over a hairline. The label role's one case here: capitals for the group label only; figure and column labels stay sentence case. (Type dials: uppercase labels; type ladders: group label; layout, the sidebar.)
 
 ## Open issues
 
@@ -176,7 +177,7 @@ Colour
 - The 61.3% bounce rate and the notification dot are marked by red alone. (color law 6)
 - The feed's "Weekly digest" icon spends the accent on a routine event; the accent's jobs are action, focus, selection and the primary series. (color law 7)
 - Raw colours outside tokens: 20 literals (brand gradients, avatar pairs, `#fff`, a nav hover wash). (color law 1)
-- `surface.selected` is the accent at ≈ 8%, not ≈ 25%. (color law 7)
+- `surface.selected` is the accent at ≈ 8% in light, under the 10–15% a current item's tint takes. (color law 7)
 
 Layout
 - Figures are four tiles; product sets them as one hairline-parted strip. (layout law 3)
