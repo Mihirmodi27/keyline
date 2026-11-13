@@ -33,7 +33,7 @@ Sizes are `rem` tokens in `styles.css` `:root` (proposed 2026-11-04, in the proj
 | `type.label` | `--fs-ui` · `.field label` | 13px | 1.3 | 0 | 500 | `text.primary` |
 | ↳ help text (project role, reading copy) | `--fs-ui` · `.hint`, `.msg`, `.rules` | 13px | 1.45 | 0 | 400 | `text.tertiary` / `status.danger.fg` |
 | `type.meta` | `--fs-meta` · `.status`, `.badge`, `.optional`, `.footnote`, `.sidenav__plan-meta`, `.reveal` | 0.75rem (12px) | 1.4–1.5 | 0 | 400 (`.reveal` 500) | `text.tertiary` |
-| ↳ group label | `--fs-meta` · `.sidenav__title`, `.prefs thead th` | 12px, sentence case | 1.3 | 0 | 400 | `text.tertiary` |
+| ↳ group label | `--fs-meta` · `.sidenav__title`, `.prefs thead th` | 12px, capitals by `text-transform` (the words are written in sentence case) | 1.3 | +0.06em | 500 | `text.tertiary` — separates on case |
 | ↳ keyboard hint | `--fs-micro` · `.search kbd` | 0.6875rem (11px) | 1.4 | 0 | 400 | `text.tertiary` |
 | `type.data` | `.num`, time-zone `select` | inherits | — | 0 | — | tabular, slashed zero |
 
@@ -47,7 +47,7 @@ Lettermarks: `.avatar--lg` initials at `--fs-title`, `.avatar--sm` at `--fs-meta
 | 16 | — | — | section and dialog headings |
 | 14 | body, descriptions, input values | row titles, brand name | — |
 | 13 | help text, nav items | buttons, field labels, current nav item | — |
-| 12 | meta, badges, group labels | the password Show button | — |
+| 12 | meta, badges | group labels (in capitals), the password Show button | — |
 
 ## Colour
 
@@ -174,6 +174,7 @@ Curves: `cubic-bezier(.3,.7,.4,1)` (toggle knob), `cubic-bezier(.2,.8,.3,1)` (di
 
 ## Decisions
 
+- 2026-11-13 — Group labels (`.sidenav__title`, `.prefs thead th`) are set in capitals, as the page already had them: 12px, +0.06em, 500, `text.tertiary`, by `text-transform` over words written in sentence case. The first type pass had moved them to sentence case; capitals on a label role are a valid choice and a refining pass keeps the case a project has. Two values did move: weight 600 → 500 (600 is for headings, and the ladder sets a group label strong in capitals) and the table header's tracking 0.05 → 0.06em, so the role has one value. No hairline under the sidebar's label. (Type dials, uppercase labels; `ladders.md` group-label row; layout, the sidebar.)
 - 2026-11-04 — Three weights, not two: 500 lifts row titles, field labels and buttons, so headings at 500 differed from the rows under them by size alone; 600 is reserved for the page title and section/dialog headings. (User decision by delegation — recommendation taken; type guide dial override.)
 - 2026-11-04 — Page title 20px, not 28px: the `product` ceiling is 1.6 × body. (Law; type dials.)
 - 2026-11-04 — Theme follows the OS through `prefers-color-scheme`, no toggle. (User decision: keep the theming the page already has.)

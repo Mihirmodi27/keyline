@@ -3,7 +3,7 @@
   "steps": [
     {
       "domain": "type",
-      "summary": "The type now runs on a short ladder of six sizes and three weights, so headings stand out by size and the page stops shouting in capitals.",
+      "summary": "The type now runs on a short ladder of six sizes and three weights, so headings stand out by size and the group labels keep their capitals on one weight and one tracking.",
       "changes": [
         {
           "what": "The page title is smaller and set in the heading weight, within the product ceiling of 1.6 × body",
@@ -27,10 +27,10 @@
           "selector": ":root"
         },
         {
-          "what": "Uppercase eyebrows over the sidebar and the notifications table are now sentence case",
+          "what": "Group labels over the sidebar and the notifications table keep their capitals, on one weight and one tracking",
           "law": "type dials (uppercase labels)",
-          "before": "SETTINGS, ACTIVITY · 12px / 600, +0.06em",
-          "after": "Settings, Activity · 12px / 400, 0em",
+          "before": "SETTINGS, ACTIVITY · 12px / 600, +0.06em and +0.05em",
+          "after": "SETTINGS, ACTIVITY · 12px / 500, +0.06em",
           "selector": ".sidenav__title, .prefs thead th"
         },
         {
@@ -92,7 +92,7 @@
           "what": "The current section in the sidebar sits on a blue tint with a blue label, instead of a white raised chip",
           "law": "color law 7",
           "before": "white chip, shadow and border; #101828 label",
-          "after": "accent at 25% behind, #3249b8 label at 5.25:1",
+          "after": "accent at 15% behind, #3249b8 label at 6.10:1 (6.03:1 in dark)",
           "selector": ".sidenav a.is-active"
         },
         {
