@@ -1,6 +1,6 @@
 {
   "name": "trykeyline",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "Interface design laws for coding agents: one skill that reads your codebase, writes a DESIGN.md in your own token names, then critiques, audits and fixes type, colour, layout, depth, motion and product patterns through it.",
   "keywords": [
     "design",

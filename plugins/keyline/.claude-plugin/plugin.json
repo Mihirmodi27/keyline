@@ -1,7 +1,7 @@
 {
   "name": "keyline",
   "displayName": "Keyline",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "Interface design laws for coding agents. /keyline init reads your codebase and writes a DESIGN.md in your own token names; critique, audit, type, color, layout, depth, motion, patterns and polish work through it, with dials set by a preset (editorial, product, expressive or glass).",
   "author": {
     "name": "Mihir Modi",
