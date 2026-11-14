@@ -51,9 +51,21 @@ This is the law of **proximity**: things near each other are read as one group b
 The quiet devices carry the rest, one job each, and **each has one style across the product** — two table styles or two group-label styles read as two products stitched together. Which style is a dial:
 
 - **A group label in content** in editorial is `type.label` over a hairline rule; a sidebar's group labels take no rule and no bar (`domains/layout/measure-and-rhythm.md`). In product it is one group bar — a tinted band holding a chevron, the name, a count and the add action, sticky while its group scrolls. The tint is earned by being a control; a tinted strip behind a heading that does none of this is still decoration.
-- **A table** in editorial has no frame: a hairline under its header, `border.divider` between rows, and its first column flush with the heading above, so the table's edge is the text's edge. In product it has one shared frame — `radius.card` in a hairline, a tinted header row, hairlines between rows only.
+- **A table** takes one style per product, chosen from the table below and recorded in `DESIGN.md` `## Layout` as `table.style`. Editorial usually takes the unframed one, its first column flush with the heading above, so the table's edge is the text's edge.
 - **Page-level tabs** are text on one shared hairline, with `rule.emphasis` under the current tab and no box round the row. A segmented control is for switching a mode between two or three options, not for navigation.
-- **Chips, badges and tags share one shape**, one height, padding and radius per size, and vary only in fill and text. Three chip shapes on one screen are three components nobody chose.
+- **Chips, badges and tags take two shapes at most**: a rounded state marker and a square kind tag (what a thing is), each with one height and padding per size, varying only in fill and text. Markers fit their words, and a column of them ends on one right edge. A third chip shape on one screen is a component nobody chose.
+
+**Table style — choose one per product:**
+
+| Style | Built as | For |
+|---|---|---|
+| Framed | `radius.card` in a hairline, a plain header row on the surface colour, hairlines between rows only | Dense data people scan and compare |
+| Group bar | Rows under a group bar (chevron, name, count, add) that is the group's heading | Grouped lists, where the bar heads each group |
+| Unframed | No frame; a hairline under the header, `border.divider` between rows | Short lists inside a page section, read more than scanned |
+
+Every style keeps one row height, a plain-fill hover — no pull-out, no stepping dividers — and an outer frame, where there is one, that matches its dividers (law 6). An audit flags a second style in one product.
+
+**What sits in a section fills it.** A component takes its container's full width, and a row of steps runs edge to edge with its connectors taking the slack. Sibling lists on one page share one column grid, so their titles, badges and times line up down the page.
 
 → The product page — header bar, stat strip, table frame, group bars, toolbars, forms and dashboards: `domains/layout/measure-and-rhythm.md`
 
@@ -81,6 +93,8 @@ The absolute wrapper spans the section so the sticky child has a track, and keep
 **Where one rounded object sits in another's corner, the inner radius is the outer radius minus the gap between their edges.** This is geometry, not taste: only then do the curves share a centre. Too large and the corner pinches; too small and the gap swells at the corners — visible even to people who couldn't say what's wrong. A 16px container with 4px of padding holds 12px buttons.
 
 The law binds concentric corners only, inset by less than the outer radius; anything inset further or set away from the corners takes the ladder's radius for its size, never a square corner by subtraction. Improving an existing design, it never sharpens a corner (→ Refining an existing design, below). Radius scales with size, not importance, and `radius.pill` is only for things with no top and bottom.
+
+**One screen has one corner character.** Rounded and square sections never sit together, under any preset: a square panel beside a rounded card reads as two systems on one screen.
 
 ### 6. A line's weight says what it's doing
 
@@ -161,12 +175,12 @@ Distance is the other half. A menu opens where it was clicked; a dialog's primar
 | `space.tight` / `space.group` / `space.section` | 8 / 16–24 / 48–72px | 4–8 / 12–16 / 24–32px | 8–12 / 24–32 / 96–160px |
 | Heading pair ratio, above : below | 3:1–4:1 | 2:1–3:1 | 3:1–5:1 |
 | Section divider values (law 3's table picks the device) | Rule 1px, measure-wide; `space.section` 48–72px either side | Hairline 0.5px, full-bleed; `space.section` 32px either side; settings panels in a 0.5px frame | Bands full-bleed, tint one step off the page; rules, where used, 1px |
-| Tables and group labels | No frame; label over a rule | One shared frame with a tinted header row; one tinted, sticky group bar | No frame; label over a rule |
+| Tables and group labels | Unframed tables, as a rule; label over a rule | One table style chosen per product (law 3), recorded as `table.style`; one tinted, sticky group bar | Unframed tables, as a rule; label over a rule |
 | Stats | One hairline-parted row | A strip under the page header whose figures filter the table | One row |
 | Page top space | 80–112px; ≈ 48–64px at phone widths | 16–24px under the page's header bar | Set by the hero; without one, as editorial |
 | Radius: `small` / `control` / `card` / `container` | 4 / 8 / 12 / 16px | 4–6 / 8 / 12 / 16px | Either 0 throughout, or 8 / 12 / 20 / 28px |
 | Corner shape | `superellipse(1.5)` as enhancement | `superellipse(1.5)` as enhancement | Any, applied globally; `superellipse(1.5–2)` when round |
-| `hairline.chrome` / `hairline.object` / `rule.emphasis` | 0.5 / 1 / 2px | 0.5 / 0.5 / 2px, divider a colour step lighter | 1 / 1–2 / 3–4px |
+| `hairline.chrome` / `hairline.object` / `rule.emphasis` | 0.5 / 1 / 2px | 0.5 / 0.5 / 2px: object edges and dividers at 0.5px, the divider a colour step lighter; focus rings, deliberate accent rules and `prefers-contrast: more` keep a full pixel or more | 1 / 1–2 / 3–4px |
 | Breakpoints | 2–3, on the window; the third where the header's links stop fitting | 3, on containers | 3–4, on the window |
 | Rail appears at | `measure.reading` + 2 × (rail + gap) + gutters ≈ 1200–1280px | Always a region; collapses at `bp.shell` | Rarely has rails |
 
@@ -178,9 +192,9 @@ The `glass` preset takes its values from `glass/layout/`.
 
 **The shell.** In product, navigation is one surface — a sidebar holding every destination, no top bar repeating it, which would split navigation across two edges — and every page sits under its own header bar, which titles the page rather than navigating. Pages fill the content panel, and the shell, not the page, sets width and outer padding (→ `domains/layout/measure-and-rhythm.md`).
 
-**Tables and group labels.** Editorial tables share a text column's edge, so a frame only adds a box. A product panel has no column to align to: tables run full width beside toolbars and figures, so a frame says where the data stops, and a reader scrolling hundreds of rows in collapsible groups needs the group's name and its controls in view. What both keep is law 3: one table style and one group-label style, used identically everywhere.
+**Tables and group labels.** Editorial tables share a text column's edge, so a frame only adds a box. A product's table style follows what its tables mostly hold: a frame says where dense data stops, a group bar keeps a group's name and controls in view across hundreds of rows, and a short list inside a section reads best unframed. No preset picks for it; the product does, once. What every preset keeps is law 3: one table style and one group-label style, used identically everywhere.
 
-**Radius.** A sharp system (0 throughout) is a legitimate expressive character that satisfies the nesting law trivially; what costs is mixing a round button into a square card. Round systems read modern through a soft corner, drawn as a light superellipse where the browser supports `corner-shape` (`radius-lines-and-layers.md`).
+**Radius.** A sharp system (0 throughout) is a legitimate expressive character that satisfies the nesting law trivially; what costs is mixing a round button into a square card (law 5). Round systems read modern through a soft corner, drawn as a light superellipse where the browser supports `corner-shape` (`radius-lines-and-layers.md`). A squircle needs room to show: at 4–6px it reads square, so a radius ladder that wants it starts at 8px.
 
 **Hairlines.** Product draws every structural line at 0.5px, because a dense screen is mostly rows and a 1px rule on each reads heavy; editorial keeps a 1px object edge for the few objects it has.
 
@@ -202,7 +216,7 @@ The grid is a set of edges to align to, not a set of boxes. A block spans whole 
 2. **Set the measure from the type**: a character count from the dials for `family.text` at `type.body`, resolved to a width and checked at the narrowest viewport (`domains/layout/measure-and-rhythm.md`).
 3. **Derive the frame.** With a rail, `measure.frame` = `measure.reading` + 2 × (`measure.rail` + gap) + 2 × `gutter`, and `bp.rail` is that width; for a shell, set the region widths and where the inspector, then the nav, collapses.
 4. **Build spacing from ratios**: the base (4px) and `space.section`, the heading pair at the preset's ratio, then `space.tight` and `space.group` so every group's inner gap is at most half its outer one.
-5. **Stack the sections and pick each boundary's divider** from law 3's table, one device per kind of boundary — or the one the existing design already uses: each a heading and its content, figures in hairline-parted rows; list the things that are single objects, which alone get a card (the depth guide). Pick the one table style and the one group-label style for the preset.
+5. **Stack the sections and pick each boundary's divider** from law 3's table, one device per kind of boundary — or the one the existing design already uses: each a heading and its content, figures in hairline-parted rows; list the things that are single objects, which alone get a card (the depth guide). Pick the one table style for the product (law 3) and the one group-label style for the preset.
 6. **Build the radius ladder inward** from `radius.container` through every concentric nesting (law 5), and **set the corner shape** from the dial in the same step (`radius-lines-and-layers.md`).
 7. **Assign the three line jobs** per the preset, drawn as borders; no divider outranks its object's edge, and a frame matches the dividers inside it.
 8. **Write the z ladder** from law 7, dropping unused rungs and keeping the gaps.
@@ -220,9 +234,9 @@ Start from the setup scan's frequencies for measures, spacing, radii, z-index an
 |---|---|---|
 | 1 | Distinct `max-width` / `max-w-*` on prose templates; prose in full-width containers; product pages setting their own width or outer padding | Measures by route |
 | 2 | Headings with equal margins or a ratio under 2:1; one-off spacing values; rules parting a card's tiers | Ratio per heading style; strays with counts |
-| 3 | Sections that run together under a squint, or a page of stripes and boxes; peer sections divided by more than one device; card grids arranging unlike sections; existing panels unboxed; a tile per stat, or stat boxes that lift or hold icon tiles; tinted strips that aren't group controls; more than one table or group-label style, or the preset's other one; boxed tab rows; more than one chip shape | Per screen: each box and what it holds; table, group-label and chip styles with counts |
+| 3 | Sections that run together under a squint, or a page of stripes and boxes; peer sections divided by more than one device; card grids arranging unlike sections; existing panels unboxed; a tile per stat, or stat boxes that lift or hold icon tiles; tinted strips that aren't group controls; a second table style or group-label style in one product; boxed tab rows; more than two chip shapes; components short of their container's width; sibling lists whose columns don't line up | Per screen: each box and what it holds; table, group-label and chip styles with counts |
 | 4 | Viewport-positioned sticky elements; `100vh`; sticky panels without `overflow-y`; fixed bottom chrome | File and line; pages ending under the chrome |
-| 5 | Rounded elements in a rounded element's corner; square inner corners where the inset passed the outer radius | Outer, padding, inner, mismatch |
+| 5 | Rounded elements in a rounded element's corner; square inner corners where the inset passed the outer radius; rounded and square sections on one screen | Outer, padding, inner, mismatch |
 | 6 | Border widths by job; dividers stronger than their object's edge; frames heavier than their dividers; half-pixel lines drawn as boxes; `<hr>` without a border reset | Counts per weight; offenders |
 | 7 | Every `z-index` / `z-*` literal | Sorted values and what each holds; catchers above menus; overlays above the skip link; transformed ancestors of fixed elements |
 | 8 | `onMouseEnter`/`:hover` with no touch path; `any-hover`; hide-on-scroll without a capability check; window media queries on components inside a resizable panel | Each behaviour's touch equivalent, or "none"; panes that clip with the sidebar open |
@@ -245,7 +259,7 @@ A preset's dials describe a new system. Where one disagrees with the design bein
 
 ## Writing back to DESIGN.md
 
-- **Layout table rows** for every role set or found — measures, gutter, spacing roles, the heading pair and its ratio, the radius ladder and its nestings, the three line jobs, the z ladder, breakpoints named for what changes — plus one line per forked component naming the interaction model each version serves.
+- **Layout table rows** for every role set or found — `table.style`, the corner shape, measures, gutter, spacing roles, the heading pair and its ratio, the radius ladder and its nestings, the three line jobs, the z ladder, breakpoints named for what changes — plus one line per forked component naming the interaction model each version serves.
 - **The gate list**: owner-curated collections (gated) and user data (empty states).
 - **Decisions** worth recording here: a persisted view preference, a layer added to the ladder, a template allowed a different measure.
 - **Proposed roles** for a job with no row — a rail width, a frame width, a toast layer.
@@ -253,7 +267,7 @@ A preset's dials describe a new system. Where one disagrees with the design bein
 ## Checklist
 
 - [ ] The narrowest measure fits the longest `type.title` without a responsive type step — except an editorial article title's one phone step (type dials).
-- [ ] Stats sit in one row parted by hairlines; tabs are text on a shared hairline; one table style, one group-label style and one chip shape per size.
+- [ ] Stats sit in one row parted by hairlines; tabs are text on a shared hairline; one table style, one group-label style, and at most two chip shapes (state marker, kind tag) per size; one corner character per screen.
 - [ ] Below `bp.rail` the rail becomes an in-flow disclosure; fixed chrome has clearance on every template.
 - [ ] No transformed or filtered ancestor traps a fixed descendant; negative layers sit in an isolated parent.
 - [ ] Grids look deliberate at 1, 2 and n items.

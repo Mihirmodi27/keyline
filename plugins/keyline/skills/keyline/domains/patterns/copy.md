@@ -14,12 +14,15 @@ Copy in a product is interface, not prose: it is scanned in passing, compared ac
 | Are you sure you want to delete? | Delete "Riverside"? | Name the thing, drop the hedge |
 | Manage Team Members | Members | Sentence case; the verb is implied by the page |
 | NEW TASK | New task | Uppercase strips word shapes and reads as shouting |
+| § 4.2 | Section 4.2 | A symbol is a code the reader has to know; the word isn't |
 
 **Verb first, object only when needed.** One primary action on a screen needs no object ("Save"). Two verbs that could be confused do ("Save draft", "Publish"). A destructive button always takes its object ("Delete project"), because the object is what's lost.
 
 **Labels in menus are nouns or verbs, not both styles at once.** A menu of "Rename", "Duplicate", "Move to…", "Delete" is all verbs; "Settings", "Members", "Billing" is all places. An ellipsis means the item asks for more before acting.
 
 **Tooltips on icon buttons say the same words a text button would**, plus the shortcut: "Filter  F".
+
+**No internal vocabulary reaches the screen.** No tool, API or probe names, and no "sample", "synthetic", "simulated" or "placeholder" badges: a demo must not look staged. The reader's nouns come from the glossary, never from the code.
 
 ## Sentence case, including generated labels
 
@@ -61,7 +64,7 @@ The formula is **`{type} from {origin}`**, in the product's nouns:
 | New item in Inbox | Request from Northgate |
 | Riverside · Task · Open · 2h ago · Sam | Task from Riverside — with status as a glyph, time and owner in their own slots |
 
-- **Type** is the kind of thing, from the product's glossary. If the list holds one type only, drop it: "From Riverside".
+- **Type** is the kind of thing, from the product's glossary. If the list holds one type only, drop it: "From Riverside". The same goes for any value shared by every row: a column with one value throughout is dropped and stated once under the title ("All in Riverside").
 - **Origin** is where it came from or lives: a project, a meeting, a person, a source. Pick the one the reader sorts by.
 - **No verbs of history** ("added", "created", "moved"). They describe one moment, and the moment is already in the time slot.
 - **No status in the sentence.** Status has a glyph and a colour (the colour guide); words would say it twice.

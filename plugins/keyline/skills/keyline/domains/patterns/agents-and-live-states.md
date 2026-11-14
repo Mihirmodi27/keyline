@@ -50,12 +50,32 @@ A step that changes something outside the conversation — sends a message, edit
 - **After the answer**, the buttons give way to a line saying what was decided ("Sent", "Not sent"), so the record stays readable.
 - **Several pending steps** each keep their own buttons; an "Approve all" may sit above them only when every step is the same kind of action.
 
+## The evidence thread
+
+Every AI statement — a summary, a diagnosis, a recommendation — opens one level down to its reasoning (law 5), and that reasoning always takes one fixed structure, in this order. Never a paragraph.
+
+| Part | Holds |
+|---|---|
+| Claim | The statement, in one line |
+| Evidence for | Each source that supports it, linked |
+| Evidence against | What points the other way, said plainly |
+| Ruled out | What was considered and why it was dropped |
+| Couldn't check | What the agent had no access to or no data for |
+| Next step | What the reader can do: confirm, change it, or ask about it |
+
+**Confidence is how well the evidence supports the claim** ("Well supported: three of four sources agree"), never a probability of an outcome ("82% likely"). The reader can weigh evidence; a percentage only asks for trust. "What would change it" belongs under evidence against or couldn't check, and asking about the claim opens the conversation with the claim attached.
+
+## Suggestions
+
+An AI suggestion arrives **pre-filled where the work happens** — the field, the row, the draft — with a one-line reason beside it, and is editable before it runs. It never runs on its own: accepting is the reader's action, and the suggestion carries the AI mark until they do.
+
 ## Conversation layout
 
 - **No avatar per message.** Two speakers don't need faces to be told apart.
 - **The reader's turns** sit right-aligned, on a light tint, at most about two-thirds of the panel's width.
 - **The agent's turns** run full width with no fill — they are the content, and they hold tables, cards and code that need the width.
-- **AI-made content elsewhere** in the product — a summary on a record, a suggested title — carries one small mark in brand beside it, not a robot face or a coloured block (the colour guide).
+- **AI-made content elsewhere** in the product — a summary on a record, a suggested title — carries one small mark in brand beside it, not a robot face or a coloured block (the colour guide). The mark appears once per AI-made block and only there — never on chrome or controls, and never inside a surface already wearing the agent material, which says it already.
+- **One agent material**: every agent surface — card, drawer, chat — rests on the same material, used nowhere else; the live "AI working now" stroke sits on top of it while the agent works (both dials: the depth and colour guides).
 - **The panel is non-modal**: a side panel or sheet the reader can work beside, keyboard-reachable, closed by Escape when focus is inside it.
 - **The composer**: Enter sends, Shift+Enter adds a line; the send button is disabled while empty and becomes Stop while the agent is working.
 

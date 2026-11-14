@@ -16,7 +16,7 @@ Boundaries: the radius ladder and nesting rule, hairline weights and the z-index
 
 Mixing parts is the bug the ladder prevents: a card given the menu's shadow on hover but not its layer is painted over by the next sibling, clipping the lift. A state change moves the whole bundle — a dragged card becomes floating in all four parts — while a hover that deepens a raised card's shadow is raised's own hover state.
 
-A level is also one component. Every dialog is the system's dialog, a destructive confirmation included: a one-off with its own red icon circle, red heading and padding reads as out of the system however right its level. The danger goes on the one action that does it (the colour guide); surface, edge, shadow and scrim stay the overlay's.
+A level is also one component. Every dialog is the system's dialog, a destructive confirmation included: a one-off with its own red icon circle, red heading and padding reads as out of the system however right its level. The danger goes on the one action that does it (the colour guide); surface, edge, shadow and scrim stay the overlay's. Likewise every menu, select and popover is the system's one floating panel — same surface, radius, inset, row height and hover — and the primary button is one component everywhere. A floating panel sits inset from the window edge by the gutter, rounded on every corner; a panel docked to the edge is chrome, not floating.
 
 The ladder has only the rungs this project uses; the dial lists the most a preset may have. A dead rung is worse than an absent one: the next person assumes it is load-bearing.
 
@@ -27,6 +27,7 @@ The ladder has only the rungs this project uses; the dial lists the most a prese
 - **One object** — a decision awaiting approval, a document, a side rail — is a card. A rail with two topics is one card in two parts, parted by a divider; several items of one kind (three pending approvals) share one card the same way, not a card each.
 - **A section panel** (from layout law 3) is `elevation.flat`: an edge and no shadow, because it doesn't float. Nothing inside it is boxed again: its rows part by `border.divider`.
 - **A note** — an aside or caveat — takes a hairline rule on its leading edge, not a tinted box.
+- **An icon** never sits in its own tinted tile; it sits on the surface beside its label.
 
 The quiet devices that replace a box are layout law 3's. The test: take the edge away. If the object still reads as one thing from space and its heading, the edge was decoration. Then check the measure: columns of text left under layout law 1's floor want fewer columns.
 
@@ -58,7 +59,7 @@ Nobody spots a `0.04` that became `0.05` in one of five copies, so **a layered s
 - **A flat, single-colour backdrop** — nothing to reveal; use the tint.
 - **Content behind that must stay readable** — that wants an opaque, shadowed surface beside it, not a blur over it.
 - **Video, canvas or anything animating** — the filter re-runs every backdrop frame.
-- **A preset that disallows it** (Dials) — in fluent product tools borders and opaque surfaces do the work, and translucency is decoration that costs contrast.
+- **A preset that disallows it** (Dials) — in fluent product tools borders and opaque surfaces do the work on chrome at rest and on content, and translucency there is decoration that costs contrast; product allows it only on floating layers.
 
 Even a preset built around the material uses it in four places, all floating chrome: the ceiling, not the target.
 
@@ -112,6 +113,8 @@ Modal also hands back what it took: **on close, focus returns to whatever opened
 
 **A coloured glow is weighted to the sides so it reads as emission; a sheen crosses once and then stops.** One centred coloured shadow is a drop shadow that happens to be blue. A glow reporting a state — hovered, open — holds as long as the state. A looping sheen claims the thing is still working, so it runs once and is removed: `background-clip: text` with transparent text left in place is a selection and forced-colours hazard. Under reduced motion: no sweep, the plain colour.
 
+The one inner glow is the Agent material dial's own recipe: even on all sides, strongest at the edge and gone before the content, so it marks the surface without tinting what the reader judges.
+
 ### 15. Every material has its fallbacks, and they come last
 
 **Each material ships an opaque baseline, then the material inside `@supports`, then its `prefers-reduced-transparency`, `prefers-contrast: more` and `forced-colors` rules — after every theme block that sets the same properties.** The order is the law: opaque first makes the non-supporting path the default, and so the tested one; why preferences go after every theme block is colour law 10.
@@ -130,21 +133,25 @@ Reduced transparency needs both halves, an opaque surface *and* no filter: filte
 |---|---|---|---|
 | What gets a surface | Layout law 3's table; a card only for one object | Layout law 3's table; a card only for one object | Layout law 3's table; a card for one object or a named brand object |
 | Cards nested in cards | Never | Never | Never |
-| Translucency | Chrome only (a sticky header, a dock), or none | None on chrome or content — hairlines and opaque surfaces do the work; art only | Brand material, each use named |
-| Translucent tiers | ≤ 2 (chrome, defensive) | Soften, on art only | ≤ 3 |
-| Translucent surfaces on screen at once | ≤ 3, none wider than the reading measure except fixed chrome | 0, or 1 on art | ≤ 4; full-viewport only as a static overlay scrim |
+| Translucency | Chrome only (a sticky header, a dock), or none | Floating layers only — drawers, menus, popovers, overlays, the top bar once content scrolls under it; none on chrome at rest or on content, where hairlines and opaque surfaces do the work; art | Brand material, each use named |
+| Translucent tiers | ≤ 2 (chrome, defensive) | Chrome or defensive on floating layers; soften on art | ≤ 3 |
+| Translucent surfaces on screen at once | ≤ 3, none wider than the reading measure except fixed chrome | The open floating layers and the scrolled top bar, or 1 on art | ≤ 4; full-viewport only as a static overlay scrim |
 | Buttons | Flat | Flat | Flat; the primary call to action may carry the page's one raised accent, a small shadow at `elevation.raised` |
+| Primary button finish: flat, or gloss (a subtle accent gradient, a 1px rim, a small shadow) | Flat | Flat | Flat |
+| Agent material: none, tinted ground, 1px accent edge, or inner glow (even on all sides, strongest at the edge, gone before the content) | Tinted ground | Tinted ground; inner glow only by recorded decision | Inner glow allowed |
 | Elevation levels, at most | 3: flat, floating, overlay (raised only for sticky chrome) | 4: flat, raised, floating, overlay | 4, plus at most one named decorative level |
-| `elevation.flat` separates by | Space or a surface step; edges rare | Space, and hairlines between rows (`border.divider`) — never an edge round a group of unlike content; a data table, one object, may take one hairline frame and a tinted header row | Surface step or edge, per brand |
+| `elevation.flat` separates by | Space or a surface step; edges rare | Space, and hairlines between rows (`border.divider`) — never an edge round a group of unlike content; a data table, one object, takes the product's one table style (layout law 3) | Surface step or edge, per brand |
 | Edge above `elevation.flat` | A `hairline.*` border | A 0.5px `border.default` ring at the head of the shadow stack; a real 1px border under `prefers-contrast: more` | A border, or a named gradient stroke |
 | Floating shadow, peak layer opacity (light / dark) | 6% / 50% | 10% / 55% | 16% / 60% |
 | Shadow layers on floating | Contact + 2 ambient + inset highlight | Contact + 1 ambient | Contact + 2 ambient + inset highlight |
 | Dark surface lift per level (OKLCH L) | +0.05 | +0.04 | +0.06 |
 | Scrim (black-toward-ground opacity, light / dark) | 32% / 56% | 40% / 60% | 48% / 64%, brand-tinted allowed |
 | Scrim blur | None | None | ≤ 8px, never animated |
-| Gradient strokes and glows | At most one, as the colour system's exception | None | Allowed, each named for its job |
+| Gradient strokes and glows | At most one, as the colour system's exception | None beyond the button finish, the agent material and `exception.ai-live` | Allowed, each named for its job |
 
-**Translucency.** Moving up a preset trades contrast certainty, a fallback path and a filter pass per surface for atmosphere. Fluent, daily product readers gain nothing from atmosphere and lose a lot to a header dimming to mid-grey over a data table. Editorial allows it on chrome because seeing the page being read scroll under keeps the reader oriented. Product's one opening is art: its backdrop is drawn, still and carries no text, so the material costs no contrast, and keeping it there is what lets the rest of the product stay opaque.
+**Translucency.** Moving up a preset trades contrast certainty, a fallback path and a filter pass per surface for atmosphere. Fluent, daily product readers gain nothing from atmosphere and lose a lot to a header dimming to mid-grey over a data table. Editorial allows it on chrome because seeing the page being read scroll under keeps the reader oriented. Product's openings are the layers that float over content and art. A drawer, menu or popover is summoned over the page, so showing the page through it keeps the reader's place, and the top bar earns it only once something scrolls under it; at rest, chrome and content stay opaque. Art's backdrop is drawn, still and carries no text, so the material costs no contrast there.
+
+**Button finish and agent material.** Each project records its choice of both in `DESIGN.md` `## Surfaces`. Gloss is a finish on the one primary button, never a second button style. The agent material is one resting treatment shared by every agent surface (card, drawer, chat) and used nowhere else; the live `exception.ai-live` stroke sits on top of it while the agent works. A tinted ground is quiet enough for a working screen; an inner glow is louder and in product needs a recorded reason.
 
 **Edge.** A ring inside the shadow sits quieter than a border beside rows parted by hairlines and moves with the shadow as one definition; it is still law 3's edge, so the contrast swap and the transparent border for forced colours go with it.
 
@@ -215,6 +222,7 @@ Then collect evidence per law:
 ## Writing back to DESIGN.md
 
 - **`## Surfaces`** — the bundle table (`Level | Surface | Edge | Shadow | Layer`) in the project's names, per theme where surface or shadow differs, plus a material table (`Tier | Blur | Saturate | Tint | Fallback | Used on`) if it uses translucency. Write it on first build or audit; update it as levels change.
+- **Dials chosen per product** — `button.finish` (flat or gloss) and `agent.material` (none, tinted ground, accent edge or inner glow), under `## Surfaces`.
 - **Proposed roles** — level surfaces the canonical list lacks (`surface.floating`, `surface.overlay`), marked `proposed`.
 
 ## Checklist

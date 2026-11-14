@@ -11,7 +11,7 @@
 | A sheet holding text rows | 16px | 6px | 10px → snap to 12px | 2px on a 44px row is invisible |
 | A search input holding a chip | 8px | 3px | 5px → snap to 4px | |
 | A card with a flush image | 12px | 0 | 12px, or clip with `overflow: hidden` | Zero gap, same radius |
-| A padded card holding an icon tile | 12px | 16px | `radius.control` for a 32px tile | Inset past the outer radius: not concentric, sized by the ladder |
+| A padded card holding a thumbnail | 12px | 16px | `radius.control` for a 40px thumbnail | Inset past the outer radius: not concentric, sized by the ladder |
 | A search field holding a `kbd` hint | 8px | 8px | `radius.small` | Not concentric; square would read as a different system |
 
 **Snap within 2px, follow exactly above that.** The ladder is worth more than 1–2px of exactness, which below about 8px the eye barely resolves; a mismatch of 4px or more is what people notice without naming.
@@ -36,7 +36,7 @@ Derive the ladder from the nestings, and write the subtraction into the token so
 | `radius.card` | 12px | 12px | 20px | 0 |
 | `radius.container` | 16px | 16px | 28px | 0 |
 
-Product matches editorial, because smaller radii (6px controls, 8px cards) read boxy and dated; with content unboxed (layout law 3), the few cards don't tile edge to edge, which is where large radii leave triangular gaps. Both draw the corner as a light superellipse (below). An existing design's radii are the floor (layout guide, Refining an existing design). Expressive may go either way, but never mixes round and square components or keeps four near-identical radii that are really one.
+Product matches editorial, because smaller radii (6px controls, 8px cards) read boxy and dated; with content unboxed (layout law 3), the few cards don't tile edge to edge, which is where large radii leave triangular gaps. Both draw the corner as a light superellipse (below). An existing design's radii are the floor (layout guide, Refining an existing design). Expressive may go either way, but never keeps four near-identical radii that are really one; no preset mixes round and square on one screen (layout law 5).
 
 **Radius scales with size, not importance**, and sub-proportionally: a 400px panel gets a larger radius than a 40px button because it is larger, but a proportional one reads as a lozenge. **`radius.pill` is for things with no top and bottom** — tags, dots, toggles, progress tracks. A paragraph in a pill-ended card collides with the curve.
 

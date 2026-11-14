@@ -68,8 +68,9 @@ Copy this shape. Drop any table or row that doesn't apply; add project roles und
 | Role | Name here | Value |
 |---|---|---|
 | `measure.reading` | `max-w-prose` | 65ch (≈ 620px) |
+| `table.style` | `<DataTable>` | Framed — dense data people scan and compare |
 
-**Radius ladder**
+**Radius ladder** — and the corner shape (`superellipse(1.5)` unless the product records otherwise).
 
 | Role | Name here | Value |
 |---|---|---|

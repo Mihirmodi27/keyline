@@ -116,6 +116,8 @@ The mapping covers user-agent styles: `<cite>`, `<blockquote>`, `<b>`, `<th>` an
 
 **An icon beside a label takes the label's size and weight, not a size of its own.** 13px text takes a 13–14px icon and a 4–6px gap; a few pixels larger and the icon is read before its word. The size is the drawn glyph, not the SVG box: on a 24-unit grid with 2 units of padding, a 16px box draws about 13px. Stroke follows weight — 1.75 on a 24 grid beside 400–500 text, where 2 looks bold — and retuning beats switching family. Record each role's icon size in its `## Type` row (law 2).
 
+**One icon family and one style per product**, and a glyph never swaps between states: hover and selection show through colour or fill, so the shape the reader learned stays put.
+
 ## Dials
 
 | Dial | editorial | product | expressive |
@@ -127,7 +129,7 @@ The mapping covers user-agent styles: `<cite>`, `<blockquote>`, `<b>`, `<th>` an
 | Distinct sizes above the floor (excluding display and code) | ≤ 7 | ≤ 7 | ≤ 8 |
 | Readable floor | 12px | 11px | 12px |
 | Weights | 2: `weight.regular`, `weight.strong` | 2: `weight.regular` 400, `weight.strong` at 500; a third (600, headings) only for a recorded job | 2 for text, plus `weight.display` |
-| Families | one for reading, plus a system-stack mono; a second for interface text (navigation, buttons, tables, forms) when the reading face is a serif | one; `type.code` wherever literal code appears; paths, URLs, IDs and hostnames in the text face's tabular, slashed-zero figures unless they are code the reader will type | up to two (`family.display`), plus mono |
+| Families | one for reading, plus a system-stack mono; a second for interface text (navigation, buttons, tables, forms) when the reading face is a serif | one; `type.code` wherever literal code appears; paths, URLs, IDs and hostnames in the text face's tabular, slashed-zero figures unless they are code the reader will type; an opt-in heading serif, off by default | up to two (`family.display`), plus mono |
 | Leading, reading | 1.6–1.75 | 1.45–1.55 | 1.5–1.65 |
 | Leading, headings | 1.2–1.3 | 1.25–1.35 | title 1.1–1.2; display 0.95–1.05 |
 | Leading, multi-line UI | 1.4 | 1.3–1.4 | 1.4 |
@@ -154,7 +156,7 @@ The commonest recorded third is 600 for headings on a dense screen, where 500 is
 
 **Uppercase labels.** Capitals are a valid label style, a choice and not a fault: a group label or a column header may be set in capitals, tracked positive (law 7), to part it from the same-size rows beneath; sentence case parted by tier (`text.tertiary`) does the same job more quietly. Choose one per label role, record it in `DESIGN.md`, and keep it wherever that role appears; a refining pass keeps the case a project already has. What reads as a template is capitals as texture — an eyebrow over every section — not capitals on a label. Either way the words are written in sentence case and set by `text-transform` (patterns law 1).
 
-**Families.** Reading and interface are two registers (law 5). With a sans reading face one family carries both; with a serif, navigation, buttons, tables and forms may take a second, interface family (`family.ui`), so a serif doesn't set the chrome.
+**Families.** Reading and interface are two registers (law 5). With a sans reading face one family carries both; with a serif, navigation, buttons, tables and forms may take a second, interface family (`family.ui`), so a serif doesn't set the chrome. Product may opt into a heading serif: a serif for headings only, at the heading weight, with the sans carrying everything else. It is off by default and, under law 5, a recorded product choice of register in `DESIGN.md`, never a way to make headings "feel different".
 
 **Numerals.** Product sets tabular on every number but scopes it to numeric elements, not the root: some families' `tnum` also changes punctuation, and set globally it widens the hyphen in "Sign-ups".
 
@@ -207,14 +209,14 @@ Evidence per law:
 - **Numerals (10).** Tables, prices, timers, counters or date columns without tabular figures; live numbers, watched for a second.
 - **Imported prose (11).** Every HTML injection point, scoped and mapped or falling back to the browser.
 - **Loading (12).** Third-party font hosts, `swap` without a metric-matched fallback, weights requested but unused.
-- **Icons (13).** Icon sizes and strokes against the text beside them; sibling controls that differ.
+- **Icons (13).** Icon sizes and strokes against the text beside them; sibling controls that differ; a second icon family or style; glyphs that swap on hover or selection.
 
 **Sweep after every type decision** (`domains/patterns/iteration.md`; its type steps, `domains/type/type-audit.md`).
 
 ## Writing back to DESIGN.md
 
 - **`## Type`** — families; a row per role in use (project name, size, leading, tracking, weight, tier); project roles under their canonical parent with their separating axis; each weight's job, and with three the size × use table; each role's icon size. Keep existing names; mark new ones `proposed`.
-- **`## Decisions`** — a third weight and the table that needed it, a raised ceiling and its role, italic for a true italic.
+- **`## Decisions`** — a third weight and the table that needed it, a raised ceiling and its role, italic for a true italic, a heading serif.
 
 Write back whenever the ladder changes shape — a role, size, weight or family added or dropped. A size without a row is how a ladder turns back into a pile of values.
 

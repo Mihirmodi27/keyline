@@ -8,7 +8,8 @@
 4. **Fix in the project's names**, at the smallest scope that removes the cause — a token over twenty call sites, a shared component over its instances. Add a role only where the guide's `## Building it for a project` says one is missing, in the project's naming style, marked `proposed` in `DESIGN.md`. Where the project has no tokens for the domain at all — no type tokens, no motion tokens — propose a full set in the project's style, each marked `proposed`, and fix against it.
 5. **A fix that belongs to an earlier domain** in polish order but only became visible in this pass — the note this pass made from a callout now needs its type role — is made here, and reported as that domain's. Anything else another domain owns is reported with its command.
 6. **Sweep** every route the changed rule reaches and report what moved: `awk '/^## /{p = /^## The sweep/} p' <keyline>/domains/patterns/iteration.md`.
-7. **Check what you changed** against the domain's checklist — each law's bold first sentence, plus anything left under `## Checklist` — and run the detector again on the target: nothing you touched should still be flagged.
+7. **Remove what the pass orphaned**: tokens, selectors and components nothing uses any more. A leftover layer fights the new system and is the first thing the next change trips over.
+8. **Check what you changed** against the domain's checklist — each law's bold first sentence, plus anything left under `## Checklist` — and run the detector again on the target: nothing you touched should still be flagged.
 
 **Three limits hold in every pass:**
 

@@ -73,6 +73,8 @@ About one man in twelve has some colour-vision deficiency, and every reader lose
 
 A status palette is a set of **pairs**, each a foreground at 4.5:1 on the page and its own tint plus a tint that reads as a surface, not a highlighter, re-picked per theme.
 
+**Severity stays calm.** The most severe status is still a mark, a word and a tint: never a full-bleed red ground, a flashing element or an alarm sound. Severity reads by position (first in the list, top of the screen) and by wording; the default mood of the screen stays calm.
+
 → Status pairs with a worked set, the glyph shapes, and the exception test in full: `domains/color/status-and-exceptions.md`
 
 ### 7. Colour is spent structurally
@@ -83,9 +85,11 @@ Colour is attention, spent because of what the element *is*, never as decoration
 
 **Colour the design already has stays.** When improving an existing interface, its brand colour stays wherever it does a job: the selected nav item, the primary data series, a progress or usage bar, a brand mark, the gradient every avatar shares. Each of those is the owner's decision and part of how the product is recognised. Turning it grey is a regression that no law asks for. Colour comes out only when it breaks a law, and the change cites that law: text under its contrast floor, a second hue competing with the primary action, colour carrying a state on its own, or body text dyed for emphasis. Even then, the first fix is the shade (re-pick it until it passes) rather than taking the colour away. Muting the brand for calm is a dial for a new system, not a fix for an existing one.
 
-**One hue acts.** The accent's jobs — primary action, focus, "your turn" — share one hue, and it marks one action per view. A second highlight hue beside it splits one meaning in two; whatever wanted it goes to a status pair, a neutral marker or weight.
+**Fills are solid.** A gradient appears only through a preset dial (the primary-button finish, the agent material, both depth dials) or a named `exception.<job>`; never as decoration on a surface, a header or a chip.
 
-**Where the reader *is* takes the accent as a tint, not a fill.** Under product and expressive, the current nav item sits on `surface.selected`: the accent at 10–15% over the surface it sits on, with the icon and label in `accent.ink`. Measure that label at 4.5:1 on the tint in each theme, and deepen the ink, not the tint, until it passes. The tint marks a place and the solid fill marks the action, so the selected item and the primary button never read as two calls to act. A page tab marks its current tab with layout law 3's underline instead, in `text.primary`. **This is the one definition of current**: the type guide adds weight to it, the motion guide moves it, neither re-picks it. Editorial and glass keep the current item neutral (a marker, a rule or weight), because a reading page has little chrome and the accent there belongs to focus.
+**One hue acts.** The accent's jobs — primary action, focus, selection, "your turn" — share one hue, and it marks one action per view. A second highlight hue beside it splits one meaning in two; whatever wanted it goes to a status pair, a neutral marker or weight. The accent marks action, selection and "your turn", not wayfinding: navigation and section links stay neutral, and only an inline link inside content may take the accent (the Link colour dial).
+
+**Where the reader *is* takes the accent as a tint, not a fill.** Under product and expressive, the current nav item sits on `surface.selected`: the accent at 10–15% over the surface it sits on, with the icon and label in `accent.ink`. Measure that label at 4.5:1 on the tint in each theme, and deepen the ink, not the tint, until it passes. The tint marks a place and the solid fill marks the action, so the selected item and the primary button never read as two calls to act. A page tab marks its current tab with layout law 3's underline instead, in `text.primary`. The nav item under the pointer takes `accent.ink` on its label and icon with no fill; the current item keeps the tint. Counts in navigation take `accent.ink` always, at rest too (the one exception to "plain counts stay in ink"); on the current row a count drops its own wash, so two tints never stack. **This is the one definition of current**: the type guide adds weight to it, the motion guide moves it, neither re-picks it. Editorial and glass keep the current item neutral (a marker, a rule or weight), because a reading page has little chrome and the accent there belongs to focus.
 
 **"Too grey" is answered with jobs, not decoration**: one hue family per question the reader can't answer at a glance — what, how, where, who — and no hue crosses into another's job. Whether done takes success colour is a dial; a chart's primary series takes the accent at full strength; code takes syntax highlighting under every preset, counted against no limit.
 
@@ -130,7 +134,7 @@ A build-time token (a Sass variable, an inlined JS constant, a static theme obje
 | Hues that call for action | 1, the accent | 1, the accent | Brand hues, each placed by rule |
 | Completed states | Uncoloured | `status.success` where completion is the news; uncoloured in a sequence passed through | Uncoloured, or per brand, sequences included, counted among the exceptions |
 | Current location | Uncoloured: a marker, rule or weight | `surface.selected` (law 7) with icon and label in `accent.ink` | As product, or per brand |
-| Link colour | Text colour, underlined | `accent` | `accent` or a brand hue, underlined in prose |
+| Link colour | Text colour, underlined | Text colour; `accent` only on inline links inside content. Navigation and section links stay neutral | `accent` or a brand hue, underlined in prose |
 | Text tiers, `text.primary` to `text.tertiary` | 3–5 | 3 | 3–4 |
 | Minimum step between adjacent tiers (ratio of ratios) | 1.15× | 1.4× | 1.25× |
 | `text.tertiary` target on its worst surface | ≥ 4.6:1 | ≥ 4.8:1 | ≥ 4.6:1 |
@@ -140,11 +144,11 @@ A build-time token (a Sass variable, an inlined JS constant, a static theme obje
 
 **Palette and neutral chroma.** Near-monochrome makes the accent and the one exception loud by default, but every state must then be carried by something other than colour (law 6). Tinted greys tie to the brand, but past about 0.015 chroma they read as colour, and a tinted `text.tertiary` beside a status foreground can look like a status.
 
-**Exceptions and done.** An editorial page's content is prose, so its colour can be the one offer, and nothing on it is a task to finish. A product holds many kinds of record in many places by many people and is scanned, not read; in grey alone every row must be read to be sorted, which is usually what "too grey" means, and its boards exist to show what got done. So it starts from the status palette alone and adds a family, or colours done, when a question can't be answered at a glance, never because a screen looks plain.
+**Exceptions and done.** An editorial page's content is prose, so its colour can be the one offer, and nothing on it is a task to finish. A product holds many kinds of record in many places by many people and is scanned, not read; in grey alone every row must be read to be sorted, which is usually what "too grey" means, and its boards exist to show what got done. So it starts from the status palette alone and adds a family, or colours done, when a question can't be answered at a glance, never because a screen looks plain. One family is open to every preset and counted against none: `exception.person.*` for avatars, which are never white or grey.
 
 **What the accent does.** Restricted to focus, colour *is* where the keyboard is. On primary actions it shows a working user the next step — worth it in a product, at the price of law 5's care for the ring beside accent buttons.
 
-**Links.** Text-coloured links keep a reading page calm and leave colour for focus, but must be underlined because colour isn't carrying them. Accent links scan faster in a product, where links are navigation, not citation.
+**Links.** Text-coloured links keep a reading page calm and leave colour for focus, but must be underlined because colour isn't carrying them. In a product the accent already marks the action, the selection and "your turn"; navigation dyed in it competes with all three, so links there are text-coloured and only a link inside content, where it must be found in a sentence, takes the accent.
 
 **Tiers, step and tertiary target.** More tiers give prose finer emphasis, but each must clear the floor, so every extra one shrinks the steps; a light theme rarely fits more than five. A product has fewer, more distinct tiers, told apart at a glance across a dense table, and a wider margin above 4.5:1 to absorb the surfaces the floor wasn't measured on (hover, selected, zebra rows).
 
@@ -157,7 +161,7 @@ A build-time token (a Sass variable, an inlined JS constant, a static theme obje
 1. **List the jobs.** From `roles.md`, keep the colour roles this project has and strike the rest — no dark theme, no dark column; no status, no status rows. Add project roles under their nearest parent.
 2. **Choose the neutral:** a hue (the brand's, or none) and a chroma from the dial, in OKLCH.
 3. **Fix the ends, per theme:** `surface.page` and `text.primary` near-white and near-black in light, the dial's dark lightness and a light grey in dark.
-4. **Place surfaces and lines** (`surface.raised`, `surface.hover`, `surface.pressed`, `surface.subtle`, `border.default`, `border.hover`) as small steps down from the page in light (or `surface.raised` a step up, white on a grey page), up in dark, spaced by contrast against it; what must be seen (an input's edge, an icon, the focus ring) clears 3:1.
+4. **Place surfaces and lines** (`surface.raised`, `surface.hover`, `surface.pressed`, `surface.subtle`, `border.default`, `border.hover`) as small steps down from the page in light (or `surface.raised` a step up, white on a grey page), up in dark, spaced by contrast against it; what must be seen (an input's edge, an icon, the focus ring) clears 3:1. A field drawn as a fill well instead of an edge is held to the same: the well against its surface clears 3:1.
 5. **Solve the text tiers from contrast targets** (tertiary at the dial's target, the rest at least the minimum step apart) on each tier's worst surface; verify per theme with `contrast.mjs --ladder`.
 6. **Derive the accent from the brand hue**, per theme: `text.on-accent` at 4.5:1 and `focus` at 3:1 on every surface; then its hover and the `surface.selected` tint (law 7; translucent, so it re-tints with the theme), re-measuring the lowest text tier on it too.
 7. **Status pairs**, if the preset needs them; **exceptions and hue families**, each passing law 7, every mark at 3:1 on its grounds.
@@ -194,13 +198,15 @@ Then measure, in every theme: each text tier on its worst surface (`contrast.mjs
 
 ## Writing back to DESIGN.md
 
-- **The ratios.** Every text tier and the focus colour, per theme, with the surface measured on; re-measure when a value in `## Colour` changes.
+- **The ratios.** Every text tier and the focus colour, per theme, with the surface measured on, and every text-or-mark-on-fill pair per theme: `text.on-accent` on `accent`, `accent.ink` on its tint, each status fg on its bg, a field's identifying cue on its surface. Re-measure when a value in `## Colour` changes.
 - **New roles.** Any you added — a missing `surface.selected`, a tier between secondary and tertiary — in the project's naming style, marked `proposed` until accepted.
+- **The status marker.** The product's one marker style (`domains/color/status-and-exceptions.md`), as `status.marker` under `## Colour`.
 - **Exceptions.** Each `exception.<name>` under **Exceptions**: what it's for, and why that reason can't spread; a family with its question, its members and the marks it may take.
 
 ## Checklist
 
-- [ ] Control edges and icons that must be seen clear 3:1.
+- [ ] Control edges and icons that must be seen clear 3:1; a field drawn as a fill well clears 3:1 against its surface instead.
+- [ ] No gradient fill outside the button-finish and agent-material dials or a named exception; navigation and section links are not in the accent.
 - [ ] Each `status.*` is a fg/bg pair per theme, fg at 4.5:1 on the page and its tint.
 - [ ] Dark `surface.page` and light `text.primary` are near-black, not `#000`; `color-scheme` is declared in every theme.
 - [ ] Every brand colour and gradient the original spent on a job is still there, or the law that removed it is named.

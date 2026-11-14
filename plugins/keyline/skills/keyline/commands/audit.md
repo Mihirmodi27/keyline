@@ -25,7 +25,7 @@ Read a law's full text where a finding needs it. Under preset `glass`, also each
 | 1 | Several laws broken across templates; the domain isn't working as a system |
 | 0 | No system: values typed inline, nothing on a ladder |
 
-**Report:** a table of the six domains with score and finding count, then findings grouped by domain, worst first, one line each with evidence — `file:line`, a ratio, a count — and the law, with its UX-law name where one explains it (`commands/ux-laws.md`). Close with the order to fix in: usually the lowest score first, unless a law in another domain blocks it.
+**Report:** a table of the six domains with score and finding count, then findings grouped by domain, worst first, one line each with evidence — `file:line`, a ratio, a count — and the law, with its UX-law name where one explains it (`commands/ux-laws.md`). Close with the order to fix in: usually the lowest score first, unless a law in another domain blocks it. **Group that order into checkpoints**, each a short list of action items, and publish the whole report as one page. Fixing then goes one checkpoint at a time, pausing for review after each.
 
 **Write back:** every finding under `## Open issues` in `DESIGN.md`, replacing entries now fixed.
 

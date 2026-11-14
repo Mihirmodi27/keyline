@@ -12,7 +12,7 @@ Reads `DESIGN.md` `## Motion`.
 
 ### 1. Motion makes a change legible, or it goes
 
-**Every animation must answer "what just changed?" — and one that answers nothing is removed, not shortened.** Motion is the strongest attention signal an interface has; spent on nothing, it trains the eye to ignore it, and the animation that matters — a save confirming, a row arriving — goes unseen. A pulsing "New" badge beside a live sync indicator is the classic: the user tunes out both. Nothing animates to attract attention, and nothing loops except to report a state still in progress, like a spinner or a progress bar; any other loop is decoration, under law 4.
+**Every animation must answer "what just changed?" — and one that answers nothing is removed, not shortened.** Motion is the strongest attention signal an interface has; spent on nothing, it trains the eye to ignore it, and the animation that matters — a save confirming, a row arriving — goes unseen. A pulsing "New" badge beside a live sync indicator is the classic: the user tunes out both. Nothing animates to attract attention, and nothing loops except to report a state still in progress, like a spinner or a progress bar; any other loop is decoration, under law 4. The one exception: a single finite loop may mark the one item waiting on the reader, and it stops once that item has been seen; under reduced motion it is a static halo instead.
 
 **Paused means still.** A loop reporting a live state — level bars on a recorder, a stroke travelling round a card while something works — stops or settles low when that state pauses; still moving, it claims the thing is still listening. Only a progress indicator loops through a wait, because waiting is its state. On hover or focus a live indicator morphs in place into the action that ends it — bars into a stop square — so the control's next move appears where the eye already is.
 
@@ -121,7 +121,7 @@ GPU escalation is for one travelling element with no semantics of its own, never
 
 ### 15. Set pieces play once and block nothing
 
-**A greeting, a first-run sequence or a launch flourish plays at most once a session, is decided before the first paint, skips for deep links and reduced motion, and never covers content or the skip link.** Its long budget is defensible only because it never recurs. Gate it in a blocking inline script that sets a root attribute for CSS to answer at paint: the server can't see session storage, and a component decides a frame too late. Record "seen" on *completion*, or the write cancels the animation it records; branch client-only flags on the *transition*, never a rendered style, or server and client paint differently. Focusing the skip link, pressing a key or following a link ends it at once.
+**A greeting, a first-run sequence or a launch flourish plays at most once a session, is decided before the first paint, skips for deep links and reduced motion, and never covers content or the skip link.** Its long budget is defensible only because it never recurs. A set piece may instead be recorded as once ever, persisted rather than kept for the session; the `DESIGN.md` entry says which. Gate it in a blocking inline script that sets a root attribute for CSS to answer at paint: the server can't see session storage, and a component decides a frame too late. Record "seen" on *completion*, or the write cancels the animation it records; branch client-only flags on the *transition*, never a rendered style, or server and client paint differently. Focusing the skip link, pressing a key or following a link ends it at once.
 
 → The inline gate, the hydration-safe variant and the "seen" bookkeeping: `domains/motion/guards.md`
 
@@ -143,8 +143,8 @@ GPU escalation is for one travelling element with no semantics of its own, never
 | Reveal-on-scroll | 8px travel, `duration.overlay`, no stagger | none | up to 24px, stagger ≤ 80ms, whole group ≤ 600ms |
 | Press feedback | scale 0.96 on small controls | `surface.pressed` step, no scale | scale 0.92–0.95; wider than ≈ 200px, `scale(0.98)` or a 1px translate |
 | Hover on a card or large surface | a wash, 200ms in · 250ms out; no travel | a wash, 200ms in · 250ms out; no travel, no shadow change | a wash, 280ms in · 350ms out; a lift ≤ 4px on primary navigation only |
-| Set pieces | at most one on the site | none | a few, each named |
-| Ambient loops | none | progress indicators, and live-state indicators while the state is live | a hero only, paused off screen; where nothing can pause it, one finite motion — a few iterations, then rest |
+| Set pieces | at most one on the site | none, or one named entry on the agent surface's first load | a few, each named |
+| Ambient loops | none | progress indicators, live-state indicators while the state is live, and one finite loop on the single item waiting on the reader, stopped once seen (a static halo under reduced motion) | a hero only, paused off screen; where nothing can pause it, one finite motion — a few iterations, then rest |
 | Sound | absent, or opt-in behind a visible toggle | absent | opt-in, default off, visible toggle |
 
 Springs are Motion's `bounce / duration`.

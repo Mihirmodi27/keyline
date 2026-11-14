@@ -38,7 +38,9 @@ Boundaries: how a label or figure is set is the type guide's; what colour danger
 
 **Every tool call an AI agent makes appears as a collapsible card — the tool's name in sentence case, its arguments, its result — never as a lone spinner; a step that needs approval asks inline, under its own card.** A spinner asks for trust; a card lets the reader check what was done and catch it going wrong. A modal approval hides the card and the conversation the decision depends on. The approve button names the action and takes the brand action colour; reject is muted.
 
-The conversation carries no avatar per message: the reader's turns sit right-aligned on a tint, the agent's run full width with no fill, because the agent's output is the content. Mark AI output with one small mark in brand, not a robot face or a coloured bubble (the colour guide). The panel is non-modal, so the reader keeps working beside it.
+**Every AI statement opens one level down** to its reasoning, its sources, what would change it, and a way to ask about it — laid out as the evidence thread, never a paragraph. Confidence is phrased as how well the evidence supports the claim, never as a probability of an outcome. A suggestion arrives pre-filled where the work happens, with a one-line reason, editable before it runs; it never runs on its own.
+
+The conversation carries no avatar per message: the reader's turns sit right-aligned on a tint, the agent's run full width with no fill, because the agent's output is the content. Mark AI output with one small mark in brand, not a robot face or a coloured bubble (the colour guide) — once per AI-made block and only there, never on chrome, on controls, or inside a surface already wearing the agent material. **The agent has one resting material**, shared by every agent surface — card, drawer, chat — and used nowhere else; the live "AI working now" stroke is separate and sits on top of it while the agent works (the material's dial is the depth guide's). The panel is non-modal, so the reader keeps working beside it.
 
 ### 6. Live output separates the settled from the forming
 
@@ -46,7 +48,7 @@ The conversation carries no avatar per message: the reader's turns sit right-ali
 
 **Paused means still** (motion law 1), and the paused state offers what the reader wants next — the text so far, Copy, Resume. One "working now" signal per screen; how a live control turns into Stop is the motion guide's.
 
-→ Tool-call cards, inline approvals, conversation layout, follow-the-bottom and announcing: `domains/patterns/agents-and-live-states.md`
+→ Tool-call cards, inline approvals, the evidence thread, suggestions, conversation layout, follow-the-bottom and announcing: `domains/patterns/agents-and-live-states.md`
 
 ### 7. Dense tools are keyboard-first, and Escape closes one layer
 
@@ -74,9 +76,9 @@ Whether the view and span are remembered is layout law 9; list each page that re
 
 → Board and list, remembered views, rollback code, the shortcut map, launchers and grouped lists: `domains/patterns/collections-and-dashboards.md`
 
-### 12. A dashboard is overview, trends and action items, from one pipeline
+### 12. A dashboard opens on the reader's turn, then overview, trends and action items, from one pipeline
 
-**A dashboard answers three questions in order — where things stand (overview), which way they're moving (trends), what needs the reader (action items) — and drops anything nobody acts on.** A recent-activity feed nobody clicks is a column of noise next to the items that need a decision. **Wireframe it first and share the wireframe**: arguing about boxes is cheaper than arguing about a built page. A long page is fine; a page that hides what needs action to stay short is not. **A scoped overview runs the global overview's pipeline with its sources filtered**, never a parallel query, so the two can't disagree. Figures under a header can double as the table's filters (stat rows: layout law 3; figure colours: the colour guide). A panel the product or its brief requires stays; make it earn its place, don't cut it (`commands/refine.md`).
+**A screen opens on the one item waiting on the reader — a "your turn" hero — and the action that moves it; then it answers three questions in order — where things stand (overview), which way they're moving (trends), what else needs the reader (the remaining action items) — and drops anything nobody acts on.** A recent-activity feed nobody clicks is a column of noise next to the items that need a decision. **Wireframe it first and share the wireframe**: arguing about boxes is cheaper than arguing about a built page. A long page is fine, as long as the essentials and action items sit above the fold and what scrolls is detail; a page that hides what needs action to stay short is not. **A scoped overview runs the global overview's pipeline with its sources filtered**, never a parallel query, so the two can't disagree. Figures under a header can double as the table's filters (stat rows: layout law 3; figure colours: the colour guide). A panel the product or its brief requires stays; make it earn its place, don't cut it (`commands/refine.md`).
 
 ### 13. A form leads with the field that decides the rest
 
@@ -114,6 +116,26 @@ Whether the view and span are remembered is layout law 9; list each page that re
 
 → Pending states, skeletons, forgiving inputs and progress in code: `domains/patterns/actions-and-forms.md`
 
+### 18. A hand-off names who it waits on
+
+**When work passes to another person or role, the item names who it waits on and what they must do — "Waiting on Priya to approve the budget" — so no flow looks stuck.** An item that only says "Pending" leaves both sides wondering whether it's theirs. The person it waits on sees it as their turn (law 12).
+
+### 19. A greeting briefs
+
+**A page greeting states the count that needs the reader today — "3 tasks need you, 1 overdue" — with the problem figure in its status colour; a greeting that says nothing is cut.** "Good morning, Sam" alone takes the best line on the screen and spends it on nothing (figure colours: the colour guide).
+
+### 20. Setup is one path
+
+**First-time setup is one list of what to set up, the required apart from the helpful, never two parallel systems; every step can be skipped or left for later.** Afterwards the product says what's left in a quiet place and offers Resume. Entry asks only what the product can't work without, and the rest is asked in context, when it's needed. Sign-in lands on home.
+
+### 21. Each fact once
+
+**A number or sentence appears once, where it is acted on.** Cut tags true of every row, marketing subtitles, sub-lines restating a figure, hash IDs under titles, and AI marks on everything: each repeat is one more thing to read before the reader finds what changed.
+
+### 22. Status that doesn't block goes to one attention list
+
+**Status that doesn't block the current task goes to one attention list — a bell in the top bar — holding only items that need the reader; its dot takes the danger colour only when one is critical.** A banner is reserved for a state that blocks the whole screen. Banners stacked for every notice push the work down and teach the reader to ignore the one that matters.
+
 ## Dials
 
 | Dial | editorial | product | expressive |
@@ -145,25 +167,30 @@ Most product feedback is one step: "one step lighter", "25% smaller", "to 16px".
 | 2 | Second lines built from event verbs; two nouns for one kind of thing | The template string; the noun pairs |
 | 3 | Destructive items with icons, mid-menu or styled differently from each other | Menu, item, treatment |
 | 4 | Bespoke confirm dialogs; `window.confirm`; Cancel focused for large deletes; no pending label; focus lost on close | Component, and which step is missing |
-| 5 | Spinners standing in for agent steps; approvals in modals; per-message avatars | Component |
+| 5 | Spinners standing in for agent steps; approvals in modals; per-message avatars; AI statements with no way down to their reasoning; confidence as a percentage; suggestions that run on their own; AI marks on chrome or inside the agent material; agent surfaces in different materials | Component |
 | 6 | Interim text styled as final; auto-scroll that fights the reader; ambient motion while paused; interim text in a live region | Component and the behaviour |
 | 7 | Frequent actions with no key; drag with no keyboard path; Escape handlers that close more than one layer; single keys firing in inputs | Action, and its key or "none" |
 | 8 | Launchers with more than two or three choices; text-labelled filter rows; long flat admin lists | Screen, choice count |
 | 9 | "No … found" / "No … yet" on user data; empty states with no action | Route, and which case |
 | 10 | Status work with only a list; columns out of workflow order; view memory unrecorded | Page and view key |
 | 11 | Moves awaiting the server; silent rollbacks; optimistic sends or payments | Mutation and its failure path |
-| 12 | Panels nobody acts on; scoped views with their own query | Panel; the two queries |
+| 12 | No "your turn" item at the top; action items below the fold; panels nobody acts on; scoped views with their own query | Panel; the two queries |
 | 13 | Free text before the field that decides it; errors added beside hints; several primary buttons | Form, field order |
 | 14 | Play icons with no video; hover on logos that aren't links; plain-text email addresses; copy controls built as links; "Learn more", "Click here", "Get started" beside a second call to action; sign-up fields with a placeholder for a label or no line on what arrives; conventions broken for novelty — a logo that doesn't go home, search hidden in a menu | Element, and what it promises against what it does |
 | 15 | Async actions with no pending label; centred spinners over blank regions; long jobs with no progress or cancel; results shown away from where they were asked for; silent saves | Action, its wait, and what the reader sees meanwhile |
 | 16 | Inputs that reject spaces, dashes, case or a trailing space; placeholders as labels; pickers with no recent items; questions the product could answer itself | Field, the input it rejects or the question it needn't ask |
 | 17 | Multi-step flows with no position or count; a last screen that says only "Success" or "Done"; failure copy with a code and no next step | Flow, step, and its end state |
+| 18 | Hand-offs shown as a bare "Pending" or "In review"; a role switch shipped to readers | Item, and who it waits on |
+| 19 | Greetings with no count; problem figures in ink | Route, the greeting |
+| 20 | Two setup systems; steps that can't be skipped; entry forms asking what could wait; sign-in landing anywhere but home | Flow, step |
+| 21 | A figure or sentence shown twice; tags on every row; marketing subtitles in product screens; hash IDs under titles | The repeat, and both places |
+| 22 | Non-blocking status as banners; several notification places; a red dot with nothing critical | Notice, where it sits |
 
 Click through every flow once with the keyboard alone, and once with the network throttled to failure.
 
 ## Writing back to DESIGN.md
 
-- **`## Patterns`**: the product's nouns, one per kind of thing; the second-line formula; the destructive items and the proof each needs; the shortcut map; which pages remember their view and which default wins; the agent-step conventions.
+- **`## Patterns`**: the product's nouns, one per kind of thing; the second-line formula; the destructive items and the proof each needs; the shortcut map; which pages remember their view and which default wins; the agent-step conventions; the setup list, required apart from helpful.
 
 ## Checklist
 

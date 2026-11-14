@@ -48,7 +48,7 @@ A working reader needs navigation, content and detail together, so the page is r
 
 Settings help, onboarding copy, a changelog entry and an empty state's explanation still sit at `measure.reading`; a 1200px-wide paragraph of help text in a settings pane is the most common product failure of law 1. The inspector is detail, so it collapses first; navigation is how the reader leaves, so it stays longest. A centred column inside the content panel wastes the width a working reader opened the window for, and a page that sets its own `max-width` or padding drifts from its neighbours: the shell owns both.
 
-**The sidebar.** Navigation is this one surface, with the reader's own controls — account, role, theme — in its footer; a top bar repeating it puts a second band of chrome over every screen. Primary destinations sit at the top; the long tail goes in collapsible folders, open state remembered and the current page's folder forced open; administration lives in the account menu, not among destinations. Groups of destinations are parted by space and their group label alone: no hairline under a label and none between groups. Rows are dense, about 30px, with the workspace name at the nav's own size, so the sidebar reads as one list. Collapsed to an icon rail, icons hold their position while the width animates, labels become tooltips and counts become dots; the rail is toggled by a button and a shortcut and remembered, since it is a preference about the reader (layout law 9).
+**The sidebar.** Navigation is this one surface; a top bar repeating it puts a second band of chrome over every screen. Its top holds the workspace switcher, search (⌘K) and the product's primary utility; its footer holds the reader's own controls — theme, language, profile and role. Primary destinations sit flat at the top, with no heading, and never fold; the rest go under one quiet heading in collapsible folders, open state remembered and the current page's folder forced open. Nesting stops at one level: a small sub-section becomes a tab on its parent page, not a row under it. Administration lives in the account menu, not among destinations. Groups of destinations are parted by space and their group label alone: no hairline under a label and none between groups. Rows are dense, about 30px, with the workspace name at the nav's own size, so the sidebar reads as one list. Collapsed to an icon rail, icons hold their position while the width animates, labels become tooltips and counts become dots; the rail is toggled by a button and a shortcut and remembered, since it is a preference about the reader (layout law 9).
 
 **Improving one screen of an existing app keeps its navigation surface.** Moving navigation is a restructure, and the icon rail a feature: neither is done unasked; list them under `## Open issues`.
 
@@ -58,12 +58,12 @@ Top to bottom, every page in the shell has the same parts, so a reader learns on
 
 | Part | Shape |
 |---|---|
-| Header bar | About 44px; breadcrumb at the start, the page's own actions at the end as quiet ghost buttons; the page title at the nav's size, not a display heading |
+| Header bar | About 44px; breadcrumb at the start, the page's own actions at the end as quiet ghost buttons, related ones together (search beside upload); the page title at the nav's size, not a display heading. Tabs take their own row under it |
 | Stat strip | The figures under the header (patterns law 12 picks which), parted by hairlines, at the type guide's figure size; each filters the table below to what it counts, and shows when it's the active filter |
 | Toolbar | Search, then filters as icons with tooltips — a text label on every filter crowds the bar — then the view switch; on touch the filters open as a labelled sheet |
 | Content | The table, board or list, at the panel's full width |
 
-**The table.** One shared component on every page: `radius.card` in a hairline frame, a tinted header row with `text.primary` labels, rows around 44px, hairlines between rows only (no column rules), a hover wash. A table that doesn't use it is a second table style.
+**The table.** One shared component on every page, in the style the product chose from layout law 3 (`table.style`): rows around 44px at one height, hairlines between rows only (no column rules), a plain-fill hover, `text.primary` header labels. A table that doesn't use it is a second table style.
 
 **The group bar.** One shared component: a tinted band about 36px tall holding a chevron, the group's name, its count and an add action, sticky under the header row while its group scrolls. How long lists open, summarise and search is patterns law 8.
 

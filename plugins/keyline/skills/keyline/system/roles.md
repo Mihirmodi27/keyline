@@ -71,7 +71,7 @@ A project may slot extra tiers between secondary and tertiary (the Glass preset 
 | Role | Job |
 |---|---|
 | `border.default` | The edge of an object — a card, an input |
-| `border.control` | The edge of an input or control, which must reach 3:1 to be seen as interactive. May share a token with `border.default` only if that already reaches 3:1 |
+| `border.control` | The edge of an input or control, which must reach 3:1 to be seen as interactive. May share a token with `border.default` only if that already reaches 3:1. A field may be a fill well instead of an edge; whichever cue identifies it, the fill against its surface or the edge, reaches 3:1 |
 | `border.hover` | That edge, hovered or emphasised |
 | `border.divider` | A rule between groups inside one object or column. May share a token with `border.default` |
 | `border.layered` | A border or divider on an unknown or translucent backdrop — must be translucent itself |
