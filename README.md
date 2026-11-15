@@ -13,8 +13,22 @@ The npm package is `trykeyline`, because npm holds `keyline` too close to an old
 Then, in your agent:
 
 ```
-/keyline init
+/keyline
 ```
+
+On its own, `/keyline` tells you where your project stands and which command to run next.
+
+## How it runs
+
+You don't need to learn the commands. A project goes through three stages, and every report ends with the next step.
+
+| Stage | Command | What you get |
+|---|---|---|
+| 1. Review | `/keyline audit` on one screen or the whole product | What's wrong with the interface as it is. No setup needed, and nothing changes |
+| 2. Set up | `/keyline init` (`/keyline sync` later on) | `DESIGN.md`: your token names, a preset for your reader, and the review's findings as open issues |
+| 3. Polish | `/keyline polish` | The fixes, one domain at a time, recorded back to `DESIGN.md` |
+
+Then it starts over: polish the next screen with open issues, or review one nobody has looked at yet.
 
 ## Commands
 
@@ -77,7 +91,7 @@ npx trykeyline check --json     # every finding, for CI or an agent
 npx trykeyline check --strict   # warnings fail the run too
 ```
 
-It reads CSS, Tailwind classes, inline styles, `<style>` blocks and CSS-in-JS, in React, Vue, Svelte, Astro and plain HTML, and it reads `DESIGN.md` so the verdicts follow your preset and your motion and z-index ladders. A few of the things it catches: `transition: all`; animation with no reduced-motion branch; an outline removed with nothing in its place; `100vh`; `z-index: 9999`; colours typed inline instead of tokens; translucency with no `@supports` fallback; pinch-zoom disabled; uppercase labels and Title Case buttons where the preset says sentence case. `npx trykeyline check --rules` lists all of them, each with the law it comes from.
+It reads CSS, Tailwind classes, inline styles, `<style>` blocks and CSS-in-JS, in React, Vue, Svelte, Astro and plain HTML, and it reads `DESIGN.md` so the verdicts follow your preset, the case you record for labels, and your motion and z-index ladders. A few of the things it catches: `transition: all`; animation with no reduced-motion branch; an outline removed with nothing in its place; `100vh`; `z-index: 9999`; colours typed inline instead of tokens; translucency with no `@supports` fallback; pinch-zoom disabled; uppercase labels where `DESIGN.md` records sentence case, and Title Case buttons. `npx trykeyline check --rules` lists all of them, each with the law it comes from.
 
 `/keyline audit` runs it first and spends its own reading on what a detector can't see — hierarchy, grouping, whether a box should exist at all.
 

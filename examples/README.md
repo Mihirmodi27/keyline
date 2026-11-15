@@ -4,10 +4,10 @@ Four pages, each built by a plain coding agent from a short brief, then improved
 
 | Scene | Brief | Preset | Detector: before → Impeccable → Keyline |
 |---|---|---|---|
-| [`dashboard`](dashboard/) | Analytics dashboard for a SaaS tool | `product` | 41 → 5 → 0 |
-| [`settings`](settings/) | Account settings for a project-management app | `product` | 15 → 1 → 0 |
-| [`landing`](landing/) | Landing page for a scheduling app | `expressive` | 69 → 13 → 0 |
-| [`article`](article/) | Engineering-blog article | `editorial` | 39 → 22 → 0 |
+| [`dashboard`](dashboard/) | Analytics dashboard for a SaaS tool | `product` | 40 → 5 → 0 |
+| [`settings`](settings/) | Account settings for a project-management app | `product` | 13 → 1 → 0 |
+| [`landing`](landing/) | Landing page for a scheduling app | `expressive` | 68 → 14 → 0 |
+| [`article`](article/) | Engineering-blog article | `editorial` | 33 → 18 → 0 |
 
 Detector counts are every finding (errors, warnings and info). `before/` has no `DESIGN.md`, so it is checked without a preset; `after/` is checked against the one `init` wrote. `impeccable/` has Impeccable's own Stitch-format `DESIGN.md`, which names no Keyline preset, so it is checked without one. The detector is Keyline's, so read the middle column as how far Impeccable's output lands from Keyline's laws, not as a score of Impeccable.
 

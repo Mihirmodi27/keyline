@@ -34,12 +34,12 @@ Evidence for `product`: one working screen — an app shell with a sidebar of si
 | ↳ page title (`type.ui` in the header bar) | `--size-ui` · `h1` in `.crumbs` | 0.8125rem (13px) | 1.4 | 0 | 500 | `--text` — the last step of the breadcrumb |
 | `type.data` | `--size-ui` · `.pages td` | 0.8125rem (13px) | 1.5 | 0 | 400; the row's path 500 | `--text` / `--text-2`, tabular |
 | `type.label` | `--size-small` · `.metric-label`, `.chart-stats dt`, `.pages thead th`, `.legend` | 0.75rem (12px) | 1.3 | 0 | 500 (figure and column labels), 400 (legend) | `--text-2` / `--text-3` |
-| ↳ group label (project role) | `--size-small` · `.nav-label` | 0.75rem (12px) | 1.3 | 0, sentence case | 400 | `--text-3` — a hairline rule beneath |
+| ↳ group label (project role) | `--size-small` · `.nav-label` | 0.75rem (12px) | 1.3 | +0.06em, capitals by `text-transform` (written in sentence case) | 500 | `--text-3` — separates from the nav rows on case and the space above; no rule |
 | `type.meta` | `--size-small` · `time`, `.card-sub`, `.crumb`, `.ws-plan`, axes, `.metric-foot`, `kbd`, tooltip | 0.75rem (12px) | 1.4 | 0 | 400 | `--text-3` |
 
 `type.title` has no row: the page title sits in the header bar as chrome (type ladders: product), and no content heading opens the page. Inputs go to 16px under 560px.
 
-**Weights** — `--weight` 400: body, figures, data. `--weight-strong` 500: headings, the current nav item, selected menu option, figure and column labels, names in the feed, the row's path, chips.
+**Weights** — `--weight` 400: body, figures, data. `--weight-strong` 500: headings, the sidebar group label, the current nav item, selected menu option, figure and column labels, names in the feed, the row's path, chips.
 
 **Numerals** — `tabular-nums` on `.num`, `time`, chart axes, tooltips and counts; not on the root, and not on paths (Inter's `tnum` widens hyphens).
 
@@ -54,7 +54,7 @@ Evidence for `product`: one working screen — an app shell with a sidebar of si
 | `text.primary` | `--text` | `#0f1729` | 16.67:1 | `#eef0f5` | 15.13:1 |
 | `text.secondary` | `--text-2` | `#4a5468` | 7.10:1 (×2.35) | `#a9b0c0` | 7.93:1 (×1.91) |
 | `text.tertiary` | `--text-3` | `#636c7e` | 4.93:1 (×1.44) | `#848c9e` | 5.11:1 (×1.55) |
-| `accent.ink` (project role) | `--accent-ink` | `#4a48d8` | 6.54:1 on `--surface`; 4.70:1 on `--selected` | `#a5a5ff` | 8.20:1 on `--surface`; ≈ 6.2:1 on `--selected` |
+| `accent.ink` (project role) | `--accent-ink` | `#4a48d8` | 6.54:1 on `--surface`; 5.25:1 on `--selected` over `--sidebar` | `#a5a5ff` | 8.20:1 on `--surface`; 7.16:1 on `--selected` over `--sidebar` |
 | `text.on-accent` | `--on-accent` | `#ffffff` | on brand gradients; workspace lettermark ≥ 3.02:1 (a mark, recognised not read) | `#ffffff` | same |
 
 **Surfaces**
@@ -66,7 +66,7 @@ Evidence for `product`: one working screen — an app shell with a sidebar of si
 | `surface.raised` | `--surface` | `#ffffff` | `#12151c` |
 | `surface.hover` | `--surface-2` | `#f9fafb` | `#171b23` |
 | ↳ hover wash on the sidebar (project role, `border.layered` family) | `--wash` (proposed) | `rgba(127,135,155,0.12)` | `rgba(255,255,255,0.06)` |
-| `surface.selected` | `--selected` (proposed) | accent at 22%: `rgba(91,91,240,0.22)` | `rgba(130,130,255,0.22)` |
+| `surface.selected` | `--selected` (proposed) | accent at 14% over `--sidebar`: `rgba(91,91,240,0.14)` | accent at 14%: `rgba(130,130,255,0.14)` |
 | accent tint for marks (project role) | `--accent-soft` | `#eeeefe` | `rgba(130,130,255,0.14)` |
 
 **Lines and fills**
@@ -169,6 +169,8 @@ No duration or easing tokens; transitions default to `ease`. Reduced motion: one
 - 2026-11-04 — Headline figures at 24/400, not 30/600: figures are data and their labels keep the lead by weight. (Law; type law 3, type law 5.)
 - 2026-11-04 — Preset `product`. (User decision.)
 - 2026-11-04 — Theming stays as built: light and dark following the device, no toggle. (User decision.)
+- 2026-11-13 — Sidebar group labels stay in capitals, tracked +0.06em at 12/500, with no rule beneath: the project already set them in capitals, and a refining pass keeps the case a label role has; the 2026-11-04 pass had moved them to sentence case over a hairline. The label role's one case here: capitals for the group label only; figure and column labels stay sentence case. (Type dials: uppercase labels; type ladders: group label; layout, the sidebar.)
+- 2026-11-13 — `surface.selected` (`--selected`) is the accent at 14% over the sidebar in both themes, down from 22%: where the reader is takes the accent as a tint of 10–15%, and 14% is the strength the project's own dark accent tint already had. Hue unchanged. Label in `--accent-ink` measured with `contrast.mjs --over`: 5.25:1 light (on `#fbfbfc`), 7.16:1 dark (on `#0e1016`); the icon in `--accent` 4.02:1 / 5.00:1 against its 3:1. (Law; color law 7.)
 
 ## Open issues
 

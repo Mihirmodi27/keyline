@@ -74,7 +74,7 @@ Record the ratio against the worst composite in `DESIGN.md`, naming the backdrop
 
 ## A pocket on art
 
-The one material a `product` preset keeps: a frosted pocket on an illustration — a folder's front panel showing the sheets behind it — at the soften tier.
+The one material a `product` preset keeps outside its floating layers: a frosted pocket on an illustration — a folder's front panel showing the sheets behind it — at the soften tier.
 
 ```css
 .pocket { background: var(--surface-page); }                     /* opaque baseline */

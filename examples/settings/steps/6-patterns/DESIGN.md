@@ -33,7 +33,7 @@ Sizes are `rem` tokens in `styles.css` `:root` (proposed 2026-11-04, in the proj
 | `type.label` | `--fs-ui` · `.field label` | 13px | 1.3 | 0 | 500 | `text.primary` |
 | ↳ help text (project role, reading copy) | `--fs-ui` · `.hint`, `.msg`, `.rules` | 13px | 1.45 | 0 | 400 | `text.tertiary` / `status.danger.fg` |
 | `type.meta` | `--fs-meta` · `.status`, `.badge`, `.optional`, `.footnote`, `.sidenav__plan-meta`, `.reveal` | 0.75rem (12px) | 1.4–1.5 | 0 | 400 (`.reveal` 500) | `text.tertiary` |
-| ↳ group label | `--fs-meta` · `.sidenav__title`, `.prefs thead th` | 12px, sentence case | 1.3 | 0 | 400 | `text.tertiary` |
+| ↳ group label | `--fs-meta` · `.sidenav__title`, `.prefs thead th` | 12px, capitals by `text-transform` (the words are written in sentence case) | 1.3 | +0.06em | 500 | `text.tertiary` — separates on case |
 | ↳ keyboard hint | `--fs-micro` · `.search kbd` | 0.6875rem (11px) | 1.4 | 0 | 400 | `text.tertiary` |
 | `type.data` | `.num`, time-zone `select` | inherits | — | 0 | — | tabular, slashed zero |
 
@@ -47,7 +47,7 @@ Lettermarks: `.avatar--lg` initials at `--fs-title`, `.avatar--sm` at `--fs-meta
 | 16 | — | — | section and dialog headings |
 | 14 | body, descriptions, input values | row titles, brand name | — |
 | 13 | help text, nav items | buttons, field labels, current nav item | — |
-| 12 | meta, badges, group labels | the password Show button | — |
+| 12 | meta, badges | group labels (in capitals), the password Show button | — |
 
 ## Colour
 
@@ -60,7 +60,7 @@ Lettermarks: `.avatar--lg` initials at `--fs-title`, `.avatar--sm` at `--fs-meta
 | `text.tertiary` | `--text-3` | `#5f6b7e` | 4.90:1 | `#8e95a2` | 5.41:1 |
 | `text.inverse` | `--surface` on `--text` | `#ffffff` | 17.75:1 | `#14171c` | 16.30:1 |
 | `text.on-accent` | `--on-accent` | `#ffffff` | 5.69:1 on `--accent` | `#ffffff` | 4.92:1 on `--accent` |
-| `text.link` · `accent.ink` | `--accent-ink` | `#3249b8` | 4.95:1 on `--accent-soft` | `#8299f3` | 5.33:1 on `--accent-soft`, 6.85:1 on `--bg` |
+| `text.link` · `accent.ink` | `--accent-ink` | `#3249b8` | 6.10:1 on `--accent-soft` over `--bg` | `#8299f3` | 6.03:1 on `--accent-soft` over `--bg`, 6.85:1 on `--bg` |
 
 Steps (ratio of ratios, light): primary → secondary 2.31×, secondary → tertiary 1.42× (dial ≥ 1.4×).
 
@@ -72,7 +72,7 @@ Steps (ratio of ratios, light): primary → secondary 2.31×, secondary → tert
 | `surface.raised` | `--surface` | `#ffffff` | `#14171c` |
 | `surface.subtle` | `--surface-2` | `#f9fafb` | `#181b21` |
 | `surface.hover` | `--surface-hover` (proposed) | `#f2f4f7` | `#1d2027` |
-| `surface.selected` | `--accent-soft` | `rgba(62,91,216,.25)` | `rgba(74,102,224,.25)` |
+| `surface.selected` | `--accent-soft` — the accent at 15% over `--bg`; one job, the current nav item (`.sidenav a.is-active`) | `rgba(62,91,216,.15)` | `rgba(74,102,224,.15)` |
 | `surface.inverse` | `--text` (toast, skip link) | `#101828` | `#f2f4f7` |
 
 **Lines and fills**
@@ -191,10 +191,12 @@ No springs: nothing is dragged or re-targeted. No route, theme or reveal motion.
 
 ## Patterns
 
-**Nouns** — account, profile, project, task, workspace. **Labels** — sentence case; each section's save button names its object ("Save profile", "Save preferences", "Update password") because three saves share the screen. **Destructive** — "Delete account" last on the page, in the system dialog: it says what is lost, needs the typed phrase "delete my account" (case-insensitive), focuses the field on open, shows "Deleting…" and stays open until the deletion is accepted. Disconnecting a service is reversible: no dialog, a toast with Undo. **Save model** — one save button per section with an inline status ("Unsaved changes", "Saving…", "✓ Saved just now"); no toast for a save the reader watched. **Toasts** — failures, Undo windows, and results off screen (account deletion). **Field errors** replace the hint; the new-password rules are its hint, so a missed rule turns red on the rule itself. **Shortcuts** — ⌘K / Ctrl+K focuses search, as its hint shows.
+**Nouns** — account, profile, project, task, workspace. **Labels** — written in sentence case (group labels are set in capitals by `text-transform`, see Type); each section's save button names its object ("Save profile", "Save preferences", "Update password") because three saves share the screen. **Destructive** — "Delete account" last on the page, in the system dialog: it says what is lost, needs the typed phrase "delete my account" (case-insensitive), focuses the field on open, shows "Deleting…" and stays open until the deletion is accepted. Disconnecting a service is reversible: no dialog, a toast with Undo. **Save model** — one save button per section with an inline status ("Unsaved changes", "Saving…", "✓ Saved just now"); no toast for a save the reader watched. **Toasts** — failures, Undo windows, and results off screen (account deletion). **Field errors** replace the hint; the new-password rules are its hint, so a missed rule turns red on the rule itself. **Shortcuts** — ⌘K / Ctrl+K focuses search, as its hint shows.
 
 ## Decisions
 
+- 2026-11-13 — `surface.selected` (`--accent-soft`) is the accent at 15% over the page it sits on, down from 25%, in both themes; the hue is unchanged. A tint marks where the reader is and the solid fill marks the action, and at 25% the current item read close to a second button. The label and icon stay `--accent-ink`, which already clears 4.5:1 on the lighter tint (6.10:1 light on `#ffffff`, 6.03:1 dark on `#101318`), so the ink did not move. (Law; colour law 7, current location.)
+- 2026-11-13 — Group labels (`.sidenav__title`, `.prefs thead th`) are set in capitals, as the page already had them: 12px, +0.06em, 500, `text.tertiary`, by `text-transform` over words written in sentence case. The first type pass had moved them to sentence case; capitals on a label role are a valid choice and a refining pass keeps the case a project has. Two values did move: weight 600 → 500 (600 is for headings, and the ladder sets a group label strong in capitals) and the table header's tracking 0.05 → 0.06em, so the role has one value. No hairline under the sidebar's label. (Type dials, uppercase labels; `ladders.md` group-label row; layout, the sidebar.)
 - 2026-11-04 — Save toasts removed ("Profile updated" and two more): the status line beside the button already confirms in place. Disconnect gains Undo; the delete dialog shows "Deleting…" and stays open until done. (Law; patterns law 4 and the toasts dial.)
 - 2026-11-04 — The toast takes its own focus colour (`--focus-inverse`): it is a local inverse theme. (Law; colour law 5, found in settling.)
 - 2026-11-04 — Buttons press with a surface step at 0ms, not a 1px drop: `product` press feedback. Reduced motion is a branch per component, replacing the global `.01ms` kill. (Law; motion laws 3 and 10.)

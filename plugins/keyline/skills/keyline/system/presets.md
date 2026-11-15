@@ -6,6 +6,8 @@ A preset is a starting character, not a costume. Pick the one whose *reader* mat
 
 Each domain guide owns the numbers for its own dials, in its `## Dials` section. This file only sets the character and says, in a line per domain, what that character means. When the two ever disagree, the guide wins, and this file is the one to fix.
 
+Some dials have no preset default and are chosen once per product, recorded in `DESIGN.md`: the table style (`table.style`) and, in product, a heading serif.
+
 ## How to pick
 
 Ask what the reader is doing.
@@ -35,11 +37,11 @@ When the evidence doesn't settle it, propose one, say what evidence you used, an
 
 *The interface is a tool, and the reader is fluent in it.* Density, predictability and scannability beat atmosphere. Signal has to survive a screen full of data.
 
-- **Type** — tighter, smaller steps; UI and data roles dominate.
-- **Colour** — near-monochrome with a real status palette, and one accent hue that acts.
-- **Layout** — an app shell rather than a single measure; tighter spacing, still grouped.
-- **Surfaces** — content on the page, rows parted by hairlines; a card only for one object.
-- **Motion** — shortest of the three; nothing delays a repeated action.
+- **Type** — tighter, smaller steps; UI and data roles dominate; one family, a heading serif only by choice.
+- **Colour** — near-monochrome with a real status palette, and one accent hue that acts; navigation stays neutral, links in text colour.
+- **Layout** — an app shell rather than a single measure; tighter spacing, still grouped; 0.5px hairlines for edges and dividers.
+- **Surfaces** — content on the page, rows parted by hairlines; a card only for one object; translucency only on floating layers (drawers, menus, popovers, overlays, the top bar once scrolled).
+- **Motion** — shortest of the three; nothing delays a repeated action; one finite loop on the item waiting on the reader, and at most one set piece, on the agent surface's first load.
 
 ## `expressive`
 

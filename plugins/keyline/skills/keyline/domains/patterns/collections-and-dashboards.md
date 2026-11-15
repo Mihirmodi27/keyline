@@ -106,7 +106,7 @@ Each bar's summary answers what the reader would open it to check. A search open
 
 ## Dashboards
 
-**The order**: overview (where things stand: a few figures), trends (which way they're moving: one or two charts over a sensible window), action items (what needs the reader: a short list, each item one click from done). Anything that answers none of the three goes — a recent-activity feed is the usual casualty, unless the product or its brief requires it; then it stays, built to earn its place (`commands/refine.md`).
+**The order**: first the one item waiting on the reader, with the action that moves it (law 12); then overview (where things stand: a few figures), trends (which way they're moving: one or two charts over a sensible window), action items (what needs the reader: a short list, each item one click from done). Anything that answers none of the three goes — a recent-activity feed is the usual casualty, unless the product or its brief requires it; then it stays, built to earn its place (`commands/refine.md`).
 
 **Wireframe first**, in boxes and words, and share it before building. Questions to settle on the wireframe:
 
@@ -115,7 +115,11 @@ Each bar's summary answers what the reader would open it to check. A search open
 - What the reader does next from each action item.
 - What the page shows on a new account with no data — usually the action items section offering the first action.
 
-**A long page is fine.** Hiding action items behind tabs to keep the page short moves the cost to the reader.
+**A long page is fine.** Hiding action items behind tabs to keep the page short moves the cost to the reader. The essentials and action items sit above the fold; what scrolls is detail.
+
+**A chart earns its place at a glance.** One whose purpose isn't clear without studying it is replaced by something legible: progress steps, a figure, a list.
+
+**A state column never shows a bare status word.** It uses the product's one status marker (`status.*`, chosen in `DESIGN.md` `## Colour`), so state reads the same in the table as everywhere else.
 
 **A scoped overview reuses the global pipeline**:
 

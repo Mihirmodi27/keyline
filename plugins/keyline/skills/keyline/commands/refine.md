@@ -8,7 +8,8 @@
 4. **Fix in the project's names**, at the smallest scope that removes the cause — a token over twenty call sites, a shared component over its instances. Add a role only where the guide's `## Building it for a project` says one is missing, in the project's naming style, marked `proposed` in `DESIGN.md`. Where the project has no tokens for the domain at all — no type tokens, no motion tokens — propose a full set in the project's style, each marked `proposed`, and fix against it.
 5. **A fix that belongs to an earlier domain** in polish order but only became visible in this pass — the note this pass made from a callout now needs its type role — is made here, and reported as that domain's. Anything else another domain owns is reported with its command.
 6. **Sweep** every route the changed rule reaches and report what moved: `awk '/^## /{p = /^## The sweep/} p' <keyline>/domains/patterns/iteration.md`.
-7. **Check what you changed** against the domain's checklist — each law's bold first sentence, plus anything left under `## Checklist` — and run the detector again on the target: nothing you touched should still be flagged.
+7. **Remove what the pass orphaned**: tokens, selectors and components nothing uses any more. A leftover layer fights the new system and is the first thing the next change trips over.
+8. **Check what you changed** against the domain's checklist — each law's bold first sentence, plus anything left under `## Checklist` — and run the detector again on the target: nothing you touched should still be flagged.
 
 **Three limits hold in every pass:**
 
@@ -17,3 +18,5 @@
 - **Improving keeps what the design already chose** (`SKILL.md`). Where a preset's default and the existing design disagree on dividers, corners or line weight, `## Refining an existing design` in the layout guide decides; read it when the pass touches layout or depth: `awk '/^## /{p = /^## Refining an existing design/} p' <keyline>/domains/layout/guide.md`.
 
 **Report:** what was wrong, as a reader would feel it; what changed, by token or component, with the law; what was measured (sizes, ratios, durations); and anything noticed outside the domain, with its command.
+
+**Next** (format in `SKILL.md`, `## The flow`), only when the command ran on its own, not as a pass inside `polish`: the command for the most important thing noticed outside this domain, on the same target; with nothing noticed, `polish` on that target, so the other five domains catch up.

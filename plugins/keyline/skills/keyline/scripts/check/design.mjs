@@ -1,8 +1,8 @@
 /**
  * What the detector takes from DESIGN.md: the preset (which turns some rules on
- * or off), the motion ladder, the z-index ladder, and whether the live guard
- * runs (`| Guard | off |` under ## Profile). Everything else in the file is for
- * the agent; the detector only needs what changes a verdict.
+ * or off), the case it records for labels, the motion ladder, the z-index ladder, and whether the live
+ * guard runs (`| Guard | off |` under ## Profile). Everything else in the file is for the agent; the
+ * detector only needs what changes a verdict.
  */
 import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
@@ -16,7 +16,7 @@ function section(md, heading) {
 
 export function readDesign(root) {
   const name = existsSync(root) ? readdirSync(root).find((f) => f.toLowerCase() === "design.md") : null;
-  if (!name) return { found: false, preset: null, durations: null, roles: new Map(), zLadder: null, guard: true };
+  if (!name) return { found: false, preset: null, labelCase: null, durations: null, roles: new Map(), zLadder: null, guard: true };
   const md = readFileSync(join(root, name), "utf8");
   const headingLine = (h) => {
     const i = md.search(new RegExp(`^##\\s+${h}\\b`, "mi"));
@@ -26,6 +26,11 @@ export function readDesign(root) {
   const profile = section(md, "Profile");
   const presetRow = profile.split("\n").find((l) => /^\|\s*Preset\s*\|/i.test(l)) ?? "";
   const preset = PRESETS.find((p) => new RegExp(`\`${p}\`|\\b${p}\\b`).test(presetRow.split("|").slice(2).join("|"))) ?? null;
+
+  // Label case: capitals are a choice the Type table records per role. A row that
+  // records them allows them; "sentence" means the table names sentence case and no row sets capitals.
+  const typeRows = section(md, "Type").split("\n").filter((l) => l.startsWith("|"));
+  const labelCase = typeRows.some((l) => /\b(uppercase|capitals)\b/i.test(l)) ? "capitals" : typeRows.some((l) => /\bsentence case\b/i.test(l)) ? "sentence" : null;
 
   // Durations: every ms / s value in the Motion section's table rows. Rows on a
   // canonical duration.* role (before any "Named exemptions" line) are also kept by
@@ -68,6 +73,7 @@ export function readDesign(root) {
     file: name,
     lines: { motion: headingLine("Motion"), layout: headingLine("Layout") },
     preset,
+    labelCase,
     durations: durations.size ? durations : null,
     roles,
     zLadder: zLadder.size ? zLadder : null,

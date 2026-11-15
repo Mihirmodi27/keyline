@@ -41,10 +41,10 @@
           "selector": ".section-title"
         },
         {
-          "what": "Sidebar group labels in sentence case over a hairline",
+          "what": "Sidebar group labels keep their capitals, on the ladder's size and weight, with no rule",
           "law": "type dials: uppercase labels",
           "before": "ANALYTICS — 11px / 600 / uppercase / +0.06em",
-          "after": "Analytics — 12px / 400 / sentence case / 0, rule beneath",
+          "after": "ANALYTICS — 12px / 500 / uppercase / +0.06em, parted by space alone",
           "selector": ".nav-label"
         },
         {
@@ -65,7 +65,7 @@
     },
     {
       "domain": "color",
-      "summary": "Captions and timestamps became readable, the search field and the comparison line got edges you can see, and the brand colour stayed everywhere it had a job — the selected nav item now carries more of it, not less.",
+      "summary": "Captions and timestamps became readable, the search field and the comparison line got edges you can see, and the brand colour stayed everywhere it had a job — the selected nav item carries a little more of it, as a tint.",
       "changes": [
         {
           "what": "Timestamps, captions, axis labels and placeholders became readable",
@@ -103,10 +103,10 @@
           "selector": ".delta.up"
         },
         {
-          "what": "The current nav item sits on a stronger accent tint",
+          "what": "The current nav item sits on an accent tint inside the 10–15% the law sets",
           "law": "color law 7",
           "before": "accent at ≈ 8% (#eeeefe), label 5.70:1",
-          "after": "accent at 22%, label 4.70:1",
+          "after": "accent at 14%, label 5.25:1 (7.16:1 in dark)",
           "selector": ".nav-link.is-active"
         },
         {
@@ -141,6 +141,13 @@
           "law": "layout law 3",
           "before": "4 tiles, each with a 12px radius, border and shadow, 16px apart",
           "after": "1 row, 3 vertical hairlines, 24px padding",
+          "selector": ".metrics"
+        },
+        {
+          "what": "A hairline parts the figures from the sections below, and the chart from the table",
+          "law": "layout law 3",
+          "before": "32px gaps, no lines",
+          "after": "0.5px full-bleed under the figure strip; 0.5px between chart and table, as wide as their column and short of the activity card; 32px either side",
           "selector": ".metrics"
         },
         {

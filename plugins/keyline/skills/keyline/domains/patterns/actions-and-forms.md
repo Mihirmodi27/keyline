@@ -125,6 +125,8 @@ Label above, control, hint below; an error takes the hint's place rather than ad
 </div>
 ```
 
+Selects, date pickers and menus use the system's components, never the OS-native control.
+
 Reserve the note's line height when a field has a hint, so the swap never moves the field below. Validate on blur and on submit, not on every keystroke; clear a field's error as soon as its value changes.
 
 **A form-level failure** — the server refused, the network dropped — is one line above the primary button, with an icon and `role="alert"`, saying what to do next. The fields keep what the reader typed.

@@ -16,7 +16,7 @@
   --accent: #5b5bf0;
   --accent-ink: #4a48d8;
   --accent-soft: #eeeefe;
-  --selected: rgba(91, 91, 240, 0.22); /* current nav item: accent over the sidebar, ink 4.70:1 */
+  --selected: rgba(91, 91, 240, 0.14); /* current nav item: accent at 14% over the sidebar, ink 5.25:1 */
   --green: #0c7a48;           /* 4.82:1 on --green-soft (was #138a52, 3.93:1) */
   --green-soft: #e6f6ee;
   --red: #c8372d;
@@ -43,7 +43,7 @@
   --sidebar-w: 248px;
   --font: "Inter", "Inter Fallback", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
 
-  /* Type ladder — sizes by role (product: 2 weights, sentence case, tabular numbers) */
+  /* Type ladder — sizes by role (product: 2 weights, tabular numbers; capitals on the sidebar group label only) */
   --size-figure: 1.5rem;     /* 24px  headline figures (data, not a tier) */
   --size-heading: 1rem;      /* 16px  section headings, chart-stat figures, wordmark */
   --size-body: 0.875rem;     /* 14px  body, feed copy */
@@ -80,7 +80,7 @@
     --accent: #8282ff;
     --accent-ink: #a5a5ff;
     --accent-soft: rgba(130, 130, 255, 0.14);
-    --selected: rgba(130, 130, 255, 0.22);
+    --selected: rgba(130, 130, 255, 0.14); /* ink 7.16:1 over the sidebar */
     --green: #3ccf8e;
     --green-soft: rgba(60, 207, 142, 0.12);
     --red: #ff7a6e;
@@ -242,13 +242,15 @@ button { cursor: pointer; }
 
 .nav { display: flex; flex-direction: column; gap: 4px; }
 
+/* Group label: the capitals the project already set, tracked; parted from its rows by case and the space above, no rule */
 .nav-label {
   margin: 10px 10px 4px;
-  padding-bottom: 4px;
   font-size: var(--size-small);
+  font-weight: var(--weight-strong);
   line-height: 1.3;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
   color: var(--text-3);
-  border-bottom: 1px solid var(--border);
 }
 
 .nav ul { display: flex; flex-direction: column; gap: 2px; }

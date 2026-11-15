@@ -61,7 +61,7 @@ Don't pad to five. Don't list what's fine as a problem to fix. No scores and no 
    - grouping, and whether a box should exist at all;
    - one style per kind of thing (one table style, one chip shape);
    - states: empty, loading, error, long text and none (patterns laws 9, 15, 16);
-   - whether the copy keeps one voice (patterns law 18);
+   - whether the copy keeps one voice (patterns law 23);
    - whether the page looks designed for its reader or assembled from a template.
 
    Add each as a finding in `findings.json` (format in `system/reports.md`): `kind: "audit"`, the domain, a rule id of your own (`layout/hierarchy`, `states/empty-missing`, `slop/template-feel`), the law, the page, and a `shot` and `box` when you can point at it. Where a UX law explains why the reader feels it, name it in `detail` (`commands/ux-laws.md`).
@@ -96,6 +96,6 @@ Don't pad to five. Don't list what's fine as a problem to fix. No scores and no 
 - the worst five findings, one line each with evidence and law;
 - the path to (or link for) the report.
 
-## Next steps
+**No `DESIGN.md` yet** (stage 1 of the flow in `SKILL.md`): audit from the code. Both targets run as written. Choose the preset the reader points to (`system/presets.md`) and say which you assumed and why. The detector has no preset to read, so its preset rules fall back to their neutral verdicts; judge those findings, and score the dials, against the preset you assumed. Skip the write-back steps: there's no file yet, and `init` records these findings as its open issues.
 
-End with the question **Ask before you stop** in `SKILL.md` describes. The usual next steps for one screen: make the top change with the command it names, take the next screen, or widen to the whole product. For the whole product: `/keyline polish --from keyline-report` to fix what's open a domain at a time, start with the lowest-scoring domain, or publish the report.
+**Next** (format in `SKILL.md`, `## The flow`): with no `DESIGN.md`, `init`, so the findings are kept and the fixes land in the project's names. With one, for one screen, the command the top change names, on that screen, or `polish` when the changes span two or more domains; for the whole product, `polish --from keyline-report` on the screen with the most findings, or the lowest-scoring domain's own command when that domain holds most of them.

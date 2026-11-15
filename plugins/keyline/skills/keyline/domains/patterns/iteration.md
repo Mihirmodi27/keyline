@@ -22,7 +22,8 @@ A change to a shared rule — a role's size, a weight, a colour job, a spacing s
 1. **Find every use.** Grep the token, the class, the component and any raw value that should have been the token (`text-sm` where the role was meant). Raw values are where partial updates hide.
 2. **Migrate raw values to the role** while you're there, so the next change is one edit.
 3. **Walk every route** in the preview harness, light and dark, at a phone and a desktop width.
-4. **Report what moved**, one line each, and what you deliberately left:
+4. **Inventory after every visual round**: per route, list the font variants, paddings and radii in use. An element that missed the round — the one card still at the old radius — is a bug to fix before reporting.
+5. **Report what moved**, one line each, and what you deliberately left:
 
 ```
 Card title weight 600 → 500 (role `type.card-title`):
@@ -31,7 +32,7 @@ Card title weight 600 → 500 (role `type.card-title`):
 - Dashboard figures: left at 600 — figures aren't titles (say if you want them lighter)
 ```
 
-5. **Ask before calling a page done.** Pages the owner has said are theirs are left alone, even when the sweep would touch them; list them in the report instead.
+6. **Ask before calling a page done.** Pages the owner has said are theirs are left alone, even when the sweep would touch them; list them in the report instead.
 
 ## The decision log
 
@@ -57,6 +58,8 @@ Then apply the structure in the project's own tokens. Copying the look imports a
 
 A new page type — a dashboard, a settings area, a board — starts as a wireframe: boxes and words, no colour, shareable as a link or an image. It settles what's on the page and in what order, which is the expensive argument, before any styling makes it costly to change. Keep the wireframe beside the build until the page ships.
 
+**A structural choice is shown, not made.** Where the layout could go two or three ways, render the concepts side by side and ask which; never pick one silently. An ambiguous request gets clarifying questions, each with its options and a recommendation.
+
 ## The preview harness
 
 The real app, on mock data, with every route reachable and no backend:
@@ -66,5 +69,6 @@ The real app, on mock data, with every route reachable and no backend:
 - **A route index**: one page listing every route and state, so a sweep can visit all of them in order.
 - **Typed against the real models**, so the harness breaks at build time when the data shape changes rather than drifting quietly.
 - **Signed in by default** with a demo identity, and sign-out returning to the sign-in screen, so the auth screens are reviewable too.
+- **An "act as another role" switch**, so a hand-off can be followed from both sides (law 18). It is a prototype-only tool, never a shipped feature.
 
 With it, a whole-product sweep or a rendered audit (the type guide, the layout guide) takes minutes instead of needing a staging account and real data.

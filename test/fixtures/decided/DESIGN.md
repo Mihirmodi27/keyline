@@ -7,6 +7,12 @@
 | Product | A fixture |
 | Preset | `product` |
 
+## Type
+
+| Role | Name here | Size | Tracking |
+|---|---|---|---|
+| `type.label` | `text-xs` | 12px | 0, sentence case |
+
 ## Layout
 
 | Role | Name here | Value |

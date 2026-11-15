@@ -21,13 +21,26 @@ A **solid** fill — a destructive button — can often reuse the foreground: in
 
 In `DESIGN.md`: `status.danger.fg` and `status.danger.bg`, one row each, per theme.
 
+### One status marker, chosen per product
+
+A state shows through one marker style across the product, recorded in `DESIGN.md` `## Colour` as `status.marker`. A state column never shows a bare status word.
+
+| Marker | Built from | Choose it when |
+|---|---|---|
+| Soft pill | `status.*.bg` fill, a deeper edge of its own hue, `status.*.fg` ink | Many per screen: a table's state column, a list |
+| Solid pill | `status.*.solid` with its on-solid text | Few, each of which must stand alone |
+| Bold coloured text | `status.*.fg` at `weight.strong`, no fill | A second state in a row that already carries a marker |
+| Glyph and word | The shape glyph (below) in `status.*.fg`, the word in ink | Boards and grouped lists, where the group already says much of it |
+
+A solid accent "your turn" pill is the view's one accent action (colour law 7), so a button beside it goes neutral.
+
 ### Destructive actions take red ground, not red decoration
 
 In a menu, a destructive item is a `status.danger.bg` row at rest and `status.danger.solid` with white text when highlighted. A red icon and red label on a neutral row is decoration, the coloured paragraph again, and reads as a one-off. Its icon, place and the items that take it are patterns law 3.
 
 ## Figures take colour only while they report
 
-A count or stat is in ink unless it reports a problem or progress: overdue or failed in `status.danger.fg`, pending or due soon in `status.warning.fg`, done or logged in `status.success.fg` where the preset colours done. Plain counts stay in ink, and so does every zero; "0 overdue" in red is an alarm with nothing behind it. The label beside the figure always names what it counts, so the colour confirms a word rather than replacing one. One colour per figure: a chip beside it that would compete goes neutral.
+A count or stat is in ink unless it reports a problem or progress: overdue or failed in `status.danger.fg`, pending or due soon in `status.warning.fg`, done or logged in `status.success.fg` where the preset colours done. Plain counts stay in ink (except counts in navigation, which take `accent.ink`, colour law 7), and so does every zero; "0 overdue" in red is an alarm with nothing behind it. The label beside the figure always names what it counts, so the colour confirms a word rather than replacing one. One colour per figure: a chip beside it that would compete goes neutral.
 
 ## Deriving the four
 
@@ -96,7 +109,7 @@ Law 7's dial, decided by whether completion is the news:
 |---|---|---|
 | A sequence the reader passes through: setup steps, passed checks, a wizard | An ink check on a neutral circle | Completion is expected; the pending item is the only news, and a column of green ticks outshouts it |
 | Work people open to see what got done: a task board, a review queue | `status.success` on a filled check | Completion is what they track. The glyph's shape already says done, and late or failed items take warning or danger, so the eye still finds what needs a person |
-| A long list of ticked checkboxes | A light grey box with an ink tick | An inverted ink or accent block per tick shouts down a long list; the tick's shape carries the state |
+| Any repeated checkbox: table selection, a list, a settings page | A light grey box with an ink tick | An inverted ink or accent block per tick shouts down the screen; the tick's shape carries the state. A brand-filled box is only for a single standalone consent |
 | A switch | Its strong fill, on | A switch has no tick, so the fill is the state |
 
 The second row reverses the first on purpose. Record which lists take which row under `## Decisions`, so the next audit doesn't "fix" one into the other. Under `expressive`, completion may take a brand colour in any row, counted among its exceptions.
@@ -111,8 +124,8 @@ Where the reader sorts by kind, place or person at a glance, each question gets 
 |---|---|---|---|
 | What is it? | `exception.type.<name>`, one per record type | Its icon, its tag, its chart bar | Text, a state, a whole row |
 | How is it doing? | `status.*` | Its glyph, a figure (above), a field's edge, a banner's tint | A kind, a place, anything merely live |
-| Where does it live? | `exception.area.<name>`, one per folder or area | Nav icon, breadcrumb step, page-title icon | Text, a state |
-| Who? | `exception.person.<n>`, a fixed set assigned from the person's id | Avatars only, coloured rather than grey circles | Names, rows |
+| Where does it live? | `exception.area.<name>`, one per folder, area or project, picked from the record's id | Nav icon, breadcrumb step, page-title icon | Text, a state |
+| Who? | `exception.person.<n>`, a fixed set assigned from the person's id, available in every preset | Avatars only; an avatar is never white or grey | Names, rows |
 
 - **Marks only.** The family colours the glyph; the words beside it stay in ink.
 - **No crossing.** A late task's type icon keeps its hue; the status glyph beside it turns. Where a family hue falls near a status hue or the accent, move its lightness or chroma until it can't be read as one, and never reuse a status value.
@@ -147,11 +160,11 @@ A recording or live state borrows nothing from `status.danger`: a red-filled rec
 
 ### One gradient, for AI working now
 
-If a product has one gradient, it means one thing. A thin conic stroke in the accent's hues travels round the card where AI is working live, with a soft glow; everything else stays flat. Paused, the stroke stops and the glow dims; under reduced motion it holds still; under `prefers-contrast: more` it becomes a solid accent edge. Its stops are runtime values, every one moved per theme (laws 8 and 10). Name it `exception.ai-live`.
+If a product has one gradient, it means one thing. A thin conic stroke in the accent's hues travels round the card where AI is working live, with a soft glow. It sits on top of the agent's resting material (the depth guide's Agent material dial) while the work runs and leaves when it ends; beyond the depth dials colour law 7 names, nothing else takes a gradient. Paused, the stroke stops and the glow dims; under reduced motion it holds still; under `prefers-contrast: more` it becomes a solid accent edge. Its stops are runtime values, every one moved per theme (laws 8 and 10). Name it `exception.ai-live`.
 
 ### Marking AI output
 
-A small sparkle glyph in the accent beside what the AI wrote: not a robot avatar, not a coloured bubble. A bubble colours the content, which the reader judges in ink like any other, and an avatar gives a tool a face. Only the mark takes the colour, and a mark, never a fill, doesn't compete with the one action the accent marks.
+A small sparkle glyph in the accent beside what the AI wrote: not a robot avatar, not a coloured bubble. A bubble colours the content, which the reader judges in ink like any other, and an avatar gives a tool a face. Only the mark takes the colour, and a mark, never a fill, doesn't compete with the one action the accent marks. It appears once per AI-made block and only there: never on chrome or controls, and never inside a surface already wearing the agent material, which says it already (patterns law 5).
 
 ### When the brand hue is also a status hue
 
@@ -168,7 +181,10 @@ Categorical series colours are neither status nor exception and need their own m
 | Series | Colour |
 |---|---|
 | One primary series | `accent` — it is what the screen is about, so the brand stays on it |
-| Comparison, previous period, target | Neutral: `mark` or a text tier, dashed or thinner where it shares an axis with the primary |
+| Comparison, previous period, target | Neutral: a near-surface grey, never a text tier; dashed or thinner where it shares an axis with the primary |
+| A sequential fill (a heatmap, a density) | One hue, light to deep |
 | Three or more of equal standing | `chart.series.<n>`, an ordered set, below |
 
 The ordered set: start from the accent hue and step round, each hue at least ~40° from the status hues, alternating lightness so neighbours still part in greyscale and colour-vision deficiency. Every series clears 3:1 on the chart's surface in each theme, re-picked per theme like any accent. Past six or seven, group the tail as "Other" in a neutral; a legend nobody can match isn't a palette. Record the set in `DESIGN.md` `## Colour` with its order.
+
+A glow or radial fill keeps the surface colour at its centre, never a grey midpoint. A bar is at least as wide as the gap to the next.

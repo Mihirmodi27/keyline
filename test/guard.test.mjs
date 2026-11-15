@@ -116,7 +116,7 @@ test("project-wide signals are read from the whole project, not just the edited 
 });
 
 test("the nearest DESIGN.md above the file sets the verdicts", () => {
-  const root = project({ "apps/web/DESIGN.md": "## Profile\n\n| | |\n|---|---|\n| Preset | `product` |\n", "apps/web/src/a.css": ".a { text-transform: uppercase; }\n" });
+  const root = project({ "apps/web/DESIGN.md": "## Profile\n\n| | |\n|---|---|\n| Preset | `product` |\n\n## Type\n\n| Role | Name here | Size | Tracking |\n|---|---|---|---|\n| `type.label` | `text-xs` | 12px | 0, sentence case |\n", "apps/web/src/a.css": ".a { text-transform: uppercase; }\n" });
   const text = JSON.parse(hook(root, "apps/web/src/a.css").stdout).hookSpecificOutput.additionalContext;
   assert.match(text, /preset product, from DESIGN\.md/);
   assert.match(text, /src\/a\.css:1 warning type\/uppercase/);

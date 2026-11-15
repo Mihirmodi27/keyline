@@ -56,7 +56,7 @@ Body 14px, chrome at 13. UI and data roles dominate; two weights, with strong at
 | `type.data` | 13 | 1 | 0 | regular; totals strong | `text.primary` | tabular figures |
 | `type.label` | 12 | 1.3 | 0 | regular; strong as a field label | `text.secondary` | tier |
 | `type.meta` | 12 | 1.4 | 0 | regular | `text.tertiary` | tier |
-| group label (project role under `type.label`) | 12 | 1.3 | 0, sentence case | regular | `text.tertiary` | a hairline rule beneath |
+| group label (project role under `type.label`) | 12 | 1.3 | 0 in sentence case; +0.06em in capitals | regular; strong in capitals | `text.tertiary` | tier or case, and the space above; no rule |
 | `type.code` | 12.5 | 1.5 | 0 | regular, mono | `text.secondary` | family |
 
 Five sizes plus code; ceiling 20 ÷ 14 = 1.43, and the dial allows up to 22 if a dashboard title needs it. The 12.5 compensates for a family rather than serving a role: monospace runs wide and steps down to fill the same measure. The row applies wherever literal code appears; paths, URLs, IDs, hostnames and times stay in the text face, tabular with a slashed zero, unless they are code the reader will type.
@@ -106,7 +106,7 @@ body { font: var(--weight-regular) var(--text-body)/1.5 var(--font-sans); font-s
 .data, td, time, .figure, .count { font-variant-numeric: tabular-nums; }  /* product: every numeric element, not the root */
 ```
 
-`type.subheading` shares the body size and separates on weight; `type.label` and the group label share the meta size and separate on tier and the group label's rule; `type.data` has no size of its own. The marketing area adds a derived `type.display` and a larger ladder, while `type.ui` and `type.meta` stay identical across the boundary (law 2).
+`type.subheading` shares the body size and separates on weight; `type.label` and the group label share the meta size and separate on tier, or on case where the group label is in capitals; `type.data` has no size of its own. The marketing area adds a derived `type.display` and a larger ladder, while `type.ui` and `type.meta` stay identical across the boundary (law 2).
 
 Its display tier is the neutral-grotesque derivation in `display-tier.md` — 960 ÷ (20 × 0.52) and 343 ÷ (14 × 0.52), between 375px and 1280px viewports: 47 → 92px at 1.0 leading and −0.035em. Against a 28–40px expressive `type.title`, it stays above 1.5× at both ends.
 

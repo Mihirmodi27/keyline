@@ -14,6 +14,7 @@ For every animation, ask what it communicates, then find the cheapest thing that
 | Reveal-on-scroll | Off; content in its final visible state | The animation is the whole effect |
 | Route fade, ambient loop | Off | Ditto |
 | Live-state loop (level bars, a travelling stroke) | Held still on a representative frame | Shape and colour already say "live"; the movement only restates it |
+| Finite loop on the item waiting on the reader | A static halo | The halo still says "this one is yours"; only the pulse goes |
 | Hover lift whose motion is the whole interaction | No hover variant at all | Static is correct |
 | Theme cross-fade | Instant | Whole-viewport interpolation |
 | Programmatic smooth scroll | `behavior: "auto"` | Whole-viewport motion is among the strongest triggers |
@@ -145,6 +146,8 @@ Decide before the first pixel, in a blocking inline script in the document head:
   })();
 </script>
 ```
+
+A set piece recorded as once ever reads and writes `localStorage` in place of `sessionStorage`, under the same `try/catch`.
 
 The component only *ends* it — flips the attribute — and records "seen" in its completion callback; recording on start lands in the same render as the play and cancels the animation it records. Write "seen" under reduced motion too, so the reader's next tab doesn't surprise them.
 
