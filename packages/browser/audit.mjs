@@ -25,6 +25,7 @@ import { walk } from "./browse/walk.mjs";
 import { parseOrExplain } from "./browse/args.mjs";
 import { target } from "./browse.mjs";
 import { auditProbe } from "./audit/probe.mjs";
+import { strayPages } from "./audit/siblings.mjs";
 import { check } from "trykeyline/check";
 import { DOMAINS } from "trykeyline/check/rules";
 import { readDesign } from "trykeyline/check/design";
@@ -194,6 +195,7 @@ export async function run(argv) {
 
   try {
     const signatures = new Map();
+    const looks = new Map();
     const result = await walk({
       kind: "audit",
       title: opts.title ?? null,
@@ -214,6 +216,7 @@ export async function run(argv) {
         const raw = v.results.audit;
         // A page without a dark theme renders the same colours in the dark pass; skip its repeats.
         const meta = Array.isArray(raw) ? raw.find((f) => f.meta) : null;
+        if (meta?.look) looks.set(v.route, meta.look);
         if (meta) {
           const key = `${v.route}|${v.viewport}`;
           if (v.theme === "light") signatures.set(key, meta.signature);
@@ -239,6 +242,9 @@ export async function run(argv) {
 
     if (!opts["no-check"] && t.root && existsSync(t.root)) sourceFindings(result, t.root);
     placePages(result, t.root);
+    // Each page beside its siblings: measured on the first pass, compared once every page is placed in its area.
+    for (const p of result.pages) if (looks.has(p.route)) p.look = looks.get(p.route);
+    strayPages(result, add);
     // Decisions first: what the user has decided is deliberate doesn't count against a score.
     remember(result, t.root ?? process.cwd());
     result.scores = draftScores(result.findings);

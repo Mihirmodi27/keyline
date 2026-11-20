@@ -72,7 +72,7 @@ Form submits and anything that says delete, pay, buy, unsubscribe or log out run
 
 ## The audit report
 
-`/keyline audit` walks the running product in a browser: every page Keyline can find (router files, sitemap, a crawl), at desktop and phone width, in light and dark. It measures what a reader meets — text contrast against what's really behind it, controls with no name, tap targets too small, sideways scroll, text cut off, the type actually rendered, copy left half-done, and the tells of AI slop (stock phrases, purple gradients, gradient headlines, emoji bullets, a card around everything) — adds the detector's findings from the source, and your agent adds what only judgement sees. Everything lands in one report:
+`/keyline audit` walks the running product in a browser: every page Keyline can find (router files, sitemap, a crawl), at desktop and phone width, in light and dark. It measures what a reader meets — text contrast against what's really behind it, controls with no name, tap targets too small, sideways scroll, text cut off, the type actually rendered, copy left half-done, and the tells of AI slop (stock phrases, purple gradients, gradient headlines, emoji bullets, a card around everything). It also compares each page with its siblings — the other pages in its section, in the same area of `DESIGN.md` — and notes the one that uses sizes, colours, corners or spacing none of them do. It adds the detector's findings from the source, and your agent adds what only judgement sees. Everything lands in one report:
 
 ```
 keyline-report/

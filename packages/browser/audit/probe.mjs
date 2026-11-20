@@ -22,7 +22,8 @@ export function auditProbe({ viewport, theme, firstPass, limit = 12 }) {
   const vw = document.documentElement.clientWidth || window.innerWidth;
   // What the theme actually changed: a page with no dark theme renders the same colours in both passes.
   const bodyCs = getComputedStyle(document.body);
-  out.push({ meta: true, signature: `${getComputedStyle(document.documentElement).backgroundColor}|${bodyCs.backgroundColor}|${bodyCs.color}` });
+  const meta = { meta: true, signature: `${getComputedStyle(document.documentElement).backgroundColor}|${bodyCs.backgroundColor}|${bodyCs.color}` };
+  out.push(meta);
 
   const visible = (el) => {
     if (!(el instanceof Element)) return false;
@@ -305,6 +306,54 @@ export function auditProbe({ viewport, theme, firstPass, limit = 12 }) {
         break;
       }
     }
+
+    /* ── The page's look, for comparing it with its sibling pages (audit/siblings.mjs) ──
+       Each value with how many elements use it, and where the first one is, so a stray can be shown. */
+    const look = { families: {}, sizes: {}, weights: {}, colors: {}, surfaces: {}, radii: {}, gaps: {}, pads: {}, h1: null, measure: null, at: {} };
+    const note = (dim, key, el) => {
+      look[dim][key] = (look[dim][key] ?? 0) + 1;
+      if (!look.at[`${dim}|${key}`]) look.at[`${dim}|${key}`] = { selector: sel(el), box: box(el) };
+    };
+    const colorKey = (str) => {
+      const [r, g, b, a] = rgba(str);
+      return a >= 0.995 ? `rgb(${r}, ${g}, ${b})` : `rgba(${r}, ${g}, ${b}, ${Math.round(a * 100) / 100})`;
+    };
+    const px = (v) => Math.round(parseFloat(v) || 0);
+    // Code is content with a palette of its own (syntax colours, a mono face): not the page's look.
+    for (const el of textEls) {
+      if (el.closest("pre, code, kbd, samp")) continue;
+      const cs = getComputedStyle(el);
+      note("families", cs.fontFamily.split(",")[0].replace(/["']/g, "").trim(), el);
+      note("sizes", `${Math.round(parseFloat(cs.fontSize) * 2) / 2}px`, el);
+      note("weights", String(Number(cs.fontWeight) || 400), el);
+      note("colors", colorKey(cs.color), el);
+    }
+    const h1 = [...document.querySelectorAll("h1")].find(visible);
+    if (h1) {
+      const cs = getComputedStyle(h1);
+      look.h1 = `${Math.round(parseFloat(cs.fontSize))}px ${Number(cs.fontWeight) || 400} ${cs.fontFamily.split(",")[0].replace(/["']/g, "").trim()}`;
+      look.at["h1"] = { selector: sel(h1), box: box(h1) };
+    }
+    const widths = [...document.querySelectorAll("p")].filter((el) => visible(el) && el.textContent.trim().length > 80).map((el) => Math.round(el.getBoundingClientRect().width)).sort((a, b) => a - b);
+    if (widths.length) look.measure = widths[Math.floor(widths.length / 2)];
+    let seen = 0;
+    for (const el of document.body.querySelectorAll("*")) {
+      if (seen++ > 4000) break;
+      if (["SCRIPT", "STYLE", "SVG", "PATH", "IMG", "VIDEO", "CANVAS", "IFRAME"].includes(el.tagName.toUpperCase()) || el.closest('[role="img"], svg') || !visible(el)) continue;
+      const cs = getComputedStyle(el);
+      const r = el.getBoundingClientRect();
+      if ((cs.display === "flex" || cs.display === "grid" || cs.display === "inline-flex" || cs.display === "inline-grid") && el.children.length > 1) {
+        for (const g of new Set([cs.rowGap, cs.columnGap])) if (px(g) > 0) note("gaps", `${px(g)}px`, el);
+      }
+      const bg = rgba(cs.backgroundColor);
+      const edged = parseFloat(cs.borderTopWidth) > 0 || cs.boxShadow !== "none";
+      if (r.width < 40 || r.height < 24 || (bg[3] === 0 && !edged)) continue;
+      // A box: something with its own fill or edge. Its fill, its corner and its inset are the look.
+      if (bg[3] > 0 && el !== document.body && el !== document.documentElement) note("surfaces", colorKey(cs.backgroundColor), el);
+      if (px(cs.borderTopLeftRadius) > 0) note("radii", `${px(cs.borderTopLeftRadius)}px`, el);
+      for (const v of new Set([px(cs.paddingTop), px(cs.paddingLeft)])) if (v > 0) note("pads", `${v}px`, el);
+    }
+    meta.look = look;
 
     /* ── Copy: words that read as unfinished, cute or vague ── */
     // Copy is read from the page minus its illustrations.

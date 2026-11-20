@@ -79,6 +79,8 @@ Don't pad to five. Don't list what's fine as a problem to fix. No HTML report fo
 
 **Areas.** When `## Profile` lists areas, judge each page by its own: the runner writes each page's `preset` (and `area`) into `findings.json`, from its source file or its route. A marketing page on `expressive` is held to that preset's dials, not the product's.
 
+**Pages beside their siblings.** The runner records each page's look as rendered (fonts, sizes, weights and the h1; text and surface colours; corners, gaps, insets and the reading width) and compares it with its siblings: the pages in the same area and the same section (`/docs/*`), or, for a top-level page, the other top-level pages. The home page is compared with nothing. A value a page uses again and again that none of its siblings use comes back as `type/stray-page`, `color/stray-page` or `layout/stray-page`, a note with the stray values and the siblings named. Look at the page beside one sibling before judging: a stray that's a mistake goes to the domain's command; a page that is a different kind of thing (a pricing table among articles) is the user's call, and if they say so it becomes an area in `DESIGN.md` or a kept decision, never a fix.
+
 **Steps:**
 
 1. **Find the target** as `system/reports.md` says: the URL the user named, the dev server already running, or the project's own dev script started in the background. A static build is served with `--serve <dir>`. Without anything to render, say the audit is from code alone and skip to step 3.
