@@ -1,8 +1,8 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "keyline",
-  "version": "0.3.0",
-  "description": "Interface design laws for coding agents. /keyline init reads your codebase and writes a DESIGN.md in your own token names; audit, smoke, type, color, layout, depth, motion, patterns and polish work through it, with dials set by a preset for your reader (editorial, product or expressive), or the exact Glass system from modimihir.com. Audit scores a screen out of 10; polish works in rounds until it reaches 8. A live guard checks each UI file Claude edits and hands what it finds straight back.",
+  "version": "0.4.0",
+  "description": "Keyline keeps your coding agent's UI in your design system, and proves every change in a real browser before it ships. /keyline init reads your codebase and writes a DESIGN.md in your own token names, with a preset for your reader (editorial, product or expressive), set per area of the product, or the exact Glass system from modimihir.com; audit, smoke, type, color, layout, depth, motion, patterns and polish work through it. Audit scores a screen out of 10; polish works in rounds until it reaches 8. A live guard checks each UI file Claude edits, and npx trykeyline keep records what you decided is deliberate, so nothing raises it again.",
   "author": {
     "name": "Mihir Modi",
     "url": "https://modimihir.com"

@@ -5,14 +5,14 @@
     "url": "https://github.com/Mihirmodi27"
   },
   "metadata": {
-    "description": "Keyline: interface design laws for coding agents, applied in your project's own tokens.",
-    "version": "0.3.0"
+    "description": "Keyline keeps your coding agent's UI in your design system, and proves every change in a real browser before it ships.",
+    "version": "0.4.0"
   },
   "plugins": [
     {
       "name": "keyline",
       "source": "./plugins/keyline",
-      "description": "One skill with eleven commands — init, sync, audit, smoke, type, color, layout, depth, motion, patterns, polish — that applies one set of interface laws through a DESIGN.md written in your project's own names."
+      "description": "One skill with eleven commands — init, sync, audit, smoke, type, color, layout, depth, motion, patterns, polish — that keeps your agent's UI in your design system through a DESIGN.md written in your project's own names, and proves each change in a real browser."
     }
   ]
 }
