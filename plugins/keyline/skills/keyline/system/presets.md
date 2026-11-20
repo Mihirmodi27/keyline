@@ -17,7 +17,8 @@ Ask what the reader is doing.
 | Reading — articles, docs, a portfolio, a changelog, anything where the text is the product | `editorial` |
 | Working — scanning, comparing, entering data, coming back every day | `product` |
 | Being persuaded — landing pages, launches, campaigns, a brand site seen once | `expressive` |
-| Wanting modimihir.com's exact system, values and components included | `glass` |
+
+**Glass stands apart from the three.** It isn't a reader type. It's one finished system, modimihir.com's, with its values and components included. Whenever presets are shown to the user, in a question, a list or a report, show the three reader presets together as the choice. Put Glass after them on its own line, never as a fourth option among them: *"Or `glass`: modimihir.com's exact system, values and components included."* See `## glass` below.
 
 Mixed projects are normal. A SaaS app with a marketing site and docs is `product` with two areas overridden: the marketing routes `expressive`, the docs `editorial`. Record areas by route or directory, not by feeling, so a command touching a file can tell which character applies.
 
@@ -53,7 +54,7 @@ When the evidence doesn't settle it, propose one, say what evidence you used, an
 - **Surfaces** — depth, gradients and translucency as brand material, each with its fallback.
 - **Motion** — longer and more characterful on entrances; exits still get out of the way.
 
-## `glass`
+## `glass`: a finished system, apart from the three
 
 The Glass preset's exact values: `editorial` in character, with every dial already decided on [modimihir.com](https://modimihir.com). Offer it only when the user wants that system itself rather than their own — `/keyline init` copies its values from the tables in each `glass/<domain>/guide.md` into `DESIGN.md`, in the project's own names wherever the project already has names, and each guide supplies the exact recipes, with drop-in token files and components under its `assets/`.
 

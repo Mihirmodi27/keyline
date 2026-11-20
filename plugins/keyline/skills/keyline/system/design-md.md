@@ -32,7 +32,7 @@ Copy this shape. Drop any table or row that doesn't apply; add project roles und
 |---|---|
 | Product | One line: what it is and who it's for |
 | Reader | What the reader is mostly doing — reading, working, or being persuaded |
-| Preset | `editorial` · `product` · `expressive` · `glass` |
+| Preset | `editorial` · `product` · `expressive`, or `glass` (modimihir.com's exact system) |
 | Areas | Routes or directories on a different preset, e.g. `app/(marketing)/** → expressive` |
 | Stack | Framework, styling approach, component library |
 | Tokens live in | Paths, e.g. `src/styles/tokens.css`, `tailwind.config.ts` |

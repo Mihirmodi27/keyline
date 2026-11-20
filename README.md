@@ -205,7 +205,10 @@ The laws hold everywhere. A preset sets the dials — how far the type scale cli
 | `editorial` | Reading: articles, docs, portfolios, changelogs |
 | `product` | Working: dashboards, tools, anything used daily |
 | `expressive` | Being persuaded: landing pages, launches, campaigns |
-| `glass` | Getting [modimihir.com](https://modimihir.com)'s exact system, with drop-in tokens and components |
+
+### Glass
+
+`glass` isn't a reader type. It's one finished system: [modimihir.com](https://modimihir.com)'s exact values, with drop-in tokens and components. Pick it when you want that system itself rather than your own. It reads as `editorial`, with every dial already decided.
 
 Mixed projects are normal: `product`, with the marketing routes on `expressive`. Any dial can be moved, and the move is recorded in `DESIGN.md` with its reason.
 

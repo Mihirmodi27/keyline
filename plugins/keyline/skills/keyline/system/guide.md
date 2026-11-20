@@ -46,7 +46,7 @@ node <keyline>/scripts/contrast.mjs --ladder "#ffffff" "#16161a" "#4b4b52" "#6b6
 
 ## 3. Choose the preset
 
-From what the reader is mostly doing — reading, working, or being persuaded — propose `editorial`, `product` or `expressive` (`presets.md`). Offer `glass` only when the user wants modimihir.com's exact system rather than their own; it fills the dials from the tables in each `glass/<domain>/guide.md`, under the project's existing names wherever it has them.
+From what the reader is mostly doing — reading, working, or being persuaded — propose `editorial`, `product` or `expressive` (`presets.md`). Offer `glass` only when the user wants modimihir.com's exact system rather than their own, and always apart from the three (`presets.md`, **Glass stands apart from the three**). It fills the dials from the tables in each `glass/<domain>/guide.md`, under the project's existing names wherever it has them.
 
 State the evidence: *"Mostly long-form pages under `app/blog`, two weights in use, one accent — this reads as `editorial`."* Mixed projects get a base preset plus areas: `product`, with `app/(marketing)/** → expressive`.
 
@@ -56,7 +56,7 @@ Code that contradicts the preset — a `product` codebase with five weights — 
 
 At most four questions, each with your recommendation first:
 
-1. **The preset**, if the evidence doesn't settle it or you're proposing something the codebase doesn't yet look like.
+1. **The preset**, if the evidence doesn't settle it or you're proposing something the codebase doesn't yet look like. The options are `editorial`, `product` and `expressive`, your recommendation first. Glass is a separate line after the question, not a fourth option: *"Or `glass`: modimihir.com's exact system."*
 2. **Themes**, if only one exists: is a second planned? It changes how tokens should be structured now.
 3. **Couplings**, where splitting one changes what users see — "captions and borders share `gray-500`; split them?"
 4. **Names**, only when proposing several at once and the project's style is ambiguous.
