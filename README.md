@@ -139,7 +139,7 @@ In CI, or on just what a branch changed:
 
 `/keyline init` fills it from the code: the button is the one forty screens import, whatever it's called. From then on the agent reaches for the listed component before writing a new one, and the detector catches it when it doesn't:
 
-- **A copy under a new name.** A component whose style values mostly match another's (`CtaButton` built like `Button`: 9 of 10 the same) is pointed back at the original. It compares Tailwind classes as written and, for plain CSS, the declarations a class gets, so `.cta` and `.btn` with the same rules are the same look. This works with no table too; the table says which of a pair is the original.
+- **A copy under a new name.** A component whose style values mostly match another's (`CtaButton` built like `Button`: 9 of 10 the same) is pointed back at the original. It compares Tailwind classes as written and, for plain CSS, the declarations a class gets, so `.cta` and `.btn` with the same rules are the same look. This works with no table too, flagging both of a pair, each naming the other; with the table, only the copy is flagged, pointed at the listed one.
 - **A job done by hand.** A `<button>`, `<input>`, `<select>`, `<dialog>` or `<table>` (or a `role="dialog"`, `"switch"`, `"menu"`…) styled from scratch where the table gives that job to a component. The component library's own files, and the `ui/` folder it sits in, are left alone.
 
 Both are reported as info, so they don't lower the score, and the live guard hands them to the agent the moment it writes the copy, naming the component to use. Pages and layouts aren't compared; whether a new page belongs beside its siblings is the audit's job.
