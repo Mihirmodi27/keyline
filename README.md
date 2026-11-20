@@ -1,8 +1,17 @@
 # Keyline
 
-Interface design laws for coding agents.
+Keyline keeps your coding agent's UI in your design system, and proves every change in a real browser before it ships.
 
-Keyline reads your codebase once and writes a `DESIGN.md` that maps your own token names onto its roles and picks a preset for your reader. From then on your agent audits and fixes type, colour, layout, depth, motion and product patterns through that file: the same laws on every project, your values on yours.
+Keyline reads your codebase once and writes a `DESIGN.md` that maps your own token names onto its roles and picks a preset for your reader. From then on your agent audits and fixes type, colour, layout, depth, motion and product patterns through that file: the same laws on every project, your values on yours. Keyline brings no look of its own.
+
+Then it checks the result the way a designer and a tester would:
+
+- **It clicks through your running app.** Every link and button from a fresh load, every form submitted empty, wrong and right, Back, Escape and reload, and each break comes with the steps to reproduce it. `npx trykeyline smoke`
+- **It sees every page at desktop and phone, in light and dark.** Contrast measured against what's really behind the text, controls with no name, text cut off, sideways scroll and the tells of AI slop, scored in one HTML report. `npx trykeyline audit`
+- **It fails a pull request only on what the change made worse.** Commit a baseline, and old findings stop blocking new work. `npx trykeyline check --baseline`
+- **It walks every preview deploy** and marks what's new, fixed or back since the last one, and diffs the screenshots. `npx trykeyline capture`, then `npx trykeyline report --compare`
+
+None of the four needs the skill. They run on whatever your agent wrote, through Keyline's commands or another design skill's.
 
 ```sh
 npx trykeyline install
