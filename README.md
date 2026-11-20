@@ -122,6 +122,25 @@ In CI, or on just what a branch changed:
 - run: npx trykeyline check --changed origin/main
 ```
 
+## Decisions it remembers
+
+A review that raises the same thing every time stops being read. When you decide a finding is deliberate, record it once, and nothing raises it again: not the detector, not the guard while the agent writes, not the audit, not polish, not a teammate's run or CI.
+
+```sh
+npx trykeyline keep src/cta.css:12 --reason "the brand red on the call to action"
+npx trykeyline keep f12 --reason "…"    # a finding in keyline-report, at every width and theme it was seen in
+npx trykeyline keep --list              # every decision, why, and who made it
+npx trykeyline keep --drop k3           # take one back: the finding is raised again
+```
+
+Each decision goes in `.keyline/decisions.json` and as one line under `## Decisions` in `DESIGN.md`, where the agent reads it before it works. Commit both, and every person, agent and CI run reads the same memory.
+
+- **It follows the code.** A decision about a source line matches the rule, file and text of the line, as the baseline does: code moving around it changes nothing, and a change to the line itself raises it again. `npx trykeyline check` names any decision that no longer matches anything, and `/keyline sync` asks what to do with it.
+- **It's never hidden.** Every report counts what decisions kept, and `check --all` and the audit report list each one with its reason and who decided.
+- **It's yours, not the agent's.** The agent records one only when you say a finding is deliberate, in your words. A kept finding stops counting against the score, so the agent never keeps one to clear something it couldn't fix. A contrast failure on text can't be kept.
+
+A `keyline-ignore <rule>: <reason>` comment is the same kind of decision written into the code, for one source line. Use whichever you'd rather read: the comment beside the line, or one list that also covers what only a browser sees.
+
 ## In pull requests
 
 Keyline can read only what a pull request changed and put its findings on the PR's lines. Add [`examples/github/keyline.yml`](examples/github/keyline.yml) as `.github/workflows/keyline.yml`, or the step on its own:

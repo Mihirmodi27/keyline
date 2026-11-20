@@ -89,6 +89,9 @@ const USAGE = `Keyline ${version} — interface design laws for coding agents.
   npx trykeyline update  [options]   refresh every copy already installed
   npx trykeyline check  [paths…]     the laws that can be checked without a model
                                      (--json, --strict, --baseline; see npx trykeyline check --help)
+  npx trykeyline keep <finding> --reason "…"
+                                     record that a finding is deliberate, so no check,
+                                     guard or report raises it again (--list, --drop)
   npx trykeyline audit --base <url>  measure every page in a browser and the code,
                                      in one report (see npx trykeyline audit --help)
   npx trykeyline smoke --base <url>  click through a running product and report
@@ -135,6 +138,11 @@ const argv = process.argv.slice(2);
 // `check` is the detector, which lives in the skill so an agent can run it without this CLI.
 if (argv[0] === "check") {
   const { run } = await import(new URL("../plugins/keyline/skills/keyline/scripts/check.mjs", import.meta.url));
+  process.exit(run(argv.slice(1)));
+}
+// `keep` records a decision the detector, the guard and the reports honour; it lives beside the detector, for the same reason.
+if (argv[0] === "keep") {
+  const { run } = await import(new URL("../plugins/keyline/skills/keyline/scripts/keep.mjs", import.meta.url));
   process.exit(run(argv.slice(1)));
 }
 // The browser tools are a second package, trykeyline-browser (see browser.mjs).

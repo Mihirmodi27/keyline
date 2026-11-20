@@ -36,6 +36,7 @@ import { BASELINE_FILE, compare, fingerprint, readBaseline, writeBaseline } from
 import { bySeverity, tally } from "./check/findings.mjs";
 import { changedFiles, repoOf, stagedFiles } from "./check/git.mjs";
 import { annotations } from "./check/github.mjs";
+import { DECISIONS_FILE, applyDecisions, readDecisions } from "./check/decisions.mjs";
 
 const USAGE = `keyline check — the interface laws that can be checked without a model.
 
@@ -235,8 +236,14 @@ function runRules(facts, design, rules) {
  * Check a project. `paths` walks folders; `only` instead names files (relative
  * to the root) and reports findings in those files alone, with verdicts that
  * still hold for the whole project.
+ *
+ * Findings a recorded decision keeps (.keyline/decisions.json, see
+ * check/decisions.mjs) come back in `kept`, not `findings`. A run over the
+ * whole project also lists the decisions nothing matched any more, in `stale`.
+ * `decisions: false` leaves them all in `findings` (the audit applies them
+ * itself, to show them). A broken decisions file throws (code EDECISIONS).
  */
-export function check({ root = ".", paths = ["."], ignores = [], rules = null, only = null } = {}) {
+export function check({ root = ".", paths = ["."], ignores = [], rules = null, only = null, decisions = true } = {}) {
   const absRoot = resolve(root);
   // DESIGN.md lives at the project root. Checking one folder with no --root, look in it too.
   let design = readDesign(absRoot);
@@ -270,7 +277,18 @@ export function check({ root = ".", paths = ["."], ignores = [], rules = null, o
   }
   findings.sort((a, b) => a.file.localeCompare(b.file) || a.line - b.line || bySeverity(a, b));
   const checked = files.map((f) => f.rel);
-  return { files: checked.length, checked, design, findings, rules };
+  let kept = [];
+  let stale = [];
+  if (decisions) {
+    const applied = applyDecisions(findings, readDecisions(absRoot).list);
+    findings = applied.open;
+    kept = applied.kept;
+    // Only a run that could have seen every finding can say a decision matches nothing now.
+    const whole = !only && !rules && paths.length === 1 && resolve(absRoot, paths[0]) === absRoot && ignores.length === 0;
+    // Decisions about pages are the audit's to judge; the detector only speaks for the source.
+    if (whole) stale = applied.unused.filter((d) => d.key.startsWith("source|"));
+  }
+  return { files: checked.length, checked, design, findings, kept, stale, rules };
 }
 
 /* ── Report ─────────────────────────────────────────────────────────────── */
@@ -347,6 +365,16 @@ function human(result, { all, color, baseline, changed }) {
     if (baseline.counts.still && !all) out.push(dim(`The ${baseline.counts.still} still there are listed with --all, or without --baseline.`));
   } else {
     out.push(total === 0 ? paint("32", `✓ nothing the detector can see${scope} — run /keyline audit for what it can't`) : `${s.error ? sev.error(`✖ ${plural(s.error, "error")}`) : "✓ no errors"}, ${plural(s.warning, "warning")}, ${s.info} info`);
+  }
+  // What a decision keeps is never hidden: a count, and with --all, each one and why.
+  const kept = result.kept ?? [];
+  if (kept.length) {
+    out.push(dim(`${plural(kept.length, "finding")} kept by a decision in ${DECISIONS_FILE}${all ? ":" : " (see them with --all, or npx trykeyline keep --list)"}`));
+    if (all) for (const f of kept) out.push(dim(`  ${f.decision.id}  ${f.file}:${f.line}  ${f.rule} — ${f.decision.reason} (${f.decision.by}, ${f.decision.date})`));
+  }
+  if (result.stale?.length) {
+    const one = result.stale.length === 1;
+    out.push(paint("33", `${plural(result.stale.length, "decision")} in ${DECISIONS_FILE} ${one ? "matches" : "match"} nothing now (${result.stale.map((d) => d.id).join(", ")}): the ${one ? "line it was" : "lines they were"} about changed. Look with npx trykeyline keep --list, then keep the new line again or drop ${one ? "it" : "them"}.`));
   }
   return out.join("\n");
 }
@@ -477,7 +505,14 @@ export function run(argv) {
     const within = opts.paths.map((p) => relative(resolve(opts.root), resolve(opts.root, p)).split(sep).join("/"));
     only = only.filter((rel) => within.some((w) => w === "" || rel === w || rel.startsWith(w + "/")));
   }
-  const result = check({ root: opts.root, paths: opts.paths.length ? opts.paths : ["."], ignores: opts.ignores, rules: opts.rules, only });
+  let result;
+  try {
+    result = check({ root: opts.root, paths: opts.paths.length ? opts.paths : ["."], ignores: opts.ignores, rules: opts.rules, only });
+  } catch (err) {
+    if (err.code !== "EDECISIONS") throw err;
+    console.error(`keyline check: ${err.message}`);
+    return 2;
+  }
 
   // A baseline holds everything found, whatever --quiet shows.
   if (opts.baseline === "save") {
@@ -510,10 +545,13 @@ export function run(argv) {
   const prefix = changed?.prefix ?? repoOf(resolve(opts.root))?.prefix ?? "";
   const report = () => {
     const design = { found: result.design.found, file: result.design.file ?? null, preset: result.design.preset, durations: result.design.durations ? [...result.design.durations] : null, zLadder: result.design.zLadder ? [...result.design.zLadder] : null };
-    const out = { files: result.files, design, summary: s, findings: result.findings, prefix };
+    const out = { files: result.files, design, summary: { ...s, kept: result.kept.length }, findings: result.findings, prefix };
+    // Added, never replacing a field: CI and the Action read this.
+    out.kept = result.kept.map(({ decision, ...f }) => ({ ...f, decision: decision.id, reason: decision.reason, by: decision.by, date: decision.date }));
+    if (result.stale.length) out.stale = result.stale;
     if (changed) out.changed = { base: changed.base, from: changed.from, mergeBase: changed.mergeBase, files: result.files };
     if (baseline) {
-      out.summary = { ...s, new: { error: failing.error, warning: failing.warning, info: failing.info } };
+      out.summary = { ...s, kept: result.kept.length, new: { error: failing.error, warning: failing.warning, info: failing.info } };
       out.baseline = { file: baseline.file, created: baseline.created, ...baseline.counts };
       out.fixed = baseline.fixed;
     }
@@ -528,7 +566,7 @@ export function run(argv) {
     for (const line of annotations(result.findings, { prefix })) console.log(line);
     const scope = changed ? `${plural(result.files, "changed file")} since ${changed.base}` : plural(result.files, "file");
     const counted = baseline ? `${plural(failing.error, "new error")}, ${plural(failing.warning, "new warning")}, ${failing.info} new info · ${baseline.counts.still} still · ${baseline.counts.fixed} fixed` : `${plural(s.error, "error")}, ${plural(s.warning, "warning")}, ${s.info} info`;
-    console.log(`Keyline: ${counted} in ${scope}.`);
+    console.log(`Keyline: ${counted} in ${scope}.${result.kept.length ? ` ${plural(result.kept.length, "finding")} kept by a decision in ${DECISIONS_FILE}.` : ""}`);
   } else {
     if (changed && result.files === 0) console.log(`No changed files to check since ${changed.base}.`);
     else console.log(human(result, { all: opts.all, color: process.stdout.isTTY && !process.env.NO_COLOR, baseline, changed }));

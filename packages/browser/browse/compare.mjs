@@ -50,7 +50,8 @@ export function compareRuns(run, prev, { against = null } = {}) {
     if (was) {
       f.change = "still";
       f.previous = was.id;
-      if ((!f.status || f.status === "open") && was.status && was.status !== "open") f.status = was.status;
+      // A status a decision set isn't carried: the decisions file says it, and dropping one must reopen the finding.
+      if ((!f.status || f.status === "open") && was.status && was.status !== "open" && !was.decided) f.status = was.status;
     } else {
       f.change = fixedBefore.has(matchKey(f)) ? "returned" : "new";
     }

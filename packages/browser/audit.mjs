@@ -17,7 +17,7 @@
  */
 import { existsSync, rmSync } from "node:fs";
 import { resolve } from "node:path";
-import { add, counts, readRun, writeRun } from "./browse/findings.mjs";
+import { add, counts, readRun, remember, writeRun } from "./browse/findings.mjs";
 import { shotKey } from "./browse/capture.mjs";
 import { renderDir } from "./browse/report.mjs";
 import { SHIP, draftScore, scoreCaps } from "./browse/score.mjs";
@@ -124,7 +124,8 @@ export function carryHistory(out, routes) {
 
 /** The detector's findings, as report findings pointing at source lines. Its walk already skips reports, dependencies and build output. */
 export function sourceFindings(run, root, ignores = []) {
-  const result = check({ root, paths: ["."], ignores });
+  // Every finding, kept ones too: remember() marks those, so the report shows them apart with their reasons.
+  const result = check({ root, paths: ["."], ignores, decisions: false });
   for (const f of result.findings) {
     const [title, ...rest] = f.message.split(/(?<=\.)\s+/);
     add(run, {
@@ -217,6 +218,8 @@ export async function run(argv) {
     });
 
     if (!opts["no-check"] && t.root && existsSync(t.root)) sourceFindings(result, t.root);
+    // Decisions first: what the user has decided is deliberate doesn't count against a score.
+    remember(result, t.root ?? process.cwd());
     result.scores = draftScores(result.findings);
     result.score = draftScore(result.scores, result.findings);
     result.history = carryHistory(out, result.pages.map((p) => p.route));

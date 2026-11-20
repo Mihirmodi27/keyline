@@ -26,6 +26,8 @@ Each round is the passes, then a smoke test of what they touched, then a fresh s
 10. **Below it:** run the next round from the new list.
 11. **Stop below the bar** after three rounds, or sooner when a round leaves the score where it was. Report what's holding it down: usually a cap that needs a call no law settles, such as a dial off the preset, the brand colour, a feature, or a fix outside this target. Ask for that call.
 
+**Decisions hold.** Leave alone whatever `## Decisions` and `.keyline/decisions.json` keep (`commands/audit.md`, **Decisions already made**), and don't undo one with a fix. Never record a decision to clear something you couldn't fix: name it as what's holding the score, and ask. If the user says it's deliberate, record it in their words with `npx trykeyline keep`, and score again.
+
 Between rounds, carry on without asking. This is the loop the user started, and the exception to waiting in `SKILL.md`. Stop early only when a change needs the user's call (`SKILL.md`, a law broken or a dial moved), or when they asked to review as you go.
 
 **Nothing to render.** A score from the code alone is capped at 7, and the smoke test can't run. Run one round, say the loop can't reach the bar without a running target, and ask for one.
@@ -46,7 +48,7 @@ If the user wants to review as you go, stop after each domain and show it before
 
 ## From a report: `/keyline polish --from keyline-report`
 
-After an audit, polish can work through the report instead of a target. Read `<dir>/findings.json`, and take every finding whose `status` is `open` or `accepted`; skip `dismissed` ones. Group them by the command in their `fix`. Run the passes in polish order as above, each on the pages and files its findings name, and fix those findings first. Then hold the rest of that page to the domain's laws as usual.
+After an audit, polish can work through the report instead of a target. Read `<dir>/findings.json`, and take every finding whose `status` is `open` or `accepted`; skip `dismissed` ones, which include those a recorded decision keeps (`decided`). Group them by the command in their `fix`. Run the passes in polish order as above, each on the pages and files its findings name, and fix those findings first. Then hold the rest of that page to the domain's laws as usual.
 
 - **Mark each finding** you fixed `status: "fixed"`. One you decide not to fix stays `open`, with a line in `detail` saying why.
 - **Smoke the pages you touched**, as in a round.

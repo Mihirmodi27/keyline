@@ -93,7 +93,14 @@ export function guardFile(file, { base = process.cwd(), env = process.env } = {}
     }
     if (!LOOKS_LIKE_UI.test(text)) return null;
   }
-  const result = check({ root, only: [rel] });
+  let result;
+  try {
+    result = check({ root, only: [rel] });
+  } catch (err) {
+    // A broken .keyline/decisions.json is for `keyline check` to report; the guard stays quiet.
+    if (err.code === "EDECISIONS") return null;
+    throw err;
+  }
   if (!result.design.guard) return null;
   const findings = result.findings.filter((f) => f.severity !== "info");
   if (findings.length === 0) return null;
@@ -107,7 +114,7 @@ export function format({ root, rel, design, findings }) {
   const errors = findings.filter((f) => f.severity === "error").length;
   const counts = [errors && `${errors} error${errors === 1 ? "" : "s"}`, findings.length - errors && `${findings.length - errors} warning${findings.length - errors === 1 ? "" : "s"}`].filter(Boolean).join(", ");
   const system = design.found ? `preset ${design.preset ?? "not set"}, from ${design.file}` : "no DESIGN.md, so default verdicts";
-  const lines = [`Keyline guard: ${counts} in ${rel} (${system}). Fix these now, in the project's own tokens, before moving on. If one is a deliberate exception, put \`keyline-ignore <rule>: <reason>\` in a comment on that line instead.`];
+  const lines = [`Keyline guard: ${counts} in ${rel} (${system}). Fix these now, in the project's own tokens, before moving on. If one is a deliberate exception, put \`keyline-ignore <rule>: <reason>\` in a comment on that line instead. Only the user records a lasting decision (\`npx trykeyline keep\`); findings already kept by one aren't listed here.`];
   for (const f of sorted.slice(0, MAX_SHOWN)) lines.push(`- ${rel}:${f.line} ${f.severity} ${f.rule} (${f.law}): ${f.message}`);
   if (sorted.length > MAX_SHOWN) lines.push(`- …and ${sorted.length - MAX_SHOWN} more: node "${CHECK}" "${rel}" --root "${root}"`);
   return lines.join("\n");

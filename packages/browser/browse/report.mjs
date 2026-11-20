@@ -10,8 +10,22 @@
  */
 import { writeFileSync } from "node:fs";
 import { join } from "node:path";
-import { counts, readRun, sortFindings } from "./findings.mjs";
+import { where } from "trykeyline/check/decisions";
+import { counts, readRun, remember, sortFindings } from "./findings.mjs";
 import { SHIP, scoreCaps } from "./score.mjs";
+
+/**
+ * What a recorded decision kept out of this report, never hidden: a count a
+ * reader sees beside the totals, and each one with its reason and who
+ * decided, since a kept finding lifts the score's caps.
+ */
+function keptSection(run) {
+  const kept = run.findings.filter((f) => f.decided);
+  if (!kept.length) return "";
+  return `<details class="kept"><summary>${kept.length} ${kept.length === 1 ? "finding" : "findings"} kept by a decision, not counted</summary><ul class="since__list">${kept
+    .map((f) => `<li>${esc(f.title)} <span class="since__where"><code>${esc(f.rule)}</code> ${esc(where(f))}</span><span class="kept__why">${esc(f.reason)} <small>${esc(f.decided)} · ${esc(f.by ?? "")}</small></span></li>`)
+    .join("")}</ul><p class="kept__how">Recorded in <code>.keyline/decisions.json</code>. <code>npx trykeyline keep --drop &lt;id&gt;</code> raises one again.</p></details>`;
+}
 
 const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
 
@@ -222,6 +236,11 @@ h2{margin:0 0 12px;font-size:16px;font-weight:500;letter-spacing:-.015em}
 .chg--changed{color:var(--info)}
 .f__caption{margin:12px 0 0;font-size:13px;color:var(--faint)}
 .since h3{margin:28px 0 8px;font-size:14px;font-weight:500}
+.kept{margin:24px 0 0;font-size:14px}
+.kept summary{cursor:pointer;color:var(--muted)}
+.kept__why{flex-basis:100%;color:var(--muted)}
+.kept__why small{color:var(--faint)}
+.kept__how{margin:8px 0 0;font-size:13px;color:var(--faint)}
 .since__list{margin:0;padding:0;list-style:none;font-size:14px}
 .since__list li{display:flex;flex-wrap:wrap;gap:4px 10px;align-items:baseline;padding:8px 0;border-top:.5px solid var(--line)}
 .since__where{font-size:13px;color:var(--faint)}
@@ -276,6 +295,7 @@ export function render(run) {
 <p class="lede">${esc(run.base ?? run.root ?? "")} · ${esc(when.toLocaleString("en-GB", { dateStyle: "medium", timeStyle: "short" }))} · ${run.pages.length} ${run.pages.length === 1 ? "page" : "pages"}</p>
 ${run.summary ? `<p class="summary">${esc(run.summary)}</p>` : ""}
 <ul class="totals"><li><b>${c.error}</b><span>Errors</span></li><li><b>${c.warning}</b><span>Warnings</span></li><li><b>${c.info}</b><span>Notes</span></li></ul>
+${keptSection(run)}
 ${sinceSection(run)}
 ${headline(run)}
 ${typeof run.score === "number" ? scoreTable(run.scores, false, "By area") : scoreTable(run.scores, run.scoresDraft)}
@@ -295,6 +315,10 @@ ${body}
 /** Render `dir/findings.json` to `dir/index.html`. Returns the path. */
 export function renderDir(dir) {
   const run = readRun(dir);
+  // Decisions recorded or dropped since the run, or findings the agent added by hand: brought in step, and saved.
+  const before = JSON.stringify(run.findings);
+  remember(run);
+  if (JSON.stringify(run.findings) !== before) writeFileSync(join(dir, "findings.json"), JSON.stringify(run, null, 2) + "\n");
   const file = join(dir, "index.html");
   writeFileSync(file, render(run));
   return file;

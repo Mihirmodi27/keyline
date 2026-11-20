@@ -136,3 +136,48 @@ test("dedupe keeps a source finding per line: the same raw colour in two files i
   add(run, { ...raw, file: "b.css", line: 1, fingerprint: "bbbb" });
   assert.deepEqual(dedupe(run.findings).map((f) => f.file), ["a.css", "b.css"]);
 });
+
+test("decisions: keep a page finding by its report id, at every width it was seen; the report lists it apart; drop reopens it", async () => {
+  const { mkdtempSync, readFileSync } = await import("node:fs");
+  const { tmpdir } = await import("node:os");
+  const { join } = await import("node:path");
+  const { spawnSync } = await import("node:child_process");
+  const { renderDir } = await import("../browse/report.mjs");
+  const CLI = new URL("../../../bin/keyline.mjs", import.meta.url).pathname;
+  const root = mkdtempSync(join(tmpdir(), "keyline-report-decisions-"));
+  const out = join(root, "keyline-report");
+  const run = newRun({ kind: "audit", root });
+  const eyebrow = { rule: "type/caps", title: "Capitals on a label", page: "/", selector: ".hero .eyebrow", severity: "warning" };
+  add(run, { ...eyebrow, viewport: "desktop", theme: "light" });
+  add(run, { ...eyebrow, viewport: "phone", theme: "dark" });
+  add(run, { rule: "color/contrast", title: "Faint", page: "/", selector: ".time", viewport: "desktop", theme: "light", severity: "error" });
+  writeRun(out, run);
+  const id = readRun(out).findings.find((f) => f.rule === "type/caps").id;
+  const keep = (...a) => spawnSync(process.execPath, [CLI, "keep", ...a, "--root", root, "--by", "Ada"], { encoding: "utf8" });
+
+  const contrast = readRun(out).findings.find((f) => f.rule === "color/contrast").id;
+  assert.equal(keep(contrast, "--reason", "we like it").status, 2);
+
+  const r = keep(id, "--reason", "the brand sets eyebrows in capitals");
+  assert.equal(r.status, 0, r.stderr);
+  assert.match(r.stdout, /Kept k1: .* \/ · desktop · light · \.hero \.eyebrow/);
+  assert.match(r.stdout, /Kept k2: .* \/ · phone · dark · \.hero \.eyebrow/);
+
+  renderDir(out);
+  const kept = readRun(out).findings.filter((f) => f.decided);
+  assert.deepEqual(kept.map((f) => [f.viewport, f.status, f.by]), [["desktop", "dismissed", "Ada"], ["phone", "dismissed", "Ada"]]);
+  const html = readFileSync(join(out, "index.html"), "utf8");
+  assert.match(html, /2 findings kept by a decision, not counted/);
+  assert.match(html, /the brand sets eyebrows in capitals/);
+
+  // A fresh run of the same pages is marked the same way: the decision outlives the report.
+  const fresh = newRun({ kind: "audit", root });
+  add(fresh, { ...eyebrow, viewport: "desktop", theme: "light" });
+  writeRun(join(root, "next"), fresh);
+  assert.equal(readRun(join(root, "next")).findings[0].decided, "k1");
+
+  assert.equal(keep("--drop", "k1,k2").status, 0);
+  renderDir(out);
+  assert.equal(readRun(out).findings.filter((f) => f.decided || f.status === "dismissed").length, 0);
+  assert.doesNotMatch(readFileSync(join(out, "index.html"), "utf8"), /kept by a decision/);
+});

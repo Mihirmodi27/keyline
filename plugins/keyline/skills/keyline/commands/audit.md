@@ -11,6 +11,12 @@ Say which in your first line ("Auditing `/settings` as one screen"), so the user
 
 **Changes no code.** It reports, and writes its findings into `DESIGN.md`.
 
+## Decisions already made
+
+Read `## Decisions` in `DESIGN.md` and `.keyline/decisions.json` before you raise anything. What they keep is settled: the detector and the report already leave those findings out, and your own read never raises them again, in any words. When a finding of yours would undo a recorded decision, say that instead, naming it: *"this conflicts with k3 (capitals on the eyebrow); the reason given was the brand guideline"*. Only the user can drop a decision.
+
+A decision outlives the report, so only the user makes one. When they say a finding is deliberate, record it in their words: `npx trykeyline keep <file:line or report id> --reason "<their words>"` (or `node <keyline>/scripts/keep.mjs`). Never record one on your own judgement, and never to clear a finding you couldn't fix: a kept finding no longer counts against the score. A contrast failure on text can't be kept. Dismissing a finding inside this report (step 4 below) holds for this report alone.
+
 ## The score out of 10
 
 One number a person reads first, in half points. Score what a reader meets, not the effort that went in.
@@ -101,9 +107,9 @@ Don't pad to five. Don't list what's fine as a problem to fix. No HTML report fo
    - whether the copy keeps one voice (patterns law 23);
    - whether the page looks designed for its reader or assembled from a template.
 
-   Add each as a finding in `findings.json` (format in `system/reports.md`): `kind: "audit"`, the domain, a rule id of your own (`layout/hierarchy`, `states/empty-missing`, `slop/template-feel`), the law, the page, and a `shot` and `box` when you can point at it. Where a UX law explains why the reader feels it, name it in `detail` (`commands/ux-laws.md`).
+   Add each as a finding in `findings.json` (format in `system/reports.md`): `kind: "audit"`, the domain, a rule id of your own (`layout/hierarchy`, `states/empty-missing`, `slop/template-feel`), the law, the page, a `selector` for the element whenever there is one, and a `shot` and `box` when you can point at it. The selector is how the next run, `--compare` and a recorded decision know it's the same finding; a title alone stops matching the moment it's worded differently. Where a UX law explains why the reader feels it, name it in `detail` (`commands/ux-laws.md`).
 
-4. **Judge the machine's findings too.** A measurement is a lead, not a verdict. A finding that is right by the numbers but wrong for this product gets `status: "dismissed"` with the reason in `detail`. Examples: an uppercase eyebrow under the `expressive` preset, which allows them; small text inside an illustration; a tap target the user has accepted. Never dismiss a contrast failure on text people read.
+4. **Judge the machine's findings too.** A measurement is a lead, not a verdict. A finding that is right by the numbers but wrong for this product gets `status: "dismissed"` with the reason in `detail`. Examples: an uppercase eyebrow under the `expressive` preset, which allows them; small text inside an illustration; a tap target the user has accepted. Never dismiss a contrast failure on text people read. A finding the report already marks `decided` is kept by a recorded decision: leave it as it is.
 
 5. **Score each domain** 0–4 and replace the draft in `scores`:
 

@@ -54,6 +54,7 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { SEVERITIES, bySeverity, dedupeKey, tally } from "trykeyline/check/findings";
+import { matchDecisions, readDecisions } from "trykeyline/check/decisions";
 import { DOMAINS as LAW_DOMAINS } from "trykeyline/check/rules";
 
 /** The six law domains, and what only a rendered page shows. */
@@ -116,9 +117,37 @@ export function counts(findings) {
   return tally(findings, { skip: (f) => f.status === "dismissed" || f.status === "fixed" });
 }
 
+/**
+ * Mark the findings a recorded decision keeps (.keyline/decisions.json in the
+ * project; see trykeyline's check/decisions.mjs): `status: "dismissed"`, and
+ * `decided`, `reason` and `by` from the decision, so the report lists them
+ * apart with why, and no score counts them. Marks from an earlier pass are
+ * cleared first, so a decision dropped since reopens its finding. A broken
+ * decisions file is reported and the run goes on without it. Mutates `run`.
+ */
+export function remember(run, root = run.root ?? process.cwd()) {
+  let list = [];
+  try {
+    list = readDecisions(root).list;
+  } catch (err) {
+    console.error(`keyline: ${err.message} The report leaves the recorded decisions out.`);
+  }
+  for (const f of run.findings) {
+    if (!f.decided) continue;
+    f.status = "open";
+    delete f.decided;
+    delete f.reason;
+    delete f.by;
+  }
+  const { pairs } = matchDecisions(run.findings.filter((f) => f.status !== "fixed"), list);
+  for (const [f, d] of pairs) if (d) Object.assign(f, { status: "dismissed", decided: d.id, reason: d.reason, by: d.by });
+  return run;
+}
+
 export function writeRun(dir, run) {
   mkdirSync(dir, { recursive: true });
   run.finished ??= new Date().toISOString();
+  remember(run);
   run.findings = sortFindings(dedupe(run.findings)).map((f, i) => ({ ...f, id: `f${i + 1}` }));
   writeFileSync(join(dir, "findings.json"), JSON.stringify(run, null, 2) + "\n");
   return run;
