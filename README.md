@@ -92,7 +92,7 @@ It drives your installed Chrome through Playwright, which it installs once into 
 
 ## The detector
 
-Twenty-four of the laws can be checked from source alone, with no model and no API key:
+Twenty-eight of the laws can be checked from source alone, with no model and no API key:
 
 ```sh
 npx trykeyline check            # human report; exits 1 on errors
@@ -101,6 +101,8 @@ npx trykeyline check --strict   # warnings fail the run too
 ```
 
 It reads CSS, Tailwind classes, inline styles, `<style>` blocks and CSS-in-JS, in React, Vue, Svelte, Astro and plain HTML, and it reads `DESIGN.md` so the verdicts follow your preset, the case you record for labels, and your motion and z-index ladders. A few of the things it catches: `transition: all`; animation with no reduced-motion branch; an outline removed with nothing in its place; `100vh`; `z-index: 9999`; colours typed inline instead of tokens; translucency with no `@supports` fallback; pinch-zoom disabled; uppercase labels where `DESIGN.md` records sentence case, and Title Case buttons. `npx trykeyline check --rules` lists all of them, each with the law it comes from.
+
+Where your project already has the token, it names it. `#1a1a1a` typed into a `color` is "the value of `--ink`"; `12px` in a `border-radius` is "the value of `--radius-card`", and the same for spacing, font sizes and shadows, in CSS and in Tailwind's arbitrary values (`rounded-[12px]`). A token is a custom property defined on `:root` or in `@theme`, wherever it lives in the project, so a check of one file still knows it. Only an exact match in the same family counts: an `8px` padding never names a radius. With two tokens on one value, it lists both and leaves the choice to whoever knows the job.
 
 `/keyline audit` runs it first and spends its own reading on what a detector can't see — hierarchy, grouping, whether a box should exist at all.
 
@@ -189,7 +191,7 @@ The example's second job is optional. When a preview deploy finishes (Vercel, Ne
 
 ## Live guard
 
-The detector can also run while the agent writes. After every edit to a UI file — CSS, Sass, TSX, JSX, Vue, Svelte, Astro, HTML, or a `.ts` file holding styles or markup — Keyline checks that one file against your `DESIGN.md` and hands the errors and warnings straight back to the agent: up to eight, worst first, each with its line, rule, law and fix. The agent fixes them before it moves on, so slop never reaches a review. A clean file says nothing.
+The detector can also run while the agent writes. After every edit to a UI file — CSS, Sass, TSX, JSX, Vue, Svelte, Astro, HTML, or a `.ts` file holding styles or markup — Keyline checks that one file against your `DESIGN.md` and hands the errors and warnings straight back to the agent, plus any value it has a token for: up to eight, worst first, each with its line, rule, law and fix. The agent fixes them before it moves on, so slop never reaches a review. A clean file says nothing.
 
 **Claude Code plugin:** on already. The plugin carries a `PostToolUse` hook on Edit, Write and MultiEdit.
 

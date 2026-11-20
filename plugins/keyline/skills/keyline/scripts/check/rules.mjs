@@ -19,6 +19,8 @@
  * section — is left to `/keyline audit`.
  */
 
+import { arbitrary, nameTokens, trivial } from "./tokens.mjs";
+
 const COLOR_FN = /\b(rgba?|hsla?|oklch|oklab|lab|lch|hwb)\(([^()]*(?:\([^()]*\)[^()]*)*)\)/gi;
 const HEX = /(^|[^\w&-])#([0-9a-f]{3,4}|[0-9a-f]{6}|[0-9a-f]{8})\b/i;
 const WEIGHT_WORDS = { thin: 100, hairline: 100, extralight: 200, ultralight: 200, light: 300, normal: 400, regular: 400, medium: 500, semibold: 600, demibold: 600, bold: 700, extrabold: 800, ultrabold: 800, black: 900, heavy: 900 };
@@ -78,6 +80,48 @@ function durationsIn(value) {
 }
 
 const tw = (facts, test) => facts.classes.filter((c) => test(c.base, c));
+
+/**
+ * A value the project already has a token for, typed raw. Each of these fires
+ * only on an exact match with a token of its own family (check/tokens.mjs), so
+ * it says which name to use rather than asking for a new one. Info, not a
+ * warning: the reader sees the same value; what drifts is the next change.
+ */
+function tokenBypass({ id, domain, law, title, family, props, classes, whole = false, what }) {
+  return {
+    id,
+    domain,
+    law,
+    title,
+    check(facts, ctx = {}) {
+      if (!ctx.tokens) return [];
+      const out = [];
+      const report = (h, raw, names, inClass) =>
+        out.push({ ...where(h), severity: "info", tokens: names, message: `\`${inClass ? h.base : raw}\`${inClass ? "" : ` in \`${h.prop}\``} is the value of ${nameTokens(names)}. Use ${names.length > 1 ? `the one named for this ${what}` : "the token"}${inClass ? " (in Tailwind, its utility)" : ""}, so the next change to the ${what} reaches it.` });
+      for (const d of facts.decls) {
+        if (isDefinition(d) || inKeyframes(d) || !props.test(d.prop) || /\bvar\(/.test(d.value)) continue;
+        const value = d.value.replace(/\s*!important$/i, "").trim();
+        const parts = whole ? [value] : value.split(/\s+(?![^()]*\))/);
+        for (const part of parts) {
+          if (trivial(part)) continue;
+          const names = ctx.tokens().find(family, part);
+          if (names.length) {
+            report(d, part, names, false);
+            break;
+          }
+        }
+      }
+      for (const c of tw(facts, (b) => classes.test(b))) {
+        const raw = arbitrary(c.base);
+        if (!raw || trivial(raw)) continue;
+        const names = ctx.tokens().find(family, raw);
+        if (names.length) report(c, raw, names, true);
+      }
+      return out;
+    },
+  };
+}
+
 const first = (arr) => arr[0];
 const where = (x) => ({ file: x.file, line: x.line });
 const plural = (n, one, many = one + "s") => `${n} ${n === 1 ? one : many}`;
@@ -86,6 +130,7 @@ const list = (xs, n = 4) => xs.slice(0, n).join(", ") + (xs.length > n ? `, +${x
 /* ── Type ───────────────────────────────────────────────────────────────── */
 
 const typeRules = [
+  tokenBypass({ id: "type/raw-size", domain: "type", law: "type law 1", title: "Font size typed raw where a token has it", family: "size", what: "role", props: /^font-size$/, classes: /^text-\[(?!#|rgb|hsl|oklch|oklab|color:)/ }),
   {
     id: "type/weights",
     scope: "project", // one finding for the whole project, pointed at a first use
@@ -240,8 +285,10 @@ const colorRules = [
     domain: "color",
     law: "color law 1",
     title: "Colour typed inline",
-    check(facts) {
+    check(facts, ctx = {}) {
       const out = [];
+      // The token holding this exact colour, when the project has one: the fix is then a name, not a new token.
+      const holds = (c) => (ctx.tokens ? ctx.tokens().find("color", c) : []);
       for (const d of facts.decls) {
         if (isDefinition(d) || inFontFace(d) || /^(src|content|mask|mask-image|-webkit-mask-image|filter|font-family)$/.test(d.prop)) continue;
         // Print is ink on paper: black on white is the point, not a stray.
@@ -259,10 +306,24 @@ const colorRules = [
           out.push({ ...where(d), severity: "info", message: `\`${c}\` painted into \`${d.prop}\`. Inside artwork marked \`role="img"\` that's fine (colour law 1); on an icon, use \`currentColor\` so it follows its label.` });
           continue;
         }
-        out.push({ ...where(d), severity: "warning", message: `\`${c}\` typed into \`${d.prop}\`${d.inline ? " in an inline style" : ""}. Give it a token named for its job (a text tier, a border, a status), so a theme or a contrast fix changes it once.` });
+        const names = holds(c);
+        out.push({
+          ...where(d),
+          severity: "warning",
+          tokens: names.length ? names : undefined,
+          message: names.length
+            ? `\`${c}\` typed into \`${d.prop}\`${d.inline ? " in an inline style" : ""} is the value of ${nameTokens(names)}. Use ${names.length > 1 ? "the one named for this job" : "the token"}, so a theme or a contrast fix reaches it.`
+            : `\`${c}\` typed into \`${d.prop}\`${d.inline ? " in an inline style" : ""}. Give it a token named for its job (a text tier, a border, a status), so a theme or a contrast fix changes it once.`,
+        });
       }
       for (const c of tw(facts, (b) => TAILWIND_ARBITRARY_COLOR.test(b))) {
-        out.push({ ...where(c), severity: "warning", message: `\`${c.base}\` puts a raw colour in a class. Map it to a token named for its job.` });
+        const names = holds(c.base.match(TAILWIND_ARBITRARY_COLOR)[1]);
+        out.push({
+          ...where(c),
+          severity: "warning",
+          tokens: names.length ? names : undefined,
+          message: names.length ? `\`${c.base}\` puts a raw colour in a class, the value of ${nameTokens(names)}. Use the token (in Tailwind, its utility).` : `\`${c.base}\` puts a raw colour in a class. Map it to a token named for its job.`,
+        });
       }
       return out;
     },
@@ -306,6 +367,8 @@ const colorRules = [
 /* ── Layout ─────────────────────────────────────────────────────────────── */
 
 const layoutRules = [
+  tokenBypass({ id: "layout/raw-space", domain: "layout", law: "layout law 2", title: "Spacing typed raw where a token has it", family: "space", what: "step", props: /^(margin|padding|scroll-margin|scroll-padding)(-(top|right|bottom|left|inline|block)(-(start|end))?)?$|^(gap|row-gap|column-gap)$/, classes: /^-?(p|m)[xytrblse]?-\[|^(gap|gap-x|gap-y|space-x|space-y)-\[/ }),
+  tokenBypass({ id: "layout/raw-radius", domain: "layout", law: "layout law 5", title: "Radius typed raw where a token has it", family: "radius", what: "corner", props: /^border(-(top|bottom|start|end)-(left|right|start|end))?-radius$/, classes: /^rounded(-[a-z]{1,2})?-\[/ }),
   {
     id: "layout/z-index",
     domain: "layout",
@@ -429,6 +492,7 @@ const backdropUses = (facts) => [
 ];
 
 const depthRules = [
+  tokenBypass({ id: "depth/raw-shadow", domain: "depth", law: "depth law 4", title: "Shadow typed raw where a token has it", family: "shadow", what: "level", whole: true, props: /^box-shadow$/, classes: /^shadow-\[/ }),
   {
     id: "depth/backdrop-guard",
     signal: "project", // its verdict reads a signal anywhere in the project (facts.project)

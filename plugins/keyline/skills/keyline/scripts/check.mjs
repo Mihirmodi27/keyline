@@ -27,7 +27,8 @@
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { join, relative, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
-import { collect, isInterfaceFile } from "./check/files.mjs";
+import { collect, isInterfaceFile, STYLE } from "./check/files.mjs";
+import { indexTokens } from "./check/tokens.mjs";
 import { lineIndex, parseCss } from "./check/css.mjs";
 import { readMarkup } from "./check/markup.mjs";
 import { readDesign } from "./check/design.mjs";
@@ -217,12 +218,19 @@ function suppressed(facts, f) {
 /** Rules a run over a few files confirms against the whole project (see rules.mjs). */
 const WHOLE_PROJECT = new Set(RULES.filter((r) => r.scope === "project" || r.signal === "project").map((r) => r.id));
 
-function runRules(facts, design, rules) {
+/** Built the first time a rule asks, so a run with no raw values never indexes anything. */
+const once = (make) => {
+  let value;
+  return () => (value ??= make());
+};
+
+function runRules(facts, design, rules, tokens = once(() => indexTokens(facts.decls))) {
   const findings = [];
   for (const rule of RULES) {
     if (rules && !rules.some((r) => r === rule.id || r === rule.domain)) continue;
-    for (const f of rule.check(facts, { design })) {
+    for (const f of rule.check(facts, { design, tokens })) {
       const finding = { rule: rule.id, domain: rule.domain, law: rule.law, severity: f.severity, file: f.file, line: f.line, message: f.message };
+      if (f.tokens?.length) finding.tokens = f.tokens;
       if (suppressed(facts, finding)) continue;
       if (rule.scope === "project") finding.scope = "project";
       if (f.area) finding.area = f.area;
@@ -252,18 +260,26 @@ export function check({ root = ".", paths = ["."], ignores = [], rules = null, o
 
   let files;
   let findings;
+  const cache = new Map();
+  // Tokens live where they're defined (globals.css, a theme file), which a run over a few files or one folder
+  // may not include: index every stylesheet in the project with the files checked, once a raw value asks.
+  const tokens = (checked) =>
+    once(() => {
+      const sheets = collect(absRoot, [absRoot], ignores).filter((f) => STYLE.has(f.ext));
+      return indexTokens([...gather(absRoot, sheets, cache).decls, ...gather(absRoot, checked, cache).decls]);
+    });
   if (only) {
     const rels = [...new Set([...only].map((p) => relative(absRoot, resolve(absRoot, p)).split(sep).join("/")))];
     const picked = rels.filter((rel) => isInterfaceFile(rel) && existsSync(join(absRoot, rel)));
     files = collect(absRoot, picked.map((rel) => join(absRoot, rel)), ignores);
     const mine = new Set(files.map((f) => f.rel));
-    const cache = new Map();
-    findings = runRules(gather(absRoot, files, cache), design, rules);
+    const index = tokens(files);
+    findings = runRules(gather(absRoot, files, cache), design, rules, index);
     const isProject = (f) => WHOLE_PROJECT.has(f.rule);
     const needsProject = [...new Set(findings.filter(isProject).map((f) => f.rule))];
     if (needsProject.length) {
       // Only when it matters: a clean file never pays for the walk, and the files already read aren't read again.
-      const whole = runRules(gather(absRoot, collect(absRoot, [absRoot], ignores), cache), design, needsProject);
+      const whole = runRules(gather(absRoot, collect(absRoot, [absRoot], ignores), cache), design, needsProject, index);
       findings = findings.filter((f) => {
         if (!isProject(f)) return true;
         // The same finding is the same rule in the same area (a rule counted per area of DESIGN.md is one finding each).
@@ -276,7 +292,7 @@ export function check({ root = ".", paths = ["."], ignores = [], rules = null, o
     findings = findings.filter((f) => mine.has(f.file));
   } else {
     files = collect(absRoot, paths.map((p) => resolve(absRoot, p)), ignores);
-    findings = runRules(gather(absRoot, files), design, rules);
+    findings = runRules(gather(absRoot, files, cache), design, rules, tokens(files));
   }
   findings.sort((a, b) => a.file.localeCompare(b.file) || a.line - b.line || bySeverity(a, b));
   const checked = files.map((f) => f.rel);

@@ -102,17 +102,24 @@ export function guardFile(file, { base = process.cwd(), env = process.env } = {}
     throw err;
   }
   if (!result.design.guard) return null;
-  const findings = result.findings.filter((f) => f.severity !== "info");
+  // Info stays out, except a value the project has a token for: that fix is one name, and now is when it's cheap.
+  const findings = result.findings.filter((f) => f.severity !== "info" || f.tokens?.length);
   if (findings.length === 0) return null;
   return { root, rel, design: result.design, findings };
 }
 
 /** The message the agent reads: short, worst first, each finding with its line, rule, law and fix. */
 export function format({ root, rel, design, findings }) {
-  const order = { error: 0, warning: 1 };
+  const order = { error: 0, warning: 1, info: 2 };
   const sorted = [...findings].sort((a, b) => order[a.severity] - order[b.severity] || a.line - b.line);
-  const errors = findings.filter((f) => f.severity === "error").length;
-  const counts = [errors && `${errors} error${errors === 1 ? "" : "s"}`, findings.length - errors && `${findings.length - errors} warning${findings.length - errors === 1 ? "" : "s"}`].filter(Boolean).join(", ");
+  const n = (sev) => findings.filter((f) => f.severity === sev).length;
+  const counts = [
+    n("error") && `${n("error")} error${n("error") === 1 ? "" : "s"}`,
+    n("warning") && `${n("warning")} warning${n("warning") === 1 ? "" : "s"}`,
+    n("info") && `${n("info")} raw value${n("info") === 1 ? "" : "s"} with a token`,
+  ]
+    .filter(Boolean)
+    .join(", ");
   // The preset the file is judged by: its area's, when DESIGN.md puts it in one.
   const area = design.areaFor?.(rel);
   const system = !design.found ? "no DESIGN.md, so default verdicts" : area ? `area ${area.pattern}, preset ${area.preset}, from ${design.file}` : `preset ${design.preset ?? "not set"}, from ${design.file}`;
