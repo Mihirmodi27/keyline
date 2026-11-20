@@ -677,7 +677,7 @@ const motionRules = [
       const real = uses.filter((u) => u.ms > 0);
       if (design.durations) {
         const ladder = [...design.durations].sort((a, b) => a - b);
-        const out = real.filter((u) => !design.durations.has(u.ms)).map((u) => ({ ...u, severity: "info", message: `${u.ms}ms isn't on the motion ladder in DESIGN.md (${ladder.map((n) => n + "ms").join(", ")}). Use the tier for how much of the screen changes, or name the exemption.` }));
+        const out = real.filter((u) => !design.durations.has(u.ms)).map((u) => ({ ...u, severity: "info", message: `${u.ms}ms isn't on the motion ladder in DESIGN.md (${ladder.map((n) => n + "ms").join(", ")}). Use the tier for how much of the screen changes, or name the exemption.`, perLine: true }));
         // roles.md's one unrenameable rule: duration.* grows with the size of the change.
         // A ladder written down as found can break it, and then approves the inversion.
         const ORDER = ["micro", "state", "popover", "overlay", "route"];

@@ -150,3 +150,61 @@ test("a decisions file in a project with no DESIGN.md still works", () => {
   assert.ok(!existsSync(join(root, "DESIGN.md")));
   assert.ok(!check({ root }).findings.some((f) => f.rule === "motion/transition-all"));
 });
+
+/* ── Rules judged across the whole project ─────────────────────────────────── */
+
+function laddered() {
+  const root = mkdtempSync(join(tmpdir(), "keyline-decisions-ladder-"));
+  writeFileSync(join(root, "DESIGN.md"), "# Design system\n\n## Profile\n\n| | |\n|---|---|\n| Preset | `product` |\n\n## Motion\n\n| Role | Name here | Value | Used for |\n|---|---|---|---|\n| `duration.state` | `duration-150` | 150ms | hover |\n| `duration.overlay` | `duration-200` | 200ms | sheets |\n");
+  mkdirSync(join(root, "src"));
+  writeFileSync(join(root, "src/welcome.css"), ".welcome {\n  transition: opacity 900ms;\n}\n@media (prefers-reduced-motion: reduce) { .welcome { transition: opacity 150ms; } }\n");
+  writeFileSync(join(root, "src/toast.css"), ".toast { transition: opacity 450ms; }\n");
+  spawnSync("git", ["init", "-q"], { cwd: root });
+  spawnSync("git", ["config", "user.name", "Ada Lovelace"], { cwd: root });
+  return root;
+}
+const strays = (r) => r.findings.filter((f) => f.rule === "motion/duration-ladder").map((f) => `${f.file}:${f.line}`).sort();
+
+test("keeping one duration off the ladder keeps that use, not another, though the baseline counts the rule", () => {
+  const root = laddered();
+  assert.deepEqual(strays(check({ root })), ["src/toast.css:1", "src/welcome.css:2"]);
+  const r = cli(root, "keep", "src/welcome.css:2", "--reason", "the welcome reveal is slow on purpose");
+  assert.equal(r.status, 0, r.stderr);
+  assert.match(r.stdout, /Kept k1: motion\/duration-ladder at src\/welcome\.css:2/);
+  const after = check({ root });
+  assert.deepEqual(strays(after), ["src/toast.css:1"]);
+  assert.deepEqual(after.kept.map((f) => `${f.file}:${f.line}`), ["src/welcome.css:2"]);
+  // The baseline's identity for a project rule is unchanged: the rule alone.
+  const fps = new Set(check({ root, rules: ["motion/duration-ladder"] }).findings.map((f) => f.fingerprint));
+  assert.equal(fps.size, 1);
+});
+
+test("a kept duration follows its line when code moves, and lapses when the line changes", () => {
+  const root = laddered();
+  cli(root, "keep", "src/welcome.css:2", "--reason", "slow on purpose");
+  writeFileSync(join(root, "src/welcome.css"), ".welcome {\n  opacity: 1;\n  transition: opacity 900ms;\n}\n@media (prefers-reduced-motion: reduce) { .welcome { transition: opacity 150ms; } }\n");
+  assert.deepEqual(strays(check({ root })), ["src/toast.css:1"]);
+  writeFileSync(join(root, "src/welcome.css"), ".welcome {\n  opacity: 1;\n  transition: opacity 1200ms;\n}\n@media (prefers-reduced-motion: reduce) { .welcome { transition: opacity 150ms; } }\n");
+  const changed = check({ root });
+  assert.deepEqual(strays(changed), ["src/toast.css:1", "src/welcome.css:3"]);
+  assert.match(cli(root, "check").stdout, /1 decision in \.keyline\/decisions\.json matches nothing now \(k1\)/);
+});
+
+test("a finding that is the whole project's is kept across the whole project, without a line", () => {
+  const root = mkdtempSync(join(tmpdir(), "keyline-decisions-weights-"));
+  writeFileSync(join(root, "DESIGN.md"), "# Design system\n\n## Profile\n\n| | |\n|---|---|\n| Preset | `product` |\n");
+  writeFileSync(join(root, "a.css"), ".a{font-weight:400}.b{font-weight:500}.c{font-weight:600}.d{font-weight:700}\n");
+  spawnSync("git", ["init", "-q"], { cwd: root });
+  spawnSync("git", ["config", "user.name", "Ada Lovelace"], { cwd: root });
+  const w = check({ root }).findings.find((f) => f.rule === "type/weights");
+  assert.ok(w, "four weights under product is a finding");
+  const r = cli(root, "keep", `a.css:${w.line}`, "--rule", "type/weights", "--reason", "the marketing type needs four");
+  assert.equal(r.status, 0, r.stderr);
+  assert.match(r.stdout, /Kept k1: type\/weights across the whole project\./);
+  assert.match(r.stdout, /holds for the whole project/);
+  const [d] = readDecisions(root).list;
+  assert.equal(d.where, "the whole project");
+  assert.equal(d.text, undefined);
+  assert.match(readFileSync(join(root, "DESIGN.md"), "utf8"), /Kept `type\/weights` across the whole project: the marketing type needs four/);
+  assert.ok(!check({ root }).findings.some((f) => f.rule === "type/weights"));
+});

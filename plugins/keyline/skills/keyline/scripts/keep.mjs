@@ -18,7 +18,7 @@ import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { isAbsolute, join, relative, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 import { check } from "./check.mjs";
-import { DECISIONS_FILE, decide, drop, keyOf, noteInDesign, readDecisions, unnoteInDesign } from "./check/decisions.mjs";
+import { DECISIONS_FILE, decide, drop, keyOf, noteInDesign, placed, projectWide, readDecisions, unnoteInDesign } from "./check/decisions.mjs";
 
 const USAGE = `keyline keep — record that a finding is deliberate, so Keyline stops raising it.
 
@@ -115,7 +115,7 @@ export function run(argv) {
       const gone = drop(root, o.drop);
       const missing = o.drop.filter((id) => !gone.some((d) => d.id === id));
       if (gone.length) unnoteInDesign(root, gone.map((d) => d.id));
-      for (const d of gone) console.log(`Dropped ${d.id}: ${d.rule} at ${d.where} will be raised again.`);
+      for (const d of gone) console.log(`Dropped ${d.id}: ${d.rule} ${placed(d)} will be raised again.`);
       if (missing.length) console.error(`keyline keep: no decision called ${missing.join(", ")} (see --list)`);
       return missing.length ? 2 : 0;
     }
@@ -134,7 +134,7 @@ export function run(argv) {
     } else if (source) {
       const { rel, open, lines, kept } = onLine(root, source[1], Number(source[2]), o.rule);
       if (kept) {
-        for (const f of kept) console.log(`Already kept: ${f.rule} at ${rel}:${f.line} by ${f.decision.id}. Reason: ${f.decision.reason} (${f.decision.by}).`);
+        for (const f of kept) console.log(`Already kept: ${f.rule} ${placed(f.decision)} by ${f.decision.id}. Reason: ${f.decision.reason} (${f.decision.by}).`);
         return 0;
       }
       if (open.length > 1) throw new Error(`${rel}:${source[2]} has ${open.length} findings: ${[...new Set(open.map((f) => f.rule))].join(", ")}. Name one with --rule`);
@@ -161,7 +161,8 @@ export function run(argv) {
       writeFileSync(fromReport.file, JSON.stringify(fromReport.run, null, 2) + "\n");
     }
 
-    for (const d of added) console.log(`Kept ${d.id}: ${d.rule} at ${d.where}. Reason: ${d.reason} (${d.by}).`);
+    for (const d of added) console.log(`Kept ${d.id}: ${d.rule} ${placed(d)}. Reason: ${d.reason} (${d.by}).`);
+    if (targets.some(projectWide)) console.log(`This rule judges the whole project, not one line, so the decision holds for the whole project${targets.find(projectWide).area ? " area" : ""} until the finding goes away.`);
     console.log(`Recorded in ${DECISIONS_FILE}${design ? " and under DESIGN.md's ## Decisions" : ""}. Commit ${design ? "both" : "it"}.`);
     if (fromReport) console.log(`Redraw the report: npx trykeyline report ${relative(root, fromReport.dir) || "."}`);
     return 0;

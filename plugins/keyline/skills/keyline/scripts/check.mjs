@@ -244,6 +244,9 @@ function runRules(facts, design, rules, tokens = once(() => indexTokens(facts.de
       if (rule.scope === "project") finding.scope = "project";
       if (f.area) finding.area = f.area;
       finding.fingerprint = fingerprint(finding, linesOf(facts, finding.file), { project: rule.scope === "project" });
+      // A project rule's finding about one line (a stray duration) is still one line to a decision:
+      // the baseline counts the rule, but a decision names which use, and lapses when that line changes.
+      if (rule.scope === "project" && f.perLine) finding.lineprint = fingerprint(finding, linesOf(facts, finding.file));
       findings.push(finding);
     }
   }
@@ -336,7 +339,7 @@ function human(result, { all, color, baseline, changed }) {
   const dim = (s) => paint("2", s);
   const out = [];
   const d = result.design;
-  out.push(`Keyline check — ${changed ? `${plural(result.files, "changed file")} since ${changed.base}` : `${result.files} files`}${d.found ? `, preset ${d.preset ?? "not set"} (${d.file})` : ", no DESIGN.md (run /keyline init for verdicts that follow your system)"}`);
+  out.push(`Keyline check — ${changed ? `${plural(result.files, "changed file")} since ${changed.base}` : plural(result.files, "file")}${d.found ? `, preset ${d.preset ?? "not set"} (${d.file})` : ", no DESIGN.md (run /keyline init for verdicts that follow your system)"}`);
   if (d.areas?.length) out.push(dim(`  areas: ${d.areas.map((a) => `${a.pattern} → ${a.preset}`).join(" · ")}`));
   if (d.components?.length) out.push(dim(`  components: ${d.components.map((c) => `${c.role} → ${c.name ?? c.file.split("/").pop()}`).join(" · ")}`));
   for (const c of d.componentsUnread ?? []) out.push(paint("33", `  ${d.file} gives \`${c.role}\` to "${c.cell}", which isn't a file path. Name the file (\`src/components/ui/button.tsx\`), with the export if it has several.`));

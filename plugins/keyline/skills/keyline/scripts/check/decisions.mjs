@@ -24,6 +24,13 @@
  * itself changes; for a finding on a page, the rule, page, viewport, theme and
  * element. Each decision covers one finding: two identical lines need two.
  *
+ * A rule judged across the whole project is matched in a baseline by its rule
+ * alone. When its finding is about one line (a duration off the ladder), the
+ * decision keys on that line's print (`lineprint`), so it keeps that use only
+ * and lapses with it. When the finding is the project's (too many weights in
+ * an area, too many durations), the decision is the project's too: `where`
+ * says so, and it holds until the finding goes away.
+ *
  * A decision is the user's, never the agent's own: an agent that dismissed
  * what it couldn't fix would raise its own score. Each one says who made it,
  * and every report lists them.
@@ -75,6 +82,7 @@ export function writeDecisions(root, list) {
 
 /** Where a finding is, the way a person reads it: `src/a.css:12`, or `/pricing · phone · dark · .hero .eyebrow`. */
 export function where(f) {
+  if (projectWide(f)) return `the whole project${f.area ? ` (area ${f.area})` : ""}`;
   if (f.file && !f.page) return `${f.file}${f.line ? `:${f.line}` : ""}`;
   return [f.page ?? "the whole product", f.viewport, f.theme, f.selector].filter(Boolean).join(" · ");
 }
@@ -111,7 +119,10 @@ export function matchDecisions(findings, list) {
 }
 
 /** The key a decision stores for a finding, and matches it on. */
-export const keyOf = (f) => matchKey(f);
+export const keyOf = (f) => (f.lineprint ? `source|${f.lineprint}` : matchKey(f));
+
+/** Whether a finding is the whole project's, not one line's: a project rule's verdict with no line print. */
+export const projectWide = (f) => f.scope === "project" && !f.lineprint && f.file && !f.page;
 
 /** The next free id: k1, k2, … never reusing a dropped one's number while later ones exist. */
 export function nextId(list) {
@@ -136,7 +147,7 @@ export function decide(root, findings, { reason, by, date = new Date().toISOStri
     if (already.has(key)) continue;
     already.add(key);
     const entry = { id: nextId([...list, ...added]), key, rule: f.rule, where: where(f) };
-    const line = text(f);
+    const line = projectWide(f) ? undefined : text(f);
     if (line) entry.text = line;
     Object.assign(entry, { reason: String(reason).trim(), by: by || "someone", date });
     added.push(entry);
@@ -160,8 +171,11 @@ const designFile = (root) => {
   return name ? join(root, name) : null;
 };
 
+/** "at `src/a.css:12`", or "across the whole project" for a decision that isn't about one place. */
+export const placed = (d, code = (s) => s) => (/^the whole project/.test(d.where) ? `across ${d.where}` : `at ${code(d.where)}`);
+
 /** The line a decision adds under `## Decisions`, ending with its id so it can be found again. */
-export const designLine = (d) => `- ${d.date} — Kept \`${d.rule}\` at \`${d.where}\`: ${d.reason.replace(/\.$/, "")}. (${d.by}; ${d.id} in ${DECISIONS_FILE})`;
+export const designLine = (d) => `- ${d.date} — Kept \`${d.rule}\` ${placed(d, (s) => `\`${s}\``)}: ${d.reason.replace(/\.$/, "")}. (${d.by}; ${d.id} in ${DECISIONS_FILE})`;
 
 /**
  * Write each decision as one line under DESIGN.md's `## Decisions`, where the

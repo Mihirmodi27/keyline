@@ -158,6 +158,7 @@ npx trykeyline keep --drop k3           # take one back: the finding is raised a
 Each decision goes in `.keyline/decisions.json` and as one line under `## Decisions` in `DESIGN.md`, where the agent reads it before it works. Commit both, and every person, agent and CI run reads the same memory.
 
 - **It follows the code.** A decision about a source line matches the rule, file and text of the line, as the baseline does: code moving around it changes nothing, and a change to the line itself raises it again. `npx trykeyline check` names any decision that no longer matches anything, and `/keyline sync` asks what to do with it.
+- **Some findings are the whole project's.** A few rules judge the project, not one line: too many font weights in an area, too many durations with no ladder. Keeping one of those keeps it across the whole project (or that area), until the finding goes away. A duration off a written ladder is still one line, and is kept like any other.
 - **It's never hidden.** Every report counts what decisions kept, and `check --all` and the audit report list each one with its reason and who decided.
 - **It's yours, not the agent's.** The agent records one only when you say a finding is deliberate, in your words. A kept finding stops counting against the score, so the agent never keeps one to clear something it couldn't fix. A contrast failure on text can't be kept.
 

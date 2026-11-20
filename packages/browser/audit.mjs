@@ -169,6 +169,8 @@ export function sourceFindings(run, root, ignores = []) {
       file: f.file,
       line: f.line,
       fingerprint: f.fingerprint,
+      lineprint: f.lineprint,
+      scope: f.scope,
       fix: FIX[f.domain],
     });
   }
