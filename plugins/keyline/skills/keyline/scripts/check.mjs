@@ -302,7 +302,11 @@ export function check({ root = ".", paths = ["."], ignores = [], rules = null, o
     findings = findings.filter((f) => mine.has(f.file));
   } else {
     files = collect(absRoot, paths.map((p) => resolve(absRoot, p)), ignores);
-    findings = runRules(gather(absRoot, files, cache), design, rules, tokens(files));
+    const facts = gather(absRoot, files, cache);
+    // A folder or a few paths: rules that compare across the project (a component copy) still compare against all of it.
+    const atRoot = paths.length === 1 && resolve(absRoot, paths[0]) === absRoot;
+    const all = atRoot ? () => facts : once(() => gather(absRoot, collect(absRoot, [absRoot], ignores), cache));
+    findings = runRules(facts, design, rules, tokens(files), all, !atRoot);
   }
   findings.sort((a, b) => a.file.localeCompare(b.file) || a.line - b.line || bySeverity(a, b));
   const checked = files.map((f) => f.rel);
@@ -335,6 +339,7 @@ function human(result, { all, color, baseline, changed }) {
   out.push(`Keyline check — ${changed ? `${plural(result.files, "changed file")} since ${changed.base}` : `${result.files} files`}${d.found ? `, preset ${d.preset ?? "not set"} (${d.file})` : ", no DESIGN.md (run /keyline init for verdicts that follow your system)"}`);
   if (d.areas?.length) out.push(dim(`  areas: ${d.areas.map((a) => `${a.pattern} → ${a.preset}`).join(" · ")}`));
   if (d.components?.length) out.push(dim(`  components: ${d.components.map((c) => `${c.role} → ${c.name ?? c.file.split("/").pop()}`).join(" · ")}`));
+  for (const c of d.componentsUnread ?? []) out.push(paint("33", `  ${d.file} gives \`${c.role}\` to "${c.cell}", which isn't a file path. Name the file (\`src/components/ui/button.tsx\`), with the export if it has several.`));
   for (const c of d.componentsMissing ?? []) out.push(paint("33", `  ${d.file} gives \`${c.role}\` to ${c.file}, which isn't there. Update ## Components (/keyline sync).`));
   if (d.areasUnread) out.push(paint("33", `  The | Areas | row in ${d.file} isn't written as \`pattern → preset\`, so every file is judged by ${d.preset ?? "the default verdicts"}. Write it like \`app/docs/** → editorial\` (several separated by ·).`));
   out.push("");
@@ -577,7 +582,7 @@ export function run(argv) {
 
   const prefix = changed?.prefix ?? repoOf(resolve(opts.root))?.prefix ?? "";
   const report = () => {
-    const design = { found: result.design.found, file: result.design.file ?? null, preset: result.design.preset, areas: (result.design.areas ?? []).map(({ pattern, preset }) => ({ pattern, preset })), components: result.design.components ?? [], componentsMissing: result.design.componentsMissing ?? [], durations: result.design.durations ? [...result.design.durations] : null, zLadder: result.design.zLadder ? [...result.design.zLadder] : null };
+    const design = { found: result.design.found, file: result.design.file ?? null, preset: result.design.preset, areas: (result.design.areas ?? []).map(({ pattern, preset }) => ({ pattern, preset })), components: result.design.components ?? [], componentsMissing: result.design.componentsMissing ?? [], componentsUnread: result.design.componentsUnread ?? [], durations: result.design.durations ? [...result.design.durations] : null, zLadder: result.design.zLadder ? [...result.design.zLadder] : null };
     const out = { files: result.files, design, summary: { ...s, kept: result.kept.length }, findings: result.findings, prefix };
     // Added, never replacing a field: CI and the Action read this.
     out.kept = result.kept.map(({ decision, ...f }) => ({ ...f, decision: decision.id, reason: decision.reason, by: decision.by, date: decision.date }));

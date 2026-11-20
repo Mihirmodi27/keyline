@@ -48,7 +48,8 @@ export function looks(facts, styles) {
   const owner = (file, line) => {
     const list = byFile.get(file);
     if (!list) return null;
-    let found = null;
+    // Classes above the first component (a `cva(…)` recipe, a class constant) are its.
+    let found = list[0];
     for (const x of list) if (x.component.line <= line) found = x;
     return found;
   };

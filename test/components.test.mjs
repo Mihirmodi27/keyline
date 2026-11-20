@@ -5,6 +5,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { check } from "../plugins/keyline/skills/keyline/scripts/check.mjs";
 import { format, guardFile } from "../plugins/keyline/skills/keyline/scripts/guard.mjs";
+import { decide } from "../plugins/keyline/skills/keyline/scripts/check/decisions.mjs";
 
 function project(files) {
   const root = mkdtempSync(join(tmpdir(), "keyline-components-"));
@@ -19,13 +20,34 @@ const comp = (name, cls = LOOK, tag = "span") => `export function ${name}({ chil
 const design = (rows) => `# Design system\n\n## Profile\n\n| | |\n|---|---|\n| Preset | \`product\` |\n\n## Components\n\n| Role | Component | Notes |\n|---|---|---|\n${rows}\n`;
 const of = (r, rule) => r.findings.filter((f) => f.rule === rule);
 
-test("a component built like another is reported once, on the later one, naming the original", () => {
+test("with neither tagged, each of a pair is reported, naming the other", () => {
   const r = check({ root: project({ "src/ui/Button.tsx": comp("Button"), "src/marketing/CtaButton.tsx": comp("CtaButton", LOOK + " shadow-sm") }) });
   const found = of(r, "depth/component-copy");
-  assert.equal(found.length, 1);
-  assert.equal(found[0].file, "src/ui/Button.tsx", "untagged, the later of the pair by path carries it");
-  assert.match(found[0].message, /`Button` is built like `CtaButton` \(src\/marketing\/CtaButton\.tsx\): 8 of 9 style values the same/);
+  assert.deepEqual(found.map((f) => f.file).sort(), ["src/marketing/CtaButton.tsx", "src/ui/Button.tsx"]);
+  assert.match(found.find((f) => f.file === "src/ui/Button.tsx").message, /`Button` is built like `CtaButton` \(src\/marketing\/CtaButton\.tsx\): 8 of 9 style values the same/);
   assert.equal(found[0].severity, "info");
+});
+
+test("a copy kept from a full run stays kept in the guard, on either file", () => {
+  const root = project({ "src/ui/Button.tsx": comp("Button"), "src/z/CtaButton.tsx": comp("CtaButton") });
+  decide(root, of(check({ root }), "depth/component-copy"), { reason: "the CTA will get its own look next sprint", by: "test" });
+  assert.deepEqual(of(check({ root }), "depth/component-copy"), []);
+  assert.equal(guardFile("src/z/CtaButton.tsx", { base: root, env: {} }), null);
+  assert.equal(guardFile("src/ui/Button.tsx", { base: root, env: {} }), null);
+});
+
+test("a check of one folder still compares against the whole project", () => {
+  const root = project({ "src/ui/Button.tsx": comp("Button"), "src/marketing/CtaButton.tsx": comp("CtaButton") });
+  const r = check({ root, paths: ["src/marketing"] });
+  assert.deepEqual(of(r, "depth/component-copy").map((f) => f.file), ["src/marketing/CtaButton.tsx"]);
+});
+
+test("classes in a recipe above the component (cva) are its; constants are not components", () => {
+  const cva = (name) => `import { cva } from "class-variance-authority";\nconst ${name.toLowerCase()}Variants = cva("${LOOK}", { variants: {} });\nconst ITEMS = [1, 2].map((x) => x);\nexport function ${name}(p) {\n  return <button className={${name.toLowerCase()}Variants()} {...p} />;\n}\n`;
+  const root = project({ "src/ui/Button.tsx": cva("Button"), "src/z/Pill.tsx": cva("Pill") });
+  const found = of(check({ root }), "depth/component-copy");
+  assert.equal(found.length, 2);
+  assert.ok(found.every((f) => f.line === 4), "the component line, not the constant's");
 });
 
 test("a tag in DESIGN.md decides which is the original", () => {
@@ -51,7 +73,7 @@ test("plain CSS compares declarations, not class names", () => {
       "src/Cta.tsx": comp("Cta", "cta", "button"),
     }),
   });
-  assert.equal(of(r, "depth/component-copy").length, 1);
+  assert.equal(of(r, "depth/component-copy").length, 2);
 });
 
 test("variants in one file, route files, plain components and different looks are not copies", () => {
@@ -97,4 +119,6 @@ test("check lists the components DESIGN.md names, and warns about one whose file
   const r = check({ root });
   assert.deepEqual(r.design.components.map((c) => c.role), ["button", "card"]);
   assert.deepEqual(r.design.componentsMissing.map((c) => c.file), ["src/ui/Card.tsx"]);
+  const unread = check({ root: project({ "DESIGN.md": design("| `button` | `@/components/ui/button` | |\n| toast | — | |") }) });
+  assert.deepEqual(unread.design.componentsUnread.map((c) => c.role), ["button"], "a cell with no file is said, a dash is not");
 });

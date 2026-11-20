@@ -77,7 +77,7 @@ function bestArea(areas, path) {
  * export (`Button`, or `button.tsx#Button`). Without an export, every component
  * in the file is the role's.
  */
-export function parseComponents(text) {
+export function parseComponents(text, unread = []) {
   const out = [];
   for (const row of String(text ?? "").split("\n")) {
     if (!row.trim().startsWith("|") || /^\|\s*:?-{2,}/.test(row.trim()) || /\be\.g\./i.test(row)) continue;
@@ -86,7 +86,11 @@ export function parseComponents(text) {
     if (!role || !/^[a-z][\w.-]*$/.test(role) || role === "role") continue;
     const cell = cells[1] ?? "";
     const path = cell.match(/[\w@~.()[\]/-]+\.(?:tsx|jsx|vue|svelte|astro|ts|js|mjs)\b/)?.[0];
-    if (!path) continue;
+    if (!path) {
+      // A role with something written for it that isn't a file: say so, rather than drop it in silence.
+      if (cell && !/^(—|–|-|none|n\/a)(\s|$)/i.test(cell.replace(/`/g, "").trim())) unread.push({ role, cell });
+      continue;
+    }
     const name = cell.match(/#([A-Z]\w*)/)?.[1] ?? [...cell.matchAll(/`([A-Z]\w*)`/g)].map((m) => m[1])[0] ?? null;
     out.push({ role, file: path.replace(/^\.\//, ""), name });
   }
@@ -156,7 +160,8 @@ export function readDesign(root) {
   const guardRow = profile.split("\n").find((l) => /^\|\s*Guard\s*\|/i.test(l)) ?? "";
   const guard = !/\b(off|no|false|disabled?)\b/i.test(guardRow.split("|").slice(2).join("|"));
 
-  const components = parseComponents(section(md, "Components"));
+  const componentsUnread = [];
+  const components = parseComponents(section(md, "Components"), componentsUnread);
   // A listed file that's gone: copies of it can't be found, so say so rather than go quiet.
   const componentsMissing = components.filter((c) => !existsSync(join(root, c.file)));
 
@@ -164,6 +169,7 @@ export function readDesign(root) {
     found: true,
     components,
     componentsMissing,
+    componentsUnread,
     guard,
     file: name,
     lines: { motion: headingLine("Motion"), layout: headingLine("Layout") },

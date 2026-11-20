@@ -20,7 +20,7 @@
  */
 
 import { arbitrary, nameTokens, trivial } from "./tokens.mjs";
-import { ALIKE, MIN_VALUES, classStyles, looks, overlap, taggedAs } from "./components.mjs";
+import { ALIKE, MIN_VALUES, ROUTE_FILE, classStyles, looks, overlap, taggedAs } from "./components.mjs";
 
 const COLOR_FN = /\b(rgba?|hsla?|oklch|oklab|lab|lch|hwb)\(([^()]*(?:\([^()]*\)[^()]*)*)\)/gi;
 const HEX = /(^|[^\w&-])#([0-9a-f]{3,4}|[0-9a-f]{6}|[0-9a-f]{8})\b/i;
@@ -500,12 +500,13 @@ const depthRules = [
     title: "A component built like one that exists",
     check(facts, ctx = {}) {
       const tags = ctx.design?.components ?? [];
+      // Most edits touch no component: don't read the project for them.
+      if (!facts.components.some((c) => !ROUTE_FILE.test(c.file))) return [];
       // The pool is the whole project, even when only a few files are checked: the original is usually elsewhere.
       const whole = ctx.whole?.() ?? facts;
       const styles = classStyles(whole.decls);
       const pool = looks(whole, styles).filter((x) => x.values.size >= MIN_VALUES);
       const mine = ctx.partial ? looks(facts, styles).filter((x) => x.values.size >= MIN_VALUES) : pool;
-      const order = (c) => `${c.file}\0${String(c.line).padStart(6, "0")}`;
       const out = [];
       for (const a of mine) {
         if (taggedAs(tags, a.component)) continue; // the tagged one is the original, never the copy
@@ -516,9 +517,9 @@ const depthRules = [
           if (o.shared / o.of >= ALIKE && (!best || o.shared / o.of > best.o.shared / best.o.of)) best = { b: b.component, o };
         }
         if (!best) continue;
+        // With neither tagged, each of the pair is reported, naming the other: which is the copy is the
+        // reader's call, and a finding stays put whichever files a run checks, so a kept one stays kept.
         const tag = taggedAs(tags, best.b);
-        // An untagged pair is reported once, on the one that comes later — or, checking a few files, on the one being written.
-        if (!tag && !ctx.partial && order(best.b) > order(a.component)) continue;
         out.push({
           file: a.component.file,
           line: a.component.line,

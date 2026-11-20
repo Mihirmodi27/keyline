@@ -154,7 +154,8 @@ export function readMarkup(source, ext) {
   const components = [];
   if (ext === ".vue" || ext === ".svelte" || ext === ".astro") components.push({ name: null, line: 1 });
   else if (ext !== ".html") {
-    const DEF = /^[ \t]*(?:export\s+(?:default\s+)?)?(?:(?:async\s+)?function\s+([A-Z]\w*)\s*[(<]|(?:const|let)\s+([A-Z]\w*)\b[^=\n]*=[^;\n]*?(?:=>|\bforwardRef\b|\bmemo\(|\bfunction\b|\bstyled[.(]))/gm;
+    // At the top level, named like a component: `ITEMS` or `API_URL` is a constant, not one.
+    const DEF = /^(?:export\s+(?:default\s+)?)?(?:(?:async\s+)?function\s+([A-Z][A-Za-z0-9]*[a-z][A-Za-z0-9]*)\s*[(<]|(?:const|let)\s+([A-Z][A-Za-z0-9]*[a-z][A-Za-z0-9]*)\b[^=\n]*=[^;\n]*?(?:=>|\bforwardRef\b|\bmemo\(|\bfunction\b|\bstyled[.(]))/gm;
     for (const m of text.matchAll(DEF)) components.push({ name: m[1] ?? m[2], line: at(m.index + m[0].search(/\S/)) });
   }
 
