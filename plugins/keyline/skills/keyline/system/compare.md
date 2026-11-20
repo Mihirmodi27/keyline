@@ -39,6 +39,8 @@ The previous run's findings with no match go in a top-level `fixed` array (each 
 
 A shot whose changed share is above the threshold (`--threshold`, in percent, default `0.01`, so a changed heading on a 1440×900 page, about 0.08%, counts) gets an `info` finding, `visual/changed`, with `box` round everything that changed and `diff` pointing at the diff image. It is neither new nor still; it describes the comparison. `--no-diff` compares findings only. If no browser can launch, the findings are still compared and `compare.visual.skipped` says why.
 
+Two audits compared carry the score out of 10: the new run's `history` becomes the old run's `history` plus its `score`, and the report shows the trail (`6 → 7.5 → 8.5`).
+
 The HTML report gains a **Since last run** section (the counts, what was fixed, every diffed screenshot with its share changed), a badge on each finding (New, Back, Still, Changed) and a filter for them. Compared against a run, `capture` exits 1 only on errors that are new or back, as the detector does against its baseline.
 
 ### The detector's baseline

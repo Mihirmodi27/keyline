@@ -2,12 +2,46 @@
 
 An interface inspected as a reader meets it and as its code is written: what the eye lands on first, which laws it breaks, and the evidence for each. The target sets how far it goes:
 
-- **One screen** — a route, file, component or flow is named, or the conversation is about one screen: a designer's close read, in chat. What the reader notices first, what's working, and the few changes that matter most, ranked, each tied to a law. Follow **One screen** below.
-- **The whole product** — nothing is named and no screen is in view, or the user asks for the app, the site, every page: every page at desktop and phone, light and dark, every law checked with evidence, AI slop and accessibility included, scored per domain and written up as one report a person can read, filter and share. Follow **The whole product** below.
+- **One screen** — a route, file, component or flow is named, or the conversation is about one screen: a designer's close read, in chat. What the reader notices first, what's working, the few changes that matter most, ranked, each tied to a law, a score out of 10, and what it would take to reach 8–9. Follow **One screen** below.
+- **The whole product** — nothing is named and no screen is in view, or the user asks for the app, the site, every page: every page at desktop and phone, light and dark, every law checked with evidence, AI slop and accessibility included, scored out of 10 and per domain, and written up as one report a person can read, filter and share. Follow **The whole product** below.
+
+Both end with a score out of 10 (below) and a **To reach 8–9** section: 8 is the bar a screen clears before it ships, and `polish` works towards it in rounds.
 
 Say which in your first line ("Auditing `/settings` as one screen"), so the user can widen or narrow it. `/keyline critique` and "review this" are this command on one screen.
 
 **Changes no code.** It reports, and writes its findings into `DESIGN.md`.
+
+## The score out of 10
+
+One number a person reads first, in half points. Score what a reader meets, not the effort that went in.
+
+| Score | Means |
+|---|---|
+| 10 | Nothing a careful designer would change |
+| 9 | Every law holds; what's left is taste |
+| 8 | **Ready to ship.** No reader meets a broken law: small strays at most, nothing a reader would notice |
+| 7 | Close: one law a reader feels, in one place |
+| 5–6 | Works, but a reader feels the faults: several laws broken, or one broken everywhere |
+| 3–4 | Broken for someone: text they can't read, a control they can't reach, a button that does nothing |
+| 1–2 | Broken across the board |
+
+**Caps.** Evidence holds the score down whatever the judgement says. Never score above the lowest cap that applies:
+
+- **6** while any error is open: broken for someone, whether the audit, the smoke test or your own read found it. Text that fails contrast is always one.
+- **7** while a law a reader feels is broken: any open warning (a machine warning you judge wrong is dismissed, with the reason, not ignored), and on the whole product any domain scoring 2.
+- **5** while a domain isn't working as a system: on the whole product, any domain scoring 0 or 1.
+- **7** when the score comes from the code alone. What the reader sees hasn't been looked at.
+
+**A re-score is a fresh look.** After changes, render and measure again, the same way as the first time. Don't tick off the list of what was changed. A change that didn't land, or a finding that comes back, earns nothing. Each half point gained names what earned it.
+
+**To reach 8–9** is the path, not a repeat of the findings:
+
+- which changes clear which cap, and in what order (polish order unless a cap says otherwise);
+- the command that makes each one;
+- the score you expect after them;
+- anything that needs the owner's call because no law settles it: a dial off the preset, the brand colour, a feature.
+
+At 8 or above, the section is **To reach 9**, or says what keeps it from 10 when that's taste.
 
 ## One screen
 
@@ -19,14 +53,17 @@ Say which in your first line ("Auditing `/settings` as one screen"), so the user
 2. **Name what the screen is for and who reads it**, in one sentence. Everything below is measured against it.
 3. **Read it as its reader would, in order:** what the eye lands on first, second, third — and whether that order matches what matters. Then how it groups, what competes, what's missing, what's noise.
 4. **Tie each problem to a law**, by domain and number (`layout law 3`), so the fix is a rule rather than a taste. Where a named UX law explains *why* the reader feels it, name that too (`layout law 13, Fitts's law`) — it tells the owner the problem is about people, not preference. The names, and where Keyline holds each, are in `commands/ux-laws.md`.
+5. **Score it** out of 10, as **The score out of 10** says: the anchor first, then the caps.
 
 **Report:**
 
 - **The read** — two or three sentences: what the screen gets right, and the one thing that most undercuts it.
 - **Changes, most important first** — at most five. Each: what's wrong, as the reader feels it; the law; the evidence where there is a measurement (a ratio, a size, a `file:line`); the fix in a sentence, in the project's names; and the command that makes it (`/keyline layout`).
 - **Keep** — what's working and shouldn't be touched by the fixes.
+- **Score** — `7/10`, its anchor's words, and the cap holding it down, if one does.
+- **To reach 8–9** — as **The score out of 10** says.
 
-Don't pad to five. Don't list what's fine as a problem to fix. No scores and no HTML report for one screen: those are the whole product's.
+Don't pad to five. Don't list what's fine as a problem to fix. No HTML report for one screen: that's the whole product's.
 
 **Write back:** each change that names a law goes under `## Open issues` in `DESIGN.md`, one line with its evidence, replacing entries for this screen now fixed.
 
@@ -68,7 +105,7 @@ Don't pad to five. Don't list what's fine as a problem to fix. No scores and no 
 
 4. **Judge the machine's findings too.** A measurement is a lead, not a verdict. A finding that is right by the numbers but wrong for this product gets `status: "dismissed"` with the reason in `detail`. Examples: an uppercase eyebrow under the `expressive` preset, which allows them; small text inside an illustration; a tap target the user has accepted. Never dismiss a contrast failure on text people read.
 
-5. **Score each domain** 0–4 and replace the draft in `scores`; set `scoresDraft` to `false`:
+5. **Score each domain** 0–4 and replace the draft in `scores`:
 
    | Score | Means |
    |---|---|
@@ -77,6 +114,8 @@ Don't pad to five. Don't list what's fine as a problem to fix. No scores and no 
    | 2 | A law broken in a way a reader feels — a hierarchy inversion, a failed contrast tier, a box around everything |
    | 1 | Several laws broken across templates; the domain isn't working as a system |
    | 0 | No system: values typed inline, nothing on a ladder |
+
+   Then **settle the score out of 10** in `score`. The runner drafts it as 2 + 2 × the mean of the domain scores, so all 3s is 8, held under the caps. Move it by judgement within **The score out of 10**, never above a cap. Set `scoresDraft` to `false`. The report shows the score above the domain table, with the caps holding it and, when an earlier run in the same folder covered the same pages, the trail (`6 → 7.5 → 8.5`). A score settled above its caps is flagged there. A runner older than 0.3 writes no `score`: work it out the same way, write it into `findings.json` as `score`, and give it in chat.
 
 6. **Write the summary**, `summary` in `findings.json`: one paragraph a person reads first, written as the one-screen read is, for the whole product. Say what a visitor feels, the three things that matter most, what's working that the fixes shouldn't touch, and the order to fix in (usually the lowest score first, unless a law in another domain blocks it).
 
@@ -92,10 +131,11 @@ Don't pad to five. Don't list what's fine as a problem to fix. No scores and no 
 
 **Report** in chat, kept short; the detail is in the report. Give:
 - the summary paragraph;
-- the score table;
+- the score out of 10, with the cap holding it down, and the domain table;
 - the worst five findings, one line each with evidence and law;
+- **To reach 8–9**;
 - the path to (or link for) the report.
 
-**No `DESIGN.md` yet** (stage 1 of the flow in `SKILL.md`): audit from the code. Both targets run as written. Choose the preset the reader points to (`system/presets.md`) and say which you assumed and why. The detector has no preset to read, so its preset rules fall back to their neutral verdicts; judge those findings, and score the dials, against the preset you assumed. Skip the write-back steps: there's no file yet, and `init` records these findings as its open issues.
+**No `DESIGN.md` yet** (stage 1 of the flow in `SKILL.md`): audit from the code. Both targets run as written. Choose the preset the reader points to (`system/presets.md`) and say which you assumed and why. The detector has no preset to read, so its preset rules fall back to their neutral verdicts; judge those findings, and score the dials, against the preset you assumed. The score out of 10 is unaffected: it scores what the reader meets. Skip the write-back steps: there's no file yet, and `init` records these findings as its open issues.
 
-**Next** (format in `SKILL.md`, `## The flow`): with no `DESIGN.md`, `init`, so the findings are kept and the fixes land in the project's names. With one, for one screen, the command the top change names, on that screen, or `polish` when the changes span two or more domains; for the whole product, `polish --from keyline-report` on the screen with the most findings, or the lowest-scoring domain's own command when that domain holds most of them.
+**Next** (format in `SKILL.md`, `## The flow`): with no `DESIGN.md`, `init`, so the findings are kept and the fixes land in the project's names. With one, below 8: for one screen, `polish` on that screen, which works in rounds until it reaches 8; for the whole product, `polish --from keyline-report`. At 8 or above, the **To reach 9** change's own command, or `audit` on a screen no report has covered.

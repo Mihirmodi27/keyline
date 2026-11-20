@@ -68,6 +68,9 @@ export function compareRuns(run, prev, { against = null } = {}) {
   };
   run.fixed = left.filter(seen).map(({ change, previous, ...f }, i) => ({ ...f, previous: f.id, id: `x${i + 1}`, change: "fixed" }));
 
+  // An audit compared with an earlier audit carries its score trail, so a polish loop shows its progress.
+  if (run.kind === "audit" && prev.kind === "audit" && typeof prev.score === "number") run.history = [...(prev.history ?? []), prev.score];
+
   const count = (c) => run.findings.filter((f) => f.change === c).length;
   run.compare = {
     against,

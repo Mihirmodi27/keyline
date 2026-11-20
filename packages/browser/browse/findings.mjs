@@ -15,6 +15,8 @@
  *     "title": "Lumen", "base": "http://localhost:3000", "root": "/abs/project",
  *     "started": ISO, "finished": ISO,
  *     "scores": { "type": 3, … } | null,          // 0–4 per domain, audit only
+ *     "score": 7.5 | null,                        // out of 10, audit only; 8 is ready to ship (score.mjs)
+ *     "history": [6, 7],                          // earlier runs' scores over the same pages, oldest first
  *     "summary": "one paragraph a person reads first" | null,
  *     "pages": [ { "route": "/settings", "url": …, "title": …, "status": 200,
  *                  "shots": { "desktop-light": { "path": "shots/…png", "width": 1440, "height": 3120 } } } ],
@@ -67,6 +69,8 @@ export function newRun({ kind, title = null, base = null, root = null }) {
     started: new Date().toISOString(),
     finished: null,
     scores: null,
+    score: null,
+    history: [],
     summary: null,
     pages: [],
     findings: [],

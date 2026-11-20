@@ -11,6 +11,7 @@
 import { writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { counts, readRun, sortFindings } from "./findings.mjs";
+import { SHIP, scoreCaps } from "./score.mjs";
 
 const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
 
@@ -96,12 +97,38 @@ function card(f, page) {
 </article>`;
 }
 
-function scoreTable(scores, draft) {
+/** What a score out of 10 means, in the words the audit's anchors use (commands/audit.md). */
+export function scoreWord(n) {
+  if (n >= 9) return "Excellent";
+  if (n >= SHIP) return "Ready to ship";
+  if (n >= 7) return "Close to the bar";
+  if (n >= 5) return "Works, but a reader feels the faults";
+  if (n >= 3) return "Broken for someone";
+  return "Broken";
+}
+
+const fmt = (n) => (Number.isInteger(n) ? String(n) : n.toFixed(1));
+
+/** The headline: the score out of 10, how it got here, and what holds it down. */
+function headline(run) {
+  if (typeof run.score !== "number") return "";
+  const caps = scoreCaps(run.scores, run.findings);
+  const cap = caps.length ? caps[0].max : 10;
+  const trail = [...(run.history ?? []), run.score].map(fmt).join(" → ");
+  const over = run.score > cap ? `<p class="headline__warn">Settled above what the evidence allows: at most ${fmt(cap)} while ${esc(caps[0].why)}.</p>` : "";
+  const held = caps.length ? `<ul class="headline__caps">${caps.map((c) => `<li>At most ${fmt(c.max)}: ${esc(c.why)}</li>`).join("")}</ul>` : "";
+  return `<section class="block headline"><h2>Score${run.scoresDraft ? ` <small class="draft">drafted from the measurements; not yet reviewed</small>` : ""}</h2>
+<p class="headline__score"><b>${esc(fmt(run.score))}</b><span>/10</span></p>
+<p class="headline__word">${esc(scoreWord(run.score))} · the bar is ${SHIP}${run.history?.length ? ` · <span class="headline__trail">rounds ${esc(trail)}</span>` : ""}</p>
+${over}${held}</section>`;
+}
+
+function scoreTable(scores, draft, title = "Scores") {
   if (!scores) return "";
   const rows = Object.entries(scores)
     .map(([d, s]) => `<tr><th scope="row">${esc(DOMAIN_NAMES[d] ?? d)}</th><td><span class="meter" style="--v:${Number(s) / 4}"></span></td><td>${esc(s)}/4</td><td>${esc(SCORE_WORDS[s] ?? "")}</td></tr>`)
     .join("");
-  return `<section class="block"><h2>Scores${draft ? ` <small class="draft">drafted from the measurements; not yet reviewed</small>` : ""}</h2><table class="scores"><tbody>${rows}</tbody></table></section>`;
+  return `<section class="block"><h2>${esc(title)}${draft ? ` <small class="draft">drafted from the measurements; not yet reviewed</small>` : ""}</h2><table class="scores"><tbody>${rows}</tbody></table></section>`;
 }
 
 function sinceSection(run) {
@@ -146,6 +173,14 @@ h2{margin:0 0 12px;font-size:16px;font-weight:500;letter-spacing:-.015em}
 .totals b{display:block;font-size:20px;font-weight:500;font-variant-numeric:tabular-nums}
 .totals span{font-size:13px;color:var(--faint)}
 .block{margin-top:48px}
+.headline__score{margin:0;display:flex;align-items:baseline;gap:4px}
+.headline__score b{font-size:48px;font-weight:500;letter-spacing:-.03em;line-height:1;font-variant-numeric:tabular-nums}
+.headline__score span{font-size:20px;color:var(--faint)}
+.headline__word{margin:8px 0 0;color:var(--muted);font-size:14px}
+.headline__trail{font-variant-numeric:tabular-nums}
+.headline__warn{margin:12px 0 0;font-size:14px;color:var(--err)}
+.headline__caps{margin:12px 0 0;padding-left:20px;font-size:14px;color:var(--muted)}
+.headline+.block{margin-top:24px}
 .scores{border-collapse:collapse;width:100%;font-size:14px}
 .scores th,.scores td{padding:8px 12px 8px 0;border-top:.5px solid var(--line);text-align:left;font-weight:400}
 .scores td:nth-child(3){font-variant-numeric:tabular-nums;color:var(--muted);width:4em}
@@ -242,7 +277,8 @@ export function render(run) {
 ${run.summary ? `<p class="summary">${esc(run.summary)}</p>` : ""}
 <ul class="totals"><li><b>${c.error}</b><span>Errors</span></li><li><b>${c.warning}</b><span>Warnings</span></li><li><b>${c.info}</b><span>Notes</span></li></ul>
 ${sinceSection(run)}
-${scoreTable(run.scores, run.scoresDraft)}
+${headline(run)}
+${typeof run.score === "number" ? scoreTable(run.scores, false, "By area") : scoreTable(run.scores, run.scoresDraft)}
 <nav class="filters" aria-label="Filter findings">
 <select name="severity" aria-label="Severity">${option("", "Every severity")}${option("error", "Errors")}${option("warning", "Warnings")}${option("info", "Notes")}</select>
 <select name="domain" aria-label="Area">${option("", "Every area")}${domains.map((d) => option(d, DOMAIN_NAMES[d] ?? d)).join("")}</select>

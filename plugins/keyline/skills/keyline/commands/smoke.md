@@ -2,6 +2,8 @@
 
 Use the running product the way a tester would — click everything, follow every link, submit every form, Tab through every page, open it on a phone and on a slow connection — and report the flows that break. Every finding comes with the steps that reproduce it. Where `audit` asks whether the interface keeps the laws, `smoke` asks whether it works.
 
+Inside a polish round, smoke runs on the pages that round touched (`--routes`), and any error it leaves open holds the score out of 10 at 6 (`commands/audit.md`). The safety rules below still hold.
+
 **Read:** `system/reports.md` (the target, the two ways to drive a browser, the report format). `DESIGN.md` isn't needed; the findings that a refining command fixes name it.
 
 ## What it checks

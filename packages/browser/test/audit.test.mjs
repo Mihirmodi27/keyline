@@ -3,7 +3,8 @@ import { mkdirSync, mkdtempSync, readFileSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { test } from "node:test";
-import { draftScores, scoreDomain, run } from "../audit.mjs";
+import { carryHistory, draftScore, draftScores, scoreCaps, scoreDomain, run } from "../audit.mjs";
+import { render } from "../browse/report.mjs";
 import { launch } from "../browse/playwright.mjs";
 
 test("draft scores fall with each rule broken, errors most", () => {
@@ -21,6 +22,59 @@ test("draft scores fall with each rule broken, errors most", () => {
   assert.equal(scores.depth, 4); // a note barely moves it
   assert.equal(scores.patterns, 4); // the dismissed error doesn't count
   assert.equal(scores.motion, 4);
+});
+
+const all = (n) => ({ type: n, color: n, layout: n, depth: n, motion: n, patterns: n });
+
+test("the score out of 10 maps all 3s to the ship bar and all 4s to 10", () => {
+  assert.equal(draftScore(all(4), []), 10);
+  assert.equal(draftScore(all(3), []), 8);
+  assert.equal(draftScore({ ...all(4), motion: 3 }, []), 9.5); // 2 + 2 × 23/6, to the half point
+  assert.equal(draftScore(null, []), null);
+});
+
+test("the score out of 10 is held under caps the evidence sets", () => {
+  // One open error holds a near-perfect product at 6.
+  assert.equal(draftScore(all(4), [{ rule: "color/contrast", severity: "error" }]), 6);
+  // A fixed or dismissed error doesn't.
+  assert.equal(draftScore(all(4), [{ rule: "color/contrast", severity: "error", status: "fixed" }]), 10);
+  // An open warning holds it at 7; a note doesn't.
+  assert.equal(draftScore(all(3), [{ rule: "copy/vague-label", severity: "warning" }]), 7);
+  assert.equal(draftScore(all(3), [{ rule: "copy/vague-label", severity: "info" }]), 8);
+  // A domain at 2 holds it at 7; at 1, at 5.
+  assert.equal(draftScore({ ...all(4), layout: 2 }, []), 7);
+  assert.equal(draftScore({ ...all(4), layout: 1 }, []), 5);
+  const caps = scoreCaps({ ...all(3), color: 2 }, [{ rule: "a11y/name", severity: "error" }]);
+  assert.deepEqual(caps.map((c) => c.max), [6, 7]);
+  assert.match(caps[1].why, /colour/);
+});
+
+test("history carries over only for a run over the same pages", () => {
+  const dir = mkdtempSync(join(tmpdir(), "keyline-history-"));
+  writeFileSync(join(dir, "findings.json"), JSON.stringify({ version: 1, kind: "audit", score: 7, history: [5.5], pages: [{ route: "/a" }, { route: "/b" }], findings: [] }));
+  assert.deepEqual(carryHistory(dir, ["/b", "/a"]), [5.5, 7]);
+  assert.deepEqual(carryHistory(dir, ["/a"]), []);
+  assert.deepEqual(carryHistory(join(dir, "missing"), ["/a"]), []);
+});
+
+test("comparing with an earlier audit carries its score trail, idempotently", async () => {
+  const { compareRuns } = await import("../browse/compare.mjs");
+  const prev = { version: 1, kind: "audit", score: 7, history: [5.5], pages: [], findings: [] };
+  const now = { version: 1, kind: "audit", score: 8.5, pages: [], findings: [] };
+  compareRuns(now, prev);
+  compareRuns(now, prev);
+  assert.deepEqual(now.history, [5.5, 7]);
+});
+
+test("the report headlines the score, its trail, and a score settled above its caps", () => {
+  const base = { version: 1, kind: "audit", title: "T", pages: [], finished: new Date().toISOString() };
+  const html = render({ ...base, scores: all(3), score: 8.5, history: [6, 7.5], findings: [] });
+  assert.match(html, /<b>8\.5<\/b><span>\/10<\/span>/);
+  assert.match(html, /Ready to ship/);
+  assert.match(html, /6 → 7\.5 → 8\.5/);
+  assert.match(html, /By area/);
+  const over = render({ ...base, scores: all(4), score: 9, findings: [{ id: "f1", rule: "color/contrast", title: "x", severity: "error", status: "open" }] });
+  assert.match(over, /Settled above what the evidence allows: at most 6/);
 });
 
 test("audit rules fall into the six scored domains", () => {
@@ -97,5 +151,7 @@ test("the audit finds the problems planted in a page", { timeout: 120000 }, asyn
   // A page without a dark theme isn't reported twice.
   assert.ok(!report.findings.some((f) => f.rule === "color/contrast" && f.theme === "dark"));
   assert.equal(report.scoresDraft, true);
+  assert.equal(typeof report.score, "number");
+  assert.ok(report.score <= 6, "the fixture has errors, so its draft is held at 6 or under");
   assert.match(readFileSync(join(out, "index.html"), "utf8"), /drafted from the measurements/);
 });

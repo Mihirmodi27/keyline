@@ -2,8 +2,8 @@
  * The audit's machine half: walk every page of a running product at desktop
  * and phone, light and dark; measure contrast, names, targets, overflow, the
  * type actually rendered, copy and the tells of AI slop inside each page; add
- * the detector's findings from the source; draft a score per domain; write
- * keyline-report/ (findings.json, index.html, shots/).
+ * the detector's findings from the source; draft a score per domain and one
+ * out of 10; write keyline-report/ (findings.json, index.html, shots/).
  *
  * The agent's half follows (commands/audit.md): look at the shots, add the
  * findings only judgement can make, settle the scores, write the summary, and
@@ -17,9 +17,10 @@
  */
 import { existsSync, rmSync } from "node:fs";
 import { resolve } from "node:path";
-import { add, counts, writeRun } from "./browse/findings.mjs";
+import { add, counts, readRun, writeRun } from "./browse/findings.mjs";
 import { shotKey } from "./browse/capture.mjs";
 import { renderDir } from "./browse/report.mjs";
+import { SHIP, draftScore, scoreCaps } from "./browse/score.mjs";
 import { walk } from "./browse/walk.mjs";
 import { parseOrExplain } from "./browse/args.mjs";
 import { target } from "./browse.mjs";
@@ -47,6 +48,7 @@ Options:
 
 /** The six law domains the scores are kept for, and where the audit's own rules fall among them. */
 export const SCORED = DOMAINS;
+export { SHIP, draftScore, scoreCaps };
 const SCORE_DOMAIN = {
   a11y: "patterns",
   copy: "patterns",
@@ -100,6 +102,24 @@ export function draftScores(findings) {
     scores[d] = Math.max(0, Math.min(4, Math.round(4 - penalty)));
   }
   return scores;
+}
+
+/**
+ * The scores of earlier runs in the same folder over the same pages, oldest
+ * first, so a polish loop shows its progress (6 → 7.5 → 8.5). A run over other
+ * pages starts a new history.
+ */
+export function carryHistory(out, routes) {
+  let prev;
+  try {
+    prev = readRun(out);
+  } catch {
+    return [];
+  }
+  if (prev.kind !== "audit" || typeof prev.score !== "number") return [];
+  const same = (a, b) => a.length === b.length && a.every((r, i) => r === b[i]);
+  if (!same([...(prev.pages ?? [])].map((p) => p.route).sort(), [...routes].sort())) return [];
+  return [...(prev.history ?? []), prev.score];
 }
 
 /** The detector's findings, as report findings pointing at source lines. Its walk already skips reports, dependencies and build output. */
@@ -197,6 +217,8 @@ export async function run(argv) {
 
     if (!opts["no-check"] && t.root && existsSync(t.root)) sourceFindings(result, t.root);
     result.scores = draftScores(result.findings);
+    result.score = draftScore(result.scores, result.findings);
+    result.history = carryHistory(out, result.pages.map((p) => p.route));
     result.scoresDraft = true;
     writeRun(out, result);
     const file = renderDir(out);

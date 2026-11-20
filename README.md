@@ -26,7 +26,7 @@ You don't need to learn the commands. A project goes through three stages, and e
 |---|---|---|
 | 1. Review | `/keyline audit` on one screen or the whole product | What's wrong with the interface as it is. No setup needed, and nothing changes |
 | 2. Set up | `/keyline init` (`/keyline sync` later on) | `DESIGN.md`: your token names, a preset for your reader, and the review's findings as open issues |
-| 3. Polish | `/keyline polish` | The fixes, one domain at a time, recorded back to `DESIGN.md` |
+| 3. Polish | `/keyline polish` | The fixes, one domain at a time, in rounds until the screen scores 8/10, recorded back to `DESIGN.md` |
 
 Then it starts over: polish the next screen with open issues, or review one nobody has looked at yet.
 
@@ -36,7 +36,7 @@ Then it starts over: polish the next screen with open issues, or review one nobo
 |---|---|
 | `/keyline init` | Scans the codebase, maps its tokens onto roles, picks a preset, writes `DESIGN.md` with the open issues it found |
 | `/keyline sync` | Reconciles `DESIGN.md` with code that has moved since |
-| `/keyline audit` | Name a screen for a designer's read: what the reader feels first, what's working, the few changes that matter. Name nothing for the whole product: every page at desktop and phone, light and dark, plus the code; accessibility, contrast, AI slop and every law checked with evidence, scored 0–4, in one HTML report |
+| `/keyline audit` | Name a screen for a designer's read: what the reader feels first, what's working, the few changes that matter. Name nothing for the whole product: every page at desktop and phone, light and dark, plus the code; accessibility, contrast, AI slop and every law checked with evidence, scored 0–4, in one HTML report. Both score it out of 10, where 8 is ready to ship, and say what would take it to 8–9 |
 | `/keyline smoke` | Uses your running app like a tester and reports what's broken, with the steps to reproduce each |
 | `/keyline type` | Type scale, weights, leading, tracking, emphasis, numerals, font loading |
 | `/keyline color` | Tokens by intent, text tiers by measured contrast, status colours, themes |
@@ -44,7 +44,7 @@ Then it starts over: polish the next screen with open issues, or review one nobo
 | `/keyline depth` | Elevation, shadows, edges, scrims, translucent surfaces and their fallbacks |
 | `/keyline motion` | Durations, curves, springs, open and close, reduced motion, scroll |
 | `/keyline patterns` | Labels, buttons, destructive actions, forms, agent UIs, dashboards |
-| `/keyline polish` | All six domains in order, one reviewable pass each |
+| `/keyline polish` | All six domains in order, one reviewable pass each, then a smoke test of what changed and a fresh score; it repeats until the screen reaches 8/10, or stops after three rounds and names what's holding it |
 
 You don't have to name a command: ask for "tighter spacing" or "a review of the settings page" and the agent picks one.
 
@@ -67,12 +67,12 @@ Form submits and anything that says delete, pay, buy, unsubscribe or log out run
 
 ```
 keyline-report/
-  index.html      scores, a summary, every finding with its screenshot cropped and the element outlined
+  index.html      the score out of 10 and per domain, a summary, every finding with its screenshot cropped and the element outlined
   findings.json   the same, for CI or the next run
   shots/
 ```
 
-`/keyline polish --from keyline-report` then fixes what's open, a domain at a time, and marks what it fixed. The measuring half runs on its own too:
+`/keyline polish --from keyline-report` then fixes what's open, a domain at a time, marks what it fixed, and re-audits until the report reaches 8/10; the report shows the trail (`6 → 7.5 → 8.5`). The measuring half runs on its own too:
 
 ```sh
 npx trykeyline audit --base http://localhost:3000       # a running app
