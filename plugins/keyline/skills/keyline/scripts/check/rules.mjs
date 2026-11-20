@@ -20,6 +20,7 @@
  */
 
 import { arbitrary, nameTokens, trivial } from "./tokens.mjs";
+import { ALIKE, MIN_VALUES, classStyles, looks, overlap, taggedAs } from "./components.mjs";
 
 const COLOR_FN = /\b(rgba?|hsla?|oklch|oklab|lab|lch|hwb)\(([^()]*(?:\([^()]*\)[^()]*)*)\)/gi;
 const HEX = /(^|[^\w&-])#([0-9a-f]{3,4}|[0-9a-f]{6}|[0-9a-f]{8})\b/i;
@@ -492,6 +493,66 @@ const backdropUses = (facts) => [
 ];
 
 const depthRules = [
+  {
+    id: "depth/component-copy",
+    domain: "depth",
+    law: "depth law 1",
+    title: "A component built like one that exists",
+    check(facts, ctx = {}) {
+      const tags = ctx.design?.components ?? [];
+      // The pool is the whole project, even when only a few files are checked: the original is usually elsewhere.
+      const whole = ctx.whole?.() ?? facts;
+      const styles = classStyles(whole.decls);
+      const pool = looks(whole, styles).filter((x) => x.values.size >= MIN_VALUES);
+      const mine = ctx.partial ? looks(facts, styles).filter((x) => x.values.size >= MIN_VALUES) : pool;
+      const order = (c) => `${c.file}\0${String(c.line).padStart(6, "0")}`;
+      const out = [];
+      for (const a of mine) {
+        if (taggedAs(tags, a.component)) continue; // the tagged one is the original, never the copy
+        let best = null;
+        for (const b of pool) {
+          if (b.component.file === a.component.file) continue; // variants written side by side are one component's
+          const o = overlap(a.values, b.values);
+          if (o.shared / o.of >= ALIKE && (!best || o.shared / o.of > best.o.shared / best.o.of)) best = { b: b.component, o };
+        }
+        if (!best) continue;
+        const tag = taggedAs(tags, best.b);
+        // An untagged pair is reported once, on the one that comes later — or, checking a few files, on the one being written.
+        if (!tag && !ctx.partial && order(best.b) > order(a.component)) continue;
+        out.push({
+          file: a.component.file,
+          line: a.component.line,
+          severity: "info",
+          use: { name: best.b.name, file: best.b.file, role: tag?.role },
+          message: `\`${a.component.name}\` is built like \`${best.b.name}\` (${best.b.file}${tag ? `, DESIGN.md's \`${tag.role}\`` : ""}): ${best.o.shared} of ${best.o.of} style values the same. Use ${best.b.name}, with a variant if this one differs; if it's a different thing, give it a look of its own.`,
+        });
+      }
+      return out;
+    },
+  },
+  {
+    id: "depth/hand-rolled",
+    domain: "depth",
+    law: "depth law 1",
+    title: "An element styled by hand where a component does its job",
+    check(facts, ctx = {}) {
+      const tags = ctx.design?.components ?? [];
+      if (!tags.length) return [];
+      const folder = (f) => f.slice(0, f.lastIndexOf("/") + 1);
+      const out = [];
+      for (const e of facts.elements) {
+        if (!e.styled) continue;
+        const t = tags.find((x) => x.role === e.role);
+        if (!t) continue;
+        // The component library builds from raw elements: its own files, and a ui/ or primitives/ folder it lives in.
+        if (tags.some((x) => x.file === e.file)) continue;
+        if (folder(e.file) === folder(t.file) && /(^|\/)(ui|primitives|base|design-system|ds)\/$/.test(folder(t.file))) continue;
+        const name = t.name ?? t.file.split("/").pop().replace(/\.\w+$/, "").replace(/(^|[-_])(\w)/g, (_, __, c) => c.toUpperCase());
+        out.push({ ...where(e), severity: "info", use: { name, file: t.file, role: t.role }, message: `A \`<${e.tag}>\` styled by hand. DESIGN.md gives \`${t.role}\` to \`${name}\` (${t.file}): use it, with a variant if this one differs.` });
+      }
+      return out;
+    },
+  },
   tokenBypass({ id: "depth/raw-shadow", domain: "depth", law: "depth law 4", title: "Shadow typed raw where a token has it", family: "shadow", what: "level", whole: true, props: /^box-shadow$/, classes: /^shadow-\[/ }),
   {
     id: "depth/backdrop-guard",

@@ -1,6 +1,6 @@
 /**
  * What the detector takes from DESIGN.md: the preset (which turns some rules on
- * or off), the areas on another preset, the case it records for labels, the motion ladder, the z-index ladder, and whether the live
+ * or off), the areas on another preset, the component each role belongs to, the case it records for labels, the motion ladder, the z-index ladder, and whether the live
  * guard runs (`| Guard | off |` under ## Profile). Everything else in the file is for the agent; the
  * detector only needs what changes a verdict.
  *
@@ -66,6 +66,33 @@ function bestArea(areas, path) {
   return best;
 }
 
+/**
+ * The `## Components` table: which component does each role, so a copy of it
+ * or a hand-styled element doing its job can be pointed back at it.
+ *
+ *   | Role | Component | Notes |
+ *   | `button` | `Button` in `src/components/ui/button.tsx` | variants: default, quiet |
+ *
+ * The role is the first cell; the second names the file and, optionally, the
+ * export (`Button`, or `button.tsx#Button`). Without an export, every component
+ * in the file is the role's.
+ */
+export function parseComponents(text) {
+  const out = [];
+  for (const row of String(text ?? "").split("\n")) {
+    if (!row.trim().startsWith("|") || /^\|\s*:?-{2,}/.test(row.trim()) || /\be\.g\./i.test(row)) continue;
+    const cells = row.split("|").slice(1, -1).map((c) => c.trim());
+    const role = cells[0]?.replace(/`/g, "").trim().toLowerCase();
+    if (!role || !/^[a-z][\w.-]*$/.test(role) || role === "role") continue;
+    const cell = cells[1] ?? "";
+    const path = cell.match(/[\w@~.()[\]/-]+\.(?:tsx|jsx|vue|svelte|astro|ts|js|mjs)\b/)?.[0];
+    if (!path) continue;
+    const name = cell.match(/#([A-Z]\w*)/)?.[1] ?? [...cell.matchAll(/`([A-Z]\w*)`/g)].map((m) => m[1])[0] ?? null;
+    out.push({ role, file: path.replace(/^\.\//, ""), name });
+  }
+  return out;
+}
+
 function section(md, heading) {
   const m = md.match(new RegExp(`^##\\s+${heading}\\b[^\\n]*\\n([\\s\\S]*?)(?=^##\\s|(?![\\s\\S]))`, "mi"));
   return m ? m[1] : "";
@@ -73,7 +100,7 @@ function section(md, heading) {
 
 export function readDesign(root) {
   const name = existsSync(root) ? readdirSync(root).find((f) => f.toLowerCase() === "design.md") : null;
-  if (!name) return withAreas({ found: false, preset: null, areas: [], labelCase: null, durations: null, roles: new Map(), zLadder: null, guard: true });
+  if (!name) return withAreas({ found: false, preset: null, areas: [], components: [], labelCase: null, durations: null, roles: new Map(), zLadder: null, guard: true });
   const md = readFileSync(join(root, name), "utf8");
   const headingLine = (h) => {
     const i = md.search(new RegExp(`^##\\s+${h}\\b`, "mi"));
@@ -129,8 +156,14 @@ export function readDesign(root) {
   const guardRow = profile.split("\n").find((l) => /^\|\s*Guard\s*\|/i.test(l)) ?? "";
   const guard = !/\b(off|no|false|disabled?)\b/i.test(guardRow.split("|").slice(2).join("|"));
 
+  const components = parseComponents(section(md, "Components"));
+  // A listed file that's gone: copies of it can't be found, so say so rather than go quiet.
+  const componentsMissing = components.filter((c) => !existsSync(join(root, c.file)));
+
   return withAreas({
     found: true,
+    components,
+    componentsMissing,
     guard,
     file: name,
     lines: { motion: headingLine("Motion"), layout: headingLine("Layout") },

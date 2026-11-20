@@ -49,6 +49,11 @@ function balanced(text, open, openCh, closeCh) {
 /** Static parts of a template literal body; ${…} becomes spaces of equal length. */
 const staticParts = (s) => s.replace(/\$\{[^}]*\}/g, (m) => " ".repeat(m.length));
 
+const ROLE_ALIAS = { alertdialog: "dialog", tablist: "tabs" };
+const TAG_ROLE = { button: "button", textarea: "input", select: "select", dialog: "dialog", table: "table" };
+const INPUT_ROLE = { checkbox: "checkbox", radio: "radio", submit: "button", button: "button", reset: "button" };
+const NOT_A_FIELD = new Set(["hidden", "file", "range", "color", "image"]);
+
 export function readMarkup(source, ext) {
   // Blank JS comments only in script-like files; in HTML `//` is just text.
   const isHtmlLike = ext === ".html" || ext === ".vue" || ext === ".svelte" || ext === ".astro";
@@ -145,5 +150,28 @@ export function readMarkup(source, ext) {
     navs.push({ line: at(m.index), links, grouped });
   }
 
-  return { text, classLists, css, inline, labels, navs };
+  // Components this file defines, by where each starts: what a copy is compared on.
+  const components = [];
+  if (ext === ".vue" || ext === ".svelte" || ext === ".astro") components.push({ name: null, line: 1 });
+  else if (ext !== ".html") {
+    const DEF = /^[ \t]*(?:export\s+(?:default\s+)?)?(?:(?:async\s+)?function\s+([A-Z]\w*)\s*[(<]|(?:const|let)\s+([A-Z]\w*)\b[^=\n]*=[^;\n]*?(?:=>|\bforwardRef\b|\bmemo\(|\bfunction\b|\bstyled[.(]))/gm;
+    for (const m of text.matchAll(DEF)) components.push({ name: m[1] ?? m[2], line: at(m.index + m[0].search(/\S/)) });
+  }
+
+  // Raw elements that a tagged component may already be (DESIGN.md's ## Components): a hand-styled
+  // <button> where the project has a Button. Styled means it carries a class or a style of its own.
+  const elements = [];
+  if (ext !== ".html") {
+    for (const m of text.matchAll(/<([a-z][\w-]*)\b((?:[^>"'{]|"[^"]*"|'[^']*'|\{(?:[^{}]|\{[^{}]*\})*\})*)>/g)) {
+      const [, tag, attrs] = m;
+      const roleAttr = attrs.match(/\brole\s*=\s*["'{]*\s*["']?(dialog|alertdialog|switch|tooltip|menu|tablist|button|checkbox|radio)\b/)?.[1];
+      const type = tag === "input" ? (attrs.match(/\btype\s*=\s*["'{]*\s*["']?(\w+)/)?.[1] ?? "text") : null;
+      const role = roleAttr ? ROLE_ALIAS[roleAttr] ?? roleAttr : TAG_ROLE[tag] ?? (type ? INPUT_ROLE[type] ?? (NOT_A_FIELD.has(type) ? null : "input") : null);
+      if (!role) continue;
+      const styled = /\b(class|className)\s*=\s*(?:"\s*[^"\s]|'\s*[^'\s]|\{)|\bstyle\s*=/.test(attrs);
+      elements.push({ tag, role, styled, line: at(m.index) });
+    }
+  }
+
+  return { text, classLists, css, inline, labels, navs, components, elements };
 }

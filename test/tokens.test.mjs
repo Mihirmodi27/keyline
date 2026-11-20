@@ -98,7 +98,7 @@ test("the guard passes on a raw value with a token, and no other info", () => {
   const root = project({ "app/globals.css": TOKENS, "app/page.css": ".hero { border-radius: 12px; }\n" });
   const g = guardFile("app/page.css", { base: root, env: {} });
   assert.equal(g.findings.length, 1);
-  assert.match(format(g), /Keyline guard: 1 raw value with a token in app\/page\.css/);
+  assert.match(format(g), /Keyline guard: 1 already in the system \(a token or a component\) in app\/page\.css/);
   assert.match(format(g), /`12px` in `border-radius` is the value of `--radius-card`/);
   const quiet = project({ "app/page.css": ".hero { border-radius: 12px; }\n" });
   assert.equal(guardFile("app/page.css", { base: quiet, env: {} }), null);

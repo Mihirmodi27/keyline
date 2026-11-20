@@ -92,7 +92,7 @@ It drives your installed Chrome through Playwright, which it installs once into 
 
 ## The detector
 
-Twenty-eight of the laws can be checked from source alone, with no model and no API key:
+Thirty of the laws can be checked from source alone, with no model and no API key:
 
 ```sh
 npx trykeyline check            # human report; exits 1 on errors
@@ -123,6 +123,26 @@ In CI, or on just what a branch changed:
 - run: npx trykeyline check
 - run: npx trykeyline check --changed origin/main
 ```
+
+## One component per job
+
+`DESIGN.md` can say which component does each job the product repeats:
+
+```markdown
+## Components
+
+| Role | Component | Variants / notes |
+|---|---|---|
+| `button` | `Button` in `src/components/ui/button.tsx` | `variant`: default, quiet, danger |
+| `dialog` | `Dialog` in `src/components/ui/dialog.tsx` | confirmations too |
+```
+
+`/keyline init` fills it from the code: the button is the one forty screens import, whatever it's called. From then on the agent reaches for the listed component before writing a new one, and the detector catches it when it doesn't:
+
+- **A copy under a new name.** A component whose style values mostly match another's (`CtaButton` built like `Button`: 9 of 10 the same) is pointed back at the original. It compares Tailwind classes as written and, for plain CSS, the declarations a class gets, so `.cta` and `.btn` with the same rules are the same look. This works with no table too; the table says which of a pair is the original.
+- **A job done by hand.** A `<button>`, `<input>`, `<select>`, `<dialog>` or `<table>` (or a `role="dialog"`, `"switch"`, `"menu"`…) styled from scratch where the table gives that job to a component. The component library's own files, and the `ui/` folder it sits in, are left alone.
+
+Both are reported as info, so they don't lower the score, and the live guard hands them to the agent the moment it writes the copy, naming the component to use. Pages and layouts aren't compared; whether a new page belongs beside its siblings is the audit's job.
 
 ## Decisions it remembers
 
@@ -191,7 +211,7 @@ The example's second job is optional. When a preview deploy finishes (Vercel, Ne
 
 ## Live guard
 
-The detector can also run while the agent writes. After every edit to a UI file — CSS, Sass, TSX, JSX, Vue, Svelte, Astro, HTML, or a `.ts` file holding styles or markup — Keyline checks that one file against your `DESIGN.md` and hands the errors and warnings straight back to the agent, plus any value it has a token for: up to eight, worst first, each with its line, rule, law and fix. The agent fixes them before it moves on, so slop never reaches a review. A clean file says nothing.
+The detector can also run while the agent writes. After every edit to a UI file — CSS, Sass, TSX, JSX, Vue, Svelte, Astro, HTML, or a `.ts` file holding styles or markup — Keyline checks that one file against your `DESIGN.md` and hands the errors and warnings straight back to the agent, plus anything the project already has a name for (a token a raw value equals, a component the new code copies): up to eight, worst first, each with its line, rule, law and fix. The agent fixes them before it moves on, so slop never reaches a review. A clean file says nothing.
 
 **Claude Code plugin:** on already. The plugin carries a `PostToolUse` hook on Edit, Write and MultiEdit.
 

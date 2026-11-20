@@ -87,7 +87,7 @@ function readFile(f) {
     return null;
   }
   if (/keyline-ignore-file/.test(source)) return null;
-  const x = { source, lines: null, decls: [], atRules: [], classLists: [], classes: [], labels: [], navs: [], zoomLocks: [], jsDurations: [], animation: null, selfHostedFonts: null, signals: {} };
+  const x = { source, lines: null, decls: [], atRules: [], classLists: [], classes: [], labels: [], navs: [], components: [], elements: [], zoomLocks: [], jsDurations: [], animation: null, selfHostedFonts: null, signals: {} };
   const sig = x.signals;
   const noteAnimation = (loc) => (x.animation ??= loc);
   const sheets = [];
@@ -104,6 +104,9 @@ function readFile(f) {
     }
     x.labels.push(...m.labels.map((l) => ({ ...l, file: f.rel })));
     x.navs.push(...m.navs.map((n) => ({ ...n, file: f.rel })));
+    const base = f.rel.split("/").pop().replace(/\.\w+$/, "");
+    x.components.push(...m.components.map((c) => ({ ...c, name: c.name ?? base.replace(/(^|[-_])(\w)/g, (_, __, ch) => ch.toUpperCase()), file: f.rel })));
+    x.elements.push(...m.elements.map((e) => ({ ...e, file: f.rel })));
     const at = lineIndex(m.text);
     // A zoom lock lives in a viewport value: a <meta name="viewport"> tag, a string
     // that also sets width=device-width, or a viewport object's maximumScale /
@@ -159,7 +162,7 @@ function readFile(f) {
  */
 export function gather(root, files, cache = new Map()) {
   const facts = {
-    decls: [], atRules: [], classLists: [], classes: [], labels: [], navs: [], zoomLocks: [], jsDurations: [],
+    decls: [], atRules: [], classLists: [], classes: [], labels: [], navs: [], components: [], elements: [], zoomLocks: [], jsDurations: [],
     project: { focusVisible: false, focusWithin: false, backdropSupports: false, reducedTransparency: false, reducedMotion: false, animation: null, selfHostedFonts: null, lightningCss: false, rootLayout: null, skipLink: false },
     files: new Map(),
   };
@@ -170,7 +173,7 @@ export function gather(root, files, cache = new Map()) {
     const x = cache.get(f.rel);
     if (!x) continue;
     facts.files.set(f.rel, x);
-    for (const key of ["decls", "atRules", "classLists", "classes", "labels", "navs", "zoomLocks", "jsDurations"]) facts[key].push(...x[key]);
+    for (const key of ["decls", "atRules", "classLists", "classes", "labels", "navs", "components", "elements", "zoomLocks", "jsDurations"]) facts[key].push(...x[key]);
     p.animation ??= x.animation;
     p.selfHostedFonts ??= x.selfHostedFonts;
     for (const k of Object.keys(x.signals)) p[k] = true;
@@ -224,13 +227,19 @@ const once = (make) => {
   return () => (value ??= make());
 };
 
-function runRules(facts, design, rules, tokens = once(() => indexTokens(facts.decls))) {
+/**
+ * `whole` gives a rule the facts of the whole project (the same facts, on a full
+ * run); `partial` says only some files are being checked, so a rule that compares
+ * across files (a component copy) reports on the files in hand.
+ */
+function runRules(facts, design, rules, tokens = once(() => indexTokens(facts.decls)), whole = () => facts, partial = false) {
   const findings = [];
   for (const rule of RULES) {
     if (rules && !rules.some((r) => r === rule.id || r === rule.domain)) continue;
-    for (const f of rule.check(facts, { design, tokens })) {
+    for (const f of rule.check(facts, { design, tokens, whole, partial })) {
       const finding = { rule: rule.id, domain: rule.domain, law: rule.law, severity: f.severity, file: f.file, line: f.line, message: f.message };
       if (f.tokens?.length) finding.tokens = f.tokens;
+      if (f.use) finding.use = f.use;
       if (suppressed(facts, finding)) continue;
       if (rule.scope === "project") finding.scope = "project";
       if (f.area) finding.area = f.area;
@@ -274,12 +283,13 @@ export function check({ root = ".", paths = ["."], ignores = [], rules = null, o
     files = collect(absRoot, picked.map((rel) => join(absRoot, rel)), ignores);
     const mine = new Set(files.map((f) => f.rel));
     const index = tokens(files);
-    findings = runRules(gather(absRoot, files, cache), design, rules, index);
+    const all = once(() => gather(absRoot, collect(absRoot, [absRoot], ignores), cache));
+    findings = runRules(gather(absRoot, files, cache), design, rules, index, all, true);
     const isProject = (f) => WHOLE_PROJECT.has(f.rule);
     const needsProject = [...new Set(findings.filter(isProject).map((f) => f.rule))];
     if (needsProject.length) {
       // Only when it matters: a clean file never pays for the walk, and the files already read aren't read again.
-      const whole = runRules(gather(absRoot, collect(absRoot, [absRoot], ignores), cache), design, needsProject, index);
+      const whole = runRules(all(), design, needsProject, index, all);
       findings = findings.filter((f) => {
         if (!isProject(f)) return true;
         // The same finding is the same rule in the same area (a rule counted per area of DESIGN.md is one finding each).
@@ -324,6 +334,8 @@ function human(result, { all, color, baseline, changed }) {
   const d = result.design;
   out.push(`Keyline check — ${changed ? `${plural(result.files, "changed file")} since ${changed.base}` : `${result.files} files`}${d.found ? `, preset ${d.preset ?? "not set"} (${d.file})` : ", no DESIGN.md (run /keyline init for verdicts that follow your system)"}`);
   if (d.areas?.length) out.push(dim(`  areas: ${d.areas.map((a) => `${a.pattern} → ${a.preset}`).join(" · ")}`));
+  if (d.components?.length) out.push(dim(`  components: ${d.components.map((c) => `${c.role} → ${c.name ?? c.file.split("/").pop()}`).join(" · ")}`));
+  for (const c of d.componentsMissing ?? []) out.push(paint("33", `  ${d.file} gives \`${c.role}\` to ${c.file}, which isn't there. Update ## Components (/keyline sync).`));
   if (d.areasUnread) out.push(paint("33", `  The | Areas | row in ${d.file} isn't written as \`pattern → preset\`, so every file is judged by ${d.preset ?? "the default verdicts"}. Write it like \`app/docs/** → editorial\` (several separated by ·).`));
   out.push("");
 
@@ -565,7 +577,7 @@ export function run(argv) {
 
   const prefix = changed?.prefix ?? repoOf(resolve(opts.root))?.prefix ?? "";
   const report = () => {
-    const design = { found: result.design.found, file: result.design.file ?? null, preset: result.design.preset, areas: (result.design.areas ?? []).map(({ pattern, preset }) => ({ pattern, preset })), durations: result.design.durations ? [...result.design.durations] : null, zLadder: result.design.zLadder ? [...result.design.zLadder] : null };
+    const design = { found: result.design.found, file: result.design.file ?? null, preset: result.design.preset, areas: (result.design.areas ?? []).map(({ pattern, preset }) => ({ pattern, preset })), components: result.design.components ?? [], componentsMissing: result.design.componentsMissing ?? [], durations: result.design.durations ? [...result.design.durations] : null, zLadder: result.design.zLadder ? [...result.design.zLadder] : null };
     const out = { files: result.files, design, summary: { ...s, kept: result.kept.length }, findings: result.findings, prefix };
     // Added, never replacing a field: CI and the Action read this.
     out.kept = result.kept.map(({ decision, ...f }) => ({ ...f, decision: decision.id, reason: decision.reason, by: decision.by, date: decision.date }));

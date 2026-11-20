@@ -102,8 +102,8 @@ export function guardFile(file, { base = process.cwd(), env = process.env } = {}
     throw err;
   }
   if (!result.design.guard) return null;
-  // Info stays out, except a value the project has a token for: that fix is one name, and now is when it's cheap.
-  const findings = result.findings.filter((f) => f.severity !== "info" || f.tokens?.length);
+  // Info stays out, except where the fix is a name the project already has — a token, a component — and now is when it's cheap.
+  const findings = result.findings.filter((f) => f.severity !== "info" || f.tokens?.length || f.use);
   if (findings.length === 0) return null;
   return { root, rel, design: result.design, findings };
 }
@@ -116,7 +116,7 @@ export function format({ root, rel, design, findings }) {
   const counts = [
     n("error") && `${n("error")} error${n("error") === 1 ? "" : "s"}`,
     n("warning") && `${n("warning")} warning${n("warning") === 1 ? "" : "s"}`,
-    n("info") && `${n("info")} raw value${n("info") === 1 ? "" : "s"} with a token`,
+    n("info") && `${n("info")} already in the system (a token or a component)`,
   ]
     .filter(Boolean)
     .join(", ");

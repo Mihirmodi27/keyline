@@ -12,7 +12,7 @@ const ids = (r) => new Set(r.findings.map((f) => f.rule));
 test("a sloppy project trips every rule that applies without a DESIGN.md", () => {
   const r = check({ root: fixture("sloppy") });
   const found = ids(r);
-  const presetOnly = new Set(["type/italic", "type/uppercase"]);
+  const presetOnly = new Set(["type/italic", "type/uppercase", "depth/hand-rolled"]);
   for (const rule of RULES) {
     if (presetOnly.has(rule.id)) assert.ok(!found.has(rule.id), `${rule.id} needs a DESIGN.md`);
     else assert.ok(found.has(rule.id), `expected ${rule.id}`);

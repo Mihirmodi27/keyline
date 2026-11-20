@@ -36,6 +36,8 @@ Five places projects have quietly broken a law:
 - **Boxes as the default.** Every section, stat and list in a card, cards inside cards, a bento grid of unlike sections, tinted strips behind labels, uppercase eyebrows over every section (a label role recorded in capitals is not one), more than two chip shapes (a state marker and a kind tag are the two), a second hue that calls for attention (a hue family answering what, where or who under `product` is not one), success colour on done steps where completion isn't the news (a sequence the reader passes through, not a board or queue). Count the boxes per main screen and list each that holds more than one object (depth law 2, layout law 3); a panel that layout law 3's table gives a settings or form group is not one. If the user has a reference interface they've already approved, screenshot each main screen beside it; the gaps are open issues.
 - **Values on no ladder.** Twenty-three font sizes, fourteen radii. Cluster them by usage, propose the ladder, list the strays that could snap to a neighbour unseen.
 
+Then the components: for each job the product repeats — button, field, select, dialog, menu, card, badge, toast — which component does it, by usage, not by name (the one forty screens import is the button, whatever it's called). Two components doing one job is an open issue (depth law 1), and so is a job done by hand-styled elements everywhere with no component at all. Record the one that does each job under `## Components`; where two compete, record the one more screens use and list the other under `## Open issues`.
+
 Compute contrast; don't estimate it:
 
 ```sh

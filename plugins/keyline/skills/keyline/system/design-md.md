@@ -15,6 +15,7 @@ It is written for two readers at once — a person skimming it to learn the syst
 - **Changes a law forced are recorded too.** A change made because of a law that a later session might undo — a white page replacing a grey one, a removed animation — goes under `## Decisions` marked *law*, so it isn't "fixed" back.
 - **The decisions log reads as the current state, not a diary.** Each entry is dated and marked by who decided — *user decision*, *client feedback*, or *law* — newest first. A new decision on a subject replaces the entry it supersedes rather than sitting below it; git history keeps the old one. A session reads the log before changing anything it covers, so a decided value isn't "fixed" back.
 - **The detector reads tables, not prose.** `scripts/check.mjs` takes the preset from the `Preset` row under `## Profile` (and turns the live guard off for a `| Guard | off |` row there — leave the row out to keep it on), durations from every table row under `## Motion` (the duration ladder and the named exemptions), and z-index values from `## Layout` rows whose role starts `z.` or whose `Name here` is a z utility. A value written only in a sentence, or only as `var(--…)`, is invisible to it, so these tables state values. **Every value in those tables is approved**, so record the ladder the code mostly uses, not every value it contains: a duration or z-index used once or twice, or a few ms from a neighbour, is an open issue to snap, not a rung. The detector warns when a `duration.*` role is no longer than the role for a smaller change.
+- **One component per job, and the table says which.** `## Components` names the component that does each job the product repeats — the button, the dialog, the card, the field — by role, file and export. The detector reads it: a new component built like a listed one, or a `<button>`, `<input>`, `<select>`, `<dialog>`, `<table>` (or `role="dialog"`, `"switch"`, `"menu"`, `"tooltip"`, `"tablist"`) styled by hand where a listed component does that job, is pointed back at the listed one. List only components that exist; a job with none is left out, not `proposed`.
 - **Findings are not fixes.** Setup lists what violates a law under `## Open issues` and leaves the code alone unless asked. The list is how a later session knows what's known.
 
 ## Template
@@ -100,6 +101,16 @@ Plus any forks (places where touch and pointer get different components).
 | `elevation.floating` | `bg-popover` | `border-subtle` | `shadow-md` | `z-popover` |
 
 Plus `material.translucent` tiers, if any, and their fallbacks.
+
+## Components
+
+| Role | Component | Variants / notes |
+|---|---|---|
+| `button` | `Button` in `src/components/ui/button.tsx` | `variant`: default, quiet, danger |
+| `dialog` | `Dialog` in `src/components/ui/dialog.tsx` | confirmations too (patterns law 4) |
+| `card` | `src/components/Card.tsx` | one object only (depth law 2) |
+
+The role is a plain word for the job (`button`, `input`, `select`, `checkbox`, `radio`, `switch`, `dialog`, `menu`, `tooltip`, `tabs`, `table`, `card`, `badge`, `avatar`, `toast` — or the project's own); the component cell names the file and, if the file exports more than one, the export.
 
 ## Motion
 
