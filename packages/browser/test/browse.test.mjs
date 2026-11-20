@@ -127,3 +127,12 @@ test("the report escapes text, draws boxes and skips dismissed findings", () => 
   writeRun(dir, run);
   assert.match(readFileSync(renderDir(dir), "utf8"), /<!doctype html>/);
 });
+
+test("dedupe keeps a source finding per line: the same raw colour in two files is two findings", () => {
+  const run = newRun({ kind: "audit" });
+  const raw = { kind: "check", rule: "color/raw-color", title: "`#9a9a9a` typed into `color`", severity: "warning" };
+  add(run, { ...raw, file: "a.css", line: 1, fingerprint: "aaaa" });
+  add(run, { ...raw, file: "b.css", line: 1, fingerprint: "bbbb" });
+  add(run, { ...raw, file: "b.css", line: 1, fingerprint: "bbbb" });
+  assert.deepEqual(dedupe(run.findings).map((f) => f.file), ["a.css", "b.css"]);
+});

@@ -25,6 +25,33 @@ export function tally(findings, { domains = [], skip = null } = {}) {
 }
 
 /**
+ * What a finding is about, for matching it across runs: the same key the
+ * baseline, a report's --compare and a recorded decision use.
+ *
+ * - Found in the source (the detector's, in any report): its fingerprint, the
+ *   rule + file + the text of the line (baseline.mjs), so moving code doesn't
+ *   change it. A report written before findings carried one falls back to the
+ *   rule, file and title.
+ * - Seen on a page (the audit's, the smoke test's): the rule, page, viewport,
+ *   theme and element; the title stands in when there's no element.
+ */
+export function matchKey(f) {
+  if (f.fingerprint) return `source|${f.fingerprint}`;
+  if (f.file && !f.page) return `source|${f.rule}|${f.file}|${f.title ?? f.message ?? ""}`;
+  return [f.rule, f.page ?? "", f.viewport ?? "", f.theme ?? "", f.selector ?? f.title].join("|");
+}
+
+/**
+ * What makes two findings in one run the same finding, so a report lists it
+ * once: on a page, the match key (one problem seen twice on one page); in the
+ * source, the line too, since two identical lines are two findings.
+ */
+export function dedupeKey(f) {
+  if (f.file && !f.page) return `source|${f.rule}|${f.file}|${f.line ?? ""}|${f.fingerprint ?? f.title ?? f.message ?? ""}`;
+  return matchKey(f);
+}
+
+/**
  * Match today's findings against an earlier run's, one for one by `key`.
  * Returns `matched`, each current finding with the earlier one it matched
  * (or null: it's new), and `left`, the earlier findings nothing matched (the

@@ -168,3 +168,11 @@ test("screenshots are diffed in the browser: share changed, a box round it, a di
     await browser.close();
   }
 });
+
+test("matchKey: a source finding matches on its fingerprint, so a moved line is still the same finding", () => {
+  const a = { kind: "check", rule: "color/raw-color", title: "Same title", file: "a.css", line: 4, fingerprint: "f1" };
+  assert.equal(matchKey(a), matchKey({ ...a, line: 40 }));
+  assert.notEqual(matchKey(a), matchKey({ ...a, file: "b.css", fingerprint: "f2" }));
+  // A report from before findings carried a fingerprint still tells two files apart.
+  assert.notEqual(matchKey({ ...a, fingerprint: undefined }), matchKey({ ...a, file: "b.css", fingerprint: undefined }));
+});

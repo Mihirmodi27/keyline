@@ -137,6 +137,7 @@ export function sourceFindings(run, root, ignores = []) {
       detail: rest.join(" ") || undefined,
       file: f.file,
       line: f.line,
+      fingerprint: f.fingerprint,
       fix: FIX[f.domain],
     });
   }

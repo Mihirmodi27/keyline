@@ -53,7 +53,7 @@
 
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
-import { SEVERITIES, bySeverity, tally } from "trykeyline/check/findings";
+import { SEVERITIES, bySeverity, dedupeKey, tally } from "trykeyline/check/findings";
 import { DOMAINS as LAW_DOMAINS } from "trykeyline/check/rules";
 
 /** The six law domains, and what only a rendered page shows. */
@@ -92,11 +92,15 @@ export function add(run, f) {
   return finding;
 }
 
-/** The same problem seen on many pages is one finding per page, but not twice on one page. */
+/**
+ * The same problem seen on many pages is one finding per page, but not twice
+ * on one page. A source finding is one per line: two files with the same line
+ * are two findings.
+ */
 export function dedupe(findings) {
   const seen = new Set();
   return findings.filter((f) => {
-    const key = [f.rule, f.page, f.viewport, f.theme, f.selector ?? f.title].join("|");
+    const key = dedupeKey(f);
     if (seen.has(key)) return false;
     seen.add(key);
     return true;

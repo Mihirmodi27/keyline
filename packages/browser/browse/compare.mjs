@@ -23,14 +23,12 @@
  */
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join, relative } from "node:path";
-import { split } from "trykeyline/check/findings";
+import { matchKey, split } from "trykeyline/check/findings";
 import { readRun, writeRun } from "./findings.mjs";
 import { shotKey } from "./capture.mjs";
 
-/** The identity of a finding across runs. */
-export function matchKey(f) {
-  return [f.rule, f.page ?? "", f.viewport ?? "", f.theme ?? "", f.selector ?? f.title].join("|");
-}
+/** The identity of a finding across runs: core's, shared with the baseline and recorded decisions. */
+export { matchKey };
 
 /** Findings that describe a comparison, not the product, never take part in one. */
 const isVisual = (f) => f.rule?.startsWith("visual/");
