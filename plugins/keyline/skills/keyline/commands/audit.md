@@ -38,6 +38,8 @@ One number a person reads first, in half points. Score what a reader meets, not 
 - **5** while a domain isn't working as a system: on the whole product, any domain scoring 0 or 1.
 - **7** when the score comes from the code alone. What the reader sees hasn't been looked at.
 
+**Consistency notes don't score.** A note that names what the project already has — the token a raw value equals (`*/raw-*` as info), a component copied or hand-rolled (`depth/component-copy`, `depth/hand-rolled`), a page that strays from its siblings (`*/stray-page`) — guides the next change and goes in the report, but costs no domain anything, in the draft or in your judgement. What the reader feels from the same cause (a corner that visibly doesn't match) is scored as that, from what you see.
+
 **A re-score is a fresh look.** After changes, render and measure again, the same way as the first time. Don't tick off the list of what was changed. A change that didn't land, or a finding that comes back, earns nothing. Each half point gained names what earned it.
 
 **To reach 8–9** is the path, not a repeat of the findings:

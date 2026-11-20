@@ -180,3 +180,16 @@ test("placePages: each page takes its area's preset, by its source file or else 
   run.findings.push({ id: "f1", rule: "layout/hierarchy", title: "Flat", page: "/about", severity: "warning", status: "open", domain: "layout" });
   assert.match(render(run), /<small class="area">expressive · app\/\(marketing\)\/\*\*<\/small>/);
 });
+
+test("consistency notes don't cost a domain's draft; other notes and a raw colour's warning still do", () => {
+  const notes = [
+    ...Array.from({ length: 22 }, (_, i) => ({ rule: "layout/raw-space", domain: "layout", severity: "info", file: "a.css", line: i + 1 })),
+    { rule: "depth/component-copy", domain: "depth", severity: "info" },
+    { rule: "depth/hand-rolled", domain: "depth", severity: "info" },
+    { rule: "type/stray-page", domain: "type", severity: "info", page: "/x" },
+  ];
+  assert.deepEqual(draftScores(notes), { type: 4, color: 4, layout: 4, depth: 4, motion: 4, patterns: 4 });
+  const others = draftScores([{ rule: "a11y/headings", domain: "type", severity: "info" }, ...Array.from({ length: 12 }, () => ({ rule: "patterns/vague-label", domain: "patterns", severity: "info" }))]);
+  assert.equal(others.patterns, 3, "an ordinary note, widely spread, still costs");
+  assert.equal(draftScores([{ rule: "color/raw-color", domain: "color", severity: "warning", tokens: ["--ink"] }]).color, 3);
+});

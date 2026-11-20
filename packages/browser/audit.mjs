@@ -78,6 +78,15 @@ export const FIX = {
   patterns: "/keyline patterns",
 };
 
+/**
+ * Notes that name what the project already has — the token a raw value equals,
+ * the component a new one copies, the values a page's siblings share — or say a
+ * page differs from them. They guide the next change; they don't mark the
+ * product down, so the draft leaves them out (warnings and errors still count).
+ */
+const UNSCORED = new Set(["type/raw-size", "layout/raw-space", "layout/raw-radius", "depth/raw-shadow", "depth/component-copy", "depth/hand-rolled"]);
+export const unscored = (f) => f.severity === "info" && (UNSCORED.has(f.rule) || /\/stray-page$/.test(f.rule));
+
 export function scoreDomain(f) {
   const domain = f.domain ?? f.rule.split("/")[0];
   return SCORE_DOMAIN[f.rule] ?? (SCORED.includes(domain) ? domain : SCORE_DOMAIN[domain] ?? "patterns");
@@ -86,7 +95,7 @@ export function scoreDomain(f) {
 /**
  * A draft score per domain from the findings: 4 with nothing to report, down
  * by each distinct rule broken (an error 1.5, a warning 0.75, a note 0.15),
- * plus up to 1 more for how many places break it. The agent settles the
+ * plus up to 1 more for how many places break it. Consistency notes (`unscored`) cost nothing. The agent settles the
  * real score; the draft keeps a mechanical floor under the judgement.
  */
 export function draftScores(findings) {
@@ -94,7 +103,7 @@ export function draftScores(findings) {
   for (const d of SCORED) {
     const rules = new Map();
     for (const f of findings) {
-      if (f.status === "dismissed" || f.status === "fixed" || scoreDomain(f) !== d) continue;
+      if (f.status === "dismissed" || f.status === "fixed" || unscored(f) || scoreDomain(f) !== d) continue;
       const w = f.severity === "error" ? 1.5 : f.severity === "warning" ? 0.75 : 0.15;
       const r = rules.get(f.rule) ?? { w: 0, n: 0 };
       rules.set(f.rule, { w: Math.max(r.w, w), n: r.n + 1 });
