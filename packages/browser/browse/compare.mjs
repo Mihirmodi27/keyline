@@ -60,8 +60,11 @@ export function compareRuns(run, prev, { against = null } = {}) {
   // Only what this run could have seen again counts as fixed.
   const routes = new Set(run.pages.map((p) => p.route));
   const passes = new Set(run.pages.flatMap((p) => Object.keys(p.shots ?? {})));
+  const compared = new Set(run.pages.filter((p) => p.siblings?.length).map((p) => p.route));
   const seen = (f) => {
     if (f.page && !routes.has(f.page)) return false;
+    // A page this run didn't hold against its siblings (a one-page run) says nothing about its strays.
+    if (/\/stray-page$/.test(f.rule) && !compared.has(f.page)) return false;
     if (f.viewport && f.theme && passes.size && !passes.has(shotKey(f.viewport, f.theme))) return false;
     return true;
   };

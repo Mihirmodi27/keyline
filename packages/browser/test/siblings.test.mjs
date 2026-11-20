@@ -4,9 +4,12 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { test } from "node:test";
 import { siblingsOf, strayPages } from "../audit/siblings.mjs";
-import { add, newRun } from "../browse/findings.mjs";
+import { add, newRun, readRun, remember, writeRun } from "../browse/findings.mjs";
+import { spawnSync } from "node:child_process";
+import { fileURLToPath } from "node:url";
 import { run } from "../audit.mjs";
 import { launch } from "../browse/playwright.mjs";
+import { compareRuns } from "../browse/compare.mjs";
 
 const look = (over = {}) => ({
   families: { Inter: 40 },
@@ -78,4 +81,33 @@ test("the audit measures each page's look and flags the one that strays from its
   assert.ok(stray.some((f) => f.rule === "type/stray-page" && /22px text/.test(f.detail) && /h1 at 56px 700/.test(f.detail)), stray.map((f) => f.detail).join("\n"));
   assert.ok(stray.some((f) => f.rule === "color/stray-page"));
   assert.ok(report.pages.every((p) => p.look), "each page keeps its measured look");
+});
+
+test("a kept stray stays kept when the stray values or the example element change, by decide and by keep fN", () => {
+  const root = mkdtempSync(join(tmpdir(), "keyline-siblings-keep-"));
+  const runWith = (odd) => {
+    const r = Object.assign(newRun({ kind: "audit", root }), { pages: [page("/docs/a"), page("/docs/b"), page("/docs/c"), page("/docs/new", odd)] });
+    return strayPages(r, add);
+  };
+  const first = runWith(look({ sizes: { "16px": 20, "22px": 6 }, at: { "sizes|22px": { box: { x: 0, y: 0, w: 5, h: 5 } } } }));
+  const out = mkdtempSync(join(tmpdir(), "keyline-siblings-report-"));
+  writeRun(out, first);
+  const id = readRun(out).findings.find((f) => f.rule === "type/stray-page").id;
+  const CLI = fileURLToPath(new URL("../../../bin/keyline.mjs", import.meta.url));
+  const kept = spawnSync(process.execPath, [CLI, "keep", id, "--report", out, "--reason", "the new page is a changelog, set larger on purpose", "--root", root], { encoding: "utf8" });
+  assert.equal(kept.status, 0, kept.stderr + kept.stdout);
+  const later = remember(runWith(look({ sizes: { "16px": 20, "24px": 8 }, at: { "sizes|24px": { box: { x: 9, y: 9, w: 5, h: 5 } } } })), root);
+  const f = later.findings.find((x) => x.rule === "type/stray-page");
+  assert.equal(f.status, "dismissed");
+  assert.ok(f.decided);
+});
+
+test("a one-page re-audit doesn't count a stray as fixed; a full one with the stray gone does", () => {
+  const odd = look({ sizes: { "16px": 20, "22px": 6 } });
+  const all = (l) => strayPages(Object.assign(newRun({ kind: "audit" }), { pages: [page("/docs/a"), page("/docs/b"), page("/docs/c"), page("/docs/new", l)] }), add);
+  const before = all(odd);
+  assert.equal(before.findings.length, 1);
+  const quick = strayPages(Object.assign(newRun({ kind: "audit" }), { pages: [page("/docs/new", odd)] }), add);
+  assert.deepEqual(compareRuns(quick, before).fixed, []);
+  assert.equal(compareRuns(all(look()), before).fixed.length, 1);
 });

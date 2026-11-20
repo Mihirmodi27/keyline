@@ -90,6 +90,8 @@ export function strayPages(run, add) {
   for (const page of pages) {
     const siblings = siblingsOf(page, pages);
     if (siblings.length < 2) continue;
+    // Which pages it was held against: a run that compared none can't say a stray was fixed (browse/compare.mjs).
+    page.siblings = siblings.map((s) => s.route);
     const names = list(siblings.map((s) => s.route));
     for (const { domain, strays, at } of straysOf(page, siblings)) {
       add(run, {
