@@ -1,6 +1,6 @@
 {
   "name": "trykeyline-browser",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Keyline's browser tools: find a product's pages, walk them at desktop and phone in light and dark, and report what the audit and the smoke test find. Run through `npx trykeyline audit|smoke|pages|capture|report|probe`.",
   "keywords": [
     "design",
@@ -38,7 +38,7 @@
     "node": ">=18"
   },
   "dependencies": {
-    "trykeyline": "0.2.0"
+    "trykeyline": "0.3.0"
   },
   "peerDependencies": {
     "playwright": "^1.40.0"
