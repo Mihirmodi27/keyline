@@ -225,6 +225,7 @@ function runRules(facts, design, rules) {
       const finding = { rule: rule.id, domain: rule.domain, law: rule.law, severity: f.severity, file: f.file, line: f.line, message: f.message };
       if (suppressed(facts, finding)) continue;
       if (rule.scope === "project") finding.scope = "project";
+      if (f.area) finding.area = f.area;
       finding.fingerprint = fingerprint(finding, linesOf(facts, finding.file), { project: rule.scope === "project" });
       findings.push(finding);
     }
@@ -265,7 +266,9 @@ export function check({ root = ".", paths = ["."], ignores = [], rules = null, o
       const whole = runRules(gather(absRoot, collect(absRoot, [absRoot], ignores), cache), design, needsProject);
       findings = findings.filter((f) => {
         if (!isProject(f)) return true;
-        return whole.some((w) => w.rule === f.rule) && !whole.some((w) => w.rule === f.rule && mine.has(w.file));
+        // The same finding is the same rule in the same area (a rule counted per area of DESIGN.md is one finding each).
+        const same = (w) => w.rule === f.rule && (w.area ?? null) === (f.area ?? null);
+        return whole.some(same) && !whole.some((w) => same(w) && mine.has(w.file));
       });
       // Where the whole-project run places a finding in these files, its version wins (its severity knows the project).
       findings.push(...whole.filter((w) => mine.has(w.file)));
@@ -304,6 +307,8 @@ function human(result, { all, color, baseline, changed }) {
   const out = [];
   const d = result.design;
   out.push(`Keyline check — ${changed ? `${plural(result.files, "changed file")} since ${changed.base}` : `${result.files} files`}${d.found ? `, preset ${d.preset ?? "not set"} (${d.file})` : ", no DESIGN.md (run /keyline init for verdicts that follow your system)"}`);
+  if (d.areas?.length) out.push(dim(`  areas: ${d.areas.map((a) => `${a.pattern} → ${a.preset}`).join(" · ")}`));
+  if (d.areasUnread) out.push(paint("33", `  The | Areas | row in ${d.file} isn't written as \`pattern → preset\`, so every file is judged by ${d.preset ?? "the default verdicts"}. Write it like \`app/docs/** → editorial\` (several separated by ·).`));
   out.push("");
 
   // Against a baseline, the detail is what's new; what was already there is a count (or, with --all, a second list).
@@ -544,7 +549,7 @@ export function run(argv) {
 
   const prefix = changed?.prefix ?? repoOf(resolve(opts.root))?.prefix ?? "";
   const report = () => {
-    const design = { found: result.design.found, file: result.design.file ?? null, preset: result.design.preset, durations: result.design.durations ? [...result.design.durations] : null, zLadder: result.design.zLadder ? [...result.design.zLadder] : null };
+    const design = { found: result.design.found, file: result.design.file ?? null, preset: result.design.preset, areas: (result.design.areas ?? []).map(({ pattern, preset }) => ({ pattern, preset })), durations: result.design.durations ? [...result.design.durations] : null, zLadder: result.design.zLadder ? [...result.design.zLadder] : null };
     const out = { files: result.files, design, summary: { ...s, kept: result.kept.length }, findings: result.findings, prefix };
     // Added, never replacing a field: CI and the Action read this.
     out.kept = result.kept.map(({ decision, ...f }) => ({ ...f, decision: decision.id, reason: decision.reason, by: decision.by, date: decision.date }));

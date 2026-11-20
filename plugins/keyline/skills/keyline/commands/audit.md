@@ -77,6 +77,8 @@ Don't pad to five. Don't list what's fine as a problem to fix. No HTML report fo
 
 **Read:** `DESIGN.md`; `system/reports.md` (the target, the two ways to drive a browser, the report format); the `## Auditing existing code` and `## Checklist` sections of every `domains/<domain>/guide.md` (all six unless the user narrows it), and under preset `glass` each `glass/<domain>/guide.md` checklist.
 
+**Areas.** When `## Profile` lists areas, judge each page by its own: the runner writes each page's `preset` (and `area`) into `findings.json`, from its source file or its route. A marketing page on `expressive` is held to that preset's dials, not the product's.
+
 **Steps:**
 
 1. **Find the target** as `system/reports.md` says: the URL the user named, the dev server already running, or the project's own dev script started in the background. A static build is served with `--serve <dir>`. Without anything to render, say the audit is from code alone and skip to step 3.

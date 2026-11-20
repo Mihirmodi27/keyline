@@ -238,7 +238,15 @@ The laws hold everywhere. A preset sets the dials — how far the type scale cli
 
 `glass` isn't a reader type. It's one finished system: [modimihir.com](https://modimihir.com)'s exact values, with drop-in tokens and components. Pick it when you want that system itself rather than your own. It reads as `editorial`, with every dial already decided.
 
-Mixed projects are normal: `product`, with the marketing routes on `expressive`. Any dial can be moved, and the move is recorded in `DESIGN.md` with its reason.
+Mixed projects are normal: `product`, with the marketing routes on `expressive` and the docs on `editorial`. `init` records each part as an area under `## Profile`:
+
+```
+| Areas | `app/(marketing)/** → expressive` · `app/docs/** → editorial` |
+```
+
+From then on everything judges a file by its area: the detector and the live guard by the file's path, the audit by each page's source file or its route (`/docs/** → editorial`). Italics are fine in the docs and flagged in the app; font weights are counted per area, each against its own preset. `npx trykeyline check` lists the areas it read, the guard names the one a file is in, and the audit report puts each page's preset beside its name.
+
+Any dial can be moved, and the move is recorded in `DESIGN.md` with its reason.
 
 ## Installing
 

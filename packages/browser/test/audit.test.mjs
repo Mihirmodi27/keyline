@@ -155,3 +155,28 @@ test("the audit finds the problems planted in a page", { timeout: 120000 }, asyn
   assert.ok(report.score <= 6, "the fixture has errors, so its draft is held at 6 or under");
   assert.match(readFileSync(join(out, "index.html"), "utf8"), /drafted from the measurements/);
 });
+
+test("placePages: each page takes its area's preset, by its source file or else its route, and the report says so", async () => {
+  const { mkdtempSync, writeFileSync } = await import("node:fs");
+  const { tmpdir } = await import("node:os");
+  const { join } = await import("node:path");
+  const { placePages } = await import("../audit.mjs");
+  const { newRun } = await import("../browse/findings.mjs");
+  const { render } = await import("../browse/report.mjs");
+  const root = mkdtempSync(join(tmpdir(), "keyline-audit-areas-"));
+  writeFileSync(join(root, "DESIGN.md"), "## Profile\n\n| | |\n|---|---|\n| Preset | `product` |\n| Areas | `app/(marketing)/** → expressive` · `/docs/** → editorial` |\n");
+  const run = newRun({ kind: "audit", root });
+  run.pages = [
+    { route: "/about", file: "app/(marketing)/about/page.tsx", shots: {} },
+    { route: "/docs/start", shots: {} },
+    { route: "/settings", file: "app/settings/page.tsx", shots: {} },
+  ];
+  placePages(run, root);
+  assert.deepEqual(run.pages.map((p) => [p.route, p.preset, p.area ?? null]), [
+    ["/about", "expressive", "app/(marketing)/**"],
+    ["/docs/start", "editorial", "/docs/**"],
+    ["/settings", "product", null],
+  ]);
+  run.findings.push({ id: "f1", rule: "layout/hierarchy", title: "Flat", page: "/about", severity: "warning", status: "open", domain: "layout" });
+  assert.match(render(run), /<small class="area">expressive · app\/\(marketing\)\/\*\*<\/small>/);
+});

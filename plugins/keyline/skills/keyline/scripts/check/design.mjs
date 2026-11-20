@@ -1,13 +1,70 @@
 /**
  * What the detector takes from DESIGN.md: the preset (which turns some rules on
- * or off), the case it records for labels, the motion ladder, the z-index ladder, and whether the live
+ * or off), the areas on another preset, the case it records for labels, the motion ladder, the z-index ladder, and whether the live
  * guard runs (`| Guard | off |` under ## Profile). Everything else in the file is for the agent; the
  * detector only needs what changes a verdict.
+ *
+ * Areas are the `| Areas |` row under ## Profile: the parts of the product
+ * whose reader is doing something else, each on its own preset.
+ *
+ *   | Areas | `app/(marketing)/** → expressive` · `app/blog/** → editorial` |
+ *
+ * A pattern is a path in the project (`app/blog/**`, or `app/blog` for the
+ * whole folder) or, starting with `/`, a route on the running site (`/blog/**`).
+ * `**` crosses folders, `*` doesn't. Where two areas both match, the more
+ * specific wins: the one with more of its pattern spelt out.
  */
 import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 
-const PRESETS = ["editorial", "product", "expressive", "glass"];
+export const PRESETS = ["editorial", "product", "expressive", "glass"];
+
+/** A glob as a regular expression over a whole path. A pattern with no wildcard covers its folder too. */
+function globToRe(pattern) {
+  // `blog/**` and a bare `blog` both cover the folder (or route) itself and everything under it.
+  const p = pattern.endsWith("/**") ? `${pattern.slice(0, -3)}{,/**}` : /[*?]/.test(pattern) || /\.\w+$/.test(pattern) ? pattern : `${pattern.replace(/\/$/, "")}{,/**}`;
+  let re = "";
+  for (let i = 0; i < p.length; i++) {
+    const c = p[i];
+    if (p.startsWith("{,/**}", i)) {
+      re += "(?:/.*)?";
+      i += 5;
+    } else if (p.startsWith("**/", i)) {
+      re += "(?:.*/)?";
+      i += 2;
+    } else if (p.startsWith("**", i)) {
+      re += ".*";
+      i += 1;
+    } else if (c === "*") re += "[^/]*";
+    else if (c === "?") re += "[^/]";
+    else re += c.replace(/[.+^${}()|[\]\\]/g, "\\$&");
+  }
+  return new RegExp(`^${re}$`);
+}
+
+/**
+ * The areas in an `| Areas |` cell: `pattern → preset` pairs, separated by
+ * `·`, `;`, `,` or line breaks, with or without backticks. The template's own
+ * example ("e.g. …") and "none" are not areas.
+ */
+export function parseAreas(cell) {
+  const text = String(cell ?? "").replace(/<br\s*\/?>/gi, ";");
+  if (/\be\.g\./i.test(text) || /^\s*(none|—|-|n\/a)?\s*$/i.test(text)) return [];
+  const out = [];
+  for (const m of text.matchAll(/`?\s*([^`|;,·→]+?)\s*`?\s*(?:→|->|=>)\s*`?\s*(editorial|product|expressive|glass)\b\s*`?/gi)) {
+    const pattern = m[1].trim().replace(/^\.\//, "");
+    if (!pattern) continue;
+    out.push({ pattern, preset: m[2].toLowerCase(), route: pattern.startsWith("/"), re: globToRe(pattern), weight: pattern.replace(/[*?]/g, "").length });
+  }
+  return out;
+}
+
+/** The most specific area matching `path` among `areas`, or null. Ties go to the one listed later. */
+function bestArea(areas, path) {
+  let best = null;
+  for (const a of areas) if (a.re.test(path) && (!best || a.weight >= best.weight)) best = a;
+  return best;
+}
 
 function section(md, heading) {
   const m = md.match(new RegExp(`^##\\s+${heading}\\b[^\\n]*\\n([\\s\\S]*?)(?=^##\\s|(?![\\s\\S]))`, "mi"));
@@ -16,7 +73,7 @@ function section(md, heading) {
 
 export function readDesign(root) {
   const name = existsSync(root) ? readdirSync(root).find((f) => f.toLowerCase() === "design.md") : null;
-  if (!name) return { found: false, preset: null, labelCase: null, durations: null, roles: new Map(), zLadder: null, guard: true };
+  if (!name) return withAreas({ found: false, preset: null, areas: [], labelCase: null, durations: null, roles: new Map(), zLadder: null, guard: true });
   const md = readFileSync(join(root, name), "utf8");
   const headingLine = (h) => {
     const i = md.search(new RegExp(`^##\\s+${h}\\b`, "mi"));
@@ -26,6 +83,11 @@ export function readDesign(root) {
   const profile = section(md, "Profile");
   const presetRow = profile.split("\n").find((l) => /^\|\s*Preset\s*\|/i.test(l)) ?? "";
   const preset = PRESETS.find((p) => new RegExp(`\`${p}\`|\\b${p}\\b`).test(presetRow.split("|").slice(2).join("|"))) ?? null;
+  const areasRow = profile.split("\n").find((l) => /^\|\s*Areas?\s*\|/i.test(l)) ?? "";
+  const areasCell = areasRow.split("|").slice(2).join(" ").trim();
+  const areas = parseAreas(areasCell);
+  // Written, but not as `pattern → preset`: say so, rather than judge every file by the base preset in silence.
+  const areasUnread = areas.length === 0 && Boolean(areasCell) && !/^(none|—|-|n\/a)$/i.test(areasCell) && !/\be\.g\./i.test(areasCell);
 
   // Label case: capitals are a choice the Type table records per role. A row that
   // records them allows them; "sentence" means the table names sentence case and no row sets capitals.
@@ -67,15 +129,33 @@ export function readDesign(root) {
   const guardRow = profile.split("\n").find((l) => /^\|\s*Guard\s*\|/i.test(l)) ?? "";
   const guard = !/\b(off|no|false|disabled?)\b/i.test(guardRow.split("|").slice(2).join("|"));
 
-  return {
+  return withAreas({
     found: true,
     guard,
     file: name,
     lines: { motion: headingLine("Motion"), layout: headingLine("Layout") },
     preset,
+    areas,
+    areasUnread,
     labelCase,
     durations: durations.size ? durations : null,
     roles,
     zLadder: zLadder.size ? zLadder : null,
-  };
+  });
+}
+
+/**
+ * Give a design the questions the rules ask of it: which area a file or a
+ * route is in, and so which preset judges it. Outside every area, the
+ * project's preset.
+ */
+function withAreas(design) {
+  const files = design.areas.filter((a) => !a.route);
+  const routes = design.areas.filter((a) => a.route);
+  design.areaFor = (file) => (file ? bestArea(files, String(file).replace(/^\.\//, "")) : null);
+  design.presetFor = (file) => design.areaFor(file)?.preset ?? design.preset;
+  /** A page: by its source file when the router names one, else by its route. */
+  design.areaForPage = (route, file) => (file && design.areaFor(file)) || (route ? bestArea(routes, route) : null);
+  design.presetForPage = (route, file) => design.areaForPage(route, file)?.preset ?? design.preset;
+  return design;
 }

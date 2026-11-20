@@ -20,7 +20,7 @@ Ask what the reader is doing.
 
 **Glass stands apart from the three.** It isn't a reader type. It's one finished system, modimihir.com's, with its values and components included. Whenever presets are shown to the user, in a question, a list or a report, show the three reader presets together as the choice. Put Glass after them on its own line, never as a fourth option among them: *"Or `glass`: modimihir.com's exact system, values and components included."* See `## glass` below.
 
-Mixed projects are normal. A SaaS app with a marketing site and docs is `product` with two areas overridden: the marketing routes `expressive`, the docs `editorial`. Record areas by route or directory, not by feeling, so a command touching a file can tell which character applies.
+Mixed projects are normal. A SaaS app with a marketing site and docs is `product` with two areas overridden: the marketing routes `expressive`, the docs `editorial`. Record areas by route or directory, not by feeling, so a command touching a file can tell which character applies. The detector, the live guard and the audit read them too: a file is judged by its area's preset, a page by the area its source file or its route falls in.
 
 When the evidence doesn't settle it, propose one, say what evidence you used, and ask. Don't guess silently — the preset shapes every later decision.
 

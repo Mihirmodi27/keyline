@@ -93,9 +93,14 @@ const typeRules = [
     law: "type law 5",
     title: "Too many font weights",
     check(facts, { design }) {
-      const uses = new Map(); // weight → [locations]
+      // Counted per area (DESIGN.md's | Areas |), each against its own preset: the marketing
+      // routes on `expressive` may carry a weight the product's `editorial` docs may not.
+      const byArea = new Map(); // area pattern (null: outside every area) → weight → [locations]
       const add = (w, loc) => {
         if (!w || w < 100 || w > 1000) return;
+        const area = design.areaFor?.(loc.file)?.pattern ?? null;
+        if (!byArea.has(area)) byArea.set(area, new Map());
+        const uses = byArea.get(area);
         uses.set(w, [...(uses.get(w) ?? []), loc]);
       };
       for (const d of facts.decls) {
@@ -109,17 +114,21 @@ const typeRules = [
         const w = c.base.slice(5);
         add(/^\[\d{3}\]$/.test(w) ? Number(w.slice(1, -1)) : WEIGHT_WORDS[w], where(c));
       }
-      const allowed = { editorial: 2, glass: 2, product: 3, expressive: 3 }[design.preset] ?? 3;
-      if (uses.size <= allowed) return [];
-      const ranked = [...uses].sort((a, b) => b[1].length - a[1].length);
-      const rare = ranked.at(-1);
-      return [
-        {
+      const out = [];
+      for (const [area, uses] of byArea) {
+        const preset = area ? design.areas.find((a) => a.pattern === area).preset : design.preset;
+        const allowed = { editorial: 2, glass: 2, product: 3, expressive: 3 }[preset] ?? 3;
+        if (uses.size <= allowed) continue;
+        const ranked = [...uses].sort((a, b) => b[1].length - a[1].length);
+        const rare = ranked.at(-1);
+        out.push({
           ...first(rare[1]),
+          ...(area ? { area } : {}),
           severity: "warning",
-          message: `${uses.size} font weights in use (${ranked.map(([w, l]) => `${w}×${l.length}`).join(", ")}); ${design.preset ? `the ${design.preset} preset allows ${design.preset === "product" ? "two, and a third only for a recorded job" : allowed}` : `more than ${allowed} rarely each have a job`}. Every weight needs a job you can name — fold ${rare[0]} into a neighbour, or record why it's needed under ## Decisions.`,
-        },
-      ];
+          message: `${area ? `In ${area}: ` : ""}${uses.size} font weights in use (${ranked.map(([w, l]) => `${w}×${l.length}`).join(", ")}); ${preset ? `the ${preset} preset allows ${preset === "product" ? "two, and a third only for a recorded job" : allowed}` : `more than ${allowed} rarely each have a job`}. Every weight needs a job you can name — fold ${rare[0]} into a neighbour, or record why it's needed under ## Decisions.`,
+        });
+      }
+      return out;
     },
   },
   {
@@ -173,12 +182,17 @@ const typeRules = [
     law: "type law 9",
     title: "Italic under a preset without it",
     check(facts, { design }) {
-      if (!["product", "glass"].includes(design.preset)) return [];
+      // Each file by the preset of its area: italics are fine in an `editorial` blog inside a `product` app.
+      const without = (p) => ["product", "glass"].includes(p);
+      if (!without(design.preset) && !design.areas?.some((a) => without(a.preset))) return [];
       const hits = [
         ...tw(facts, (b) => b === "italic"),
         ...facts.decls.filter((d) => d.prop === "font-style" && /italic|oblique/.test(d.value) && !inFontFace(d)),
       ];
-      return hits.map((h) => ({ ...where(h), severity: "warning", message: `Italic. The ${design.preset} preset maps emphasis to ${design.preset === "glass" ? "weight and colour" : "a quieter text tier"}, not a slanted style.` }));
+      return hits
+        .map((h) => ({ h, preset: design.presetFor ? design.presetFor(h.file) : design.preset }))
+        .filter(({ preset }) => without(preset))
+        .map(({ h, preset }) => ({ ...where(h), severity: "warning", message: `Italic. The ${preset} preset maps emphasis to ${preset === "glass" ? "weight and colour" : "a quieter text tier"}, not a slanted style.` }));
     },
   },
   {

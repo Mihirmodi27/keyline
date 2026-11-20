@@ -113,7 +113,9 @@ export function format({ root, rel, design, findings }) {
   const sorted = [...findings].sort((a, b) => order[a.severity] - order[b.severity] || a.line - b.line);
   const errors = findings.filter((f) => f.severity === "error").length;
   const counts = [errors && `${errors} error${errors === 1 ? "" : "s"}`, findings.length - errors && `${findings.length - errors} warning${findings.length - errors === 1 ? "" : "s"}`].filter(Boolean).join(", ");
-  const system = design.found ? `preset ${design.preset ?? "not set"}, from ${design.file}` : "no DESIGN.md, so default verdicts";
+  // The preset the file is judged by: its area's, when DESIGN.md puts it in one.
+  const area = design.areaFor?.(rel);
+  const system = !design.found ? "no DESIGN.md, so default verdicts" : area ? `area ${area.pattern}, preset ${area.preset}, from ${design.file}` : `preset ${design.preset ?? "not set"}, from ${design.file}`;
   const lines = [`Keyline guard: ${counts} in ${rel} (${system}). Fix these now, in the project's own tokens, before moving on. If one is a deliberate exception, put \`keyline-ignore <rule>: <reason>\` in a comment on that line instead. Only the user records a lasting decision (\`npx trykeyline keep\`); findings already kept by one aren't listed here.`];
   for (const f of sorted.slice(0, MAX_SHOWN)) lines.push(`- ${rel}:${f.line} ${f.severity} ${f.rule} (${f.law}): ${f.message}`);
   if (sorted.length > MAX_SHOWN) lines.push(`- …and ${sorted.length - MAX_SHOWN} more: node "${CHECK}" "${rel}" --root "${root}"`);

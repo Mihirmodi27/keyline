@@ -42,12 +42,16 @@ export function normalise(text) {
  * When the line can't be read (a file the run didn't open), the message stands
  * in for it, with its numbers removed so a count changing doesn't make it new.
  * A project-wide rule (`scope: "project"`: no reduced-motion branch anywhere,
- * no skip link) is one finding however it's pointed at, so it is the rule alone.
+ * no skip link) is one finding however it's pointed at, so it is the rule alone,
+ * or the rule and the area for one counted per area of DESIGN.md (font weights),
+ * so outside every area it reads as it always has.
  */
 export function fingerprint(finding, lines, { project = false } = {}) {
   const text = lines && finding.line ? lines[finding.line - 1] : undefined;
   const anchor = project
-    ? "project"
+    ? finding.area
+      ? `project\0area:${finding.area}`
+      : "project"
     : text !== undefined && normalise(text)
       ? `${finding.file}\0line:${normalise(text)}`
       : `${finding.file}\0message:${normalise(String(finding.message ?? "").replace(/\d+(\.\d+)?/g, "#"))}`;

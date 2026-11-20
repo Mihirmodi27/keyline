@@ -48,7 +48,7 @@ node <keyline>/scripts/contrast.mjs --ladder "#ffffff" "#16161a" "#4b4b52" "#6b6
 
 From what the reader is mostly doing — reading, working, or being persuaded — propose `editorial`, `product` or `expressive` (`presets.md`). Offer `glass` only when the user wants modimihir.com's exact system rather than their own, and always apart from the three (`presets.md`, **Glass stands apart from the three**). It fills the dials from the tables in each `glass/<domain>/guide.md`, under the project's existing names wherever it has them.
 
-State the evidence: *"Mostly long-form pages under `app/blog`, two weights in use, one accent — this reads as `editorial`."* Mixed projects get a base preset plus areas: `product`, with `app/(marketing)/** → expressive`.
+State the evidence: *"Mostly long-form pages under `app/blog`, two weights in use, one accent — this reads as `editorial`."* Mixed projects get a base preset plus areas: `product`, with `app/(marketing)/** → expressive`. Write each area as `` `pattern → preset` `` in the `| Areas |` row, separated by ` · `: a path in the project (`app/blog/**`, or `app/blog` for the folder), or a route starting with `/` (`/docs/**`) for pages whose files the router doesn't name. `**` crosses folders, `*` doesn't, and the most specific match wins. Then `npx trykeyline check` lists the areas it read, so you can see they match.
 
 Code that contradicts the preset — a `product` codebase with five weights — doesn't change the preset. It's a decision to record with its reason, or an issue to list.
 

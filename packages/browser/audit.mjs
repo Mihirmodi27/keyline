@@ -27,6 +27,7 @@ import { target } from "./browse.mjs";
 import { auditProbe } from "./audit/probe.mjs";
 import { check } from "trykeyline/check";
 import { DOMAINS } from "trykeyline/check/rules";
+import { readDesign } from "trykeyline/check/design";
 
 const USAGE = `keyline audit — every page, measured, in one report.
 
@@ -120,6 +121,25 @@ export function carryHistory(out, routes) {
   const same = (a, b) => a.length === b.length && a.every((r, i) => r === b[i]);
   if (!same([...(prev.pages ?? [])].map((p) => p.route).sort(), [...routes].sort())) return [];
   return [...(prev.history ?? []), prev.score];
+}
+
+/**
+ * Which preset judges each page: its area's, when DESIGN.md's | Areas | puts
+ * it in one (by the page's source file, else its route), the project's
+ * otherwise. Written on each page as `preset`, and `area` when it has one, so
+ * the report shows it and the agent judges the page by those dials.
+ */
+export function placePages(run, root) {
+  if (!root || !existsSync(root)) return run;
+  const design = readDesign(root);
+  if (!design.found) return run;
+  for (const p of run.pages) {
+    const area = design.areaForPage(p.route, p.file);
+    if (area) p.area = area.pattern;
+    const preset = area?.preset ?? design.preset;
+    if (preset) p.preset = preset;
+  }
+  return run;
 }
 
 /** The detector's findings, as report findings pointing at source lines. Its walk already skips reports, dependencies and build output. */
@@ -218,6 +238,7 @@ export async function run(argv) {
     });
 
     if (!opts["no-check"] && t.root && existsSync(t.root)) sourceFindings(result, t.root);
+    placePages(result, t.root);
     // Decisions first: what the user has decided is deliberate doesn't count against a score.
     remember(result, t.root ?? process.cwd());
     result.scores = draftScores(result.findings);

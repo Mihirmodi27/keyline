@@ -236,6 +236,7 @@ h2{margin:0 0 12px;font-size:16px;font-weight:500;letter-spacing:-.015em}
 .chg--changed{color:var(--info)}
 .f__caption{margin:12px 0 0;font-size:13px;color:var(--faint)}
 .since h3{margin:28px 0 8px;font-size:14px;font-weight:500}
+.area{margin-left:6px;font-size:12px;font-weight:400;color:var(--faint)}
 .kept{margin:24px 0 0;font-size:14px}
 .kept summary{cursor:pointer;color:var(--muted)}
 .kept__why{flex-basis:100%;color:var(--muted)}
@@ -265,6 +266,7 @@ document.querySelectorAll('.filters select').forEach(x=>x.addEventListener('chan
 
 export function render(run) {
   const findings = sortFindings(run.findings.filter((f) => f.status !== "dismissed" && f.status !== "fixed"));
+  const mixed = run.pages.some((p) => p.area);
   const c = counts(findings);
   const pagesByRoute = new Map(run.pages.map((p) => [p.route, p]));
   const groups = new Map();
@@ -282,7 +284,9 @@ export function render(run) {
     ? [...groups]
         .map(([route, list]) => {
           const page = pagesByRoute.get(route);
-          return `<section class="page-group"><h2>${esc(route)}${page?.title ? ` <small>${esc(page.title)}</small>` : ""}</h2>${list.map((f) => card(f, page)).join("\n")}</section>`;
+          // In a product with areas on other presets, each page says which it's judged by.
+          const placed = mixed && page?.preset ? ` <small class="area">${esc(page.preset)}${page.area ? ` · ${esc(page.area)}` : ""}</small>` : "";
+          return `<section class="page-group"><h2>${esc(route)}${page?.title ? ` <small>${esc(page.title)}</small>` : ""}${placed}</h2>${list.map((f) => card(f, page)).join("\n")}</section>`;
         })
         .join("\n")
     : `<p class="empty">Nothing found. ${run.pages.length} ${run.pages.length === 1 ? "page" : "pages"} checked.</p>`;

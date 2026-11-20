@@ -13,7 +13,7 @@
  */
 import { add, newRun } from "./findings.mjs";
 import { THEMES, openContext, shotKey, visit, withHelpers } from "./capture.mjs";
-import { discover } from "./routes.mjs";
+import { discover, routesFromCode } from "./routes.mjs";
 import { launch } from "./playwright.mjs";
 
 export async function walk({
@@ -49,6 +49,10 @@ export async function walk({
     }
   }
   run.dynamic = found.dynamic.map((d) => ({ path: d.path, sample: d.sample, file: d.file ?? null }));
+  // Each page's source file, where the router names one: it places the page in an area of DESIGN.md.
+  const sourceOf = new Map();
+  for (const r of routes ? (root ? routesFromCode(root) : []) : found.routes) if (r.file && !r.dynamic) sourceOf.set(r.path, r.file);
+  for (const d of found.dynamic) if (d.sample && d.file && !sourceOf.has(d.sample)) sourceOf.set(d.sample, d.file);
 
   const browser = shared ?? (await launch({ root: root ?? process.cwd(), headless, log }));
   const pages = new Map();
@@ -70,7 +74,7 @@ export async function walk({
               }
             }
           }
-          const page = pages.get(route) ?? { route, url: v.url, title: v.title, status: v.status, finalUrl: v.finalUrl, shots: {} };
+          const page = pages.get(route) ?? { route, ...(sourceOf.has(route) ? { file: sourceOf.get(route) } : {}), url: v.url, title: v.title, status: v.status, finalUrl: v.finalUrl, shots: {} };
           if (v.shot) page.shots[shotKey(viewport, theme)] = v.shot;
           pages.set(route, page);
           runtimeFindings(run, v, first);
